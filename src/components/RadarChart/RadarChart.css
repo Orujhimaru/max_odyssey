@@ -1,0 +1,52 @@
+.grid-level {
+  fill: none;
+  stroke: #eeeeee;
+  stroke-width: 1;
+}
+
+.grid-level-inner {
+  fill: none;
+  stroke: #0fb86b;
+  stroke-width: 1;
+  opacity: 0.2;
+}
+
+.radar-chart-component {
+  font-family: "Roboto", sans-serif;
+}
+
+.outer-level {
+  stroke: #eeeeee;
+  stroke-width: 1.5;
+}
+
+.radar–number–circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.radial-line {
+  stroke: #eeeeee;
+  stroke-width: 1;
+}
+
+.radial-line-inner {
+  stroke: #0fb86b;
+  stroke-width: 1;
+  opacity: 0.2;
+}
+
+.vertex-circle {
+  fill: white;
+  stroke: #eeeeee;
+  stroke-width: 1.5;
+}
+
+.vertex-label {
+  font-size: 10px;
+  font-weight: 500;
+  fill: #666;
+  text-anchor: middle;
+  font-family: "Roboto", sans-serif;
+}
