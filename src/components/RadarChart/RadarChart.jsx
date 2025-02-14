@@ -17,10 +17,12 @@ const RadarChart = ({ sides = 7, levels = 4, radius = 100, scores = [] }) => {
 
   const getScorePoints = () => {
     return scores.map((score, i) => {
-      const scale = (score - 1) % levels; // User's approach
+      // Always subtract 10, but ensure minimum of 5%
+      const adjustedScore = Math.max(5, score - 10);
+      const scale = adjustedScore / 100; // Convert to scale (0-0.8)
       const angle = -Math.PI / 2 + i * angleStep;
-      const x = centerX + (Math.cos(angle) * radius * scale) / levels;
-      const y = centerY + (Math.sin(angle) * radius * scale) / levels;
+      const x = centerX + Math.cos(angle) * radius * scale;
+      const y = centerY + Math.sin(angle) * radius * scale;
       return { x, y };
     });
   };
