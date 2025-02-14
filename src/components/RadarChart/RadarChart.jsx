@@ -1,7 +1,7 @@
 import React from "react";
 import "./RadarChart.css";
 
-const RadarChart = ({ sides = 7, levels = 7, radius = 100, scores = [] }) => {
+const RadarChart = ({ sides = 7, levels = 4, radius = 100, scores = [] }) => {
   const centerX = 150,
     centerY = 150;
   const angleStep = (2 * Math.PI) / sides;
@@ -82,51 +82,24 @@ const RadarChart = ({ sides = 7, levels = 7, radius = 100, scores = [] }) => {
         points={scorePolygonPoints}
         className="score-area"
         fill="#D5FFE5"
-        fillOpacity="0.5"
+        fillOpacity="0.3"
         stroke="#0FB86B"
         strokeWidth="1"
       />
 
-      {/* Overlay grid (darker inside polygon) */}
-      <clipPath id="polygonClip">
-        <polygon points={scorePolygonPoints} />
-      </clipPath>
-      <g clipPath="url(#polygonClip)">
-        {Array.from({ length: levels }, (_, i) => (
-          <polygon
-            key={i}
-            points={getPolygonPoints((i + 1) / levels)}
-            className="grid-level-inner"
-          />
-        ))}
-        {Array.from({ length: sides }, (_, i) => {
-          const angle = -Math.PI / 2 + i * angleStep;
-          const x = centerX + Math.cos(angle) * radius;
-          const y = centerY + Math.sin(angle) * radius;
-          return (
-            <line
-              key={i}
-              x1={centerX}
-              y1={centerY}
-              x2={x}
-              y2={y}
-              className="radial-line-inner"
-            />
-          );
-        })}
-      </g>
-
       <g>{labels}</g>
-      {scorePoints.map((p, i) => (
-        <circle
-          key={i}
-          cx={p.x}
-          cy={p.y}
-          r={2.5}
-          className="score-point"
-          fill="#0FB86B"
-        />
-      ))}
+      {scorePoints.map((p, i) => {
+        return (
+          <circle
+            key={i}
+            cx={p.x}
+            cy={p.y}
+            r={2.5}
+            className="score-point"
+            fill="#0FB86B"
+          />
+        );
+      })}
     </svg>
   );
 };
