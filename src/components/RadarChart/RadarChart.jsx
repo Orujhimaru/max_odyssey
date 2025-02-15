@@ -105,9 +105,9 @@ const RadarChart = ({ sides = 7, levels = 4, radius = 100, scores = [] }) => {
           fy="50%"
           spreadMethod="pad"
         >
-          <stop offset="0%" stopColor="#0FB86B" stopOpacity="0.5" />
-          <stop offset="50%" stopColor="#7DDBA3" stopOpacity="0.7" />
-          <stop offset="100%" stopColor="#60E291" stopOpacity="0.6" />
+          <stop offset="0%" stopColor="#0FB86B" stopOpacity="0.4" />
+          <stop offset="50%" stopColor="#7DDBA3" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#60E291" stopOpacity="0.4" />
         </radialGradient>
       </defs>
 
@@ -123,6 +123,19 @@ const RadarChart = ({ sides = 7, levels = 4, radius = 100, scores = [] }) => {
         style={{
           "--duration": `${getMaxDuration()}s`,
           "--delay": `${getMaxDuration()}s`,
+        }}
+      />
+
+      {/* Blend mode layer */}
+      <polygon
+        points={scorePolygonPoints}
+        className="score-area"
+        fill="#0FB86B"
+        fillOpacity="0.4"
+        style={{
+          "--duration": `${getMaxDuration()}s`,
+          "--delay": `${getMaxDuration()}s`,
+          mixBlendMode: "color-burn",
         }}
       />
 
