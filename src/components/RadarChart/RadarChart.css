@@ -18,7 +18,7 @@
 .outer-level {
   stroke: #eeeeee;
   stroke-width: 1.5;
-  stroke-dasharray: 3;
+  stroke-dasharray: 0;
 }
 
 .radar–number–circle {
@@ -52,43 +52,33 @@
   font-family: "Roboto", sans-serif;
 }
 
-@keyframes expandPolygon {
-  from {
-    transform: scale(0);
-    transform-origin: center;
-  }
-  to {
-    transform: scale(1);
-    transform-origin: center;
-  }
-}
-
-@keyframes fastExpand {
-  from {
-    transform: scale(0);
-    transform-origin: center;
-  }
-  to {
-    transform: scale(1);
-    transform-origin: center;
-  }
-}
-
 .score-area {
-  animation: expandPolygon 0.6s ease-out forwards;
+  animation: fadeIn var(--duration) ease-out forwards;
+  animation-delay: var(--delay);
+  transform-origin: center;
+  opacity: 0;
 }
 
 .score-point {
-  animation: expandPolygon 0.6s ease-out forwards;
+  animation: moveFromCenter var(--duration) ease-out forwards;
 }
 
-@keyframes fadeInPoints {
+@keyframes fadeIn {
   from {
-    transform: scale(0);
-    transform-origin: center;
+    opacity: 0;
   }
   to {
-    transform: scale(1);
-    transform-origin: center;
+    opacity: 1;
+  }
+}
+
+@keyframes moveFromCenter {
+  from {
+    cx: var(--start-x);
+    cy: var(--start-y);
+  }
+  to {
+    cx: var(--target-x);
+    cy: var(--target-y);
   }
 }

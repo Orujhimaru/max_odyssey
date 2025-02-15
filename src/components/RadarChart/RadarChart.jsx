@@ -68,6 +68,25 @@ const RadarChart = ({ sides = 7, levels = 4, radius = 100, scores = [] }) => {
   const scorePoints = getScorePoints();
   const scorePolygonPoints = scorePoints.map((p) => `${p.x},${p.y}`).join(" ");
 
+  // Calculate duration based on score
+  const getDuration = (score) => {
+    // Normalize score to 0-100 after -10 adjustment
+    const adjustedScore = Math.max(5, score - 10);
+
+    if (adjustedScore >= 70) return 0.3;
+    if (adjustedScore >= 60) return 0.4;
+    if (adjustedScore >= 50) return 0.5;
+    if (adjustedScore >= 40) return 0.7;
+    if (adjustedScore >= 30) return 0.8;
+    if (adjustedScore >= 20) return 0.9;
+    return 1.0;
+  };
+
+  // Calculate max duration for polygon animation
+  const getMaxDuration = () => {
+    return Math.max(...scores.map(getDuration));
+  };
+
   return (
     <svg
       className="radar-chart-component"
@@ -79,18 +98,68 @@ const RadarChart = ({ sides = 7, levels = 4, radius = 100, scores = [] }) => {
       <g>{gridLevels}</g>
       <g>{radialLines}</g>
 
-      {/* Polygon area */}
+      {/* Create polygon segments */}
+      {scorePoints.map((point, i) => {
+        const score = scores[i];
+        const duration = getDuration(score);
+        const nextIndex = (i + 1) % scorePoints.length;
+        const nextPoint = scorePoints[nextIndex];
+        const pathD = `M ${centerX} ${centerY} L ${point.x} ${point.y} L ${nextPoint.x} ${nextPoint.y} Z`;
+
+        return (
+          <g key={i}>
+            {/* Background layer */}
+            <path
+              d={pathD}
+              className="score-area"
+              fill="#D5FFE5"
+              fillOpacity="0.4"
+              style={{
+                "--duration": `${duration}s`,
+                "--delay": `${duration}s`,
+              }}
+            />
+            {/* Blend mode layer */}
+            <path
+              d={pathD}
+              className="score-area"
+              fill="#0FB86B"
+              fillOpacity="1"
+              style={{
+                "--duration": `${duration}s`,
+                "--delay": `${duration}s`,
+                mixBlendMode: "color-burn",
+              }}
+            />
+          </g>
+        );
+      })}
+
+      {/* Outer line of the polygon */}
       <polygon
         points={scorePolygonPoints}
-        className="score-area"
-        fill="#D5FFE5"
-        fillOpacity="0.3"
+        fill="none"
         stroke="#0FB86B"
         strokeWidth="1"
+        className="score-area"
+        style={{
+          "--duration": "0.3s",
+          "--delay": `${getMaxDuration()}s`,
+        }}
       />
 
       <g>{labels}</g>
       {scorePoints.map((p, i) => {
+        const score = scores[i];
+        const duration = getDuration(score);
+
+        const style = {
+          "--target-x": `${p.x}px`,
+          "--target-y": `${p.y}px`,
+          "--start-x": `${centerX}px`,
+          "--start-y": `${centerY}px`,
+          "--duration": `${duration}s`,
+        };
         return (
           <circle
             key={i}
@@ -99,6 +168,7 @@ const RadarChart = ({ sides = 7, levels = 4, radius = 100, scores = [] }) => {
             r={2.5}
             className="score-point"
             fill="#0FB86B"
+            style={style}
           />
         );
       })}
