@@ -8,6 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
+  Cell,
 } from "recharts";
 import "./ScoreColumn.css"; // Import the CSS file
 
@@ -45,34 +46,82 @@ export default function ScoreColumnGraph() {
         <BarChart
           data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+          maxBarSize={50}
         >
+          <defs>
+            <linearGradient
+              id="barGradient"
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="1"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0%" stopColor="#60A5FA" />
+              <stop offset="50%" stopColor="#3B82F6" />
+              <stop offset="100%" stopColor="#2563EB" />
+            </linearGradient>
+          </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#FFFFFF33" />
-          <XAxis dataKey="date" stroke="#FFFFFF" tick={{ fontSize: 14 }} />
+          <XAxis
+            dataKey="date"
+            stroke="#FFFFFF"
+            tick={{ fontSize: 14 }}
+            padding={{ left: 20, right: 20 }}
+          />
           <YAxis
             domain={[400, 1600]}
             stroke="#FFFFFF"
             tick={{ fontSize: 14 }}
           />
           <Tooltip content={<CustomTooltip />} />
-          <Legend wrapperStyle={{ color: "#FFFFFF", textAlign: "center" }} />
+          {/* <Legend wrapperStyle={{ color: "#FFFFFF", textAlign: "center" }} /> */}
           <Bar
             dataKey="verbal"
             stackId="a"
-            fill={hoveredBar ? "#D72638" : "#326BBB"}
-            barSize={50}
+            fill="url(#barGradient)"
+            minPointSize={2}
             className="bar-verbal"
-            onMouseOver={() => setHoveredBar(true)}
+            radius={[0, 0, 4, 4]}
+            onMouseOver={(data, index) =>
+              setHoveredBar({ type: "verbal", index })
+            }
             onMouseOut={() => setHoveredBar(null)}
-          />
+          >
+            {data.map((entry, index) => (
+              <Cell
+                key={`verbal-${index}`}
+                fill={
+                  hoveredBar?.type === "verbal" && hoveredBar?.index === index
+                    ? "#FFA726"
+                    : "url(#barGradient)"
+                }
+              />
+            ))}
+          </Bar>
           <Bar
             dataKey="math"
             stackId="a"
-            fill={hoveredBar ? "#4E4E50" : "#326BBB"}
+            fill="url(#barGradient)"
             barSize={50}
             className="bar-math"
-            onMouseOver={() => setHoveredBar(true)}
+            radius={[4, 4, 0, 0]}
+            onMouseOver={(data, index) =>
+              setHoveredBar({ type: "math", index })
+            }
             onMouseOut={() => setHoveredBar(null)}
-          />
+          >
+            {data.map((entry, index) => (
+              <Cell
+                key={`math-${index}`}
+                fill={
+                  hoveredBar?.type === "math" && hoveredBar?.index === index
+                    ? "#E53935"
+                    : "url(#barGradient)"
+                }
+              />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>
