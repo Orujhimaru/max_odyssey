@@ -94,46 +94,37 @@ const RadarChart = ({ sides = 7, levels = 4, radius = 100, scores = [] }) => {
       height={300}
       viewBox="0 0 300 300"
     >
+      {/* Define the gradient */}
+      <defs>
+        <radialGradient
+          id="scoreGradient"
+          cx="50%"
+          cy="50%"
+          r="50%"
+          fx="50%"
+          fy="50%"
+          spreadMethod="pad"
+        >
+          <stop offset="0%" stopColor="#0FB86B" stopOpacity="0.6" />
+          <stop offset="50%" stopColor="#7DDBA3" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#60E291" stopOpacity="0.6" />
+        </radialGradient>
+      </defs>
+
       {/* Background grid (lighter color) */}
       <g>{gridLevels}</g>
       <g>{radialLines}</g>
 
-      {/* Create polygon segments */}
-      {scorePoints.map((point, i) => {
-        const score = scores[i];
-        const duration = getDuration(score);
-        const nextIndex = (i + 1) % scorePoints.length;
-        const nextPoint = scorePoints[nextIndex];
-        const pathD = `M ${centerX} ${centerY} L ${point.x} ${point.y} L ${nextPoint.x} ${nextPoint.y} Z`;
-
-        return (
-          <g key={i}>
-            {/* Background layer */}
-            <path
-              d={pathD}
-              className="score-area"
-              fill="#D5FFE5"
-              fillOpacity="0.4"
-              style={{
-                "--duration": `${duration}s`,
-                "--delay": `${duration}s`,
-              }}
-            />
-            {/* Blend mode layer */}
-            <path
-              d={pathD}
-              className="score-area"
-              fill="#0FB86B"
-              fillOpacity="1"
-              style={{
-                "--duration": `${duration}s`,
-                "--delay": `${duration}s`,
-                mixBlendMode: "color-burn",
-              }}
-            />
-          </g>
-        );
-      })}
+      {/* Single polygon with gradient */}
+      <polygon
+        points={scorePolygonPoints}
+        className="score-area"
+        fill="url(#scoreGradient)"
+        style={{
+          "--duration": `${getMaxDuration()}s`,
+          "--delay": `${getMaxDuration()}s`,
+        }}
+      />
 
       {/* Outer line of the polygon */}
       <polygon

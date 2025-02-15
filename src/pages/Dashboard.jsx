@@ -3,7 +3,7 @@ import RadarChart from "../components/RadarChart";
 function Dashboard() {
   return (
     <div className="dashboard">
-      <RadarChart scores={[90, 100, 33, 55, 27, 63, 71]} />
+      <RadarChart scores={[99, 100, 85, 99, 83, 93, 89]} />
     </div>
   );
 }
