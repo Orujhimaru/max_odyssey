@@ -1,0 +1,36 @@
+.navbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: fixed;
+  height: 100%;
+  width: 80px; /* Adjust width as needed */
+  background-color: #1b1b1b; /* Dark background */
+  padding: 12px 0; /* Top and bottom padding */
+  margin: 12px 0; /* Top and bottom margin */
+  left: 6px; /* Left margin */
+  border-radius: 8px; /* Optional: rounded corners */
+}
+
+.logo-container {
+  margin-bottom: 20px; /* Space below the logo */
+}
+
+.nav-items {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nav-icon {
+  width: 40px; /* Adjust size as needed */
+  height: auto;
+  margin: 10px 0; /* Space between icons */
+  cursor: pointer;
+}
+
+.logo {
+  width: 60px; /* Adjust size as needed */
+  height: auto;
+}
