@@ -1,0 +1,56 @@
+.chart-container {
+  width: 100%;
+  padding: 24px;
+  background-color: #1b1b1b;
+  border-radius: 16px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border: 2px solid #326bbb;
+}
+
+.chart-title {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.recharts-layer.recharts-bar:hover {
+  background-color: transparent;
+}
+
+.tooltip-container {
+  background-color: #1b1b1b;
+  color: white;
+  padding: 12px;
+  border: 1px solid white;
+  border-radius: 8px;
+}
+
+.tooltip-title {
+  font-weight: bold;
+}
+
+.verbal-score {
+  color: #d72638;
+}
+
+.math-score {
+  color: #4e4e50;
+}
+
+.bar-verbal,
+.bar-math {
+  border-radius: 8px !important;
+  transition: fill 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.bar-verbal:hover,
+.bar-math:hover {
+  /* fill: transparent !important; */
+  /* transform: translateY(-10px); */
+}
+
+.score-column {
+  /* Your styles here */
+}

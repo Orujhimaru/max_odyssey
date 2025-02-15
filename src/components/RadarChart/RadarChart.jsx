@@ -1,7 +1,12 @@
 import React from "react";
 import "./RadarChart.css";
 
-const RadarChart = ({ sides = 7, levels = 4, radius = 100, scores = [] }) => {
+export default function RadarChart({
+  sides = 7,
+  levels = 4,
+  radius = 100,
+  scores = [],
+}) {
   const centerX = 150,
     centerY = 150;
   const angleStep = (2 * Math.PI) / sides;
@@ -88,96 +93,96 @@ const RadarChart = ({ sides = 7, levels = 4, radius = 100, scores = [] }) => {
   };
 
   return (
-    <svg
-      className="radar-chart-component"
-      width={300}
-      height={300}
-      viewBox="0 0 300 300"
-    >
-      {/* Define the gradient */}
-      <defs>
-        <radialGradient
-          id="scoreGradient"
-          cx="50%"
-          cy="50%"
-          r="50%"
-          fx="50%"
-          fy="50%"
-          spreadMethod="pad"
-        >
-          <stop offset="0%" stopColor="#0FB86B" stopOpacity="0.4" />
-          <stop offset="50%" stopColor="#7DDBA3" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="#60E291" stopOpacity="0.4" />
-        </radialGradient>
-      </defs>
+    <div className="radar-chart-container">
+      <svg
+        className="radar-chart-component"
+        width={300}
+        height={300}
+        viewBox="0 0 300 300"
+      >
+        {/* Define the gradient */}
+        <defs>
+          <radialGradient
+            id="scoreGradient"
+            cx="50%"
+            cy="50%"
+            r="50%"
+            fx="50%"
+            fy="50%"
+            spreadMethod="pad"
+          >
+            <stop offset="0%" stopColor="#0FB86B" stopOpacity="0.4" />
+            <stop offset="50%" stopColor="#7DDBA3" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#60E291" stopOpacity="0.4" />
+          </radialGradient>
+        </defs>
 
-      {/* Background grid (lighter color) */}
-      <g>{gridLevels}</g>
-      <g>{radialLines}</g>
+        {/* Background grid (lighter color) */}
+        <g>{gridLevels}</g>
+        <g>{radialLines}</g>
 
-      {/* Single polygon with gradient */}
-      <polygon
-        points={scorePolygonPoints}
-        className="score-area"
-        fill="url(#scoreGradient)"
-        style={{
-          "--duration": `${getMaxDuration()}s`,
-          "--delay": `${getMaxDuration()}s`,
-        }}
-      />
+        {/* Single polygon with gradient */}
+        <polygon
+          points={scorePolygonPoints}
+          className="score-area"
+          fill="url(#scoreGradient)"
+          style={{
+            "--duration": `${getMaxDuration()}s`,
+            "--delay": `${getMaxDuration()}s`,
+          }}
+        />
 
-      {/* Blend mode layer */}
-      <polygon
-        points={scorePolygonPoints}
-        className="score-area"
-        fill="#0FB86B"
-        fillOpacity="0.4"
-        style={{
-          "--duration": `${getMaxDuration()}s`,
-          "--delay": `${getMaxDuration()}s`,
-          mixBlendMode: "color-burn",
-        }}
-      />
+        {/* Blend mode layer */}
+        <polygon
+          points={scorePolygonPoints}
+          className="score-area"
+          fill="#0FB86B"
+          fillOpacity="0.4"
+          style={{
+            "--duration": `${getMaxDuration()}s`,
+            "--delay": `${getMaxDuration()}s`,
+            mixBlendMode: "color-burn",
+          }}
+        />
 
-      {/* Outer line of the polygon */}
-      <polygon
-        points={scorePolygonPoints}
-        fill="none"
-        stroke="#0FB86B"
-        strokeWidth="1"
-        className="score-area"
-        style={{
-          "--duration": "0.3s",
-          "--delay": `${getMaxDuration()}s`,
-        }}
-      />
+        {/* Outer line of the polygon */}
+        <polygon
+          points={scorePolygonPoints}
+          fill="none"
+          stroke="#0FB86B"
+          strokeWidth="1"
+          className="score-area"
+          style={{
+            "--duration": "0.3s",
+            "--delay": `${getMaxDuration()}s`,
+          }}
+        />
 
-      <g>{labels}</g>
-      {scorePoints.map((p, i) => {
-        const score = scores[i];
-        const duration = getDuration(score);
+        <g>{labels}</g>
+        {scorePoints.map((p, i) => {
+          const score = scores[i];
+          const duration = getDuration(score);
 
-        const style = {
-          "--target-x": `${p.x}px`,
-          "--target-y": `${p.y}px`,
-          "--start-x": `${centerX}px`,
-          "--start-y": `${centerY}px`,
-          "--duration": `${duration}s`,
-        };
-        return (
-          <circle
-            key={i}
-            cx={p.x}
-            cy={p.y}
-            r={2.5}
-            className="score-point"
-            fill="#0FB86B"
-            style={style}
-          />
-        );
-      })}
-    </svg>
+          const style = {
+            "--target-x": `${p.x}px`,
+            "--target-y": `${p.y}px`,
+            "--start-x": `${centerX}px`,
+            "--start-y": `${centerY}px`,
+            "--duration": `${duration}s`,
+          };
+          return (
+            <circle
+              key={i}
+              cx={p.x}
+              cy={p.y}
+              r={2.5}
+              className="score-point"
+              fill="#0FB86B"
+              style={style}
+            />
+          );
+        })}
+      </svg>
+    </div>
   );
-};
-
-export default RadarChart;
+}
