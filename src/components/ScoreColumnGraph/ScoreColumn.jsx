@@ -5,7 +5,6 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
   ResponsiveContainer,
   Label,
 } from "recharts";
@@ -13,14 +12,26 @@ import "./ScoreColumn.css";
 
 const data = [
   { date: "Sep 25", verbal: 520, math: 500 },
-  { date: "Oct 10", verbal: 580, math: 550 },
-  { date: "Oct 25", verbal: 620, math: 590 },
-  { date: "Nov 8", verbal: 650, math: 630 },
-  { date: "Nov 22", verbal: 680, math: 650 },
+  { date: "Oct 10", verbal: 780, math: 550 },
+  { date: "Oct 25", verbal: 700, math: 590 },
+  { date: "Nov 8", verbal: 800, math: 630 },
+  { date: "Nov 22", verbal: 400, math: 650 },
 ];
 
 export default function ScoreColumnGraph() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [hoveredValue, setHoveredValue] = useState(null);
+
+  // Calculate the Y coordinate for the label based on the hovered value
+  const getLabelYCoordinate = (value) => {
+    const minValue = 0;
+    const maxValue = 800;
+    const totalHeight = 310;
+    let result =
+      ((maxValue - value) / (maxValue - minValue)) * totalHeight + 10;
+    console.log(`Value: ${value}, Position: ${result}px`);
+    return result;
+  };
 
   const CustomTooltip = ({ active, payload }) => {
     if (!active || !payload || payload.length < 2) return null;
@@ -71,12 +82,30 @@ export default function ScoreColumnGraph() {
           <YAxis
             domain={[0, 800]}
             stroke="#94a3b8"
-            tick={{ fill: "#94a3b8", fontSize: 14 }}
+            tick={{
+              fill: "#94a3b8",
+              fontSize: 14,
+              opacity: hoveredValue ? 0.2 : 1,
+              transition: "opacity 0.2s ease-in-out",
+            }}
             ticks={[0, 400, 800]}
             axisLine={false}
             tickSize={10}
-          />
-          <Tooltip
+          >
+            {hoveredValue && (
+              <Label
+                value={hoveredValue}
+                position="top"
+                offset={10}
+                style={{
+                  transform: `translateY(${getLabelYCoordinate(
+                    hoveredValue
+                  )}px)`,
+                }}
+              />
+            )}
+          </YAxis>
+          {/* <Tooltip
             content={<CustomTooltip />}
             cursor={false}
             offset={0}
@@ -84,7 +113,7 @@ export default function ScoreColumnGraph() {
             wrapperStyle={{ visibility: "visible" }}
             separator=""
             shared={false}
-          />
+          /> */}
           <Bar
             name="verbal"
             dataKey="verbal"
@@ -93,8 +122,14 @@ export default function ScoreColumnGraph() {
             minBarSize={10}
             maxBarSize={30}
             isAnimationActive={false}
-            onMouseEnter={(data, index) => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
+            onMouseEnter={(data, index) => {
+              setHoveredIndex(index);
+              setHoveredValue(data.verbal);
+            }}
+            onMouseLeave={() => {
+              setHoveredIndex(null);
+              setHoveredValue(null);
+            }}
           >
             {data.map((entry, index) => (
               <Label
@@ -115,8 +150,14 @@ export default function ScoreColumnGraph() {
             minBarSize={10}
             maxBarSize={30}
             isAnimationActive={false}
-            onMouseEnter={(data, index) => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
+            onMouseEnter={(data, index) => {
+              setHoveredIndex(index);
+              setHoveredValue(data.math);
+            }}
+            onMouseLeave={() => {
+              setHoveredIndex(null);
+              setHoveredValue(null);
+            }}
           >
             {data.map((entry, index) => (
               <Label

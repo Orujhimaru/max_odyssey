@@ -105,3 +105,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 .x-axis-tick {
   margin-top: 5px !important; /* Adjust the margin as needed */
 }
+
+.recharts-yAxis .recharts-text {
+  transition: opacity 0.2s ease-in-out;
+}
