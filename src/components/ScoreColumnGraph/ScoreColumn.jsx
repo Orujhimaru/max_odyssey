@@ -26,7 +26,7 @@ export default function ScoreColumnGraph() {
   const getLabelYCoordinate = (value) => {
     const minValue = 0;
     const maxValue = 800;
-    const totalHeight = 310;
+    const totalHeight = 290;
     let result =
       ((maxValue - value) / (maxValue - minValue)) * totalHeight + 10;
     console.log(`Value: ${value}, Position: ${result}px`);
@@ -115,6 +115,7 @@ export default function ScoreColumnGraph() {
             shared={false}
           /> */}
           <Bar
+            background={{ fill: "#eee" }}
             name="verbal"
             dataKey="verbal"
             fill="#4E4E4E"
@@ -144,6 +145,7 @@ export default function ScoreColumnGraph() {
           </Bar>
           <Bar
             name="math"
+            background={{ fill: "#eee" }}
             dataKey="math"
             fill="#EE4747"
             radius={[4, 4, 0, 0]}
