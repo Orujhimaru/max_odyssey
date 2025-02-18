@@ -79,6 +79,11 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   transition: fill 0.3s ease-in-out;
 }
 
+.recharts-default-legend {
+  display: flex;
+  justify-content: flex-end;
+}
+
 /* Target the chart container specifically */
 .charts-container {
   width: 100%;

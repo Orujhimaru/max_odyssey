@@ -36,7 +36,7 @@ export default function ScoreColumnGraph() {
     if (result === 10) {
       return 15;
     }
-    console.log(`Value: ${value}, Position: ${result}px`);
+    // console.log(`Value: ${value}, Position: ${result}px`);
     return result;
   };
 
@@ -61,7 +61,7 @@ export default function ScoreColumnGraph() {
             tick={{ fill: "#94a3b8", className: "x-axis-tick" }}
             axisLine={false}
             tickSize={0}
-            dy={20}
+            dy={10}
           />
           <YAxis
             domain={[0, 800]}
@@ -100,13 +100,11 @@ export default function ScoreColumnGraph() {
             minBarSize={10}
             maxBarSize={30}
             isAnimationActive={false}
-            onMouseEnter={(data, index) => {
-              setHoveredIndex(index);
+            onMouseEnter={(data) => {
               setHoveredValue(data.verbal);
               setHoveredBar("verbal");
             }}
             onMouseLeave={() => {
-              setHoveredIndex(null);
               setHoveredValue(null);
               setHoveredBar(null);
             }}
