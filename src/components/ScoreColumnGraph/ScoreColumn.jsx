@@ -7,12 +7,15 @@ import {
   CartesianGrid,
   ResponsiveContainer,
   Label,
+  Cell,
 } from "recharts";
 import "./ScoreColumn.css";
 
 const data = [
   { date: "Sep 25", verbal: 520, math: 500 },
   { date: "Oct 10", verbal: 780, math: 550 },
+  { date: "Oct 10", verbal: 740, math: 550 },
+  { date: "Oct 25", verbal: 760, math: 590 },
   { date: "Oct 25", verbal: 700, math: 590 },
   { date: "Nov 8", verbal: 800, math: 630 },
   { date: "Nov 22", verbal: 400, math: 650 },
@@ -21,6 +24,7 @@ const data = [
 export default function ScoreColumnGraph() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [hoveredValue, setHoveredValue] = useState(null);
+  const [hoveredBar, setHoveredBar] = useState(null);
 
   // Calculate the Y coordinate for the label based on the hovered value
   const getLabelYCoordinate = (value) => {
@@ -29,35 +33,15 @@ export default function ScoreColumnGraph() {
     const totalHeight = 290;
     let result =
       ((maxValue - value) / (maxValue - minValue)) * totalHeight + 10;
+    if (result === 10) {
+      return 15;
+    }
     console.log(`Value: ${value}, Position: ${result}px`);
     return result;
   };
 
-  const CustomTooltip = ({ active, payload }) => {
-    if (!active || !payload || payload.length < 2) return null;
-
-    return (
-      <div className="tooltip-container">
-        <p className="tooltip-date">{payload[0].payload.date}</p>
-        <p className="verbal-score">Verbal: {payload[0].value}</p>
-        <p className="math-score">Math: {payload[1].value}</p>
-      </div>
-    );
-  };
-
   return (
     <div className="chart-container">
-      <style>
-        {`
-          .score-label {
-            opacity: 0;
-            transition: opacity 0.2s ease-in-out;
-          }
-          .recharts-bar-rectangle:hover + .label-group .score-label {
-            opacity: 1;
-          }
-        `}
-      </style>
       <ResponsiveContainer width="100%" height={350}>
         <BarChart
           data={data}
@@ -101,6 +85,7 @@ export default function ScoreColumnGraph() {
                   transform: `translateY(${getLabelYCoordinate(
                     hoveredValue
                   )}px)`,
+                  fontWeight: 500,
                 }}
               />
             )}
@@ -118,7 +103,7 @@ export default function ScoreColumnGraph() {
             background={{ fill: "#eee" }}
             name="verbal"
             dataKey="verbal"
-            fill="#4E4E4E"
+            fill="#456BC4"
             radius={[4, 4, 0, 0]}
             minBarSize={10}
             maxBarSize={30}
@@ -126,20 +111,21 @@ export default function ScoreColumnGraph() {
             onMouseEnter={(data, index) => {
               setHoveredIndex(index);
               setHoveredValue(data.verbal);
+              setHoveredBar("verbal");
             }}
             onMouseLeave={() => {
               setHoveredIndex(null);
               setHoveredValue(null);
+              setHoveredBar(null);
             }}
           >
             {data.map((entry, index) => (
-              <Label
+              <Cell
                 key={`verbal-${index}`}
-                value={hoveredIndex === index ? entry.verbal : ""}
-                position="top"
-                fill="red"
-                fontSize={12}
-                fontWeight="bold"
+                style={{ transition: "opacity 0.3s ease-in-out" }}
+                opacity={
+                  hoveredBar === "verbal" || hoveredBar === null ? 1 : 0.2
+                }
               />
             ))}
           </Bar>
@@ -147,7 +133,7 @@ export default function ScoreColumnGraph() {
             name="math"
             background={{ fill: "#eee" }}
             dataKey="math"
-            fill="#EE4747"
+            fill="#4E4E4E"
             radius={[4, 4, 0, 0]}
             minBarSize={10}
             maxBarSize={30}
@@ -155,20 +141,19 @@ export default function ScoreColumnGraph() {
             onMouseEnter={(data, index) => {
               setHoveredIndex(index);
               setHoveredValue(data.math);
+              setHoveredBar("math");
             }}
             onMouseLeave={() => {
               setHoveredIndex(null);
               setHoveredValue(null);
+              setHoveredBar(null);
             }}
           >
             {data.map((entry, index) => (
-              <Label
+              <Cell
                 key={`math-${index}`}
-                value={hoveredIndex === index ? entry.math : ""}
-                position="top"
-                fill="red"
-                fontSize={12}
-                fontWeight="bold"
+                style={{ transition: "opacity 0.3s ease-in-out" }}
+                opacity={hoveredBar === "math" || hoveredBar === null ? 1 : 0.2}
               />
             ))}
           </Bar>
