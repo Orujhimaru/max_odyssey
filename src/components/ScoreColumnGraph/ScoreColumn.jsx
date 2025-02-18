@@ -90,15 +90,7 @@ export default function ScoreColumnGraph() {
               />
             )}
           </YAxis>
-          {/* <Tooltip
-            content={<CustomTooltip />}
-            cursor={false}
-            offset={0}
-            allowEscapeViewBox={{ y: true }}
-            wrapperStyle={{ visibility: "visible" }}
-            separator=""
-            shared={false}
-          /> */}
+
           <Bar
             background={{ fill: "#eee" }}
             name="verbal"
