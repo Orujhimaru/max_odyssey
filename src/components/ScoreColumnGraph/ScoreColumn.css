@@ -82,7 +82,6 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 /* Target the chart container specifically */
 .charts-container {
   width: 100%;
-  height: 500px;
   box-sizing: content-box;
 }
 
