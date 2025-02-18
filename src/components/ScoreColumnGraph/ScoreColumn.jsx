@@ -41,7 +41,7 @@ export default function ScoreColumnGraph() {
   };
 
   return (
-    <div className="chart-container">
+    <div className="charts-container">
       <ResponsiveContainer width="100%" height={350}>
         <BarChart
           data={data}

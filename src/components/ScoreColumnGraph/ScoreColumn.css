@@ -1,11 +1,18 @@
+/* Remove or scope the universal selector */
+/* * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} */
+
 .chart-container {
+  box-sizing: content-box;
   width: 100%;
   max-width: 700px;
   /* padding: 24px; */
   background-color: white;
   border-radius: 16px;
-  min-width: 600px;
-  box-sizing: content-box;
+  /* min-width: 600px; */
 }
 
 .recharts-cartesian-axis-ticks {
@@ -70,6 +77,32 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 .bar-verbal,
 .bar-math {
   transition: fill 0.3s ease-in-out;
+}
+
+/* Target the chart container specifically */
+.charts-container {
+  width: 100%;
+  height: 500px;
+  box-sizing: content-box;
+}
+
+/* Force Recharts to be responsive */
+.recharts-wrapper,
+.recharts-surface,
+.recharts-responsive-container {
+  max-width: 700px !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: unset !important;
+  min-height: unset !important;
+  max-height: none !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure the SVG takes full space */
+.recharts-wrapper svg {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* Override Recharts default active bar style */
