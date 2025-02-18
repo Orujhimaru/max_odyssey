@@ -6,7 +6,6 @@ import "./Dashboard.css";
 function Dashboard() {
   return (
     <div className="dashboard">
-      <Navbar />
       <RadarChart scores={[99, 75, 45, 9, 83, 23, 59]} />
       <ScoreColumnGraph />
     </div>
