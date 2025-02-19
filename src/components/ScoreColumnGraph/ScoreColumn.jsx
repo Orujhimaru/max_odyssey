@@ -58,6 +58,33 @@ export default function ScoreColumnGraph() {
     return result;
   };
 
+  // Add this function inside the component to calculate the line coordinates
+  const getLineCoordinates = (value) => {
+    const minValue = 0;
+    const maxValue = 800;
+    const totalHeight = 290;
+    const yPosition =
+      ((maxValue - value) / (maxValue - minValue)) * totalHeight + 20;
+
+    // Starting position (after y-axis numbers)
+    const startX = 90;
+
+    // Bar dimensions and spacing
+    const barWidth = 30;
+    const barSpacing = 85;
+    const initialOffset = 140;
+
+    // Calculate bar position based on index
+    const barX = initialOffset + hoveredIndex * barSpacing;
+
+    return {
+      x1: startX,
+      y1: yPosition,
+      x2: barX,
+      y2: yPosition,
+    };
+  };
+
   return (
     <div className="charts-container">
       <div className="score-boxes">
@@ -132,11 +159,13 @@ export default function ScoreColumnGraph() {
             minBarSize={10}
             maxBarSize={30}
             isAnimationActive={false}
-            onMouseEnter={(data) => {
+            onMouseEnter={(data, index) => {
+              setHoveredIndex(index);
               setHoveredValue(data.verbal);
               setHoveredBar("verbal");
             }}
             onMouseLeave={() => {
+              setHoveredIndex(null);
               setHoveredValue(null);
               setHoveredBar(null);
             }}
@@ -179,6 +208,15 @@ export default function ScoreColumnGraph() {
               />
             ))}
           </Bar>
+          {hoveredValue && (
+            <line
+              {...getLineCoordinates(hoveredValue)}
+              stroke="#94a3b8"
+              strokeWidth={1}
+              strokeDasharray="3,3"
+              className="score-guide-line"
+            />
+          )}
         </BarChart>
       </ResponsiveContainer>
     </div>
