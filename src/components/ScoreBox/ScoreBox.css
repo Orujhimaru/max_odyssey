@@ -1,0 +1,118 @@
+.score-box {
+  display: flex;
+  flex-direction: column;
+  background-color: white; /* White background */
+  color: black; /* Default text color */
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* margin-bottom: 20px; */
+  /* text-align: center; */
+  border: 2px solid transparent; /* Transparent border for styling */
+}
+span.score-box-title-type.verbal {
+  color: #456bc4;
+  font-size: 18px;
+}
+span.score-box-title-type.math {
+  color: #4e4e4e;
+  font-size: 18px;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.score.verbal,
+.score.math {
+  display: flex;
+  align-items: center;
+  height: fit-content;
+}
+
+.score-boxes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.score-box.verbal {
+  border-color: #456bc4; /* Border color for verbal */
+}
+.score-box.verbal h2 {
+  font-size: 16px;
+}
+.score-box.math h2 {
+  font-size: 16px;
+}
+.score-box.math {
+  border-color: #4e4e4e; /* Border color for math */
+}
+
+.score {
+  color: inherit; /* Inherit color from the box */
+}
+
+.arrow {
+  font-size: 16px; /* Adjust size as needed */
+  margin-left: 4px;
+}
+
+.arrow i {
+  color: inherit;
+}
+
+.arrow i.fa-arrow-up {
+  color: #4caf50; /* Green color for increase */
+}
+
+.arrow i.fa-arrow-down {
+  color: #f44336; /* Red color for decrease */
+}
+
+/* Style for the improvement text */
+.score-row p {
+  color: inherit;
+}
+
+.score-row p.increase {
+  color: #4caf50;
+}
+
+.score-row p.decrease {
+  color: #f44336;
+}
+
+.improvement {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 14px;
+}
+
+.improvement.increase {
+  color: #82ce84;
+}
+
+.improvement.decrease {
+  color: #ec5e54;
+}
+
+.improvement i {
+  font-size: 12px;
+}
+
+/* Remove these as they're no longer needed
+.arrow i.fa-arrow-up,
+.arrow i.fa-arrow-down,
+.score-row p.increase,
+.score-row p.decrease {
+  ...
+}
+*/

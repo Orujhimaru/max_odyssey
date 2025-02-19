@@ -86,8 +86,16 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 
 /* Target the chart container specifically */
 .charts-container {
+  position: relative;
   width: 100%;
   box-sizing: content-box;
+  display: flex;
+  max-height: 350px;
+}
+
+.recharts-responsive-container {
+  margin-left: 140px;
+  margin-top: -14px;
 }
 
 /* Force Recharts to be responsive */

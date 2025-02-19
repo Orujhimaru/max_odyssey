@@ -9,17 +9,35 @@ import {
   Label,
   Cell,
 } from "recharts";
+import ScoreBox from "../ScoreBox/ScoreBox";
 import "./ScoreColumn.css";
 
 const data = [
   { date: "Sep 25", verbal: 520, math: 500 },
   { date: "Oct 10", verbal: 780, math: 550 },
   { date: "Oct 10", verbal: 740, math: 550 },
-  { date: "Oct 25", verbal: 760, math: 590 },
+  { date: "Oct 25", verbal: 760, math: 550 },
   { date: "Oct 25", verbal: 700, math: 590 },
   { date: "Nov 8", verbal: 800, math: 630 },
   { date: "Nov 22", verbal: 400, math: 650 },
 ];
+
+const calculateAverage = (data, key) => {
+  const total = data.reduce((acc, curr) => acc + curr[key], 0);
+  return Math.floor(total / data.length / 10) * 10;
+};
+
+const verbalAverage = calculateAverage(data, "verbal");
+
+const mathAverage = calculateAverage(data, "math");
+
+const verbalScoreStart = data[0].verbal;
+const verbalScoreEnd = data[data.length - 1].verbal;
+const verbalChange = verbalAverage - verbalScoreStart;
+
+const mathScoreStart = data[0].math;
+const mathScoreEnd = data[data.length - 1].math;
+const mathChange = mathAverage - mathScoreStart;
 
 export default function ScoreColumnGraph() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -42,6 +60,20 @@ export default function ScoreColumnGraph() {
 
   return (
     <div className="charts-container">
+      <div className="score-boxes">
+        <ScoreBox
+          title="Verbal"
+          score={verbalAverage.toFixed(0)}
+          improvement={verbalChange}
+          type="verbal"
+        />
+        <ScoreBox
+          title="Math"
+          score={mathAverage.toFixed(0)}
+          improvement={mathChange}
+          type="math"
+        />
+      </div>
       <ResponsiveContainer width="100%" height={350}>
         <BarChart
           data={data}
