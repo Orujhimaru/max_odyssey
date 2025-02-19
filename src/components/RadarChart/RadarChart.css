@@ -1,6 +1,6 @@
 .grid-level {
   fill: none;
-  stroke: #eeeeee;
+  stroke: var(--radar-web);
   stroke-width: 1;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .outer-level {
-  stroke: #eeeeee;
+  stroke: var(--radar-web);
   stroke-width: 1.5;
   stroke-dasharray: 0;
 }
@@ -28,7 +28,7 @@
 }
 
 .radial-line {
-  stroke: #eeeeee;
+  stroke: var(--radar-web);
   stroke-width: 1;
 }
 
@@ -39,15 +39,15 @@
 }
 
 .vertex-circle {
-  fill: white;
-  stroke: #eeeeee;
+  fill: var(--bg-secondary);
+  stroke: var(--radar-grid);
   stroke-width: 1.5;
 }
 
 .vertex-label {
   font-size: 10px;
   font-weight: 500;
-  fill: #666;
+  fill: var(--radar-number);
   text-anchor: middle;
   font-family: "Roboto", sans-serif;
 }
@@ -57,6 +57,11 @@
   animation-delay: var(--delay);
   transform-origin: center;
   opacity: 0;
+  /* mix-blend-mode: color-burn; */
+}
+
+[data-theme="dark"] .score-area {
+  mix-blend-mode: hard-light !important;
 }
 
 .score-point {

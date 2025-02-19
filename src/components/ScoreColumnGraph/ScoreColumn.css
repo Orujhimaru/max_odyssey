@@ -10,7 +10,7 @@
   width: 100%;
   max-width: 700px;
   /* padding: 24px; */
-  background-color: white;
+  background-color: var(--bg-primary);
   border-radius: 16px;
   /* min-width: 600px; */
 }
@@ -21,6 +21,14 @@
 
 .recharts-cartesian-grid-horizontal line:last-of-type {
   stroke-width: 2px;
+}
+
+.recharts-cartesian-grid-horizontal line {
+  stroke: var(--chart-grid);
+}
+
+.recharts-text {
+  fill: var(--chart-text);
 }
 
 .chart-title {
@@ -94,7 +102,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 }
 
 .recharts-responsive-container {
-  margin-left: 140px;
+  margin-left: 100px;
   margin-top: -14px;
 }
 

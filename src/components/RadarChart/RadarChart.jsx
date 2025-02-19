@@ -111,9 +111,22 @@ export default function RadarChart({
             fy="50%"
             spreadMethod="pad"
           >
-            <stop offset="0%" stopColor="#0FB86B" stopOpacity="0.4" />
+            <stop offset="0%" stopColor="#0FB86B" stopOpacity="0.6" />
             <stop offset="50%" stopColor="#7DDBA3" stopOpacity="0.5" />
             <stop offset="100%" stopColor="#60E291" stopOpacity="0.4" />
+          </radialGradient>
+          <radialGradient
+            id="scoreGradientDark"
+            cx="50%"
+            cy="50%"
+            r="50%"
+            fx="50%"
+            fy="50%"
+            spreadMethod="pad"
+          >
+            <stop offset="0%" stopColor="#0FB86B" stopOpacity="0.2" />
+            <stop offset="50%" stopColor="#7DDBA3" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#60E291" stopOpacity="0.2" />
           </radialGradient>
         </defs>
 

@@ -124,10 +124,10 @@ export default function ScoreColumnGraph() {
           </YAxis>
 
           <Bar
-            background={{ fill: "#eee" }}
+            background={{ fill: "var(--bar-background)" }}
             name="verbal"
             dataKey="verbal"
-            fill="#456BC4"
+            fill="var(--bar-verbal-color)"
             radius={[4, 4, 0, 0]}
             minBarSize={10}
             maxBarSize={30}
@@ -152,10 +152,10 @@ export default function ScoreColumnGraph() {
             ))}
           </Bar>
           <Bar
+            background={{ fill: "var(--bar-background)" }}
             name="math"
-            background={{ fill: "#eee" }}
             dataKey="math"
-            fill="#4E4E4E"
+            fill="var(--bar-math-color)"
             radius={[4, 4, 0, 0]}
             minBarSize={10}
             maxBarSize={30}

@@ -1,21 +1,21 @@
 .score-box {
   display: flex;
   flex-direction: column;
-  background-color: white; /* White background */
-  color: black; /* Default text color */
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   padding: 10px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px var(--box-shadow);
   /* margin-bottom: 20px; */
   /* text-align: center; */
-  border: 2px solid transparent; /* Transparent border for styling */
+  border: 2px solid var(--border-color);
 }
 span.score-box-title-type.verbal {
   color: #456bc4;
   font-size: 18px;
 }
 span.score-box-title-type.math {
-  color: #4e4e4e;
+  color: var(--math-color);
   font-size: 18px;
 }
 
@@ -52,7 +52,7 @@ span.score-box-title-type.math {
   font-size: 16px;
 }
 .score-box.math {
-  border-color: #4e4e4e; /* Border color for math */
+  border-color: var(--math-color);
 }
 
 .score {

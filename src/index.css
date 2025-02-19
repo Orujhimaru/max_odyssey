@@ -11,6 +11,36 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Light mode colors */
+  --bg-primary: white;
+  --bg-secondary: #f8f9fa;
+  --text-primary: #213547;
+  --border-color: #e5e7eb;
+  --box-shadow: rgba(0, 0, 0, 0.2);
+  --chart-grid: #94a3b820;
+  --chart-text: #94a3b8;
+
+  /* Brand colors - light mode */
+  --verbal-color: #456bc4;
+  --math-color: #4e4e4e;
+  --increase-color: #82ce84;
+  --decrease-color: #ec5e54;
+
+  /* Radar Chart Colors - light mode */
+  --radar-grid: #eeeeee;
+  --radar-number: #666;
+  --radar-point: #0fb86b;
+  --radar-web: #eeeeee;
+  --radar-area: url(#scoreGradient);
+
+  /* Transitions */
+  --transition-duration: 0.3s;
+
+  /* Bar colors - light mode */
+  --bar-verbal-color: #456bc4;
+  --bar-math-color: #4e4e4e;
+  --bar-background: #eee;
 }
 
 #root {
@@ -21,6 +51,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: background-color var(--transition-duration) ease,
+    color var(--transition-duration) ease,
+    border-color var(--transition-duration) ease,
+    box-shadow var(--transition-duration) ease;
 }
 
 a {
@@ -67,4 +101,34 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+[data-theme="dark"] {
+  /* Dark mode colors */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --text-primary: rgba(255, 255, 255, 0.87);
+  --border-color: #2d2d2d;
+  --box-shadow: rgba(0, 0, 0, 0.4);
+  --chart-grid: #94a3b840;
+  --chart-text: #94a3b8;
+
+  /* Brand colors - dark mode overrides */
+  --math-color: #b14343; /* Softer red for dark mode */
+
+  /* Radar Chart Dark Colors */
+  --radar-grid: #404040; /* Lighter grid for visibility */
+  --radar-number: #fff;
+  --radar-point: #4ade80; /* Brighter green for visibility */
+  --radar-web: #404040; /* Matching grid color */
+  --radar-area: url(#scoreGradientDark);
+
+  /* Bar colors - dark mode */
+  --bar-math-color: #b14343; /* Matching the math score box */
+  --bar-background: #404040;
+}
+
+body {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }

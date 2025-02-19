@@ -1,3 +1,32 @@
 .dashboard {
   width: 100%;
+  position: relative;
+  padding: 20px;
+  background-color: var(--bg-secondary);
+  min-height: 100vh;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all var(--transition-duration) ease;
+}
+
+.theme-toggle:hover {
+  background-color: var(--border-color);
+}
+
+.dashboard-content {
+  background-color: var(--bg-primary);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 8px var(--box-shadow);
 }
