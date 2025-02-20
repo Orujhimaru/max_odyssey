@@ -13,7 +13,6 @@
   background: none;
   border: none;
   color: var(--text-primary);
-  font-size: 24px;
   cursor: pointer;
   width: 40px;
   height: 40px;
@@ -25,8 +24,14 @@
   transition: all var(--transition-duration) ease;
 }
 
-.theme-toggle:hover {
-  background-color: var(--border-color);
+.theme-toggle svg {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s ease;
+}
+
+.theme-toggle:hover svg {
+  transform: scale(1.1);
 }
 
 .dashboard-content {
