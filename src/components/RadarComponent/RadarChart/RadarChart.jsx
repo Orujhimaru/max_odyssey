@@ -112,9 +112,9 @@ export default function RadarChart({
     };
 
     // Return specific color based on score range
-    if (score >= 75) return ranges.exceptional;
-    if (score >= 50) return ranges.good;
-    if (score >= 25) return ranges.average;
+    if (score >= 80) return ranges.exceptional;
+    if (score >= 60) return ranges.good;
+    if (score >= 40) return ranges.average;
     if (score >= 0) return ranges.poor;
     return ranges.poor;
   };

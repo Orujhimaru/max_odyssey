@@ -65,40 +65,21 @@ export default function ScoreColumnGraph() {
   const getLineCoordinates = (value) => {
     if (!chartRef.current) return { x1: 0, y1: 0, x2: 0, y2: 0 };
 
-    // Get chart container dimensions
-    const chartContainer = chartRef.current.getBoundingClientRect();
-    const chartWidth = chartContainer.width;
-    const chartHeight = chartContainer.height;
+    const { width } = chartRef.current.getBoundingClientRect();
+    const yAxis = 90;
+    const bar = { width: 30, gap: 20 };
 
-    // Calculate Y position based on chart height
-    const minValue = 0;
-    const maxValue = 800;
-    const yPosition =
-      chartHeight -
-      ((value - minValue) / (maxValue - minValue)) * (chartHeight - 40) -
-      20;
+    const y = getLabelYCoordinate(value) + 10;
 
-    // Calculate X positions based on chart width
-    const yAxisWidth = chartWidth * 0.1;
-    const startX = yAxisWidth + 40;
-
-    // Calculate bar position
-    const availableWidth = chartWidth - startX - 60;
-    const barSpacing = availableWidth / (data.length - 1);
-    const barWidth = 30; // Width of each bar
-
-    // If it's a math bar (second in the pair), add the width of the verbal bar
-    const barX =
-      startX +
+    const barSpacing = (width - yAxis - 80) / data.length;
+    const x =
+      yAxis +
       hoveredIndex * barSpacing +
-      (hoveredBar === "math" ? barWidth : 0);
+      bar.width +
+      bar.gap +
+      (hoveredBar === "math" ? bar.width : 0);
 
-    return {
-      x1: startX,
-      y1: yPosition,
-      x2: barX,
-      y2: yPosition,
-    };
+    return { x1: yAxis, y1: y, x2: x, y2: y };
   };
 
   return (
