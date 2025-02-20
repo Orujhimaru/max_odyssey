@@ -4,7 +4,7 @@ import "./App.css";
 import "./index.css";
 import Dashboard from "./pages/DashboardPage/Dashboard";
 import Navbar from "./components/NavBar/Navbar";
-import ScoreColumnGraph from "./components/ScoreColumnGraph/ScoreColumn";
+import ScoreColumnGraph from "./components/ScoreColumnComponent/ScoreColumnGraph/ScoreColumn";
 
 const App = () => {
   return (

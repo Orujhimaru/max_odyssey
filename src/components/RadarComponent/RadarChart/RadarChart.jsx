@@ -92,6 +92,45 @@ export default function RadarChart({
     return Math.max(...scores.map(getDuration));
   };
 
+  // Add the skills data and color function at the top
+  const skills = [
+    { id: 1, name: "Similarity", score: 98 },
+    { id: 2, name: "Consistency", score: 57 },
+    { id: 3, name: "Clarity", score: 46 },
+    { id: 4, name: "Cognitive demand", score: 72 },
+    { id: 5, name: "Focus", score: 42 },
+    { id: 6, name: "Engagement", score: 77 },
+    { id: 7, name: "Time consumption", score: 1 },
+  ];
+
+  const getSkillColor = (score) => {
+    // Define 10 color ranges from high to low
+    const ranges = {
+      perfect: "#22C55E", // 95-100 Bright green
+      excellent: "#0FB86B", // 85-94  Original green
+      great: "#15803D", // 75-84  Dark green
+      good: "#84CC16", // 65-74  Lime green
+      above: "#F59E0B", // 55-64  Amber
+      average: "#F97316", // 45-54  Orange
+      below: "#FB923C", // 35-44  Light orange
+      poor: "#DC2626", // 25-34  Bright red
+      bad: "#B91C1C", // 15-24  Dark red
+      critical: "#7F1D1D", // 0-14   Deep red
+    };
+
+    // Return specific color based on score range
+    if (score >= 95) return ranges.perfect;
+    if (score >= 85) return ranges.excellent;
+    if (score >= 75) return ranges.great;
+    if (score >= 65) return ranges.good;
+    if (score >= 55) return ranges.above;
+    if (score >= 45) return ranges.average;
+    if (score >= 35) return ranges.below;
+    if (score >= 25) return ranges.poor;
+    if (score >= 15) return ranges.bad;
+    return ranges.critical;
+  };
+
   return (
     <div className="radar-chart-container">
       <svg
@@ -196,6 +235,37 @@ export default function RadarChart({
           );
         })}
       </svg>
+
+      <div className="skill-stack">
+        {skills.map((skill) => (
+          <div key={skill.id} className="skill-item">
+            <div className="skill-header">
+              <div className="skill-label">
+                <div className="skill-number">{skill.id}</div>
+                <div className="skill-name">{skill.name}</div>
+              </div>
+              <div
+                className="skill-score"
+                style={{
+                  backgroundColor: getSkillColor(skill.score),
+                  color: "#fff", // White text for better contrast
+                }}
+              >
+                {skill.score}%
+              </div>
+            </div>
+            <div className="skill-progress-container">
+              <div
+                className="skill-progress"
+                style={{
+                  width: `${skill.score}%`,
+                  backgroundColor: getSkillColor(skill.score),
+                }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

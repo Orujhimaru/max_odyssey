@@ -14,7 +14,7 @@
 
   /* Light mode colors */
   --bg-primary: white;
-  --bg-secondary: #f8f9fa;
+  --bg-secondary: #ffffff;
   --text-primary: #213547;
   --border-color: #e5e7eb;
   --box-shadow: rgba(0, 0, 0, 0.2);
@@ -35,7 +35,7 @@
   --radar-area: url(#scoreGradient);
 
   /* Transitions */
-  --transition-duration: 0.3s;
+  --transition-duration: 0.2s;
 
   /* Bar colors - light mode */
   --bar-verbal-color: #456bc4;

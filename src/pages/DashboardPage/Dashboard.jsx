@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../components/NavBar/Navbar";
-import RadarChart from "../../components/RadarChart/RadarChart";
-import ScoreColumnGraph from "../../components/ScoreColumnGraph/ScoreColumn";
+import RadarChart from "../../components/RadarComponent/RadarChart/RadarChart";
+import ScoreColumnGraph from "../../components/ScoreColumnComponent/ScoreColumnGraph/ScoreColumn";
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -22,7 +22,7 @@ const Dashboard = () => {
       >
         <i className={`fas fa-${isDarkMode ? "sun" : "moon"}`}></i>
       </button>
-      <RadarChart scores={[99, 75, 65, 79, 83, 63, 89]} />
+      <RadarChart scores={[99, 75, 65, 79, 83, 63, 9]} />
       <ScoreColumnGraph />
     </div>
   );
