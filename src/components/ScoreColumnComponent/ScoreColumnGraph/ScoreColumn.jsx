@@ -52,11 +52,11 @@ export default function ScoreColumnGraph() {
     const minValue = 0;
     const maxValue = 800;
     const totalHeight = 290;
-    let result =
-      ((maxValue - value) / (maxValue - minValue)) * totalHeight + 10;
+    let result = ((maxValue - value) / (maxValue - minValue)) * totalHeight + 9;
     if (result === 10) {
       return 15;
     }
+
     // console.log(`Value: ${value}, Position: ${result}px`);
     return result;
   };

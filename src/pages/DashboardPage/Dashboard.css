@@ -24,6 +24,14 @@
   transition: all var(--transition-duration) ease;
 }
 
+.theme-toggle:focus {
+  outline: none; /* Remove the default focus outline */
+}
+
+.theme-toggle:hover {
+  background-color: transparent; /* Ensure no background on hover */
+}
+
 .theme-toggle svg {
   width: 24px;
   height: 24px;
