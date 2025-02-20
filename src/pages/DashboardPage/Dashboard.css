@@ -3,7 +3,7 @@
   position: relative;
   padding: 20px;
   background-color: var(--bg-secondary);
-  min-height: 100vh;
+  /* min-height: 100vh; */
 }
 
 .theme-toggle {

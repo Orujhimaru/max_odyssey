@@ -91,7 +91,6 @@ export default function RadarChart({
   const getMaxDuration = () => {
     return Math.max(...scores.map(getDuration));
   };
-
   // Add the skills data and color function at the top
   const skills = [
     { id: 1, name: "Similarity", score: 98 },
@@ -100,28 +99,23 @@ export default function RadarChart({
     { id: 4, name: "Cognitive demand", score: 66 },
     { id: 5, name: "Focus", score: 56 },
     { id: 6, name: "Engagement", score: 47 },
-    { id: 7, name: "Time consumption", score: 36 },
+    { id: 7, name: "Time consumption", score: 16 },
   ];
 
   const getSkillColor = (score) => {
     // Define 7 color ranges from high to low
     const ranges = {
-      exceptional: "#22C55E", // 90-100 Bright green
-      excellent: "#0FB86B", // 80-89  Original green
-      great: "#84CC16", // 70-79  Lime green
-      good: "#F59E0B", // 60-69  Amber
-      average: "#F97316", // 50-59  Orange
-      below: "#DC2626", // 40-49  Bright red
-      poor: "#B91C1C", // 0-39   Dark red
+      exceptional: "#0DB869", // 90-100 Bright green
+      good: "#FFCE29", // 80-89  Original green
+      average: "#fd822f", // 50-59  Orange
+      poor: "#rgb(219 15 15)", // 0-39   Dark red
     };
 
     // Return specific color based on score range
-    if (score >= 90) return ranges.exceptional;
-    if (score >= 80) return ranges.excellent;
-    if (score >= 70) return ranges.great;
-    if (score >= 60) return ranges.good;
-    if (score >= 50) return ranges.average;
-    if (score >= 40) return ranges.below;
+    if (score >= 75) return ranges.exceptional;
+    if (score >= 50) return ranges.good;
+    if (score >= 25) return ranges.average;
+    if (score >= 0) return ranges.poor;
     return ranges.poor;
   };
 
