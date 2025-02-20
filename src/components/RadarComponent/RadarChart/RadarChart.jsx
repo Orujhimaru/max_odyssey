@@ -95,12 +95,15 @@ export default function RadarChart({
   // Add the skills data and color function at the top
   const skills = [
     { id: 1, name: "Similarity", score: 98 },
-    { id: 2, name: "Consistency", score: 57 },
-    { id: 3, name: "Clarity", score: 46 },
-    { id: 4, name: "Cognitive demand", score: 72 },
-    { id: 5, name: "Focus", score: 42 },
-    { id: 6, name: "Engagement", score: 77 },
-    { id: 7, name: "Time consumption", score: 1 },
+    { id: 2, name: "Consistency", score: 87 },
+    { id: 3, name: "Clarity", score: 76 },
+    { id: 4, name: "Cognitive demand", score: 66 },
+    { id: 5, name: "Focus", score: 56 },
+    { id: 6, name: "Engagement", score: 47 },
+    { id: 7, name: "Time consumption", score: 36 },
+    { id: 8, name: "Focus", score: 26 },
+    { id: 9, name: "Engagement", score: 16 },
+    { id: 10, name: "Time consumption", score: 6 },
   ];
 
   const getSkillColor = (score) => {
@@ -115,7 +118,7 @@ export default function RadarChart({
       below: "#FB923C", // 35-44  Light orange
       poor: "#DC2626", // 25-34  Bright red
       bad: "#B91C1C", // 15-24  Dark red
-      critical: "#7F1D1D", // 0-14   Deep red
+      critical: "rgb(184 47 47)", // 0-14   Deep red
     };
 
     // Return specific color based on score range
@@ -259,7 +262,6 @@ export default function RadarChart({
                 className="skill-progress"
                 style={{
                   width: `${skill.score}%`,
-                  backgroundColor: getSkillColor(skill.score),
                 }}
               />
             </div>

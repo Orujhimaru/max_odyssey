@@ -89,7 +89,7 @@
 }
 
 .radar-chart-container {
-  width: 300px; /* Match SVG width */
+  max-width: 300px; /* Match SVG width */
   margin: 0 auto;
 }
 
@@ -98,7 +98,7 @@
   padding: 20px 0; /* Remove horizontal padding */
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
 }
 
 .skill-item {
@@ -161,7 +161,7 @@
   position: absolute;
   top: 50%;
   left: 47px;
-  right: 48px;
+  right: 60px;
   height: 2px;
   background-image: repeating-linear-gradient(
     90deg,

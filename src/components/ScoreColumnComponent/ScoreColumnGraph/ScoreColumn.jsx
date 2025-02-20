@@ -75,7 +75,7 @@ export default function ScoreColumnGraph() {
     const initialOffset = 140;
 
     // Calculate bar position based on index
-    const barX = initialOffset + hoveredIndex * barSpacing;
+    const barX = initialOffset + hoveredIndex * barSpacing - 10;
 
     return {
       x1: startX,
@@ -211,9 +211,9 @@ export default function ScoreColumnGraph() {
           {hoveredValue && (
             <line
               {...getLineCoordinates(hoveredValue)}
-              stroke="#94a3b8"
+              stroke="var(--bar-math-color)"
               strokeWidth={1}
-              strokeDasharray="3,3"
+              strokeDasharray="4"
               className="score-guide-line"
             />
           )}

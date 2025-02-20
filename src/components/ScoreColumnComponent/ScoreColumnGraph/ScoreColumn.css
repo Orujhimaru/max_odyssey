@@ -166,5 +166,6 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 }
 
 .score-guide-line {
+  background-color: #e53935;
   transition: opacity 0.2s ease-in-out;
 }
