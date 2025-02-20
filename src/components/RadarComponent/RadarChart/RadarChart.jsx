@@ -108,7 +108,7 @@ export default function RadarChart({
       exceptional: "#0DB869", // 90-100 Bright green
       good: "#FFCE29", // 80-89  Original green
       average: "#fd822f", // 50-59  Orange
-      poor: "#rgb(219 15 15)", // 0-39   Dark red
+      poor: "#d42020", // 0-39   Dark red
     };
 
     // Return specific color based on score range
@@ -123,9 +123,9 @@ export default function RadarChart({
     <div className="radar-chart-container">
       <svg
         className="radar-chart-component"
-        width={300}
-        height={300}
-        viewBox="0 0 300 300"
+        width={250}
+        height={250}
+        viewBox="25 25 250 250"
       >
         {/* Define the gradient */}
         <defs>

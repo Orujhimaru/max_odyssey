@@ -89,15 +89,15 @@
 }
 
 .radar-chart-container {
-  max-width: 300px; /* Match SVG width */
+  max-width: 250px; /* Match new SVG width */
   margin: 0 auto;
 }
+
 .skill-stack {
-  /* padding: 20px; */
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: -50px;
+  margin-top: -20px; /* Adjusted from -50px */
 }
 
 .skill-label {
