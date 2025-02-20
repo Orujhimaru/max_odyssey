@@ -41,6 +41,7 @@
   --bar-verbal-color: #456bc4;
   --bar-math-color: #4e4e4e;
   --bar-background: #eee;
+  --bar-math-line-color: #4e4e4e;
 }
 
 #root {
@@ -126,6 +127,7 @@ button:focus-visible {
   /* Bar colors - dark mode */
   --bar-math-color: #b14343; /* Matching the math score box */
   --bar-background: #404040;
+  --bar-math-line-color: #a9a9a9;
 }
 
 body {

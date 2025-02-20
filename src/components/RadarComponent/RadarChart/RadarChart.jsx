@@ -101,37 +101,28 @@ export default function RadarChart({
     { id: 5, name: "Focus", score: 56 },
     { id: 6, name: "Engagement", score: 47 },
     { id: 7, name: "Time consumption", score: 36 },
-    { id: 8, name: "Focus", score: 26 },
-    { id: 9, name: "Engagement", score: 16 },
-    { id: 10, name: "Time consumption", score: 6 },
   ];
 
   const getSkillColor = (score) => {
-    // Define 10 color ranges from high to low
+    // Define 7 color ranges from high to low
     const ranges = {
-      perfect: "#22C55E", // 95-100 Bright green
-      excellent: "#0FB86B", // 85-94  Original green
-      great: "#15803D", // 75-84  Dark green
-      good: "#84CC16", // 65-74  Lime green
-      above: "#F59E0B", // 55-64  Amber
-      average: "#F97316", // 45-54  Orange
-      below: "#FB923C", // 35-44  Light orange
-      poor: "#DC2626", // 25-34  Bright red
-      bad: "#B91C1C", // 15-24  Dark red
-      critical: "rgb(184 47 47)", // 0-14   Deep red
+      exceptional: "#22C55E", // 90-100 Bright green
+      excellent: "#0FB86B", // 80-89  Original green
+      great: "#84CC16", // 70-79  Lime green
+      good: "#F59E0B", // 60-69  Amber
+      average: "#F97316", // 50-59  Orange
+      below: "#DC2626", // 40-49  Bright red
+      poor: "#B91C1C", // 0-39   Dark red
     };
 
     // Return specific color based on score range
-    if (score >= 95) return ranges.perfect;
-    if (score >= 85) return ranges.excellent;
-    if (score >= 75) return ranges.great;
-    if (score >= 65) return ranges.good;
-    if (score >= 55) return ranges.above;
-    if (score >= 45) return ranges.average;
-    if (score >= 35) return ranges.below;
-    if (score >= 25) return ranges.poor;
-    if (score >= 15) return ranges.bad;
-    return ranges.critical;
+    if (score >= 90) return ranges.exceptional;
+    if (score >= 80) return ranges.excellent;
+    if (score >= 70) return ranges.great;
+    if (score >= 60) return ranges.good;
+    if (score >= 50) return ranges.average;
+    if (score >= 40) return ranges.below;
+    return ranges.poor;
   };
 
   return (

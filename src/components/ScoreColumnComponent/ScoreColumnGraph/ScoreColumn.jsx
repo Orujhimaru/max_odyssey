@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   BarChart,
   Bar,
@@ -44,6 +44,9 @@ export default function ScoreColumnGraph() {
   const [hoveredValue, setHoveredValue] = useState(null);
   const [hoveredBar, setHoveredBar] = useState(null);
 
+  // Add this ref to get chart container dimensions
+  const chartRef = useRef(null);
+
   // Calculate the Y coordinate for the label based on the hovered value
   const getLabelYCoordinate = (value) => {
     const minValue = 0;
@@ -60,22 +63,35 @@ export default function ScoreColumnGraph() {
 
   // Add this function inside the component to calculate the line coordinates
   const getLineCoordinates = (value) => {
+    if (!chartRef.current) return { x1: 0, y1: 0, x2: 0, y2: 0 };
+
+    // Get chart container dimensions
+    const chartContainer = chartRef.current.getBoundingClientRect();
+    const chartWidth = chartContainer.width;
+    const chartHeight = chartContainer.height;
+
+    // Calculate Y position based on chart height
     const minValue = 0;
     const maxValue = 800;
-    const totalHeight = 290;
     const yPosition =
-      ((maxValue - value) / (maxValue - minValue)) * totalHeight + 20;
+      chartHeight -
+      ((value - minValue) / (maxValue - minValue)) * (chartHeight - 40) -
+      20;
 
-    // Starting position (after y-axis numbers)
-    const startX = 90;
+    // Calculate X positions based on chart width
+    const yAxisWidth = chartWidth * 0.1;
+    const startX = yAxisWidth + 40;
 
-    // Bar dimensions and spacing
-    const barWidth = 30;
-    const barSpacing = 85;
-    const initialOffset = 140;
+    // Calculate bar position
+    const availableWidth = chartWidth - startX - 60;
+    const barSpacing = availableWidth / (data.length - 1);
+    const barWidth = 30; // Width of each bar
 
-    // Calculate bar position based on index
-    const barX = initialOffset + hoveredIndex * barSpacing - 10;
+    // If it's a math bar (second in the pair), add the width of the verbal bar
+    const barX =
+      startX +
+      hoveredIndex * barSpacing +
+      (hoveredBar === "math" ? barWidth : 0);
 
     return {
       x1: startX,
@@ -101,7 +117,7 @@ export default function ScoreColumnGraph() {
           type="math"
         />
       </div>
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={350} ref={chartRef}>
         <BarChart
           data={data}
           margin={{ top: 20, right: 30, left: 40, bottom: 20 }}
@@ -211,7 +227,7 @@ export default function ScoreColumnGraph() {
           {hoveredValue && (
             <line
               {...getLineCoordinates(hoveredValue)}
-              stroke="var(--bar-math-color)"
+              stroke="var(--bar-math-line-color)"
               strokeWidth={1}
               strokeDasharray="4"
               className="score-guide-line"
