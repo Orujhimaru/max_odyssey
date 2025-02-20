@@ -27,6 +27,7 @@ span.score-box-title-type.math {
 
 .score.verbal,
 .score.math {
+  line-height: 15px;
   display: flex;
   align-items: center;
   height: fit-content;
@@ -44,6 +45,7 @@ span.score-box-title-type.math {
 
 .score-box.verbal {
   border-color: #456bc4; /* Border color for verbal */
+  gap: 10px;
 }
 .score-box.verbal h2 {
   font-size: 16px;
@@ -52,6 +54,7 @@ span.score-box-title-type.math {
   font-size: 16px;
 }
 .score-box.math {
+  gap: 10px;
   border-color: var(--math-color);
 }
 
@@ -108,6 +111,9 @@ span.score-box-title-type.math {
   font-size: 12px;
 }
 
+.improvement span {
+  line-height: 11px;
+}
 /* Remove these as they're no longer needed
 .arrow i.fa-arrow-up,
 .arrow i.fa-arrow-down,

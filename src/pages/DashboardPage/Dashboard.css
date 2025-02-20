@@ -15,7 +15,12 @@
   color: var(--text-primary);
   font-size: 24px;
   cursor: pointer;
-  padding: 8px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
   transition: all var(--transition-duration) ease;
 }

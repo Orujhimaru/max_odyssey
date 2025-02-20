@@ -20,7 +20,11 @@ const Dashboard = () => {
         className="theme-toggle"
         onClick={() => setIsDarkMode(!isDarkMode)}
       >
-        <i className={`fas fa-${isDarkMode ? "sun" : "moon"}`}></i>
+        {isDarkMode ? (
+          <i className="fa-solid fa-brightness"></i>
+        ) : (
+          <i className="fa-solid fa-moon"></i>
+        )}
       </button>
       <RadarChart scores={[99, 75, 65, 79, 83, 63, 9]} />
       <ScoreColumnGraph />
