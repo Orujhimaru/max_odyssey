@@ -2,10 +2,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   position: fixed;
   height: calc(100% - 24px);
-  width: 80px; /* Adjust width as needed */
+  /* width: 80px;  */
   background-color: #1b1b1b; /* Dark background */
   padding: 12px 0; /* Top and bottom padding */
   left: 6px; /* Left margin */
@@ -13,8 +13,26 @@
   border-radius: 8px; /* Optional: rounded corners */
 }
 
+.logo-text {
+  color: #456bc4;
+  font-family: Akshar;
+  font-size: 50px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1; /* 69.076px */
+  letter-spacing: 5.5px;
+}
+
 .logo-container {
   margin-bottom: 20px; /* Space below the logo */
+  display: flex;
+  background-color: #3d3d3d;
+  border-radius: 4px; /* or your preferred size */
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  padding: 4px;
+  height: 55px;
 }
 
 .nav-items {

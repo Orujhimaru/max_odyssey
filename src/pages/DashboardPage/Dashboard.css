@@ -7,9 +7,9 @@
 }
 
 .theme-toggle {
-  position: absolute;
-  top: 20px;
-  right: 20px;
+  /* position: absolute; */
+  /* top: 20px; */
+  /* right: 20px; */
   background: none;
   border: none;
   color: var(--text-primary);
