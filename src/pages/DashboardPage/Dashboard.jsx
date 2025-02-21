@@ -16,10 +16,6 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <Navbar
-        isDarkMode={isDarkMode}
-        onThemeToggle={() => setIsDarkMode(!isDarkMode)}
-      />
       <RadarChart scores={[99, 75, 65, 79, 83, 63, 9]} />
       <ScoreColumnGraph />
     </div>
