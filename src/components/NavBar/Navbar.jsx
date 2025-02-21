@@ -4,9 +4,9 @@ import Logo from "../Navbar/Logo";
 
 // Import your logos
 import Dashboard from "../../assets/Group 36.svg";
-import Practice from "../../assets/Group 51.svg";
-import Courses from "../../assets/Group 38.svg";
-import Tests from "../../assets/Group 43.svg";
+import Practice from "../../assets/Group 43.svg";
+import Courses from "../../assets/Group 51.svg";
+import Tests from "../../assets/Group 38.svg";
 
 const Navbar = ({ isDarkMode, onThemeToggle }) => {
   return (
@@ -17,10 +17,34 @@ const Navbar = ({ isDarkMode, onThemeToggle }) => {
           <h2 className="logo-text">AX</h2>
         </div>
         <div className="nav-items">
-          <img src={Dashboard} alt="Group 36" className="nav-icon" />
-          <img src={Courses} alt="Group 38" className="nav-icon" />
-          <img src={Tests} alt="Group 43" className="nav-icon" />
-          <img src={Practice} alt="Group 51" className="nav-icon" />
+          <div className="nav-item">
+            <div className="nav-icon-container">
+              <img src={Dashboard} alt="Dashboard" className="nav-icon" />
+            </div>
+            <span className="nav-text">Dashboard</span>
+          </div>
+          <div className="nav-item">
+            <div className="nav-icon-container">
+              <img src={Courses} alt="Courses" className="nav-icon" />
+            </div>
+            <span className="nav-text">Courses</span>
+          </div>
+          <div className="nav-item">
+            <div className="nav-icon-container">
+              <img src={Tests} alt="Tests" className="nav-icon tests" />
+            </div>
+            <span className="nav-text">Tests</span>
+          </div>
+          <div className="nav-item">
+            <div className="nav-icon-container">
+              <img
+                src={Practice}
+                alt="Practice"
+                className="nav-icon practice"
+              />
+            </div>
+            <span className="nav-text">Practice</span>
+          </div>
         </div>
       </div>
       <button className="theme-toggle" onClick={onThemeToggle}>

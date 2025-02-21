@@ -5,9 +5,9 @@
   justify-content: space-between;
   position: fixed;
   height: calc(100% - 24px);
-  /* width: 80px;  */
+  width: auto; /* Changed from fixed width */
   background-color: #1b1b1b; /* Dark background */
-  padding: 12px 0; /* Top and bottom padding */
+  padding: 12px; /* Added horizontal padding */
   left: 6px; /* Left margin */
   top: 12px;
   border-radius: 8px; /* Optional: rounded corners */
@@ -30,9 +30,10 @@
   border-radius: 4px; /* or your preferred size */
   display: flex;
   align-items: baseline;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 4px;
   height: 55px;
+  width: fit-content;
 }
 
 .nav-items {
@@ -42,7 +43,6 @@
 }
 
 .nav-icon {
-  width: 40px; /* Adjust size as needed */
   height: auto;
   margin: 12px 0; /* Space between icons */
   cursor: pointer;
@@ -51,4 +51,30 @@
 .logo {
   width: 60px; /* Adjust size as needed */
   height: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* padding: 8px 12px; */
+  cursor: pointer;
+  width: 100%;
+  color: white;
+}
+
+.nav-text {
+  font-size: 16px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.nav-icon.tests {
+  position: relative;
+  left: -7px;
+}
+
+.nav-icon.practice {
+  position: relative;
+  left: -2px;
 }

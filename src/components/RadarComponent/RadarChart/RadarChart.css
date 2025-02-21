@@ -157,6 +157,7 @@
 }
 
 .skill-score {
+  font-family: "Poppins", sans-serif;
   background-color: var(--bg-primary);
   z-index: 1;
   font-weight: 400;
@@ -165,6 +166,7 @@
   border-radius: 999px; /* Full roundness */
   /* border: 1px solid var(--border-color); */
   text-align: center;
+  min-width: 44px;
 }
 
 .skill-progress-container {
