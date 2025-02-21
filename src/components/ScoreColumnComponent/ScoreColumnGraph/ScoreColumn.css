@@ -110,7 +110,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 .recharts-wrapper,
 .recharts-surface,
 .recharts-responsive-container {
-  max-width: 600px !important;
+  max-width: 700px !important;
   width: 100% !important;
   height: 100% !important;
   min-width: 500px !important;

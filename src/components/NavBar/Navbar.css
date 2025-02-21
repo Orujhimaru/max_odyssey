@@ -16,7 +16,7 @@
 }
 
 .navbar:hover {
-  width: 160px;
+  width: 150px;
 }
 
 .logo-container {
@@ -56,14 +56,20 @@
   align-items: baseline;
   gap: 24px;
   position: relative;
-  right: -9px;
+  right: -6px;
 }
 
 .nav-item {
   display: flex;
-
   width: 100%;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
 }
 
 .nav-item a {
@@ -92,7 +98,7 @@
   display: inline;
   opacity: 0;
   transform: translateX(-50px);
-  transition: all 0.3s ease;
+  transition: opacity 0.15s ease, transform 0.3s ease;
   white-space: nowrap;
   color: white;
   font-size: 16px;
@@ -100,8 +106,11 @@
 
 .navbar:hover .nav-item {
   transform: translateX(-9px);
+  padding-right: 12px; /* Give some space on the right when expanded */
 }
-
+.navbar:hover .nav-items {
+  right: 4px;
+}
 .navbar:hover .nav-text {
   opacity: 1;
   transform: translateX(0);
