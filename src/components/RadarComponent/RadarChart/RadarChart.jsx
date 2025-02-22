@@ -104,11 +104,17 @@ export default function RadarChart({
 
   const getSkillColor = (score) => {
     // Define 7 color ranges from high to low
+    // const ranges = {
+    //   exceptional: "#0DB869", // 90-100 Bright green
+    //   good: "#FFCE29", // 80-89  Original green
+    //   average: "#fd822f", // 50-59  Orange
+    //   poor: "#d42020", // 0-39   Dark red
+    // };
     const ranges = {
       exceptional: "#0DB869", // 90-100 Bright green
-      good: "#FFCE29", // 80-89  Original green
-      average: "#fd822f", // 50-59  Orange
-      poor: "#d42020", // 0-39   Dark red
+      good: "#75b175", // 80-89  Original green
+      average: "#A9A9A9", // 50-59  Orange
+      poor: "#666666", // 0-39   Dark red
     };
 
     // Return specific color based on score range
