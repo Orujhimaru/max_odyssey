@@ -20,6 +20,7 @@ span.score-box-title-type.math {
 }
 
 .score-row {
+  font-family: "DM Sans", serif;
   display: flex;
   align-items: center;
   justify-content: space-between;

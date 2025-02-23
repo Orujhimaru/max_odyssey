@@ -16,8 +16,13 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <RadarChart scores={[99, 75, 65, 79, 83, 63, 9]} />
-      <ScoreColumnGraph />
+      <div className="dashboard-left">
+        <ScoreColumnGraph />
+      </div>
+
+      <div className="dashboard-right">
+        <RadarChart scores={[99, 75, 65, 79, 83, 63, 9]} />
+      </div>
     </div>
   );
 };

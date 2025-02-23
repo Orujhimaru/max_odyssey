@@ -4,6 +4,17 @@
   padding: 20px;
   background-color: var(--bg-secondary);
   /* min-height: 100vh; */
+  display: flex;
+  gap: 24px;
+}
+
+.dashboard-left {
+  flex: 2; /* This will make it take available space */
+  min-width: 0; /* Important for flex items to shrink properly */
+}
+
+.dashboard-right {
+  flex: 1;
 }
 
 .theme-toggle {

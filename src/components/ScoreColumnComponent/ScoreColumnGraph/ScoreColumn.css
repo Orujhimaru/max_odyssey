@@ -113,7 +113,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   max-width: 700px !important;
   width: 100% !important;
   height: 100% !important;
-  min-width: 500px !important;
+  min-width: 518px !important;
   min-height: unset !important;
   max-height: none !important;
   box-sizing: border-box !important;
@@ -167,4 +167,16 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 
 .score-guide-line {
   transition: opacity 0.2s ease-in-out;
+}
+
+.score-column-container {
+  width: 100%; /* Take full width of parent */
+  height: 100%;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+.recharts-responsive-container {
+  width: 100% !important; /* Force full width */
+  height: 100% !important;
 }
