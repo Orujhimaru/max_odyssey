@@ -13,6 +13,7 @@
   top: 12px;
   border-radius: 8px; /* Optional: rounded corners */
   transition: width 0.3s ease;
+  overflow: hidden;
 }
 
 .navbar:hover {
@@ -105,8 +106,8 @@
 }
 
 .navbar:hover .nav-item {
-  transform: translateX(-9px);
-  padding-right: 12px; /* Give some space on the right when expanded */
+  transform: translateX(-7px);
+  padding-right: 26px; /* Give some space on the right when expanded */
 }
 .navbar:hover .nav-items {
   right: 4px;

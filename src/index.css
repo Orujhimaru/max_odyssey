@@ -42,6 +42,7 @@
   --bar-math-color: #4e4e4e;
   --bar-background: #eee;
   --bar-math-line-color: #4e4e4e;
+  background-color: var(--bg-secondary);
 }
 
 #root {

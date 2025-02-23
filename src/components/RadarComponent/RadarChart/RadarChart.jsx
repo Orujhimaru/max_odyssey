@@ -6,6 +6,11 @@ export default function RadarChart({
   levels = 4,
   radius = 100,
   scores = [],
+  gradientColors = {
+    start: "#0FB86B",
+    middle: "#7DDBA3",
+    end: "#60E291",
+  },
 }) {
   const centerX = 150,
     centerY = 150;
@@ -102,26 +107,29 @@ export default function RadarChart({
     { id: 7, name: "Time consumption", score: 16 },
   ];
 
+  // Add mathSkills data
+  const mathSkills = [
+    { id: 1, name: "Algebra", score: 92 },
+    { id: 2, name: "Geometry", score: 85 },
+    { id: 3, name: "Calculus", score: 78 },
+    { id: 4, name: "Statistics", score: 88 },
+    { id: 5, name: "Linear Algebra", score: 72 },
+    { id: 6, name: "Trigonometry", score: 82 },
+    { id: 7, name: "Number Theory", score: 76 },
+  ];
+
+  // Update color ranges
   const getSkillColor = (score) => {
-    // Define 7 color ranges from high to low
-    // const ranges = {
-    //   exceptional: "#0DB869", // 90-100 Bright green
-    //   good: "#FFCE29", // 80-89  Original green
-    //   average: "#fd822f", // 50-59  Orange
-    //   poor: "#d42020", // 0-39   Dark red
-    // };
     const ranges = {
-      exceptional: "#0DB869", // 90-100 Bright green
-      good: "#75b175", // 80-89  Original green
-      average: "#A9A9A9", // 50-59  Orange
-      poor: "#666666", // 0-39   Dark red
+      exceptional: "#0DB869", // Verbal - Green
+      good: "#75b175",
+      average: "#A9A9A9",
+      poor: "#666666", // Changed to dark gray
     };
 
-    // Return specific color based on score range
     if (score >= 80) return ranges.exceptional;
     if (score >= 60) return ranges.good;
     if (score >= 40) return ranges.average;
-    if (score >= 0) return ranges.poor;
     return ranges.poor;
   };
 
@@ -133,7 +141,7 @@ export default function RadarChart({
         height={250}
         viewBox="25 25 250 250"
       >
-        {/* Define the gradient */}
+        {/* Update gradient definitions */}
         <defs>
           <radialGradient
             id="scoreGradient"
@@ -144,9 +152,21 @@ export default function RadarChart({
             fy="50%"
             spreadMethod="pad"
           >
-            <stop offset="0%" stopColor="#0FB86B" stopOpacity="0.6" />
-            <stop offset="50%" stopColor="#7DDBA3" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="#60E291" stopOpacity="0.4" />
+            <stop
+              offset="0%"
+              stopColor={gradientColors.start}
+              stopOpacity="0.6"
+            />
+            <stop
+              offset="50%"
+              stopColor={gradientColors.middle}
+              stopOpacity="0.5"
+            />
+            <stop
+              offset="100%"
+              stopColor={gradientColors.end}
+              stopOpacity="0.4"
+            />
           </radialGradient>
           <radialGradient
             id="scoreGradientDark"
@@ -157,9 +177,21 @@ export default function RadarChart({
             fy="50%"
             spreadMethod="pad"
           >
-            <stop offset="0%" stopColor="#0FB86B" stopOpacity="0.2" />
-            <stop offset="50%" stopColor="#7DDBA3" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#60E291" stopOpacity="0.2" />
+            <stop
+              offset="0%"
+              stopColor={gradientColors.start}
+              stopOpacity="0.2"
+            />
+            <stop
+              offset="50%"
+              stopColor={gradientColors.middle}
+              stopOpacity="0.3"
+            />
+            <stop
+              offset="100%"
+              stopColor={gradientColors.end}
+              stopOpacity="0.2"
+            />
           </radialGradient>
         </defs>
 
@@ -191,11 +223,11 @@ export default function RadarChart({
           }}
         />
 
-        {/* Outer line of the polygon */}
+        {/* Update polygon stroke color */}
         <polygon
           points={scorePolygonPoints}
           fill="none"
-          stroke="#0FB86B"
+          stroke={gradientColors.start}
           strokeWidth="1"
           className="score-area"
           style={{
@@ -223,7 +255,7 @@ export default function RadarChart({
               cy={p.y}
               r={2.5}
               className="score-point"
-              fill="#0FB86B"
+              fill={gradientColors.start}
               style={style}
             />
           );

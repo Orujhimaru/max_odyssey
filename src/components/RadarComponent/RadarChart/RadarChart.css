@@ -90,7 +90,7 @@
 
 .radar-chart-container {
   max-width: 250px; /* Match new SVG width */
-  margin: 0 auto;
+  /* margin: 0 auto; */
 }
 
 .skill-stack {
