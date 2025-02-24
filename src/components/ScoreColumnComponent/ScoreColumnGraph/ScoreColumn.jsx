@@ -94,7 +94,7 @@ export default function ScoreColumnGraph() {
 
     const y = getLabelYCoordinate(value) + 10;
 
-    const barSpacing = (width - yAxis - 80) / data.length;
+    const barSpacing = (width - yAxis - 80) / displayData.length;
     const x =
       yAxis +
       hoveredIndex * barSpacing +
