@@ -2,8 +2,8 @@
   width: 50%;
   background-color: var(--bg-primary);
   border-radius: 12px;
-  padding: 20px;
-  margin-top: 24px;
+  padding: 12px;
+  /* margin-top: 24px; */
   box-shadow: 0 2px 4px var(--box-shadow);
 }
 
@@ -71,5 +71,9 @@
 @media (max-width: 844px) {
   .predicted-score-container {
     width: fit-content;
+  }
+  .score-header {
+    flex-direction: column;
+    gap: 20px;
   }
 }

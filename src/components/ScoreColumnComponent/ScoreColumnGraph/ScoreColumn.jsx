@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   BarChart,
   Bar,
@@ -44,9 +44,31 @@ export default function ScoreColumnGraph() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [hoveredValue, setHoveredValue] = useState(null);
   const [hoveredBar, setHoveredBar] = useState(null);
+  const [displayData, setDisplayData] = useState(data);
 
   // Add this ref to get chart container dimensions
   const chartRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1100) {
+        // Show only last 5 entries when screen is smaller
+        setDisplayData(data.slice(-5));
+      } else {
+        // Show all data when screen is larger
+        setDisplayData(data);
+      }
+    };
+
+    // Initial check
+    handleResize();
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Calculate the Y coordinate for the label based on the hovered value
   const getLabelYCoordinate = (value) => {
@@ -110,10 +132,18 @@ export default function ScoreColumnGraph() {
         </div>
         <ResponsiveContainer width="100%" height={350} ref={chartRef}>
           <BarChart
-            data={data}
-            margin={{ top: 20, right: 30, left: 40, bottom: 20 }}
+            data={displayData}
+            margin={{
+              top: 20,
+              right: 10, // Reduce right margin
+              left: 40,
+              bottom: 20,
+            }}
             barGap={1}
-            barCategoryGap="20%"
+            barCategoryGap="10%"
+            barSize={27}
+            layout="horizontal"
+            padding={{ right: -40 }} // Add negative padding to extend chart
           >
             <CartesianGrid
               horizontal={true}
@@ -158,13 +188,10 @@ export default function ScoreColumnGraph() {
             </YAxis>
 
             <Bar
-              background={{ fill: "var(--bar-background)" }}
               name="verbal"
               dataKey="verbal"
               fill="var(--bar-verbal-color)"
               radius={[4, 4, 0, 0]}
-              minBarSize={10}
-              maxBarSize={30}
               isAnimationActive={false}
               onMouseEnter={(data, index) => {
                 setHoveredIndex(index);
@@ -188,13 +215,10 @@ export default function ScoreColumnGraph() {
               ))}
             </Bar>
             <Bar
-              background={{ fill: "var(--bar-background)" }}
               name="math"
               dataKey="math"
               fill="var(--bar-math-color)"
               radius={[4, 4, 0, 0]}
-              minBarSize={10}
-              maxBarSize={30}
               isAnimationActive={false}
               onMouseEnter={(data, index) => {
                 setHoveredIndex(index);
