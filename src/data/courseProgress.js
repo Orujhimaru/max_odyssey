@@ -17,6 +17,6 @@ export const coursesProgress = [
       current: 145,
       total: 180,
     },
-    background: "/src/assets/math_bg.jpg",
+    background: "/src/assets/math_bg_2.png",
   },
 ];
