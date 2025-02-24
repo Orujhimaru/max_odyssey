@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./RadarChart.css";
 
 export default function RadarChart({
@@ -12,6 +12,9 @@ export default function RadarChart({
     end: "#60E291",
   },
 }) {
+  const [isSecondChartVisible, setIsSecondChartVisible] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0);
+
   const centerX = 150,
     centerY = 150;
   const angleStep = (2 * Math.PI) / sides;
@@ -133,163 +136,324 @@ export default function RadarChart({
     return ranges.poor;
   };
 
+  // Update color ranges for math skills
+  const getMathSkillColor = (score) => {
+    const ranges = {
+      exceptional: "#b71c1c", // Dark cherry red
+      good: "#e53935", // Cherry red
+      average: "#ef5350", // Lighter red
+      poor: "#666666", // Dark gray
+    };
+
+    if (score >= 80) return ranges.exceptional;
+    if (score >= 60) return ranges.good;
+    if (score >= 40) return ranges.average;
+    return ranges.poor;
+  };
+
+  const toggleChart = () => {
+    setIsSecondChartVisible(!isSecondChartVisible);
+    setAnimationKey((prev) => prev + 1);
+  };
+
   return (
     <div className="radar-chart-container">
-      <svg
-        className="radar-chart-component"
-        width={250}
-        height={250}
-        viewBox="25 25 250 250"
-      >
-        {/* Update gradient definitions */}
-        <defs>
-          <radialGradient
-            id="scoreGradient"
-            cx="50%"
-            cy="50%"
-            r="50%"
-            fx="50%"
-            fy="50%"
-            spreadMethod="pad"
-          >
-            <stop
-              offset="0%"
-              stopColor={gradientColors.start}
-              stopOpacity="0.6"
-            />
-            <stop
-              offset="50%"
-              stopColor={gradientColors.middle}
-              stopOpacity="0.5"
-            />
-            <stop
-              offset="100%"
-              stopColor={gradientColors.end}
-              stopOpacity="0.4"
-            />
-          </radialGradient>
-          <radialGradient
-            id="scoreGradientDark"
-            cx="50%"
-            cy="50%"
-            r="50%"
-            fx="50%"
-            fy="50%"
-            spreadMethod="pad"
-          >
-            <stop
-              offset="0%"
-              stopColor={gradientColors.start}
-              stopOpacity="0.2"
-            />
-            <stop
-              offset="50%"
-              stopColor={gradientColors.middle}
-              stopOpacity="0.3"
-            />
-            <stop
-              offset="100%"
-              stopColor={gradientColors.end}
-              stopOpacity="0.2"
-            />
-          </radialGradient>
-        </defs>
+      <div className="radar-header">
+        <h3>Skill Overview</h3>
+        <i
+          className={`fas fa-chevron-${
+            isSecondChartVisible ? "left" : "right"
+          }`}
+          onClick={toggleChart}
+        ></i>
+      </div>
+      <div className="charts-wrapper">
+        <div className={`charts-slider ${isSecondChartVisible ? "slide" : ""}`}>
+          <div className="chart-section">
+            <svg
+              className="radar-chart-component"
+              width={250}
+              height={250}
+              viewBox="25 25 250 250"
+            >
+              {/* Update gradient definitions */}
+              <defs>
+                <radialGradient
+                  id="scoreGradient"
+                  cx="50%"
+                  cy="50%"
+                  r="50%"
+                  fx="50%"
+                  fy="50%"
+                  spreadMethod="pad"
+                >
+                  <stop
+                    offset="0%"
+                    stopColor={gradientColors.start}
+                    stopOpacity="0.6"
+                  />
+                  <stop
+                    offset="50%"
+                    stopColor={gradientColors.middle}
+                    stopOpacity="0.5"
+                  />
+                  <stop
+                    offset="100%"
+                    stopColor={gradientColors.end}
+                    stopOpacity="0.4"
+                  />
+                </radialGradient>
+                <radialGradient
+                  id="scoreGradientDark"
+                  cx="50%"
+                  cy="50%"
+                  r="50%"
+                  fx="50%"
+                  fy="50%"
+                  spreadMethod="pad"
+                >
+                  <stop
+                    offset="0%"
+                    stopColor={gradientColors.start}
+                    stopOpacity="0.2"
+                  />
+                  <stop
+                    offset="50%"
+                    stopColor={gradientColors.middle}
+                    stopOpacity="0.3"
+                  />
+                  <stop
+                    offset="100%"
+                    stopColor={gradientColors.end}
+                    stopOpacity="0.2"
+                  />
+                </radialGradient>
+              </defs>
 
-        {/* Background grid (lighter color) */}
-        <g>{gridLevels}</g>
-        <g>{radialLines}</g>
+              {/* Background grid (lighter color) */}
+              <g>{gridLevels}</g>
+              <g>{radialLines}</g>
 
-        {/* Single polygon with gradient */}
-        <polygon
-          points={scorePolygonPoints}
-          className="score-area"
-          fill="url(#scoreGradient)"
-          style={{
-            "--duration": `${getMaxDuration()}s`,
-            "--delay": `${getMaxDuration()}s`,
-          }}
-        />
-
-        {/* Blend mode layer */}
-        <polygon
-          points={scorePolygonPoints}
-          className="score-area"
-          fill="#0FB86B"
-          fillOpacity="0.4"
-          style={{
-            "--duration": `${getMaxDuration()}s`,
-            "--delay": `${getMaxDuration()}s`,
-            mixBlendMode: "color-burn",
-          }}
-        />
-
-        {/* Update polygon stroke color */}
-        <polygon
-          points={scorePolygonPoints}
-          fill="none"
-          stroke={gradientColors.start}
-          strokeWidth="1"
-          className="score-area"
-          style={{
-            "--duration": "0.3s",
-            "--delay": `${getMaxDuration()}s`,
-          }}
-        />
-
-        <g>{labels}</g>
-        {scorePoints.map((p, i) => {
-          const score = scores[i];
-          const duration = getDuration(score);
-
-          const style = {
-            "--target-x": `${p.x}px`,
-            "--target-y": `${p.y}px`,
-            "--start-x": `${centerX}px`,
-            "--start-y": `${centerY}px`,
-            "--duration": `${duration}s`,
-          };
-          return (
-            <circle
-              key={i}
-              cx={p.x}
-              cy={p.y}
-              r={2.5}
-              className="score-point"
-              fill={gradientColors.start}
-              style={style}
-            />
-          );
-        })}
-      </svg>
-
-      <div className="skill-stack">
-        {skills.map((skill) => (
-          <div key={skill.id} className="skill-item">
-            <div className="skill-header">
-              <div className="skill-label">
-                <div className="skill-number">{skill.id}</div>
-                <div className="skill-name">{skill.name}</div>
-              </div>
-              <div
-                className="skill-score"
+              {/* Single polygon with gradient */}
+              <polygon
+                key={`area-1-${animationKey}`}
+                points={scorePolygonPoints}
+                className="score-area"
+                fill="url(#scoreGradient)"
                 style={{
-                  backgroundColor: getSkillColor(skill.score),
-                  color: "#fff", // White text for better contrast
-                }}
-              >
-                {skill.score}%
-              </div>
-            </div>
-            <div className="skill-progress-container">
-              <div
-                className="skill-progress"
-                style={{
-                  width: `${skill.score}%`,
+                  "--duration": `${getMaxDuration()}s`,
+                  "--delay": `${getMaxDuration()}s`,
                 }}
               />
+
+              {/* Blend mode layer */}
+              <polygon
+                key={`blend-1-${animationKey}`}
+                points={scorePolygonPoints}
+                className="score-area"
+                fill="#0FB86B"
+                fillOpacity="0.4"
+                style={{
+                  "--duration": `${getMaxDuration()}s`,
+                  "--delay": `${getMaxDuration()}s`,
+                  mixBlendMode: "color-burn",
+                }}
+              />
+
+              {/* Update polygon stroke color */}
+              <polygon
+                points={scorePolygonPoints}
+                fill="none"
+                stroke={gradientColors.start}
+                strokeWidth="1"
+                className="score-area"
+                style={{
+                  "--duration": "0.3s",
+                  "--delay": `${getMaxDuration()}s`,
+                }}
+              />
+
+              <g>{labels}</g>
+              {scorePoints.map((p, i) => {
+                const score = scores[i];
+                const duration = getDuration(score);
+
+                const style = {
+                  "--target-x": `${p.x}px`,
+                  "--target-y": `${p.y}px`,
+                  "--start-x": `${centerX}px`,
+                  "--start-y": `${centerY}px`,
+                  "--duration": `${duration}s`,
+                };
+                return (
+                  <circle
+                    key={i}
+                    cx={p.x}
+                    cy={p.y}
+                    r={2.5}
+                    className="score-point"
+                    fill={gradientColors.start}
+                    style={style}
+                  />
+                );
+              })}
+            </svg>
+            <div className="skill-stack">
+              {skills.map((skill) => (
+                <div key={skill.id} className="skill-item">
+                  <div className="skill-header">
+                    <div className="skill-label">
+                      <div className="skill-number">{skill.id}</div>
+                      <div className="skill-name">{skill.name}</div>
+                    </div>
+                    <div
+                      className="skill-score"
+                      style={{
+                        backgroundColor: getSkillColor(skill.score),
+                        color: "#fff",
+                      }}
+                    >
+                      {skill.score}%
+                    </div>
+                  </div>
+                  <div className="skill-progress-container">
+                    <div
+                      className="skill-progress"
+                      style={{
+                        width: `${skill.score}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        ))}
+          <div className="chart-section">
+            <svg
+              className="radar-chart-component"
+              width={250}
+              height={250}
+              viewBox="25 25 250 250"
+            >
+              {/* Update gradient definitions */}
+              <defs>
+                <radialGradient
+                  id="scoreGradientMath"
+                  cx="50%"
+                  cy="50%"
+                  r="50%"
+                  fx="50%"
+                  fy="50%"
+                  spreadMethod="pad"
+                >
+                  <stop offset="0%" stopColor="#e53935" stopOpacity="0.6" />
+                  <stop offset="50%" stopColor="#ef5350" stopOpacity="0.5" />
+                  <stop offset="100%" stopColor="#ef9a9a" stopOpacity="0.4" />
+                </radialGradient>
+              </defs>
+
+              {/* Background grid */}
+              <g>{gridLevels}</g>
+              <g>{radialLines}</g>
+
+              {/* Math skills polygon */}
+              <polygon
+                key={`area-2-${animationKey}`}
+                points={getScorePoints(mathSkills.map((s) => s.score))
+                  .map((p) => `${p.x},${p.y}`)
+                  .join(" ")}
+                className="score-area"
+                fill="url(#scoreGradientMath)"
+                style={{
+                  "--duration": `${getMaxDuration()}s`,
+                  "--delay": `${getMaxDuration()}s`,
+                }}
+              />
+
+              {/* Add blend mode layer */}
+              <polygon
+                key={`blend-2-${animationKey}`}
+                points={getScorePoints(mathSkills.map((s) => s.score))
+                  .map((p) => `${p.x},${p.y}`)
+                  .join(" ")}
+                className="score-area"
+                fill="#e53935"
+                fillOpacity="0.4"
+                style={{
+                  "--duration": `${getMaxDuration()}s`,
+                  "--delay": `${getMaxDuration()}s`,
+                  mixBlendMode: "color-burn",
+                }}
+              />
+
+              {/* Update polygon stroke */}
+              <polygon
+                points={getScorePoints(mathSkills.map((s) => s.score))
+                  .map((p) => `${p.x},${p.y}`)
+                  .join(" ")}
+                fill="none"
+                stroke="#b71c1c"
+                strokeWidth="1"
+                className="score-area"
+                style={{
+                  "--duration": "0.3s",
+                  "--delay": `${getMaxDuration()}s`,
+                }}
+              />
+
+              {/* Labels */}
+              <g>{labels}</g>
+
+              {/* Update score points color */}
+              {getScorePoints(mathSkills.map((s) => s.score)).map((p, i) => (
+                <circle
+                  key={i}
+                  cx={p.x}
+                  cy={p.y}
+                  r={2.5}
+                  className="score-point"
+                  fill="#b71c1c"
+                  style={{
+                    "--target-x": `${p.x}px`,
+                    "--target-y": `${p.y}px`,
+                    "--start-x": `${centerX}px`,
+                    "--start-y": `${centerY}px`,
+                    "--duration": `${getDuration(mathSkills[i].score)}s`,
+                  }}
+                />
+              ))}
+            </svg>
+            <div className="skill-stack">
+              {mathSkills.map((skill) => (
+                <div key={skill.id} className="skill-item">
+                  <div className="skill-header">
+                    <div className="skill-label">
+                      <div className="skill-number">{skill.id}</div>
+                      <div className="skill-name">{skill.name}</div>
+                    </div>
+                    <div
+                      className="skill-score"
+                      style={{
+                        backgroundColor: getMathSkillColor(skill.score),
+                        color: "#fff",
+                      }}
+                    >
+                      {skill.score}%
+                    </div>
+                  </div>
+                  <div className="skill-progress-container">
+                    <div
+                      className="skill-progress"
+                      style={{
+                        width: `${skill.score}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -89,8 +89,8 @@
 }
 
 .radar-chart-container {
-  max-width: 250px; /* Match new SVG width */
-  /* margin: 0 auto; */
+  width: 100%;
+  max-width: 250px;
 }
 
 .skill-stack {
@@ -152,7 +152,7 @@
   padding-right: 2px;
   font-weight: 400;
   letter-spacing: -0.55px;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
   color: var(--text-primary);
 }
 
@@ -185,4 +185,64 @@
   background-position: left bottom;
   background-repeat: repeat-x;
   background-size: 100% 1px;
+}
+
+.radar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 0 12px;
+}
+
+.radar-header h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.radar-header i {
+  font-size: 14px;
+  color: var(--text-primary);
+  opacity: 0.7;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.radar-header i:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.charts-wrapper {
+  overflow: hidden;
+  width: 100%;
+}
+
+.charts-slider {
+  display: flex;
+  width: 200%;
+  transition: transform 0.3s ease;
+}
+
+.charts-slider.slide {
+  transform: translateX(-50%);
+}
+
+.chart-section {
+  width: 50%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Remove the bottom skill-stack from outside the slider */
+.radar-chart-container > .skill-stack {
+  display: none;
+}
+
+.chart {
+  width: 50%;
+  flex-shrink: 0;
 }

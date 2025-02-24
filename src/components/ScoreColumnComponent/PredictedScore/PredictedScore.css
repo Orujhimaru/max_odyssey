@@ -30,6 +30,31 @@
 .score-header h3 i {
   color: #ffd700; /* Golden color for crown */
   font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+/* Add jiggle animation */
+@keyframes jiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.score-header h3:hover i {
+  animation: jiggle 0.5s ease;
+  transform-origin: bottom center;
 }
 
 .score-details {
@@ -52,8 +77,9 @@
 }
 
 .score-value {
+  font-family: "DM Sans", sans-serif;
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
