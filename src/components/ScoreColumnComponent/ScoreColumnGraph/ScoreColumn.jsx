@@ -51,7 +51,7 @@ export default function ScoreColumnGraph() {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 1100) {
+      if (window.innerWidth <= 1180) {
         // Show only last 5 entries when screen is smaller
         setDisplayData(data.slice(-5));
       } else {
@@ -90,7 +90,7 @@ export default function ScoreColumnGraph() {
 
     const { width } = chartRef.current.getBoundingClientRect();
     const yAxis = 90;
-    const bar = { width: 30, gap: 20 };
+    const bar = { width: 35, gap: 32 };
 
     const y = getLabelYCoordinate(value) + 10;
 
@@ -116,19 +116,22 @@ export default function ScoreColumnGraph() {
   return (
     <div className="score-column-container">
       <div className="chart-container">
-        <div className="score-boxes">
-          <ScoreBox
-            title="Verbal"
-            score={verbalAverage.toFixed(0)}
-            improvement={verbalChange}
-            type="verbal"
-          />
-          <ScoreBox
-            title="Math"
-            score={mathAverage.toFixed(0)}
-            improvement={mathChange}
-            type="math"
-          />
+        <div className="score-boxes-container">
+          <div className="score-boxes">
+            <ScoreBox
+              title="Verbal"
+              score={verbalAverage.toFixed(0)}
+              improvement={verbalChange}
+              type="verbal"
+            />
+            <ScoreBox
+              title="Math"
+              score={mathAverage.toFixed(0)}
+              improvement={mathChange}
+              type="math"
+            />
+          </div>
+          <PredictedScore verbalScore={averageVerbal} mathScore={averageMath} />
         </div>
         <ResponsiveContainer width="100%" height={350} ref={chartRef}>
           <BarChart
@@ -253,7 +256,6 @@ export default function ScoreColumnGraph() {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <PredictedScore verbalScore={averageVerbal} mathScore={averageMath} />
     </div>
   );
 }

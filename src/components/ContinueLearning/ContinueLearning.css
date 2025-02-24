@@ -9,7 +9,15 @@
   font-weight: 500;
 }
 
+.course-cards {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .course-card {
+  /* flex: 1; */
+  min-width: 250px;
   position: relative;
   background-image: url("/src/assets/course1_bg.jpg");
   background-size: cover;
@@ -17,7 +25,6 @@
   border-radius: 12px;
   padding: 16px;
   height: 150px;
-  max-width: 300px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -92,4 +99,14 @@
   font-weight: 500;
   min-width: 60px;
   text-align: right;
+}
+
+@media (max-width: 1044px) {
+  .course-cards {
+    flex-direction: column;
+  }
+
+  .course-card {
+    min-width: 100%;
+  }
 }

@@ -47,14 +47,18 @@ span.score-box-title-type.math {
   /* top: 20px; */
   /* left: 20px; */
   display: flex;
-  /* justify-content: center; */
-  flex-direction: column;
+  justify-content: flex-end;
+  /* flex-direction: column; */
+  align-items: baseline;
+  flex-wrap: wrap;
   gap: 20px;
+  margin-bottom: 24px;
 }
 
 .score-box.verbal {
   border-color: #456bc4; /* Border color for verbal */
   gap: 10px;
+  width: 140px;
 }
 .score-box.verbal h2 {
   font-size: 16px;
@@ -63,6 +67,7 @@ span.score-box-title-type.math {
   font-size: 16px;
 }
 .score-box.math {
+  width: 140px;
   gap: 10px;
   border-color: var(--math-color);
 }
@@ -109,7 +114,7 @@ span.score-box-title-type.math {
 }
 
 .improvement.increase {
-  color: #82ce84;
+  color: #0fb86b;
 }
 
 .improvement.decrease {
@@ -131,3 +136,13 @@ span.score-box-title-type.math {
   ...
 }
 */
+@media (max-width: 1044px) {
+  .score-box.math {
+    width: none;
+    flex: 1;
+  }
+  .score-box.verbal {
+    width: none;
+    flex: 1;
+  }
+}

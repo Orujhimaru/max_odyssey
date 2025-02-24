@@ -175,6 +175,13 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   min-height: 400px; /* Keep minimum height if needed */
 }
 
+.score-boxes-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+}
+
 @media (max-width: 1044px) {
   tspan {
     font-size: 14px;

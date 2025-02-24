@@ -1,5 +1,6 @@
 .predicted-score-container {
-  width: 50%;
+  order: -1;
+  width: 100%;
   background-color: var(--bg-primary);
   border-radius: 12px;
   padding: 12px;
@@ -11,6 +12,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .score-header h3 {
@@ -64,16 +67,16 @@
 
 @media (max-width: 1144px) {
   .predicted-score-container {
-    width: 70%;
+    /* width: 70%; */
   }
 }
 
-@media (max-width: 844px) {
+@media (max-width: 1144px) {
   .predicted-score-container {
     width: fit-content;
   }
   .score-header {
     flex-direction: column;
-    gap: 20px;
+    /* gap: 20px; */
   }
 }
