@@ -27,6 +27,10 @@ span.score-box-title-type.math {
   font-size: 18px;
 }
 
+.score-value {
+  color: var(--text-primary);
+}
+
 .score-row {
   font-family: "DM Sans", serif;
   display: flex;

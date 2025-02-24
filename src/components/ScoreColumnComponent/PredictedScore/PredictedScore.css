@@ -1,11 +1,11 @@
 .predicted-score-container {
   order: -1;
   width: 100%;
-  background-color: var(--bg-primary);
+  background-color: var(--bg-secondary);
   border-radius: 12px;
   padding: 12px;
   /* margin-top: 24px; */
-  box-shadow: 0 2px 4px var(--box-shadow);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Softer shadow */
 }
 
 .score-header {
@@ -22,6 +22,14 @@
   font-size: 16px;
   color: var(--text-primary);
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-header h3 i {
+  color: #ffd700; /* Golden color for crown */
+  font-size: 14px;
 }
 
 .score-details {
@@ -81,4 +89,9 @@
     flex-direction: row;
     /* gap: 20px; */
   }
+}
+
+/* Update chart container shadow */
+.chart-container {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Match the shadow style */
 }

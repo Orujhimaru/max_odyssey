@@ -4,6 +4,7 @@ import RadarChart from "../../components/RadarComponent/RadarChart/RadarChart";
 import ScoreColumnGraph from "../../components/ScoreColumnComponent/ScoreColumnGraph/ScoreColumn";
 import { coursesProgress } from "../../data/courseProgress";
 import ContinueLearning from "../../components/ContinueLearning/ContinueLearning";
+import BorderBoxes from "../../components/BorderBoxes/BorderBoxes";
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -18,6 +19,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
+      <BorderBoxes />
       <div className="dashboard-left">
         <ContinueLearning courses={coursesProgress} />
         <ScoreColumnGraph />

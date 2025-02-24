@@ -12,7 +12,10 @@ const PredictedScore = ({ verbalScore, mathScore }) => {
   return (
     <div className="predicted-score-container">
       <div className="score-header">
-        <h3>Predicted Total Score</h3>
+        <h3>
+          Predicted Total Score
+          <i className="fas fa-crown"></i>
+        </h3>
         <div className="score-details">
           <div className="score-item">
             <span className="score-label">Verbal</span>
