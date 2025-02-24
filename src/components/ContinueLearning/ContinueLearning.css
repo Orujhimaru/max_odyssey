@@ -12,7 +12,7 @@
 .course-cards {
   display: flex;
   gap: 16px;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
 }
 
 .course-card {
@@ -102,11 +102,8 @@
 }
 
 @media (max-width: 1044px) {
-  .course-cards {
-    flex-direction: column;
-  }
-
   .course-card {
-    min-width: 100%;
+    min-width: 185px;
+    flex: 1;
   }
 }
