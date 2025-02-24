@@ -9,7 +9,15 @@
   /* margin-bottom: 20px; */
   /* text-align: center; */
   border: 2px solid var(--border-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+.score-box:hover,
+.score-box.active {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--box-shadow);
+}
+
 span.score-box-title-type.verbal {
   color: #456bc4;
   font-size: 18px;
@@ -35,11 +43,11 @@ span.score-box-title-type.math {
 }
 
 .score-boxes {
-  position: absolute;
-  top: 0;
-  left: 0;
+  /* position: absolute; */
+  /* top: 20px; */
+  /* left: 20px; */
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   flex-direction: column;
   gap: 20px;
 }
