@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../../components/NavBar/Navbar";
 import RadarChart from "../../components/RadarComponent/RadarChart/RadarChart";
 import ScoreColumnGraph from "../../components/ScoreColumnComponent/ScoreColumnGraph/ScoreColumn";
+import { courseProgress } from "../../data/courseProgress";
+import ContinueLearning from "../../components/ContinueLearning/ContinueLearning";
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -17,6 +19,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="dashboard-left">
+        <ContinueLearning course={courseProgress} />
         <ScoreColumnGraph />
       </div>
 
