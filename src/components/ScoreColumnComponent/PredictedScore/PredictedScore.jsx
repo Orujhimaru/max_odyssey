@@ -13,7 +13,7 @@ const PredictedScore = ({ verbalScore, mathScore }) => {
     <div className="predicted-score-container">
       <div className="score-header">
         <div className="score-header-gap">
-          <div>
+          <div className="score-header-flex">
             <div className="digital-sat">Digital SAT</div>
 
             <h3>

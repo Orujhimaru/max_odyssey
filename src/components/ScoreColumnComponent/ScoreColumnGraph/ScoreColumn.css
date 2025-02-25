@@ -183,9 +183,17 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   flex-direction: column;
   justify-content: space-between;
   gap: 24px;
+  width: 60%;
+  max-width: 450px;
 }
 
 @media (max-width: 1044px) {
+  .score-boxes-container {
+    flex-direction: row;
+    width: 100%;
+    align-items: flex-end;
+    max-width: none;
+  }
   /* tspan {
     font-size: 14px;
   } */
@@ -201,5 +209,10 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
     transform: translateX(-50px);
   }
 }
-@media (max-width: 800px) {
+@media (max-width: 890px) {
+  .score-boxes-container {
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-end;
+  }
 }
