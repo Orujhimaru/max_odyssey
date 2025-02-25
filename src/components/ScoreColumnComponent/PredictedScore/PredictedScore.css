@@ -114,8 +114,8 @@
 
 .predicted-flex {
   display: flex;
-  gap: 4px;
-  align-items: center;
+  gap: 8px;
+  align-items: baseline;
 }
 
 .score-item.predicted {
@@ -133,8 +133,20 @@
 }
 
 .score-item.predicted .score-value {
-  color: #0fb86b;
-  font-size: 24px;
+  /* color: #0fb86b; */
+  background-image: -webkit-linear-gradient(
+    to right,
+    #c0392b,
+    #8e44ad
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background-image: linear-gradient(
+    to right,
+    #c0392b,
+    #8e44ad
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  font-size: 40px;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 @media (max-width: 1044px) {

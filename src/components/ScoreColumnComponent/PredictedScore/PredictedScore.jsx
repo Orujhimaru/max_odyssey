@@ -22,7 +22,7 @@ const PredictedScore = ({ verbalScore, mathScore }) => {
             </h3>
           </div>
           <div className="score-item predicted">
-            <span className="score-label total">Total:</span>
+            {/* <span className="score-label total">Total:</span> */}
 
             <div className="predicted-flex">
               <span className="score-value">{predictedScore}</span>
