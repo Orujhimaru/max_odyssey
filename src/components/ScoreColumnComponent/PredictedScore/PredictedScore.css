@@ -3,7 +3,7 @@
   width: 100%;
   background-color: var(--bg-secondary);
   border-radius: 12px;
-  padding: 8px;
+  padding: 12px;
   /* margin-top: 24px; */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Softer shadow */
 }

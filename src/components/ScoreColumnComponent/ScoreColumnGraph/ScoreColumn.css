@@ -176,7 +176,6 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   display: flex; /* Add flex display */
   flex-direction: column; /* Stack children vertically */
   gap: 24px; /* Space between chart and predicted score */
-  min-height: 400px; /* Keep minimum height if needed */
 }
 
 .score-boxes-container {
