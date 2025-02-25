@@ -3,7 +3,7 @@
   width: 100%;
   background-color: var(--bg-secondary);
   border-radius: 12px;
-  padding: 12px;
+  padding: 8px;
   /* margin-top: 24px; */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Softer shadow */
 }
@@ -76,6 +76,11 @@
   opacity: 0.7;
 }
 
+.score-label.total {
+  font-size: 18px;
+  font-weight: 600;
+}
+
 .score-value {
   font-family: "DM Sans", sans-serif;
   font-size: 20px;
@@ -84,7 +89,7 @@
 }
 
 .score-value.verbal {
-  color: var(--verbal-color);
+  color: var(--text-primary);
 }
 
 .score-max-min {
@@ -104,7 +109,7 @@
 }
 
 .score-value.math {
-  color: var(--math-color);
+  color: var(--text-primary);
 }
 
 .predicted-flex {
@@ -115,9 +120,16 @@
 
 .score-item.predicted {
   /* padding-left: 24px; */
+  gap: 8px;
   flex-direction: row;
   justify-content: space-between;
   /* border-left: 1px solid var(--border-color); */
+}
+
+.score-header-gap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .score-item.predicted .score-value {
@@ -128,7 +140,7 @@
 @media (max-width: 1044px) {
   .score-item.predicted {
     justify-content: flex-end;
-    gap: 24px;
+    gap: 16px;
   }
 }
 

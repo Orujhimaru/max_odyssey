@@ -12,19 +12,22 @@ const PredictedScore = ({ verbalScore, mathScore }) => {
   return (
     <div className="predicted-score-container">
       <div className="score-header">
-        <div>
-          <div className="digital-sat">Digital SAT</div>
+        <div className="score-header-gap">
+          <div>
+            <div className="digital-sat">Digital SAT</div>
 
-          <h3>
-            Predicted Total Score
-            <i className="fas fa-crown"></i>
-          </h3>
-        </div>
-        <div className="score-item predicted">
-          <span className="score-label">Total</span>
-          <div className="predicted-flex">
-            <span className="score-value">{predictedScore}</span>
-            <span className="score-max-min">(400-1600)</span>
+            <h3>
+              Predicted Total Score
+              <i className="fas fa-crown"></i>
+            </h3>
+          </div>
+          <div className="score-item predicted">
+            <span className="score-label total">Total:</span>
+
+            <div className="predicted-flex">
+              <span className="score-value">{predictedScore}</span>
+              <span className="score-max-min">(400-1600)</span>
+            </div>
           </div>
         </div>
         <div className="score-details">
