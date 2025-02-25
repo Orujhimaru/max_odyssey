@@ -174,7 +174,7 @@ export default function RadarChart({
         <h3>Skill Overview</h3>
         <i
           className={`fas fa-chevron-${
-            isSecondChartVisible ? "right" : "left"
+            isSecondChartVisible ? "left" : "right"
           }`}
           onClick={toggleChart}
         ></i>
@@ -358,9 +358,9 @@ export default function RadarChart({
                   fy="50%"
                   spreadMethod="pad"
                 >
-                  <stop offset="0%" stopColor="#d32f2f" stopOpacity="0.6" />
-                  <stop offset="50%" stopColor="#f44336" stopOpacity="0.5" />
-                  <stop offset="100%" stopColor="#ff7961" stopOpacity="0.4" />
+                  <stop offset="0%" stopColor="#B22222" stopOpacity="0.7" />
+                  <stop offset="50%" stopColor="#D83232" stopOpacity="0.7" />
+                  <stop offset="100%" stopColor="#EB3F3F" stopOpacity="0.7" />
                 </radialGradient>
               </defs>
 
@@ -388,13 +388,12 @@ export default function RadarChart({
                 points={getScorePoints(mathSkills.map((s) => s.score))
                   .map((p) => `${p.x},${p.y}`)
                   .join(" ")}
-                className="score-area"
+                className="score-area math-blend"
                 fill="#d32f2f"
                 fillOpacity="0.4"
                 style={{
                   "--duration": `${getMaxDuration()}s`,
                   "--delay": `${getMaxDuration()}s`,
-                  mixBlendMode: "color-burn",
                 }}
               />
 

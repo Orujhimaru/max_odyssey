@@ -71,6 +71,13 @@
   animation: movePoint var(--duration) ease-out forwards;
 }
 
+.score-point-center {
+  animation: none;
+  opacity: 0;
+  transform-origin: center;
+  animation: movePoint var(--duration) ease-out forwards;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -253,4 +260,13 @@
 .chart {
   width: 50%;
   flex-shrink: 0;
+}
+
+/* Add blend mode styles */
+.math-blend {
+  mix-blend-mode: color-dodge; /* Light mode default */
+}
+
+[data-theme="dark"] .math-blend {
+  mix-blend-mode: color-burn; /* Dark mode override */
 }
