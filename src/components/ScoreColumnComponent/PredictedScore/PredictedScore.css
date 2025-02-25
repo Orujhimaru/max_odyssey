@@ -14,7 +14,7 @@
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
 }
 
 .score-header h3 {
@@ -85,6 +85,22 @@
 
 .score-value.verbal {
   color: var(--verbal-color);
+}
+
+.score-max-min {
+  font-weight: 400;
+  color: #b4b4b4;
+}
+.digital-sat {
+  background-color: var(--bg-primary);
+  border: 2px solid var(--text-primary);
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-size: 14px;
+  font-weight: 600;
+  width: fit-content;
+  color: var(--text-primary);
+  margin-bottom: 4px;
 }
 
 .score-value.math {

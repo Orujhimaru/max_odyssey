@@ -90,19 +90,40 @@ export default function ScoreColumnGraph() {
 
     const { width } = chartRef.current.getBoundingClientRect();
     const yAxis = 90;
-    const bar = { width: 35, gap: 32 };
+
+    // Calculate dynamic bar dimensions based on container width
+    const bar = {
+      width: width <= 1044 ? 20 : 27, // Smaller bars on mobile
+      gap: width <= 1044 ? 20 : 32, // Smaller gaps on mobile
+    };
 
     const y = getLabelYCoordinate(value) + 10;
 
-    const barSpacing = (width - yAxis - 80) / displayData.length;
+    // Calculate available space for bars
+    const availableWidth = width - yAxis - (width <= 1044 ? 40 : 30); // Dynamic right margin
+    const totalBars = displayData.length;
+
+    // Calculate spacing between bar groups
+    const barSpacing = availableWidth / totalBars;
+    const barGroupCenter = barSpacing / 2;
+
+    // Add extra offset for last two indices
+    const extraOffset = hoveredIndex >= totalBars - 2 ? 10 : 0;
+
+    // Calculate x position with adjusted offset
     const x =
       yAxis +
       hoveredIndex * barSpacing +
-      bar.width +
-      bar.gap +
-      (hoveredBar === "math" ? bar.width : 0);
+      barGroupCenter + // Center in the bar group
+      (hoveredBar === "math" ? bar.width + bar.gap / 2 : 0) + // Adjust offset for math bars
+      extraOffset; // Add extra space for last bars
 
-    return { x1: yAxis, y1: y, x2: x, y2: y };
+    return {
+      x1: yAxis,
+      y1: y,
+      x2: x,
+      y2: y,
+    };
   };
 
   // Calculate average scores
