@@ -61,11 +61,14 @@
 }
 
 [data-theme="dark"] .score-area {
-  mix-blend-mode: hard-light !important;
+  /* mix-blend-mode: multiply !important; */
 }
 
 .score-point {
-  animation: moveFromCenter var(--duration) ease-out forwards;
+  animation: none; /* Reset any existing animation */
+  opacity: 0;
+  transform-origin: center;
+  animation: movePoint var(--duration) ease-out forwards;
 }
 
 @keyframes fadeIn {
@@ -77,12 +80,17 @@
   }
 }
 
-@keyframes moveFromCenter {
-  from {
+@keyframes movePoint {
+  0% {
+    opacity: 0;
     cx: var(--start-x);
     cy: var(--start-y);
   }
-  to {
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
     cx: var(--target-x);
     cy: var(--target-y);
   }

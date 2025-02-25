@@ -124,30 +124,42 @@ export default function RadarChart({
   // Update color ranges
   const getSkillColor = (score) => {
     const ranges = {
-      exceptional: "#0DB869", // Verbal - Green
-      good: "#75b175",
-      average: "#A9A9A9",
-      poor: "#666666", // Changed to dark gray
+      exceptional: "#0FB86B", // 90-100 - Vibrant green
+      excellent: "#1DC977", // 80-90  - Strong green
+      great: "#2EDA85", // 70-80  - Medium green
+      good: "#75B175", // 60-70  - Light green
+      average: "#8E8E8E", // 50-60  - Light gray with hint of green
+      fair: "#7A7A7A", // 40-50  - Lighter gray
+      poor: "#666666", // Below 40 - Base gray
     };
 
-    if (score >= 80) return ranges.exceptional;
+    if (score >= 90) return ranges.exceptional;
+    if (score >= 80) return ranges.excellent;
+    if (score >= 70) return ranges.great;
     if (score >= 60) return ranges.good;
-    if (score >= 40) return ranges.average;
+    if (score >= 50) return ranges.average;
+    if (score >= 40) return ranges.fair;
     return ranges.poor;
   };
 
   // Update color ranges for math skills
   const getMathSkillColor = (score) => {
     const ranges = {
-      exceptional: "#b71c1c", // Dark cherry red
-      good: "#e53935", // Cherry red
-      average: "#ef5350", // Lighter red
-      poor: "#666666", // Dark gray
+      exceptional: "#c62828", // 90-100 - Deep red
+      excellent: "#d32f2f", // 80-90  - Strong red
+      great: "#e53935", // 70-80  - Medium red
+      good: "#ef5350", // 60-70  - Light red
+      average: "#8E8E8E", // 50-60  - Light gray with hint of red
+      fair: "#7A7A7A", // 40-50  - Lighter gray
+      poor: "#666666", // Below 40 - Base gray
     };
 
-    if (score >= 80) return ranges.exceptional;
+    if (score >= 90) return ranges.exceptional;
+    if (score >= 80) return ranges.excellent;
+    if (score >= 70) return ranges.great;
     if (score >= 60) return ranges.good;
-    if (score >= 40) return ranges.average;
+    if (score >= 50) return ranges.average;
+    if (score >= 40) return ranges.fair;
     return ranges.poor;
   };
 
@@ -162,7 +174,7 @@ export default function RadarChart({
         <h3>Skill Overview</h3>
         <i
           className={`fas fa-chevron-${
-            isSecondChartVisible ? "left" : "right"
+            isSecondChartVisible ? "right" : "left"
           }`}
           onClick={toggleChart}
         ></i>
@@ -260,8 +272,9 @@ export default function RadarChart({
                 }}
               />
 
-              {/* Update polygon stroke color */}
+              {/* First chart polygon stroke */}
               <polygon
+                key={`stroke-1-${animationKey}`}
                 points={scorePolygonPoints}
                 fill="none"
                 stroke={gradientColors.start}
@@ -278,22 +291,21 @@ export default function RadarChart({
                 const score = scores[i];
                 const duration = getDuration(score);
 
-                const style = {
-                  "--target-x": `${p.x}px`,
-                  "--target-y": `${p.y}px`,
-                  "--start-x": `${centerX}px`,
-                  "--start-y": `${centerY}px`,
-                  "--duration": `${duration}s`,
-                };
                 return (
                   <circle
-                    key={i}
-                    cx={p.x}
-                    cy={p.y}
+                    key={`point-1-${i}-${animationKey}`}
+                    cx={centerX}
+                    cy={centerY}
                     r={2.5}
                     className="score-point"
                     fill={gradientColors.start}
-                    style={style}
+                    style={{
+                      "--target-x": p.x,
+                      "--target-y": p.y,
+                      "--start-x": centerX,
+                      "--start-y": centerY,
+                      "--duration": `${duration}s`,
+                    }}
                   />
                 );
               })}
@@ -346,9 +358,9 @@ export default function RadarChart({
                   fy="50%"
                   spreadMethod="pad"
                 >
-                  <stop offset="0%" stopColor="#e53935" stopOpacity="0.6" />
-                  <stop offset="50%" stopColor="#ef5350" stopOpacity="0.5" />
-                  <stop offset="100%" stopColor="#ef9a9a" stopOpacity="0.4" />
+                  <stop offset="0%" stopColor="#d32f2f" stopOpacity="0.6" />
+                  <stop offset="50%" stopColor="#f44336" stopOpacity="0.5" />
+                  <stop offset="100%" stopColor="#ff7961" stopOpacity="0.4" />
                 </radialGradient>
               </defs>
 
@@ -377,7 +389,7 @@ export default function RadarChart({
                   .map((p) => `${p.x},${p.y}`)
                   .join(" ")}
                 className="score-area"
-                fill="#e53935"
+                fill="#d32f2f"
                 fillOpacity="0.4"
                 style={{
                   "--duration": `${getMaxDuration()}s`,
@@ -386,13 +398,14 @@ export default function RadarChart({
                 }}
               />
 
-              {/* Update polygon stroke */}
+              {/* Second chart polygon stroke */}
               <polygon
+                key={`stroke-2-${animationKey}`}
                 points={getScorePoints(mathSkills.map((s) => s.score))
                   .map((p) => `${p.x},${p.y}`)
                   .join(" ")}
                 fill="none"
-                stroke="#b71c1c"
+                stroke="#c62828"
                 strokeWidth="1"
                 className="score-area"
                 style={{
@@ -407,17 +420,17 @@ export default function RadarChart({
               {/* Update score points color */}
               {getScorePoints(mathSkills.map((s) => s.score)).map((p, i) => (
                 <circle
-                  key={i}
-                  cx={p.x}
-                  cy={p.y}
+                  key={`point-2-${i}-${animationKey}`}
+                  cx={centerX}
+                  cy={centerY}
                   r={2.5}
                   className="score-point"
-                  fill="#b71c1c"
+                  fill="#c62828"
                   style={{
-                    "--target-x": `${p.x}px`,
-                    "--target-y": `${p.y}px`,
-                    "--start-x": `${centerX}px`,
-                    "--start-y": `${centerY}px`,
+                    "--target-x": p.x,
+                    "--target-y": p.y,
+                    "--start-x": centerX,
+                    "--start-y": centerY,
                     "--duration": `${getDuration(mathSkills[i].score)}s`,
                   }}
                 />
