@@ -27,6 +27,7 @@
 [data-theme="dark"] .dashboard-right {
   border-color: #4d4d4d; /* Updated dark mode border */
 }
+/* CHECKPOINT FOR RADARCHART COLORS. */
 
 .theme-toggle {
   /* position: absolute; */
