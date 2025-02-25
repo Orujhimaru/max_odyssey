@@ -114,7 +114,7 @@
 
 .predicted-flex {
   display: flex;
-  gap: 8px;
+  gap: 16px;
   align-items: baseline;
 }
 

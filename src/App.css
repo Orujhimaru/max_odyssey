@@ -21,6 +21,10 @@
   color: #888;
 }
 
+.content {
+  height: 100%;
+}
+
 * {
   margin: 0;
   padding: 0;

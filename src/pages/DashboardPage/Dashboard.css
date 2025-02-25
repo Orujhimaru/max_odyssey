@@ -1,5 +1,6 @@
 .dashboard {
   width: 100%;
+  height: 100%;
   position: relative;
   padding: 20px;
   background-color: var(--bg-secondary);
@@ -14,6 +15,7 @@
 }
 
 .dashboard-right {
+  height: 100%;
   display: flex;
   justify-content: flex-end;
   border: 1px solid #dddddd; /* Updated light mode border */
