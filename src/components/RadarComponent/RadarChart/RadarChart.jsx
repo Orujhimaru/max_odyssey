@@ -145,12 +145,12 @@ export default function RadarChart({
   // Update color ranges for math skills
   const getMathSkillColor = (score) => {
     const ranges = {
-      exceptional: "#c62828", // 90-100 - Deep red
-      excellent: "#d32f2f", // 80-90  - Strong red
-      great: "#e53935", // 70-80  - Medium red
+      exceptional: "#c41e3a", // 90-100 - Rich crimson red
+      excellent: "#d32f2f", // 80-90  - Bright red
+      great: "#e53935", // 70-80  - Standard red
       good: "#ef5350", // 60-70  - Light red
-      average: "#8E8E8E", // 50-60  - Light gray with hint of red
-      fair: "#7A7A7A", // 40-50  - Lighter gray
+      average: "#9e9e9e", // 50-60  - Medium gray with slight red tint
+      fair: "#7d7d7d", // 40-50  - Darker gray
       poor: "#666666", // Below 40 - Base gray
     };
 
@@ -358,9 +358,20 @@ export default function RadarChart({
                   fy="50%"
                   spreadMethod="pad"
                 >
-                  <stop offset="0%" stopColor="#B22222" stopOpacity="0.7" />
-                  <stop offset="50%" stopColor="#D83232" stopOpacity="0.7" />
-                  <stop offset="100%" stopColor="#EB3F3F" stopOpacity="0.7" />
+                  <stop offset="0%" stopColor="#c41e3a" stopOpacity="0.6" />{" "}
+                  {/* Rich crimson */}
+                  <stop
+                    offset="50%"
+                    stopColor="#d32f2f"
+                    stopOpacity="0.5"
+                  />{" "}
+                  {/* Bright red */}
+                  <stop
+                    offset="100%"
+                    stopColor="#ef5350"
+                    stopOpacity="0.4"
+                  />{" "}
+                  {/* Light red */}
                 </radialGradient>
               </defs>
 
@@ -389,7 +400,7 @@ export default function RadarChart({
                   .map((p) => `${p.x},${p.y}`)
                   .join(" ")}
                 className="score-area math-blend"
-                fill="#d32f2f"
+                fill="#c41e3a" // Updated to rich crimson
                 fillOpacity="0.4"
                 style={{
                   "--duration": `${getMaxDuration()}s`,
@@ -404,7 +415,7 @@ export default function RadarChart({
                   .map((p) => `${p.x},${p.y}`)
                   .join(" ")}
                 fill="none"
-                stroke="#c62828"
+                stroke="#c41e3a" // Rich crimson for outline
                 strokeWidth="1"
                 className="score-area"
                 style={{
@@ -424,7 +435,7 @@ export default function RadarChart({
                   cy={centerY}
                   r={2.5}
                   className="score-point"
-                  fill="#c62828"
+                  fill="#c41e3a" // Rich crimson for points
                   style={{
                     "--target-x": p.x,
                     "--target-y": p.y,

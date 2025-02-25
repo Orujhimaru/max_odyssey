@@ -187,6 +187,13 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   max-width: 450px;
 }
 
+.scores-header-text {
+  font-size: 20px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
 @media (max-width: 1044px) {
   .score-boxes-container {
     flex-direction: row;
