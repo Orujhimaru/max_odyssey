@@ -14,7 +14,7 @@
   justify-content: space-between;
   /* align-items: center; */
   flex-direction: column;
-  gap: 12px;
+  gap: 0px;
 }
 
 .score-header h3 {
@@ -120,16 +120,16 @@
 
 .score-item.predicted {
   /* padding-left: 24px; */
-  gap: 8px;
+  gap: 12px;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
   /* border-left: 1px solid var(--border-color); */
 }
 
 .score-header-gap {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12px;
 }
 
 .score-item.predicted .score-value {

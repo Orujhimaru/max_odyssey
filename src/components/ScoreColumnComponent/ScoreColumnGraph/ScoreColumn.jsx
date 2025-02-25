@@ -139,18 +139,20 @@ export default function ScoreColumnGraph() {
       <div className="chart-container">
         <div className="score-boxes-container">
           <div className="score-boxes">
-            <ScoreBox
-              title="Verbal"
-              score={verbalAverage.toFixed(0)}
-              improvement={verbalChange}
-              type="verbal"
-            />
-            <ScoreBox
-              title="Math"
-              score={mathAverage.toFixed(0)}
-              improvement={mathChange}
-              type="math"
-            />
+            <div className="score-boxes-inner">
+              <ScoreBox
+                title="Verbal"
+                score={verbalAverage.toFixed(0)}
+                improvement={verbalChange}
+                type="verbal"
+              />
+              <ScoreBox
+                title="Math"
+                score={mathAverage.toFixed(0)}
+                improvement={mathChange}
+                type="math"
+              />
+            </div>
           </div>
           <PredictedScore verbalScore={averageVerbal} mathScore={averageMath} />
         </div>

@@ -17,6 +17,7 @@
   --bg-secondary: #ffffff;
   --text-primary: #213547;
   --border-color: #e5e7eb;
+  --seperator-color: #e5e7eb;
   --box-shadow: rgba(0, 0, 0, 0.2);
   --chart-grid: #94a3b820;
   --chart-text: #94a3b8;
@@ -111,6 +112,7 @@ button:focus-visible {
   --bg-secondary: #2d2d2d;
   --text-primary: rgba(255, 255, 255, 0.87);
   --border-color: #2d2d2d;
+  --seperator-color: #aaaaaa;
   --box-shadow: rgba(0, 0, 0, 0.4);
   --chart-grid: #94a3b840;
   --chart-text: #94a3b8;

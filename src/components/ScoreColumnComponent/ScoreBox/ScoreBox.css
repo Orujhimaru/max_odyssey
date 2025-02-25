@@ -47,16 +47,73 @@ span.score-box-title-type.math {
 }
 
 .score-boxes {
-  /* position: absolute; */
-  /* top: 20px; */
-  /* left: 20px; */
   display: flex;
   justify-content: flex-end;
-  /* flex-direction: column; */
   align-items: baseline;
-  flex-wrap: wrap;
-  gap: 20px;
+  gap: 0;
   margin-bottom: 24px;
+  position: relative;
+  padding: 2px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #456bc4, var(--math-color));
+}
+
+/* Container for both boxes */
+.score-boxes-inner {
+  display: flex;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  width: 100%;
+  padding: 1px;
+}
+
+.score-box {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  padding: 10px;
+  box-shadow: none;
+  border: none;
+  width: 140px;
+}
+
+/* Remove hover effects from individual boxes */
+.score-box:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Add divider between boxes */
+.score-box.verbal {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.score-box.math {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  position: relative;
+}
+
+.score-box.math::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10%;
+  height: 80%;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--seperator-color),
+    transparent
+  );
+}
+
+/* Update dark mode styles */
+[data-theme="dark"] .score-boxes {
+  background: linear-gradient(90deg, #456bc4, #9c2b2b);
 }
 
 .score-box.verbal {
