@@ -20,6 +20,13 @@ const PredictedScore = ({ verbalScore, mathScore }) => {
             <i className="fas fa-crown"></i>
           </h3>
         </div>
+        <div className="score-item predicted">
+          <span className="score-label">Total</span>
+          <div className="predicted-flex">
+            <span className="score-value">{predictedScore}</span>
+            <span className="score-max-min">(400-1600)</span>
+          </div>
+        </div>
         <div className="score-details">
           <div className="score-item">
             <span className="score-label">Verbal</span>
@@ -28,11 +35,6 @@ const PredictedScore = ({ verbalScore, mathScore }) => {
           <div className="score-item">
             <span className="score-label">Math</span>
             <span className="score-value math">{roundedMath}</span>
-          </div>
-          <div className="score-item predicted">
-            <span className="score-label">Total</span>
-            <span className="score-value">{predictedScore}</span>
-            <span className="score-max-min">(400-1600)</span>
           </div>
         </div>
       </div>

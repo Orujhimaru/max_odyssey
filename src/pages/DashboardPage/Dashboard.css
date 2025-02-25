@@ -5,7 +5,7 @@
   background-color: var(--bg-secondary);
   /* min-height: 100vh; */
   display: flex;
-  gap: 24px;
+  gap: 16px;
 }
 
 .dashboard-left {

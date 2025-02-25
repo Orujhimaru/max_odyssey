@@ -184,9 +184,9 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 }
 
 @media (max-width: 1044px) {
-  tspan {
+  /* tspan {
     font-size: 14px;
-  }
+  } */
   .score-boxes {
     flex-direction: row;
   }
