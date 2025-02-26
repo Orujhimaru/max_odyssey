@@ -208,13 +208,14 @@ export default function ScoreColumnGraph() {
                   {hoveredValue && (
                     <Label
                       value={hoveredValue}
-                      position="top"
-                      offset={10}
+                      position="left"
+                      offset={-8}
                       style={{
                         transform: `translateY(${getLabelYCoordinate(
                           hoveredValue
                         )}px)`,
                         fontWeight: 500,
+                        textAnchor: "end",
                       }}
                     />
                   )}
