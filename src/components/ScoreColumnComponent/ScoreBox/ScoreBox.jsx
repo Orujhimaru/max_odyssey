@@ -12,8 +12,11 @@ const ScoreBox = ({ title, score, improvement, type }) => {
       <div className="score-row">
         <h3 className={`score ${type}`}>{score}</h3>
         <div className={`improvement ${isIncrease ? "increase" : "decrease"}`}>
-          <i className={`fas fa-arrow-${isIncrease ? "up" : "down"}`}></i>
-          <span>{Math.abs(improvement)}</span>
+          <div className={`triangle ${isIncrease ? "increase" : "decrease"}`} />
+          <span>
+            {isIncrease ? "+" : "-"}
+            {Math.abs(improvement)}
+          </span>
         </div>
       </div>
     </div>

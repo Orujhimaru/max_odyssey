@@ -173,33 +173,37 @@ span.score-box-title-type.math {
 .improvement {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   font-size: 14px;
 }
 
 .improvement.increase {
-  color: #0fb86b;
+  color: var(--increase-color);
 }
 
 .improvement.decrease {
-  color: #ec5e54;
+  color: var(--decrease-color);
 }
 
-.improvement i {
-  font-size: 12px;
+.triangle {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+}
+
+.triangle.increase {
+  border-bottom: 8px solid var(--increase-color);
+}
+
+.triangle.decrease {
+  border-top: 8px solid var(--decrease-color);
 }
 
 .improvement span {
   line-height: 11px;
 }
-/* Remove these as they're no longer needed
-.arrow i.fa-arrow-up,
-.arrow i.fa-arrow-down,
-.score-row p.increase,
-.score-row p.decrease {
-  ...
-}
-*/
+
 @media (max-width: 1044px) {
   .score-box.math {
     width: none;

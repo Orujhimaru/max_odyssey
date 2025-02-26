@@ -2,11 +2,16 @@
   order: -1;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   background-color: var(--bg-secondary);
   border-radius: 12px;
   padding: 12px;
   /* margin-top: 24px; */
   box-shadow: rgba(0, 0, 0, 0.12) -0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  background-image: radial-gradient(#e8e8e854 0.3px, var(--bg-secondary) 0.4px);
+  background-size: 10px 10px;
 }
 
 .score-header {
@@ -62,10 +67,15 @@
 
 .score-details {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   /* gap: 24px; */
-  align-items: flex-end;
+  justify-content: space-between;
   /* justify-content: flex-end; */
+}
+
+.predicted-flex.score-800 {
+  align-items: flex-end;
+  gap: 16px;
 }
 
 .score-item {
@@ -118,10 +128,18 @@
 
 .predicted-flex {
   display: flex;
-  gap: 16px;
+  gap: 8px;
   align-items: baseline;
 }
 
+.predicted-flex.column {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+.percentile-badge {
+  /* margin-bottom: 22px; */
+}
 .score-item.predicted {
   /* padding-left: 24px; */
   gap: 12px;
@@ -136,19 +154,15 @@
   gap: 12px;
 }
 
-.score-item.predicted .score-value {
+.predicted-flex.center .score-value {
   /* color: #0fb86b; */
-  background-image: -webkit-linear-gradient(
+  background-image: linear-gradient(
     to right,
     #d63e2e,
     #8e44ad
   ); /* Chrome 10-25, Safari 5.1-6 */
-  background-image: linear-gradient(
-    to right,
-    #c0392b,
-    #8e44ad
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  font-size: 40px;
+
+  font-size: 48px;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -180,4 +194,28 @@
 /* Update chart container shadow */
 .chart-container {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Match the shadow style */
+}
+
+.percentile-badge {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  transition: color 0.3s ease;
+}
+
+[data-theme="dark"] .percentile-badge {
+  background-color: #404040;
+  border-color: #555;
+}
+
+.percentile-footnote {
+  font-size: 12px;
+  color: var(--text-primary);
+  opacity: 0.7;
+  margin-top: 16px;
+  font-style: italic;
 }
