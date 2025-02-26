@@ -40,7 +40,7 @@
   --transition-duration: 0.2s;
 
   /* Bar colors - light mode */
-  --bar-verbal-color: #3860ad;
+  --bar-verbal-color: #3b5fa4;
   --bar-math-color: #4e4e4e;
   --bar-background: #eee;
   --bar-math-line-color: #4e4e4e;
@@ -134,7 +134,7 @@ button:focus-visible {
   --radar-area: url(#scoreGradientDark);
 
   /* Bar colors - dark mode */
-  --bar-math-color: #9c2b2b; /* Matching the math score box */
+  --bar-math-color: #993333; /* Matching the math score box */
   --bar-background: #404040;
   --bar-math-line-color: #a9a9a9;
 }

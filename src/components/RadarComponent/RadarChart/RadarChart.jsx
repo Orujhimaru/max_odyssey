@@ -121,47 +121,47 @@ export default function RadarChart({
     { id: 7, name: "Number Theory", score: 76 },
   ];
 
-  // Update color ranges
-  const getSkillColor = (score) => {
-    const ranges = {
-      exceptional: "#0FB86B", // 90-100 - Vibrant green
-      excellent: "#1DC977", // 80-90  - Strong green
-      great: "#2EDA85", // 70-80  - Medium green
-      good: "#75B175", // 60-70  - Light green
-      average: "#8E8E8E", // 50-60  - Light gray with hint of green
-      fair: "#7A7A7A", // 40-50  - Lighter gray
-      poor: "#666666", // Below 40 - Base gray
-    };
+  // // Update color ranges
+  // const getSkillColor = (score) => {
+  //   const ranges = {
+  //     exceptional: "#0FB86B", // 90-100 - Vibrant green
+  //     excellent: "#1DC977", // 80-90  - Strong green
+  //     great: "#2EDA85", // 70-80  - Medium green
+  //     good: "#75B175", // 60-70  - Light green
+  //     average: "#8E8E8E", // 50-60  - Light gray with hint of green
+  //     fair: "#7A7A7A", // 40-50  - Lighter gray
+  //     poor: "#666666", // Below 40 - Base gray
+  //   };
 
-    if (score >= 90) return ranges.exceptional;
-    if (score >= 80) return ranges.excellent;
-    if (score >= 70) return ranges.great;
-    if (score >= 60) return ranges.good;
-    if (score >= 50) return ranges.average;
-    if (score >= 40) return ranges.fair;
-    return ranges.poor;
-  };
+  //   if (score >= 90) return ranges.exceptional;
+  //   if (score >= 80) return ranges.excellent;
+  //   if (score >= 70) return ranges.great;
+  //   if (score >= 60) return ranges.good;
+  //   if (score >= 50) return ranges.average;
+  //   if (score >= 40) return ranges.fair;
+  //   return ranges.poor;
+  // };
 
-  // Update color ranges for math skills
-  const getMathSkillColor = (score) => {
-    const ranges = {
-      exceptional: "#c41e3a", // 90-100 - Rich crimson red
-      excellent: "#d32f2f", // 80-90  - Bright red
-      great: "#e53935", // 70-80  - Standard red
-      good: "#ef5350", // 60-70  - Light red
-      average: "#9e9e9e", // 50-60  - Medium gray with slight red tint
-      fair: "#7d7d7d", // 40-50  - Darker gray
-      poor: "#666666", // Below 40 - Base gray
-    };
+  // // Update color ranges for math skills
+  // const getMathSkillColor = (score) => {
+  //   const ranges = {
+  //     exceptional: "#c41e3a", // 90-100 - Rich crimson red
+  //     excellent: "#d32f2f", // 80-90  - Bright red
+  //     great: "#e53935", // 70-80  - Standard red
+  //     good: "#ef5350", // 60-70  - Light red
+  //     average: "#9e9e9e", // 50-60  - Medium gray with slight red tint
+  //     fair: "#7d7d7d", // 40-50  - Darker gray
+  //     poor: "#666666", // Below 40 - Base gray
+  //   };
 
-    if (score >= 90) return ranges.exceptional;
-    if (score >= 80) return ranges.excellent;
-    if (score >= 70) return ranges.great;
-    if (score >= 60) return ranges.good;
-    if (score >= 50) return ranges.average;
-    if (score >= 40) return ranges.fair;
-    return ranges.poor;
-  };
+  //   if (score >= 90) return ranges.exceptional;
+  //   if (score >= 80) return ranges.excellent;
+  //   if (score >= 70) return ranges.great;
+  //   if (score >= 60) return ranges.good;
+  //   if (score >= 50) return ranges.average;
+  //   if (score >= 40) return ranges.fair;
+  //   return ranges.poor;
+  // };
 
   const toggleChart = () => {
     setIsSecondChartVisible(!isSecondChartVisible);
@@ -321,7 +321,7 @@ export default function RadarChart({
                     <div
                       className="skill-score"
                       style={{
-                        backgroundColor: getSkillColor(skill.score),
+                        backgroundColor: "#404040",
                         color: "#fff",
                       }}
                     >
@@ -457,7 +457,7 @@ export default function RadarChart({
                     <div
                       className="skill-score"
                       style={{
-                        backgroundColor: getMathSkillColor(skill.score),
+                        backgroundColor: "#404040",
                         color: "#fff",
                       }}
                     >
