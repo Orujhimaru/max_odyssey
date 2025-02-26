@@ -57,7 +57,7 @@ span.score-box-title-type.math {
   position: relative;
   padding: 2px;
   border-radius: 10px;
-  background: linear-gradient(90deg, #456bc4, var(--math-color));
+  background: linear-gradient(90deg, #456bc4, #4270da);
 }
 
 /* Container for both boxes */
@@ -116,10 +116,8 @@ span.score-box-title-type.math {
 }
 
 /* Update dark mode styles */
-[data-theme="dark"] .score-boxes {
-  background: linear-gradient(90deg, #456bc4, #d3d3d3);
-}
-
+/* [data-theme="dark"] .score-boxes {
+  /* background: linear-gradient(90deg, #456bc4, #d3d3d3); */
 .score-box.verbal {
   border-color: #456bc4; /* Border color for verbal */
   gap: 10px;
