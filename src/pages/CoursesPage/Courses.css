@@ -1,0 +1,7 @@
+.courses-page {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  padding: 12px;
+  background-color: var(--bg-secondary);
+}
