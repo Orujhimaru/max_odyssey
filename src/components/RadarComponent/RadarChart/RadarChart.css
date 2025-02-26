@@ -272,4 +272,5 @@
 
 [data-theme="dark"] .math-blend {
   mix-blend-mode: color-burn; /* Dark mode override */
+  filter: none;
 }
