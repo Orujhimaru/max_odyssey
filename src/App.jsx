@@ -10,22 +10,32 @@ import Tests from "./pages/TestsPage/Tests";
 import Practice from "./pages/PracticePage/Practice";
 
 const App = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Get initial theme from localStorage or system preference
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      return savedTheme === "dark";
+    }
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
 
   useEffect(() => {
+    // Update data-theme attribute and localStorage when theme changes
     document.documentElement.setAttribute(
       "data-theme",
       isDarkMode ? "dark" : "light"
     );
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
+
+  const toggleTheme = () => {
+    setIsDarkMode((prevMode) => !prevMode);
+  };
 
   return (
     <Router>
       <div className="app">
-        <Navbar
-          isDarkMode={isDarkMode}
-          onThemeToggle={() => setIsDarkMode(!isDarkMode)}
-        />
+        <Navbar isDarkMode={isDarkMode} onThemeToggle={toggleTheme} />
         <div className="content">
           <Routes>
             <Route path="/" element={<Dashboard />} />

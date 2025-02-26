@@ -190,7 +190,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   flex-direction: column;
   justify-content: space-between;
   gap: 24px;
-  width: 60%;
+  width: 50%;
   max-width: 450px;
 }
 
