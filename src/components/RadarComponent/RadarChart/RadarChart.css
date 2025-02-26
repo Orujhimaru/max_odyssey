@@ -45,6 +45,7 @@
 }
 
 .vertex-label {
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 500;
   fill: var(--radar-number);
@@ -151,6 +152,7 @@
 }
 
 .skill-number {
+  font-family: "DM Sans", sans-serif;
   font-weight: 500;
   border: 1px solid var(--border-color);
   width: 24px;

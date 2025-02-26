@@ -35,7 +35,8 @@ span.score-box-title-type.math {
   font-family: "DM Sans", serif;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 6px;
 }
 
 .score.verbal,
