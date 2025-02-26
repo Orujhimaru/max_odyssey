@@ -115,6 +115,10 @@ span.score-box-title-type.math {
   );
 }
 
+.score-row.math {
+  align-self: anchor-center;
+}
+
 /* Update dark mode styles */
 /* [data-theme="dark"] .score-boxes {
   /* background: linear-gradient(90deg, #456bc4, #d3d3d3); */
@@ -130,6 +134,7 @@ span.score-box-title-type.math {
   font-size: 16px;
 }
 .score-box.math {
+  align-items: flex-end;
   /* width: 140px; */
   gap: 10px;
   border-color: var(--math-color);
