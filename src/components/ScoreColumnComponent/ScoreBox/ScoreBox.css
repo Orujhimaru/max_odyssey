@@ -116,7 +116,8 @@ span.score-box-title-type.math {
 }
 
 .score-row.math {
-  align-self: anchor-center;
+  align-self: flex-end;
+  padding-right: 23px;
 }
 
 /* Update dark mode styles */
@@ -135,6 +136,7 @@ span.score-box-title-type.math {
 }
 .score-box.math {
   align-items: flex-end;
+
   /* width: 140px; */
   gap: 10px;
   border-color: var(--math-color);
@@ -212,9 +214,24 @@ span.score-box-title-type.math {
   .score-box.math {
     width: none;
     flex: 1;
+    flex-direction: row;
+    padding-right: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    /* align-self: center; */
   }
+  .score-row.math {
+    padding-right: 0;
+  }
+
   .score-box.verbal {
-    width: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    /* width: none; */
+    /* align-self: flex-end; */
     flex: 1;
   }
 }
