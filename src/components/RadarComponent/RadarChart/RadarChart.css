@@ -266,7 +266,8 @@
 
 /* Add blend mode styles */
 .math-blend {
-  mix-blend-mode: color-dodge; /* Light mode default */
+  mix-blend-mode: hard-light; /* Light mode default */
+  filter: drop-shadow(1px 1px 20px #898989);
 }
 
 [data-theme="dark"] .math-blend {
