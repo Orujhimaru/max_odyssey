@@ -14,6 +14,8 @@
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   border: 1px solid #dddddd; /* Updated light mode border */
+  /* gap: 8px; */
+  overflow: hidden;
 }
 
 .recharts-cartesian-axis-ticks {
@@ -42,6 +44,11 @@
 
 path[class="recharts-rectangle recharts-tooltip-cursor"] {
   fill: rgba(250, 250, 250, 0.147);
+}
+
+.bar-chart-container {
+  width: 100%;
+  height: 100%;
 }
 
 .recharts-rectangle.bar-math {
@@ -200,6 +207,10 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
     width: 100%;
     align-items: flex-end;
     max-width: none;
+  }
+  .recharts-wrapper {
+    position: relative;
+    left: 30px;
   }
   /* tspan {
     font-size: 14px;
