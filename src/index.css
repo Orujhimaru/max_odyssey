@@ -124,7 +124,7 @@ button:focus-visible {
   --chart-text: #94a3b8;
 
   /* Brand colors - dark mode overrides */
-  --math-color: #b14343; /* Softer red for dark mode */
+  --math-color: #d3d3d3; /* Softer red for dark mode */
 
   /* Radar Chart Dark Colors */
   --radar-grid: #404040; /* Lighter grid for visibility */
@@ -134,7 +134,7 @@ button:focus-visible {
   --radar-area: url(#scoreGradientDark);
 
   /* Bar colors - dark mode */
-  --bar-math-color: #993333; /* Matching the math score box */
+  --bar-math-color: #9c9c9c; /* Matching the math score box */
   --bar-background: #404040;
   --bar-math-line-color: #a9a9a9;
 }

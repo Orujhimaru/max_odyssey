@@ -4,7 +4,7 @@
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   padding: 10px;
-  border-radius: 8px;
+  /* border-radius: 8px; */
   box-shadow: 0 4px 8px var(--box-shadow);
   /* margin-bottom: 20px; */
   /* text-align: center; */
@@ -116,7 +116,7 @@ span.score-box-title-type.math {
 
 /* Update dark mode styles */
 [data-theme="dark"] .score-boxes {
-  background: linear-gradient(90deg, #456bc4, #9c2b2b);
+  background: linear-gradient(90deg, #456bc4, #d3d3d3);
 }
 
 .score-box.verbal {

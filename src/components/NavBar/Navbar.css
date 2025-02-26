@@ -133,6 +133,7 @@
 }
 
 .theme-toggle {
+  margin: 0 auto;
   background: none;
   border: none;
   color: white;

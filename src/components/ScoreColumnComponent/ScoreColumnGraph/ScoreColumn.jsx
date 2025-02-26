@@ -76,11 +76,16 @@ export default function ScoreColumnGraph() {
     const maxValue = 800;
     const totalHeight = 290;
     let result = ((maxValue - value) / (maxValue - minValue)) * totalHeight + 9;
+
     if (result === 10) {
       return 15;
     }
 
-    // console.log(`Value: ${value}, Position: ${result}px`);
+    // Add offset for value 800
+    if (value === 800) {
+      result += 4; // Shift down 4px when value is 800
+    }
+
     return result;
   };
 

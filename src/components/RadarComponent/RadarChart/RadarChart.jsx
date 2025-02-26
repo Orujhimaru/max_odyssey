@@ -321,7 +321,6 @@ export default function RadarChart({
                     <div
                       className="skill-score"
                       style={{
-                        backgroundColor: "#404040",
                         color: "#fff",
                       }}
                     >
