@@ -186,6 +186,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 }
 
 .score-column-container {
+  flex: 1;
   width: 100%;
   display: flex; /* Add flex display */
   flex-direction: column; /* Stack children vertically */

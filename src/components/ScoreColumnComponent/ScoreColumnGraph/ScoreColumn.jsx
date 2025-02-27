@@ -147,28 +147,8 @@ export default function ScoreColumnGraph() {
       <h2 className="scores-header-text ">Score report</h2>
       <div className="score-column-container">
         <div className="chart-container">
-          <div className="score-boxes-container">
-            <div className="score-boxes">
-              <div className="score-boxes-inner">
-                <ScoreBox
-                  title="Verbal"
-                  score={verbalAverage.toFixed(0)}
-                  improvement={verbalChange}
-                  type="verbal"
-                />
-                <ScoreBox
-                  title="Math"
-                  score={mathAverage.toFixed(0)}
-                  improvement={mathChange}
-                  type="math"
-                />
-              </div>
-            </div>
-            <PredictedScore
-              verbalScore={averageVerbal}
-              mathScore={averageMath}
-            />
-          </div>
+          <PredictedScore verbalScore={averageVerbal} mathScore={averageMath} />
+
           <div className="chart-bar-section">
             <div className="chart-header">
               <h3 className="chart-title">Last {examCount} Mock Exams</h3>
@@ -284,6 +264,7 @@ export default function ScoreColumnGraph() {
                     />
                   ))}
                 </Bar>
+
                 {hoveredValue && (
                   <line
                     {...getLineCoordinates(hoveredValue)}
@@ -295,6 +276,22 @@ export default function ScoreColumnGraph() {
                 )}
               </BarChart>
             </ResponsiveContainer>
+            <div className="score-boxes">
+              <div className="score-boxes-inner">
+                <ScoreBox
+                  title="Verbal"
+                  score={verbalAverage.toFixed(0)}
+                  improvement={verbalChange}
+                  type="verbal"
+                />
+                <ScoreBox
+                  title="Math"
+                  score={mathAverage.toFixed(0)}
+                  improvement={mathChange}
+                  type="math"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
