@@ -4,7 +4,35 @@ import "./ContinueLearning.css";
 const ContinueLearning = ({ courses }) => {
   return (
     <div className="continue-learning">
-      <h2>Pick up where you left off</h2>
+      <div className="continue-learning-header">
+        <h2>Continue Learning</h2>
+        <div className="quick-actions">
+          <button className="action-button quiz">
+            <div className="action-icon">
+              <i className="fas fa-clipboard-question"></i>
+            </div>
+            <span>Take Quiz</span>
+          </button>
+          <button className="action-button mock">
+            <div className="action-icon">
+              <i className="fas fa-file-pen"></i>
+            </div>
+            <span>Mock Exam</span>
+          </button>
+          <button className="action-button flashcards">
+            <div className="action-icon">
+              <i className="fas fa-layer-group"></i>
+            </div>
+            <span>Flashcards</span>
+          </button>
+          <button className="action-button mini-tests">
+            <div className="action-icon">
+              <i className="fas fa-vial-circle-check"></i>
+            </div>
+            <span>Mini Tests</span>
+          </button>
+        </div>
+      </div>
       <div className="course-cards">
         {courses.map((course) => (
           <div
