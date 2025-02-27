@@ -21,6 +21,7 @@
   border: 1px solid #dddddd; /* Updated light mode border */
   border-radius: 16px;
   padding: 12px;
+  padding-top: 8px;
   background-color: var(--bg-primary);
 }
 
