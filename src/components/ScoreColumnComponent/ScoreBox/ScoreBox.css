@@ -72,7 +72,7 @@ span.score-box-title-type.math {
 .score-box {
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
   color: var(--text-primary);
   padding: 10px;
   box-shadow: none;

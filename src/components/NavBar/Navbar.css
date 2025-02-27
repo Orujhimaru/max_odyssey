@@ -7,7 +7,7 @@
   position: fixed;
   height: calc(100% - 24px);
   width: 84px; /* Start collapsed */
-  background-color: #1b1b1b; /* Dark background */
+  background-color: var(--bg-primary); /* Dark background */
   padding: 12px; /* Added horizontal padding */
   left: 6px; /* Left margin */
   top: 12px;
