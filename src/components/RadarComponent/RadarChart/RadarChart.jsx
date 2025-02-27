@@ -192,6 +192,121 @@ export default function RadarChart({
               height={250}
               viewBox="25 25 250 250"
             >
+              <defs>
+                <radialGradient
+                  id="scoreGradientMath"
+                  cx="50%"
+                  cy="50%"
+                  r="50%"
+                  fx="50%"
+                  fy="50%"
+                  spreadMethod="pad"
+                >
+                  <stop offset="0%" stopColor="#456bc4" stopOpacity="0.7" />
+                  <stop offset="50%" stopColor="#7a96d4" stopOpacity="0.7" />
+                  <stop offset="100%" stopColor="#5c7fd0" stopOpacity="0.6" />
+                </radialGradient>
+              </defs>
+              <g>{gridLevels}</g>
+              <g>{radialLines}</g>
+              <polygon
+                key={`area-2-${animationKey}`}
+                points={getScorePoints(mathSkills.map((s) => s.score))
+                  .map((p) => `${p.x},${p.y}`)
+                  .join(" ")}
+                className="score-area"
+                fill="url(#scoreGradientMath)"
+                style={{
+                  "--duration": `${getMaxDuration()}s`,
+                  "--delay": `${getMaxDuration()}s`,
+                }}
+              />
+              <polygon
+                key={`blend-2-${animationKey}`}
+                points={getScorePoints(mathSkills.map((s) => s.score))
+                  .map((p) => `${p.x},${p.y}`)
+                  .join(" ")}
+                className="score-area math-blend"
+                fill="#456bc4"
+                fillOpacity="0.4"
+                style={{
+                  "--duration": `${getMaxDuration()}s`,
+                  "--delay": `${getMaxDuration()}s`,
+                }}
+              />
+              <polygon
+                key={`stroke-2-${animationKey}`}
+                points={getScorePoints(mathSkills.map((s) => s.score))
+                  .map((p) => `${p.x},${p.y}`)
+                  .join(" ")}
+                fill="none"
+                stroke="#456bc4"
+                strokeWidth="1"
+                className="score-area"
+                style={{
+                  "--duration": "0.3s",
+                  "--delay": `${getMaxDuration()}s`,
+                }}
+              />
+              <g>{labels}</g>
+              {getScorePoints(mathSkills.map((s) => s.score)).map((p, i) => (
+                <circle
+                  key={`point-2-${i}-${animationKey}`}
+                  cx={centerX}
+                  cy={centerY}
+                  r={2.5}
+                  className="score-point"
+                  fill="#456bc4"
+                  style={{
+                    "--target-x": p.x,
+                    "--target-y": p.y,
+                    "--start-x": centerX,
+                    "--start-y": centerY,
+                    "--duration": `${getDuration(mathSkills[i].score)}s`,
+                  }}
+                />
+              ))}
+            </svg>
+            <div className="skill-stack">
+              {mathSkills.map((skill) => (
+                <div key={skill.id} className="skill-item">
+                  <div className="skill-header">
+                    <div className="skill-label">
+                      <div className="skill-number">{skill.id}</div>
+                      <div className="skill-name">{skill.name}</div>
+                    </div>
+                    <div
+                      className="skill-score"
+                      style={{
+                        color: "#fff",
+                      }}
+                    >
+                      {skill.score}%
+                    </div>
+                  </div>
+                  <div className="skill-progress-container">
+                    <div
+                      className="skill-progress"
+                      style={{
+                        width: `${skill.score}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="chart-section">
+            <div className="skill-section-header math">
+              <i className="fas fa-square-root-variable"></i>
+              Math Skills
+            </div>
+            <svg
+              className="radar-chart-component"
+              width={250}
+              height={250}
+              viewBox="25 25 250 250"
+            >
               {/* Update gradient definitions */}
               <defs>
                 <radialGradient
@@ -206,17 +321,17 @@ export default function RadarChart({
                   <stop
                     offset="0%"
                     stopColor={gradientColors.start}
-                    stopOpacity="0.6"
+                    stopOpacity="0.5"
                   />
                   <stop
                     offset="50%"
                     stopColor={gradientColors.middle}
-                    stopOpacity="0.5"
+                    stopOpacity="0.4"
                   />
                   <stop
                     offset="100%"
                     stopColor={gradientColors.end}
-                    stopOpacity="0.4"
+                    stopOpacity="0.3"
                   />
                 </radialGradient>
                 <radialGradient
@@ -316,145 +431,6 @@ export default function RadarChart({
             </svg>
             <div className="skill-stack">
               {skills.map((skill) => (
-                <div key={skill.id} className="skill-item">
-                  <div className="skill-header">
-                    <div className="skill-label">
-                      <div className="skill-number">{skill.id}</div>
-                      <div className="skill-name">{skill.name}</div>
-                    </div>
-                    <div
-                      className="skill-score"
-                      style={{
-                        color: "#fff",
-                      }}
-                    >
-                      {skill.score}%
-                    </div>
-                  </div>
-                  <div className="skill-progress-container">
-                    <div
-                      className="skill-progress"
-                      style={{
-                        width: `${skill.score}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="chart-section">
-            <div className="skill-section-header math">
-              <i className="fas fa-square-root-variable"></i>
-              Math Skills
-            </div>
-            <svg
-              className="radar-chart-component"
-              width={250}
-              height={250}
-              viewBox="25 25 250 250"
-            >
-              {/* Update gradient definitions */}
-              <defs>
-                <radialGradient
-                  id="scoreGradientMath"
-                  cx="50%"
-                  cy="50%"
-                  r="50%"
-                  fx="50%"
-                  fy="50%"
-                  spreadMethod="pad"
-                >
-                  <stop offset="0%" stopColor="#c41e3a" stopOpacity="0.6" />{" "}
-                  {/* Rich crimson */}
-                  <stop
-                    offset="50%"
-                    stopColor="#d32f2f"
-                    stopOpacity="0.5"
-                  />{" "}
-                  {/* Bright red */}
-                  <stop
-                    offset="100%"
-                    stopColor="#ef5350"
-                    stopOpacity="0.4"
-                  />{" "}
-                  {/* Light red */}
-                </radialGradient>
-              </defs>
-
-              {/* Background grid */}
-              <g>{gridLevels}</g>
-              <g>{radialLines}</g>
-
-              {/* Math skills polygon */}
-              <polygon
-                key={`area-2-${animationKey}`}
-                points={getScorePoints(mathSkills.map((s) => s.score))
-                  .map((p) => `${p.x},${p.y}`)
-                  .join(" ")}
-                className="score-area"
-                fill="url(#scoreGradientMath)"
-                style={{
-                  "--duration": `${getMaxDuration()}s`,
-                  "--delay": `${getMaxDuration()}s`,
-                }}
-              />
-
-              {/* Add blend mode layer */}
-              <polygon
-                key={`blend-2-${animationKey}`}
-                points={getScorePoints(mathSkills.map((s) => s.score))
-                  .map((p) => `${p.x},${p.y}`)
-                  .join(" ")}
-                className="score-area math-blend"
-                fill="#c41e3a" // Updated to rich crimson
-                fillOpacity="0.4"
-                style={{
-                  "--duration": `${getMaxDuration()}s`,
-                  "--delay": `${getMaxDuration()}s`,
-                }}
-              />
-
-              {/* Second chart polygon stroke */}
-              <polygon
-                key={`stroke-2-${animationKey}`}
-                points={getScorePoints(mathSkills.map((s) => s.score))
-                  .map((p) => `${p.x},${p.y}`)
-                  .join(" ")}
-                fill="none"
-                stroke="#c41e3a" // Rich crimson for outline
-                strokeWidth="1"
-                className="score-area"
-                style={{
-                  "--duration": "0.3s",
-                  "--delay": `${getMaxDuration()}s`,
-                }}
-              />
-
-              {/* Labels */}
-              <g>{labels}</g>
-
-              {/* Update score points color */}
-              {getScorePoints(mathSkills.map((s) => s.score)).map((p, i) => (
-                <circle
-                  key={`point-2-${i}-${animationKey}`}
-                  cx={centerX}
-                  cy={centerY}
-                  r={2.5}
-                  className="score-point"
-                  fill="#c41e3a" // Rich crimson for points
-                  style={{
-                    "--target-x": p.x,
-                    "--target-y": p.y,
-                    "--start-x": centerX,
-                    "--start-y": centerY,
-                    "--duration": `${getDuration(mathSkills[i].score)}s`,
-                  }}
-                />
-              ))}
-            </svg>
-            <div className="skill-stack">
-              {mathSkills.map((skill) => (
                 <div key={skill.id} className="skill-item">
                   <div className="skill-header">
                     <div className="skill-label">

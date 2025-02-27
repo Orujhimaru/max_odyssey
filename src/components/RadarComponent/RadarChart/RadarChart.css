@@ -58,11 +58,7 @@
   animation-delay: var(--delay);
   transform-origin: center;
   opacity: 0;
-  /* mix-blend-mode: color-burn; */
-}
-
-[data-theme="dark"] .score-area {
-  /* mix-blend-mode: multiply !important; */
+  /* mix-blend-mode: darken; */
 }
 
 .score-point {
