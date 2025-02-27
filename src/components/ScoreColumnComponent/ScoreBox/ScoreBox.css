@@ -53,11 +53,23 @@ span.score-box-title-type.math {
   justify-content: flex-end;
   align-items: baseline;
   gap: 0;
-  /* margin-bottom: 24px; */
   position: relative;
   padding: 2px;
   border-radius: 10px;
-  background: linear-gradient(90deg, #456bc4, #4270da);
+  background: conic-gradient(from var(--angle), #3b5fa4, #adc6ff, #2d5bc7);
+  animation: rotate-gradient 2s linear infinite;
+}
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotate-gradient {
+  to {
+    --angle: 360deg;
+  }
 }
 
 /* Container for both boxes */
@@ -67,6 +79,8 @@ span.score-box-title-type.math {
   border-radius: 8px;
   width: 100%;
   padding: 1px;
+  position: relative;
+  z-index: 1;
 }
 
 .score-box {

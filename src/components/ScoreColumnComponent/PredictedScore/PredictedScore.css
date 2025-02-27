@@ -116,7 +116,7 @@
 }
 .digital-sat {
   background-color: var(--bg-primary);
-  border: 2px solid var(--text-primary);
+  border: 1px solid var(--text-primary);
   border-radius: 4px;
   padding: 2px 4px;
   font-size: 14px;
