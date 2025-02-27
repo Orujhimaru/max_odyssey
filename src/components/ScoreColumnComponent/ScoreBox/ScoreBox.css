@@ -20,12 +20,12 @@
 }
 
 span.score-box-title-type.verbal {
-  color: var(--verbal-color);
+  color: var(--bar-verbal-color);
   font-size: 18px;
   line-height: 14px;
 }
 span.score-box-title-type.math {
-  color: var(--math-color);
+  color: var(--bar--math-color);
   font-size: 18px;
   line-height: 14px;
 }
