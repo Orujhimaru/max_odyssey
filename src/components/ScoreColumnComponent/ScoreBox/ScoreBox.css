@@ -19,15 +19,39 @@
   box-shadow: 0 4px 8px var(--box-shadow);
 }
 
+.score-box h2 {
+  font-size: 16px;
+  line-height: 14px;
+  white-space: nowrap;
+  display: flex;
+  gap: 4px;
+  align-items: baseline;
+}
+
 span.score-box-title-type.verbal {
   color: var(--bar-verbal-color);
   font-size: 18px;
-  line-height: 14px;
+  line-height: 18px;
+  transition: font-size 0.3s ease;
 }
+
 span.score-box-title-type.math {
   color: var(--bar--math-color);
   font-size: 18px;
+  line-height: 18px;
+  transition: font-size 0.3s ease;
+}
+
+span.score-box-title-type.highlighted {
+  font-size: 22px;
+  line-height: 22px;
+  font-weight: 600;
+}
+
+.score-box h2 span:last-child {
+  font-size: 14px;
   line-height: 14px;
+  opacity: 0.7;
 }
 
 .score-value {
@@ -42,6 +66,17 @@ span.score-box-title-type.math {
   gap: 6px;
   width: 90px;
   box-sizing: content-box;
+}
+
+.score {
+  color: inherit;
+  transition: font-size 0.3s ease;
+  font-size: 16px;
+}
+
+.score.highlighted {
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .score.verbal,

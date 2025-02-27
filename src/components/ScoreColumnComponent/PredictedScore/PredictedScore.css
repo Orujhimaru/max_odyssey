@@ -189,7 +189,7 @@
     gap: 12px;
   }
   .score-boxes-inner {
-    flex-direction: column;
+    /* flex-direction: column; */
   }
   .predicted-score-container {
     width: 100%;

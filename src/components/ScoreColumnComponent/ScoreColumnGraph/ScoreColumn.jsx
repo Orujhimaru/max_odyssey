@@ -283,12 +283,14 @@ export default function ScoreColumnGraph() {
                   score={verbalAverage.toFixed(0)}
                   improvement={verbalChange}
                   type="verbal"
+                  isHighlighted={hoveredBar === "verbal"}
                 />
                 <ScoreBox
                   title="Math"
                   score={mathAverage.toFixed(0)}
                   improvement={mathChange}
                   type="math"
+                  isHighlighted={hoveredBar === "math"}
                 />
               </div>
             </div>

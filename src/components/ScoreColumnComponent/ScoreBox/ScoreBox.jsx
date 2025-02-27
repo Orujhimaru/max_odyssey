@@ -1,13 +1,19 @@
 import React from "react";
 import "./ScoreBox.css";
 
-const ScoreBox = ({ title, score, improvement, type }) => {
+const ScoreBox = ({ title, score, improvement, type, isHighlighted }) => {
   const isIncrease = improvement >= 0;
 
   return (
     <div className={`score-box ${type}`}>
       <h2>
-        <span className={`score-box-title-type ${type}`}>{title}</span>
+        <span
+          className={`score-box-title-type ${type} ${
+            isHighlighted ? "highlighted" : ""
+          }`}
+        >
+          {title}
+        </span>
         <span>average</span>
       </h2>
       <div className={`score-row ${type}`}>
