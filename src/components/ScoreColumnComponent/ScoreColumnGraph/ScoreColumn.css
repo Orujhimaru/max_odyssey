@@ -220,6 +220,12 @@ tspan {
   /* margin-bottom: 12px; */
 }
 
+.performance-column {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+}
+
 .chart-title {
   /* font-family: "DM Sans", sans-serif; */
   font-size: 16px;

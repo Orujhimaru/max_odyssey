@@ -1,0 +1,127 @@
+.insights-container {
+  margin: 12px 0;
+  padding: 12px;
+  background-color: var(--bg-secondary);
+  border-radius: 16px;
+  box-shadow: rgba(0, 0, 0, 0.12) -0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  background-image: radial-gradient(#e8e8e854 0.3px, var(--bg-secondary) 0.4px);
+  background-size: 10px 10px;
+}
+
+.insights-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.insights-header h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.time-selector {
+  display: flex;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--text-primary);
+  opacity: 0.7;
+}
+
+.time-selector span {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.time-selector span.active {
+  color: var(--verbal-color);
+  opacity: 1;
+}
+
+.time-selector span:hover {
+  opacity: 1;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.insight-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background-color: var(--bg-primary);
+  border-radius: 12px;
+  transition: transform 0.2s ease;
+  border: 1px solid var(--border-color);
+}
+
+.insight-card:hover {
+  transform: translateY(-2px);
+}
+
+.insight-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, var(--verbal-color), #7a96d4);
+  color: white;
+}
+
+.insight-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.insight-label {
+  font-size: 14px;
+  color: var(--text-primary);
+  opacity: 0.7;
+}
+
+.insight-value {
+  font-family: "DM Sans", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.insight-value.positive {
+  color: var(--increase-color);
+}
+
+.insight-period {
+  font-size: 14px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.trend {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.trend.positive {
+  color: var(--increase-color);
+}
+
+.trend.negative {
+  color: var(--decrease-color);
+}
+
+@media (max-width: 1180px) {
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+}

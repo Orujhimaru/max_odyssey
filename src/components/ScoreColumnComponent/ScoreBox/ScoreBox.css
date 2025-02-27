@@ -11,6 +11,7 @@
   /* text-align: center; */
   border: 2px solid var(--border-color);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 140px;
 }
 
 .score-box:hover,
@@ -24,34 +25,42 @@
   line-height: 14px;
   white-space: nowrap;
   display: flex;
-  gap: 4px;
+  gap: 6px;
   align-items: baseline;
+  height: 22px;
+  width: 100%;
+  overflow: hidden;
+}
+
+span.score-box-title-type.verbal,
+span.score-box-title-type.math {
+  width: 55px;
+  display: inline-block;
+  transition: font-size 0.3s ease, margin-right 0.3s ease;
+  transform-origin: left bottom;
 }
 
 span.score-box-title-type.verbal {
   color: var(--bar-verbal-color);
   font-size: 18px;
-  line-height: 18px;
-  transition: font-size 0.3s ease;
 }
 
 span.score-box-title-type.math {
   color: var(--bar--math-color);
   font-size: 18px;
-  line-height: 18px;
-  transition: font-size 0.3s ease;
 }
 
 span.score-box-title-type.highlighted {
   font-size: 22px;
-  line-height: 22px;
   font-weight: 600;
+  margin-right: 4px;
 }
 
 .score-box h2 span:last-child {
   font-size: 14px;
   line-height: 14px;
   opacity: 0.7;
+  transition: margin-left 0.3s ease;
 }
 
 .score-value {
@@ -133,7 +142,7 @@ span.score-box-title-type.highlighted {
   padding: 10px;
   box-shadow: none;
   border: none;
-  /* width: 140px; */
+  width: 140px;
 }
 
 /* Remove hover effects from individual boxes */

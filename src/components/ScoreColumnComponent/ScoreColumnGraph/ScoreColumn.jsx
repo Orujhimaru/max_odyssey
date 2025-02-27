@@ -12,6 +12,7 @@ import {
 import ScoreBox from "../ScoreBox/ScoreBox";
 import "./ScoreColumn.css";
 import PredictedScore from "../PredictedScore/PredictedScore";
+import PerformanceInsights from "../../PerformanceInsights/PerformanceInsights";
 
 const data = [
   { date: "Sep 25", verbal: 520, math: 500 },
@@ -144,11 +145,16 @@ export default function ScoreColumnGraph() {
 
   return (
     <>
-      <h2 className="scores-header-text ">Score report</h2>
+      <h2 className="scores-header-text">Score report</h2>
       <div className="score-column-container">
         <div className="chart-container">
-          <PredictedScore verbalScore={averageVerbal} mathScore={averageMath} />
-
+          <div className="performance-column">
+            <PredictedScore
+              verbalScore={averageVerbal}
+              mathScore={averageMath}
+            />
+            <PerformanceInsights />
+          </div>
           <div className="chart-bar-section">
             <div className="chart-header">
               <h3 className="chart-title">Last {examCount} Mock Exams</h3>

@@ -19,12 +19,21 @@
 .dashboard-right {
   height: 100%;
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  flex-direction: column;
   border: 1px solid #dddddd; /* Updated light mode border */
   border-radius: 16px;
   padding: 12px;
   padding-top: 8px;
   background-color: var(--bg-primary);
+}
+
+.dashboard-right .profile-section {
+  border: none;
+  padding: 10px;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
 }
 
 /* Update dark mode override */

@@ -3,6 +3,7 @@ import RadarChart from "../../components/RadarComponent/RadarChart/RadarChart";
 import ScoreColumnGraph from "../../components/ScoreColumnComponent/ScoreColumnGraph/ScoreColumn";
 import { coursesProgress } from "../../data/courseProgress";
 import ContinueLearning from "../../components/ContinueLearning/ContinueLearning";
+import ProfileSection from "../../components/ProfileSection/ProfileSection";
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -13,6 +14,7 @@ const Dashboard = () => {
         <ScoreColumnGraph />
       </div>
       <div className="dashboard-right">
+        <ProfileSection />
         <RadarChart scores={[99, 75, 65, 79, 83, 63, 9]} />
       </div>
     </div>
