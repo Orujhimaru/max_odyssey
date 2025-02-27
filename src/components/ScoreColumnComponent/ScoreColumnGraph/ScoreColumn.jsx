@@ -166,128 +166,133 @@ export default function ScoreColumnGraph() {
               mathScore={averageMath}
             />
           </div>
-          <ResponsiveContainer width="100%" height={350} ref={chartRef}>
-            <BarChart
-              data={displayData}
-              margin={{
-                top: 20,
-                right: 10,
-                left: 20,
-                bottom: 20,
-              }}
-              barGap={1}
-              barCategoryGap="10%"
-              barSize={27}
-              layout="horizontal"
-            >
-              <CartesianGrid
-                horizontal={true}
-                vertical={false}
-                stroke="#94a3b820"
-                strokeWidth={0.5}
-              />
-              <XAxis
-                dataKey="date"
-                stroke="#94a3b8"
-                tick={{ fill: "#94a3b8", className: "x-axis-tick" }}
-                axisLine={false}
-                tickSize={0}
-                dy={10}
-              />
-              <YAxis
-                domain={[0, 800]}
-                stroke="#94a3b8"
-                tick={{
-                  fill: "#94a3b8",
-                  fontSize: 14,
-                  opacity: hoveredValue ? 0.2 : 1,
-                  transition: "opacity 0.2s ease-in-out",
+          <div className="chart-bar-section">
+            <div className="chart-header">
+              <h3 className="chart-title">Last 7 Mock Exams</h3>
+            </div>
+            <ResponsiveContainer width="100%" height={350} ref={chartRef}>
+              <BarChart
+                data={displayData}
+                margin={{
+                  top: 20,
+                  right: 10,
+                  left: 20,
+                  bottom: 20,
                 }}
-                ticks={[0, 400, 800]}
-                axisLine={false}
-                tickSize={10}
-                width={35}
+                barGap={1}
+                barCategoryGap="10%"
+                barSize={27}
+                layout="horizontal"
               >
+                <CartesianGrid
+                  horizontal={true}
+                  vertical={false}
+                  stroke="#94a3b820"
+                  strokeWidth={0.5}
+                />
+                <XAxis
+                  dataKey="date"
+                  stroke="#94a3b8"
+                  tick={{ fill: "#94a3b8", className: "x-axis-tick" }}
+                  axisLine={false}
+                  tickSize={0}
+                  dy={10}
+                />
+                <YAxis
+                  domain={[0, 800]}
+                  stroke="#94a3b8"
+                  tick={{
+                    fill: "#94a3b8",
+                    fontSize: 14,
+                    opacity: hoveredValue ? 0.2 : 1,
+                    transition: "opacity 0.2s ease-in-out",
+                  }}
+                  ticks={[0, 400, 800]}
+                  axisLine={false}
+                  tickSize={10}
+                  width={35}
+                >
+                  {hoveredValue && (
+                    <Label
+                      value={hoveredValue}
+                      position="top"
+                      offset={10}
+                      style={{
+                        transform: `translateY(${getLabelYCoordinate(
+                          hoveredValue
+                        )}px)`,
+                        fontWeight: 500,
+                      }}
+                    />
+                  )}
+                </YAxis>
+
+                <Bar
+                  name="verbal"
+                  dataKey="verbal"
+                  fill="var(--bar-verbal-color)"
+                  radius={[4, 4, 0, 0]}
+                  isAnimationActive={false}
+                  onMouseEnter={(data, index) => {
+                    setHoveredIndex(index);
+                    setHoveredValue(data.verbal);
+                    setHoveredBar("verbal");
+                  }}
+                  onMouseLeave={() => {
+                    setHoveredIndex(null);
+                    setHoveredValue(null);
+                    setHoveredBar(null);
+                  }}
+                >
+                  {data.map((entry, index) => (
+                    <Cell
+                      key={`verbal-${index}`}
+                      style={{ transition: "opacity 0.3s ease-in-out" }}
+                      opacity={
+                        hoveredBar === "verbal" || hoveredBar === null ? 1 : 0.2
+                      }
+                    />
+                  ))}
+                </Bar>
+                <Bar
+                  name="math"
+                  dataKey="math"
+                  fill="var(--bar-math-color)"
+                  radius={[4, 4, 0, 0]}
+                  isAnimationActive={false}
+                  onMouseEnter={(data, index) => {
+                    setHoveredIndex(index);
+                    setHoveredValue(data.math);
+                    setHoveredBar("math");
+                  }}
+                  onMouseLeave={() => {
+                    setHoveredIndex(null);
+                    setHoveredValue(null);
+                    setHoveredBar(null);
+                  }}
+                >
+                  {data.map((entry, index) => (
+                    <Cell
+                      key={`math-${index}`}
+                      style={{ transition: "opacity 0.3s ease-in-out" }}
+                      opacity={
+                        hoveredBar === "math" || hoveredBar === null ? 1 : 0.2
+                      }
+                    />
+                  ))}
+                </Bar>
                 {hoveredValue && (
-                  <Label
-                    value={hoveredValue}
-                    position="top"
-                    offset={10}
-                    style={{
-                      transform: `translateY(${getLabelYCoordinate(
-                        hoveredValue
-                      )}px)`,
-                      fontWeight: 500,
-                    }}
+                  <line
+                    {...getLineCoordinates(hoveredValue)}
+                    stroke="var(--bar-math-line-color)"
+                    strokeWidth={1}
+                    strokeDasharray="4"
+                    className="score-guide-line"
                   />
                 )}
-              </YAxis>
-
-              <Bar
-                name="verbal"
-                dataKey="verbal"
-                fill="var(--bar-verbal-color)"
-                radius={[4, 4, 0, 0]}
-                isAnimationActive={false}
-                onMouseEnter={(data, index) => {
-                  setHoveredIndex(index);
-                  setHoveredValue(data.verbal);
-                  setHoveredBar("verbal");
-                }}
-                onMouseLeave={() => {
-                  setHoveredIndex(null);
-                  setHoveredValue(null);
-                  setHoveredBar(null);
-                }}
-              >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`verbal-${index}`}
-                    style={{ transition: "opacity 0.3s ease-in-out" }}
-                    opacity={
-                      hoveredBar === "verbal" || hoveredBar === null ? 1 : 0.2
-                    }
-                  />
-                ))}
-              </Bar>
-              <Bar
-                name="math"
-                dataKey="math"
-                fill="var(--bar-math-color)"
-                radius={[4, 4, 0, 0]}
-                isAnimationActive={false}
-                onMouseEnter={(data, index) => {
-                  setHoveredIndex(index);
-                  setHoveredValue(data.math);
-                  setHoveredBar("math");
-                }}
-                onMouseLeave={() => {
-                  setHoveredIndex(null);
-                  setHoveredValue(null);
-                  setHoveredBar(null);
-                }}
-              >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`math-${index}`}
-                    style={{ transition: "opacity 0.3s ease-in-out" }}
-                    opacity={
-                      hoveredBar === "math" || hoveredBar === null ? 1 : 0.2
-                    }
-                  />
-                ))}
-              </Bar>
-              {hoveredValue && (
-                <line
-                  {...getLineCoordinates(hoveredValue)}
-                  stroke="var(--bar-math-line-color)"
-                  strokeWidth={1}
-                  strokeDasharray="4"
-                  className="score-guide-line"
-                />
-              )}
-            </BarChart>
-          </ResponsiveContainer>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
     </>

@@ -14,7 +14,7 @@
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   border: 1px solid #dddddd; /* Updated light mode border */
-  /* gap: 8px; */
+  /* gap: 4px; */
   overflow: hidden;
 }
 
@@ -32,14 +32,6 @@
 
 .recharts-text {
   fill: var(--chart-text);
-}
-
-.chart-title {
-  color: var(--text-color);
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 24px;
-  text-align: center;
 }
 
 path[class="recharts-rectangle recharts-tooltip-cursor"] {
@@ -106,7 +98,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   width: 100%;
   box-sizing: content-box;
   display: flex;
-  max-height: 350px;
+  height: 100%;
 }
 
 .recharts-responsive-container {
@@ -115,7 +107,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   margin-top: auto;
   width: 100% !important;
   max-width: 750px;
-  height: 350px !important;
+  height: 100% !important;
 }
 
 .recharts-wrapper {
@@ -153,6 +145,14 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   /* Your styles here */
 }
 
+.score-header-flex {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+}
+
 .color-pickers {
   margin-bottom: 24px;
   padding: 16px;
@@ -164,6 +164,13 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   color: var(--text-color);
   font-size: 16px;
   margin: 16px 0 8px;
+}
+
+.chart-bar-section {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .x-axis-tick {
@@ -242,4 +249,20 @@ tspan {
   .score-box.verbal {
     /* flex-direction: column; */
   }
+}
+
+.chart-header {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  /* margin-bottom: 12px; */
+}
+
+.chart-title {
+  /* font-family: "DM Sans", sans-serif; */
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+  padding-left: 20px;
+  padding-top: 16px;
 }
