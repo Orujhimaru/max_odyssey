@@ -34,7 +34,7 @@ span.score-box-title-type.math {
 .score-row {
   font-family: "DM Sans", serif;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-start;
   gap: 6px;
 }
@@ -221,7 +221,7 @@ span.score-box-title-type.math {
     flex: 1;
     flex-direction: row;
     padding-right: 10px;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     align-items: center;
     justify-content: space-between;
     /* align-self: center; */
@@ -236,7 +236,7 @@ span.score-box-title-type.math {
 
   .score-box.verbal {
     flex-direction: row;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     justify-content: space-between;
 
     /* width: none; */
