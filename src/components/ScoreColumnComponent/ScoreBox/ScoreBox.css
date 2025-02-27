@@ -1,6 +1,7 @@
 .score-box {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   padding: 10px;
@@ -21,10 +22,12 @@
 span.score-box-title-type.verbal {
   color: var(--verbal-color);
   font-size: 18px;
+  line-height: 14px;
 }
 span.score-box-title-type.math {
   color: var(--math-color);
   font-size: 18px;
+  line-height: 14px;
 }
 
 .score-value {
@@ -35,8 +38,10 @@ span.score-box-title-type.math {
   font-family: "DM Sans", serif;
   display: flex;
   align-items: flex-end;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 6px;
+  width: 90px;
+  box-sizing: content-box;
 }
 
 .score.verbal,
@@ -48,13 +53,15 @@ span.score-box-title-type.math {
 }
 
 .score-boxes {
-  width: 100%;
+  /* width: 100%; */
+
   display: flex;
   justify-content: flex-end;
   align-items: baseline;
+  align-self: flex-end;
   gap: 0;
   position: relative;
-  padding: 2px;
+  padding: 3px;
   border-radius: 10px;
   background: conic-gradient(from var(--angle), #3b5fa4, #adc6ff, #2d5bc7);
   animation: rotate-gradient 2s linear infinite;
@@ -77,7 +84,7 @@ span.score-box-title-type.math {
   display: flex;
   background-color: var(--bg-secondary);
   border-radius: 8px;
-  width: 100%;
+  /* width: 100%; */
   padding: 1px;
   position: relative;
   z-index: 1;
@@ -131,7 +138,7 @@ span.score-box-title-type.math {
 
 .score-row.math {
   align-self: flex-end;
-  padding-right: 23px;
+  padding-right: 13px;
 }
 
 /* Update dark mode styles */
@@ -144,9 +151,17 @@ span.score-box-title-type.math {
 }
 .score-box.verbal h2 {
   font-size: 16px;
+  line-height: 14px;
+  white-space: nowrap;
+  display: flex;
+  gap: 4px;
 }
 .score-box.math h2 {
   font-size: 16px;
+  line-height: 14px;
+  white-space: nowrap;
+  display: flex;
+  gap: 4px;
 }
 .score-box.math {
   align-items: flex-end;

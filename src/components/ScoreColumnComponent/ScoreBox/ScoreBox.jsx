@@ -7,7 +7,8 @@ const ScoreBox = ({ title, score, improvement, type }) => {
   return (
     <div className={`score-box ${type}`}>
       <h2>
-        <span className={`score-box-title-type ${type}`}>{title}</span> average
+        <span className={`score-box-title-type ${type}`}>{title}</span>
+        <span>average</span>
       </h2>
       <div className={`score-row ${type}`}>
         <h3 className={`score ${type}`}>{score}</h3>

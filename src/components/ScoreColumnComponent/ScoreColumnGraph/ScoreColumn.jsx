@@ -45,6 +45,7 @@ export default function ScoreColumnGraph() {
   const [hoveredValue, setHoveredValue] = useState(null);
   const [hoveredBar, setHoveredBar] = useState(null);
   const [displayData, setDisplayData] = useState(data);
+  const [examCount, setExamCount] = useState(7);
 
   // Add this ref to get chart container dimensions
   const chartRef = useRef(null);
@@ -54,9 +55,11 @@ export default function ScoreColumnGraph() {
       if (window.innerWidth <= 1180) {
         // Show only last 5 entries when screen is smaller
         setDisplayData(data.slice(-5));
+        setExamCount(5);
       } else {
         // Show all data when screen is larger
         setDisplayData(data);
+        setExamCount(7);
       }
     };
 
@@ -168,7 +171,7 @@ export default function ScoreColumnGraph() {
           </div>
           <div className="chart-bar-section">
             <div className="chart-header">
-              <h3 className="chart-title">Last 7 Mock Exams</h3>
+              <h3 className="chart-title">Last {examCount} Mock Exams</h3>
             </div>
             <ResponsiveContainer width="100%" height={350} ref={chartRef}>
               <BarChart
