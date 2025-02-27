@@ -183,7 +183,7 @@ export default function RadarChart({
         <div className={`charts-slider ${isSecondChartVisible ? "slide" : ""}`}>
           <div className="chart-section">
             <div className="skill-section-header verbal">
-              <i className="fas fa-book-open"></i>
+              <i className="fas fa-quote-left"></i>
               Verbal Skills
             </div>
             <svg
