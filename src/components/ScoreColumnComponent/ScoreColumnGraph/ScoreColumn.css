@@ -226,7 +226,7 @@ tspan {
   font-weight: 500;
   color: var(--text-primary);
   padding-left: 20px;
-  padding-top: 16px;
+  padding-top: 13px;
 }
 
 .score-box.math,

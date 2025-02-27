@@ -12,6 +12,8 @@
 .dashboard-left {
   flex: 2; /* This will make it take available space */
   min-width: 0; /* Important for flex items to shrink properly */
+  display: flex;
+  flex-direction: column;
 }
 
 .dashboard-right {
