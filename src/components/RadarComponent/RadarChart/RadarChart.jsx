@@ -182,6 +182,10 @@ export default function RadarChart({
       <div className="charts-wrapper">
         <div className={`charts-slider ${isSecondChartVisible ? "slide" : ""}`}>
           <div className="chart-section">
+            <div className="skill-section-header verbal">
+              <i className="fas fa-book"></i>
+              Verbal Skills
+            </div>
             <svg
               className="radar-chart-component"
               width={250}
@@ -340,6 +344,10 @@ export default function RadarChart({
             </div>
           </div>
           <div className="chart-section">
+            <div className="skill-section-header math">
+              <i className="fas fa-square-root-variable"></i>
+              Math Skills
+            </div>
             <svg
               className="radar-chart-component"
               width={250}

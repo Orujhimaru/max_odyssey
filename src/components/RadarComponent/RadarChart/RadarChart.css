@@ -218,7 +218,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 6npx;
-  padding: 0 12px;
 }
 
 .radar-header h3 {
@@ -282,4 +281,22 @@
 [data-theme="dark"] .math-blend {
   mix-blend-mode: color-burn; /* Dark mode override */
   filter: none;
+}
+
+.skill-section-header {
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.skill-section-header.verbal {
+  /* color: #456bc4; */
+}
+
+.skill-section-header.math {
+  color: var(--math-color);
 }

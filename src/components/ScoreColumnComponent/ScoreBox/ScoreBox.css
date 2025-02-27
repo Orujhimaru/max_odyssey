@@ -19,7 +19,7 @@
 }
 
 span.score-box-title-type.verbal {
-  color: #456bc4;
+  color: var(--verbal-color);
   font-size: 18px;
 }
 span.score-box-title-type.math {
