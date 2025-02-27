@@ -13,7 +13,7 @@ const ContinueLearning = ({ courses }) => {
             style={{ backgroundImage: `url(${course.background})` }}
           >
             <div className="course-type">
-              <i className="fas fa-book"></i>
+              <i className="fas fa-book-open"></i>
               <span>{course.type}</span>
             </div>
 

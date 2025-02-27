@@ -259,7 +259,7 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 4px;
 }
 
 /* Remove the bottom skill-stack from outside the slider */
