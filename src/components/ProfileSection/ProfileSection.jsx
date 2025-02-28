@@ -42,8 +42,10 @@ const ProfileSection = () => {
             <span>Target Score</span>
             <i className="fas fa-bullseye"></i>
           </div>
-          <div className="goal-score">1520</div>
-          <div className="score-range">(1000-1600)</div>
+          <div>
+            <div className="goal-score">1520</div>
+            <div className="score-range">(1000-1600)</div>
+          </div>
         </div>
       </div>
     </div>

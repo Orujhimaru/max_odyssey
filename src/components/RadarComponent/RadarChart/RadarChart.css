@@ -101,7 +101,7 @@
 }
 
 .radar-chart-container {
-  margin-top: auto;
+  margin-top: 42px;
   width: 100%;
   height: fit-content;
   max-width: 250px;
