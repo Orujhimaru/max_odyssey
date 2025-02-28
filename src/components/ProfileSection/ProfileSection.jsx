@@ -1,22 +1,38 @@
 import React from "react";
+import peasantAvatar from "../../assets/peasent.svg";
 import "./ProfileSection.css";
 
 const ProfileSection = () => {
+  const predictedScore = 1520; // We'll use this to determine avatar
+
+  const getAvatarByScore = (score) => {
+    // This will be expanded as more avatars are added
+    if (score < 1600) {
+      return {
+        image: peasantAvatar,
+        rank: "Peasant",
+        color: "#B87A3D", // Bronze-ish color for peasant rank
+      };
+    }
+    // Future ranks will be added here
+    // e.g., 1600-1700: Gladiator
+    // 1700+: Senator, etc.
+  };
+
+  const userRank = getAvatarByScore(predictedScore);
+
   return (
     <div className="profile-section">
       <div className="profile-info">
         <div className="profile-left">
           <div className="profile-image">
-            <img
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-              alt="Profile"
-            />
+            <img src={userRank.image} alt="Profile Avatar" />
           </div>
           <div className="profile-details">
             <h2>Felix Chen</h2>
-            <span className="study-streak">
-              <i className="fas fa-fire"></i>
-              12 day streak
+            <span className="user-rank" style={{ color: userRank.color }}>
+              <i className="fas fa-medal"></i>
+              {userRank.rank} Rank
             </span>
           </div>
         </div>

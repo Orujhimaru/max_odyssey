@@ -5,6 +5,26 @@
   margin-bottom: 12px;
   border: 1px solid var(--border-color);
   width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Move shine effect to the entire profile section */
+.profile-section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.133) 5%,
+    rgba(255, 255, 255, 0.133) 25%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: shine 6s ease infinite;
 }
 
 .profile-info {
@@ -12,6 +32,8 @@
   justify-content: space-between;
   align-items: flex-start;
   max-width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .profile-left {
@@ -21,18 +43,21 @@
 }
 
 .profile-image {
-  width: 48px;
-  height: 48px;
+  overflow: hidden;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--border-color);
   background-color: var(--bg-secondary);
+  padding: 6px;
 }
 
 .profile-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 110%;
+  height: 120%;
+  object-fit: contain;
+  filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.2));
 }
 
 .profile-details {
@@ -48,17 +73,16 @@
   line-height: 18px;
 }
 
-.study-streak {
+.user-rank {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 14px;
-  color: var(--text-primary);
-  opacity: 0.7;
+  font-weight: 500;
 }
 
-.study-streak i {
-  color: #ff6b6b;
+.user-rank i {
+  font-size: 12px;
 }
 
 .goal-section {
@@ -66,6 +90,8 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
+  padding-top: 10px;
+  position: relative;
 }
 
 .goal-header {
@@ -78,7 +104,7 @@
 }
 
 .goal-header i {
-  color: #ffd700;
+  color: #ff9e00;
 }
 
 .goal-score {
@@ -97,6 +123,18 @@
   font-size: 12px;
   color: var(--text-primary);
   opacity: 0.5;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @media (max-width: 1044px) {

@@ -1,6 +1,12 @@
 .continue-learning {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   padding-top: 8px;
+}
+
+.learning-content {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
 }
 
 .continue-learning h2 {
@@ -11,14 +17,17 @@
 }
 
 .course-cards {
+  /* flex: 1; */
   display: flex;
+  /* grid-template-columns: repeat(2, 1fr); */
   gap: 16px;
-  /* flex-wrap: wrap; */
 }
 
 .course-card {
-  /* flex: 1; */
-  min-width: 250px;
+  min-width: 210px;
+  max-width: 250px;
+  width: 100%;
+  /* max-width: 290px; */
   position: relative;
   background-image: url("/src/assets/course1_bg.jpg");
   background-size: cover;
@@ -120,16 +129,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  /* margin-bottom: 16px; */
 }
 
 .quick-actions {
-  display: flex;
-  gap: 12px;
-  width: fit-content;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
+  /* width: 208px; */
 }
 
 .action-button {
@@ -143,9 +150,9 @@
   cursor: pointer;
   color: var(--text-primary);
   transition: all 0.2s ease;
-  padding: 12px 16px;
-  width: 100px;
-  height: 80px;
+  padding: 0px 0px;
+  width: 71px;
+  height: 71px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 12px;
@@ -211,6 +218,27 @@
 
 @media (max-width: 1180px) {
   .quick-actions {
-    display: none;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+  }
+
+  .learning-content {
+    flex-direction: column;
+  }
+
+  .course-cards {
+    width: 100%;
+    max-width: none;
+  }
+
+  .course-card {
+    max-width: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .quick-actions {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
