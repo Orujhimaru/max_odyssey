@@ -1,27 +1,28 @@
 .profile-section {
   background-color: var(--bg-primary);
-  border-radius: 16px;
+  border-radius: 12px;
   padding: 10px;
   margin-bottom: 12px;
   border: 1px solid var(--border-color);
   width: 100%;
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 /* Move shine effect to the entire profile section */
 .profile-section::after {
   content: "";
   position: absolute;
+  border-radius: 12px;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background: linear-gradient(
     45deg,
-    rgba(255, 255, 255, 0.133) 5%,
-    rgba(255, 255, 255, 0.131) 25%,
-    rgba(107, 107, 107, 0.071) 70%
+    rgba(255, 255, 255, 0.118) 5%,
+    rgba(255, 255, 255, 0.077) 25%,
+    transparent 70%
   );
   background-size: 200% 100%;
   animation: shine 6s ease infinite;
@@ -89,6 +90,7 @@
 .goal-section {
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: flex-end;
   align-items: flex-start;
@@ -100,14 +102,38 @@
 .goal-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   font-size: 14px;
   color: var(--text-primary);
   opacity: 0.7;
 }
 
 .goal-header i {
-  color: #ff9e00;
+  color: var(--text-primary);
+}
+
+.goal-score-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  gap: 0;
+}
+
+.crown-left,
+.crown-right {
+  height: 62px;
+  width: auto;
+  opacity: 0.85;
+  filter: drop-shadow(0 1px 2px rgba(255, 215, 0, 0.3));
+}
+
+.crown-left {
+  transform: translateX(6px);
+}
+
+.crown-right {
+  transform: translateX(-6px);
 }
 
 .goal-score {
@@ -120,6 +146,8 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  z-index: 1;
+  padding: 0 4px;
 }
 
 .score-range {

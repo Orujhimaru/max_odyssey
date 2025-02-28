@@ -1,5 +1,7 @@
 import React from "react";
 import peasantAvatar from "../../assets/peasent.svg";
+import leftCrown from "../../assets/vector.svg";
+import rightCrown from "../../assets/vector-1.svg";
 import "./ProfileSection.css";
 
 const ProfileSection = () => {
@@ -42,9 +44,10 @@ const ProfileSection = () => {
             <span>Target Score</span>
             <i className="fas fa-bullseye"></i>
           </div>
-          <div>
+          <div className="goal-score-container">
+            <img src={leftCrown} alt="" className="crown-left" />
             <div className="goal-score">1520</div>
-            <div className="score-range">(1000-1600)</div>
+            <img src={rightCrown} alt="" className="crown-right" />
           </div>
         </div>
       </div>
