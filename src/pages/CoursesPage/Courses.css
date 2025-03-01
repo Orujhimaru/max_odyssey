@@ -2,6 +2,248 @@
   width: 100%;
   height: 100%;
   position: relative;
-  padding: 12px;
+  padding: 24px;
   background-color: var(--bg-secondary);
 }
+
+.courses-container {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+}
+
+.courses-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 75%;
+}
+
+.full-course-card {
+  border-radius: 12px;
+  padding: 32px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  box-shadow: 0 4px 8px var(--box-shadow);
+}
+
+.course-title-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.course-page-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+}
+
+.course-page-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.course-page-title {
+  flex: 1;
+}
+
+.course-page-type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+.course-page-title h3 {
+  font-size: 28px;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.course-page-progress {
+  text-align: right;
+  color: var(--text-primary);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.course-page-progress-bar {
+  width: 120px;
+  height: 6px;
+  background-color: var(--border-color);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.course-page-progress-fill {
+  height: 100%;
+  background-color: var(--verbal-color);
+  border-radius: 3px;
+}
+
+.chapters-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  column-gap: 80px;
+  margin-bottom: 24px;
+}
+
+.chapter-item {
+  color: var(--text-primary);
+  font-size: 16px;
+  opacity: 0.7;
+  cursor: pointer;
+  padding: 6px;
+  flex: 0 0 calc(50% - 40px);
+}
+
+.course-page-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.enter-course-btn {
+  padding: 16px 40px;
+  background: var(--accent-color, #ffd700);
+  border: none;
+  border-radius: 30px;
+  color: #000;
+  font-weight: 500;
+  font-size: 18px;
+  cursor: pointer;
+  font-weight: bold;
+  align-self: flex-end;
+}
+
+.enter-course-btn:hover {
+  transition: transform 0.15s ease;
+  transform: translateY(-2px);
+}
+
+.course-page-action-icons {
+  display: flex;
+  gap: 16px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  font-size: 20px;
+  margin-top: auto;
+}
+
+.course-page-action-icons i {
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .chapters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .course-title-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .course-page-progress {
+    align-self: flex-start;
+    text-align: left;
+  }
+}
+
+.course-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 25%;
+}
+
+.roadmap-section,
+.tips-section {
+  background-color: var(--bg-primary);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  box-shadow: 0 4px 8px var(--box-shadow);
+  transition: none;
+}
+
+.roadmap-section h3,
+.tips-section h3 {
+  color: var(--text-primary);
+}
+
+.event-title,
+.event-time,
+.event-date {
+  color: var(--text-secondary);
+}
+
+.tip-content h4 {
+  color: var(--text-primary);
+}
+
+.tip-content p {
+  color: var(--text-secondary);
+}
+
+.event {
+  display: flex;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: var(--bg-secondary);
+  transition: none;
+}
+
+.tip-card {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: var(--bg-secondary);
+  transition: none;
+}
+
+/* Add a global override for the course page to ensure no slow animations */
+.courses-page * {
+  transition: none;
+}
+
+/* Only keep hover effects for specific elements */
+.chapter-item:hover {
+  opacity: 1;
+  transition: opacity 0.15s ease;
+}
+
+.course-page-action-icons i:hover {
+  opacity: 1;
+  transition: opacity 0.15s ease;
+}
+
+/* Rest of the sidebar styles remain the same */

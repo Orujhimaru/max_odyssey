@@ -28,6 +28,7 @@
   --math-color: #4e4e4e;
   --increase-color: #82ce84;
   --decrease-color: #ec5e54;
+  --accent-color: #ffd700;
 
   /* Radar Chart Colors - light mode */
   --radar-grid: #eeeeee;
@@ -116,7 +117,7 @@ button:focus-visible {
   /* Dark mode colors */
   --bg-primary: #1a1a1a;
   --bg-secondary: #2d2d2d;
-  --text-primary: rgba(255, 255, 255, 0.87);
+  --text-primary: #ffffffde;
   --border-color: #2d2d2d;
   --seperator-color: #aaaaaa;
   --box-shadow: rgba(0, 0, 0, 0.4);
@@ -125,6 +126,7 @@ button:focus-visible {
 
   /* Brand colors - dark mode overrides */
   --math-color: #d3d3d3; /* Softer red for dark mode */
+  --accent-color: #ffd700; /* Same gold color in dark mode */
 
   /* Radar Chart Dark Colors */
   --radar-grid: #404040; /* Lighter grid for visibility */

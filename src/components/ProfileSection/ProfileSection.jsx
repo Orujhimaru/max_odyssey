@@ -13,7 +13,7 @@ const ProfileSection = () => {
       return {
         image: peasantAvatar,
         rank: "Peasant",
-        color: "#B87A3D", // Bronze-ish color for peasant rank
+        color: "#ffffffde", // Bronze-ish color for peasant rank
       };
     }
     // Future ranks will be added here
