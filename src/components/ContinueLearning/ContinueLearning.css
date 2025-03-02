@@ -120,8 +120,14 @@
 
 @media (max-width: 1044px) {
   .course-card {
-    min-width: 185px;
+    min-width: 165px;
     flex: 1;
+  }
+}
+
+@media (max-width: 890px) {
+  .course-cards {
+    gap: 8px;
   }
 }
 

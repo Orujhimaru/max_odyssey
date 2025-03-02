@@ -300,6 +300,9 @@ tspan {
   }
 }
 @media (max-width: 890px) {
+  .radar-chart-container {
+    max-width: 240px;
+  }
   .score-boxes-container {
     flex-direction: column;
     width: 100%;
