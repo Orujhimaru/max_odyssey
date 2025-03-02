@@ -177,16 +177,16 @@
 }
 
 .goal-score-input:focus {
-  border-bottom: 3px solid #e2e2e272;
+  border-bottom: 3px solid #eae8e8;
 }
 
 .goal-score-input::selection {
-  background-color: rgba(255, 215, 0, 0.3);
+  background-color: rgba(203, 200, 200, 0.208);
   color: var(--text-primary);
 }
 
 .goal-score-input::-moz-selection {
-  background-color: rgba(255, 215, 0, 0.3);
+  background-color: rgba(203, 200, 200, 0.208);
   color: var(--text-primary);
 }
 
