@@ -105,10 +105,10 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 .recharts-responsive-container {
   position: relative;
   /* top: 24px; */
-  margin-top: auto;
+  /* margin-top: auto; */
   width: 100% !important;
   max-width: 750px;
-  height: 100% !important;
+  /* height: 100% !important; */
 }
 
 .recharts-wrapper {

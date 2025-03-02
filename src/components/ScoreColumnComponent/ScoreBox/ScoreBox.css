@@ -34,33 +34,30 @@
 
 span.score-box-title-type.verbal,
 span.score-box-title-type.math {
-  width: 55px;
+  /* width: 55px; */
   display: inline-block;
-  transition: font-size 0.3s ease, margin-right 0.3s ease;
   transform-origin: left bottom;
 }
 
 span.score-box-title-type.verbal {
-  color: var(--bar-verbal-color);
+  color: var(--text-primary);
   font-size: 18px;
 }
 
 span.score-box-title-type.math {
-  color: var(--bar--math-color);
+  color: var(--text-primary);
   font-size: 18px;
 }
 
 span.score-box-title-type.highlighted {
-  font-size: 22px;
   font-weight: 600;
-  margin-right: 4px;
+  color: var(--text-primary);
 }
 
 .score-box h2 span:last-child {
   font-size: 14px;
   line-height: 14px;
   opacity: 0.7;
-  transition: margin-left 0.3s ease;
 }
 
 .score-value {
@@ -79,12 +76,10 @@ span.score-box-title-type.highlighted {
 
 .score {
   color: inherit;
-  transition: font-size 0.3s ease;
   font-size: 16px;
 }
 
 .score.highlighted {
-  font-size: 20px;
   font-weight: 600;
 }
 
@@ -181,8 +176,8 @@ span.score-box-title-type.highlighted {
 }
 
 .score-row.math {
-  align-self: flex-end;
-  padding-right: 13px;
+  align-self: flex-start;
+  /* padding-left: 13px; */
 }
 
 /* Update dark mode styles */
@@ -209,7 +204,7 @@ span.score-box-title-type.highlighted {
 }
 .score-box.math {
   align-items: flex-end;
-
+  padding-left: 20px;
   /* width: 140px; */
   gap: 10px;
   border-color: var(--math-color);
