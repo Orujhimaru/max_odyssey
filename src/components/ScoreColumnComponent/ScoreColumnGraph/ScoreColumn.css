@@ -178,10 +178,10 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   margin-top: 5px !important; /* Adjust the margin as needed */
 }
 
-.recharts-yAxis .recharts-text {
+/* .recharts-yAxis .recharts-text {
   transition: opacity 0.1s ease-in-out;
   opacity: 0.7;
-}
+} */
 
 .score-guide-line {
   transition: opacity 0.2s ease-in-out;

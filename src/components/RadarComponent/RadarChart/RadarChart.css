@@ -59,7 +59,6 @@
   animation-delay: var(--delay);
   transform-origin: center;
   opacity: 0;
-  /* mix-blend-mode: darken; */
 }
 
 .score-point {
@@ -74,6 +73,12 @@
   opacity: 0;
   transform-origin: center;
   animation: movePoint var(--duration) ease-out forwards;
+}
+
+/* Add sequence animation for polygon */
+.score-polygon {
+  opacity: 0;
+  animation: fadeIn 0.8s ease-out 0.8s forwards; /* Delay after points appear */
 }
 
 @keyframes fadeIn {

@@ -86,7 +86,7 @@
 .score-item {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
 }
 
 .score-label {
@@ -105,6 +105,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 20px;
   font-weight: 600;
+  /* width: 108px; */
   color: var(--text-primary);
 }
 
@@ -173,7 +174,7 @@
     #d63e2e,
     #8e44ad
   ); /* Chrome 10-25, Safari 5.1-6 */
-
+  width: 110px;
   font-size: 48px;
   background-clip: text;
   -webkit-text-fill-color: transparent;
