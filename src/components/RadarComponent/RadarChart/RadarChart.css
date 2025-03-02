@@ -276,7 +276,7 @@
 
 /* Add blend mode styles */
 .math-blend {
-  mix-blend-mode: hard-light; /* Light mode default */
+  mix-blend-mode: color-burn; /* Light mode default */
   filter: drop-shadow(1px 1px 20px #898989);
 }
 
