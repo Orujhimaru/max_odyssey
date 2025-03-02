@@ -9,6 +9,7 @@ const courseData = [
     id: 1,
     name: "SAT Verbal",
     icon: verbalIcon,
+    iconColor: "#456bc4",
     progress: {
       current: 54,
       total: 66,
@@ -26,6 +27,7 @@ const courseData = [
     id: 2,
     name: "SAT Math",
     icon: mathIcon,
+    iconColor: "#4e4e4e",
     progress: {
       current: 48,
       total: 60,
@@ -43,6 +45,7 @@ const courseData = [
     id: 3,
     name: "Exam Preparation",
     icon: examIcon,
+    iconColor: "#0fb86b",
     progress: {
       current: 12,
       total: 30,
@@ -66,7 +69,10 @@ const Courses = () => {
           {courseData.map((course) => (
             <div key={course.id} className="full-course-card">
               <div className="course-title-section">
-                <div className="course-page-icon">
+                <div
+                  className="course-page-icon"
+                  style={{ backgroundColor: course.iconColor }}
+                >
                   <img src={course.icon} alt="" />
                 </div>
                 <div className="course-page-title">
@@ -83,6 +89,7 @@ const Courses = () => {
                           (course.progress.current / course.progress.total) *
                           100
                         }%`,
+                        backgroundColor: course.iconColor,
                       }}
                     />
                   </div>
@@ -101,7 +108,12 @@ const Courses = () => {
                   <i className="fas fa-info-circle"></i>
                   <i className="fas fa-sync-alt"></i>
                 </div>
-                <button className="enter-course-btn">Enter Course</button>
+                <button
+                  className="enter-course-btn"
+                  style={{ backgroundColor: course.iconColor }}
+                >
+                  Enter Course
+                </button>
               </div>
             </div>
           ))}

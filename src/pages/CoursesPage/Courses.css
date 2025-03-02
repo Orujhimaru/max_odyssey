@@ -22,11 +22,11 @@
 
 .full-course-card {
   border-radius: 12px;
-  padding: 32px;
+  padding: 24px;
   border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
   width: 100%;
   background-color: var(--bg-primary);
   color: var(--text-primary);
@@ -37,7 +37,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .course-page-icon {
@@ -47,8 +47,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  color: var(--text-primary);
-  background-color: var(--bg-secondary);
+  color: white;
+  background-color: var(--verbal-color);
 }
 
 .course-page-icon img {
@@ -103,9 +103,9 @@
 .chapters-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px;
   column-gap: 80px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .chapter-item {
@@ -113,7 +113,7 @@
   font-size: 16px;
   opacity: 0.7;
   cursor: pointer;
-  padding: 6px;
+  padding: 4px;
   flex: 0 0 calc(50% - 40px);
 }
 
@@ -121,15 +121,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 12px;
 }
 
 .enter-course-btn {
   padding: 16px 40px;
-  background: var(--accent-color, #ffd700);
+  background: var(--verbal-color);
   border: none;
   border-radius: 30px;
-  color: #000;
+  color: white;
   font-weight: 500;
   font-size: 18px;
   cursor: pointer;
@@ -140,6 +140,7 @@
 .enter-course-btn:hover {
   transition: transform 0.15s ease;
   transform: translateY(-2px);
+  background-color: #3a5bb8;
 }
 
 .course-page-action-icons {
@@ -153,6 +154,12 @@
 
 .course-page-action-icons i {
   cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.course-page-action-icons i:hover {
+  color: var(--verbal-color);
+  opacity: 1;
 }
 
 @media (max-width: 768px) {
@@ -185,7 +192,7 @@
 .tips-section {
   background-color: var(--bg-primary);
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px;
   border: 1px solid var(--border-color);
   background-color: var(--bg-primary);
   color: var(--text-primary);
@@ -196,6 +203,8 @@
 .roadmap-section h3,
 .tips-section h3 {
   color: var(--text-primary);
+  margin-bottom: 12px;
+  font-size: 16px;
 }
 
 .event-title,
@@ -219,6 +228,7 @@
   border-radius: 8px;
   background-color: var(--bg-secondary);
   transition: none;
+  margin-bottom: 8px;
 }
 
 .tip-card {
@@ -228,6 +238,11 @@
   border-radius: 8px;
   background-color: var(--bg-secondary);
   transition: none;
+  margin-bottom: 8px;
+}
+
+.tip-card i {
+  color: var(--verbal-color);
 }
 
 /* Add a global override for the course page to ensure no slow animations */

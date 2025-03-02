@@ -42,7 +42,7 @@
 
   /* Bar colors - light mode */
   --bar-verbal-color: #3b5fa4;
-  --bar-math-color: #838282;
+  --bar-math-color: #868686;
   --bar-background: #eee;
   --bar-math-line-color: #4e4e4e;
   background-color: var(--bg-secondary);
