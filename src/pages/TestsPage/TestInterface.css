@@ -89,10 +89,17 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  background-color: var(--verbal-color);
-  color: white;
+  /* background-color: var(--verbal-color); */
+  color: var(--text-primary);
   border-radius: 50%;
   font-weight: 500;
+}
+
+.question-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
 }
 
 .mark-button {
@@ -108,6 +115,55 @@
 .mark-button.marked {
   opacity: 1;
   color: #ffd700;
+}
+
+.cross-button {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  opacity: 0.7;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.cross-button:hover {
+  opacity: 1;
+  color: var(--text-primary);
+}
+
+.cross-button.active {
+  background-color: var(--verbal-color);
+  color: white;
+  opacity: 1;
+  border-radius: 4px;
+}
+
+.cross-text {
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+.cross-button.active .cross-text {
+  color: white;
+}
+
+.cross-mode-indicator {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: rgba(69, 107, 196, 0.1);
+  border: 1px solid var(--verbal-color);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--verbal-color);
+  font-weight: 500;
+  white-space: nowrap;
+  margin-top: 8px;
+  z-index: 10;
 }
 
 .question-text {
@@ -132,6 +188,8 @@
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .answer-option:hover {
@@ -144,6 +202,36 @@
   background-color: rgba(69, 107, 196, 0.05);
 }
 
+.answer-option.crossed {
+  color: var(--text-secondary);
+  opacity: 0.7;
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.answer-option.crossed .option-letter {
+  color: var(--text-secondary);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Make the line-through span the entire width */
+.answer-option.crossed::after {
+  content: "";
+  position: absolute;
+  top: 47%;
+  left: 58px;
+  right: 11px;
+  height: 2px;
+  background-color: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Remove the text-decoration since we're using a custom line */
+.answer-option.crossed .option-text {
+  text-decoration: none;
+  color: var(--text-secondary);
+}
+
 .option-letter {
   display: flex;
   align-items: center;
@@ -154,6 +242,8 @@
   border-radius: 50%;
   font-weight: 500;
   color: var(--text-primary);
+  position: relative;
+  z-index: 2;
 }
 
 .answer-option.selected .option-letter {
@@ -165,6 +255,8 @@
   flex: 1;
   font-size: 16px;
   color: var(--text-primary);
+  position: relative;
+  z-index: 2;
 }
 
 .question-navigator {
@@ -254,7 +346,8 @@
 }
 
 .question-button.marked {
-  border-color: #ffd700;
+  background-color: #ffd602;
+  color: white;
 }
 
 .test-footer {

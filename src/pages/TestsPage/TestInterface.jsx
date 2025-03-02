@@ -5,6 +5,7 @@ const TestInterface = ({ testType, onExit }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [markedQuestions, setMarkedQuestions] = useState([]);
+  const [crossedOptions, setCrossedOptions] = useState({});
   const [timeRemaining, setTimeRemaining] = useState("2:45:00");
 
   // Mock questions for the test
@@ -98,6 +99,49 @@ const TestInterface = ({ testType, onExit }) => {
     }
   };
 
+  const toggleCrossMode = () => {
+    const currentCrossMode =
+      crossedOptions[currentQuestion]?.crossMode || false;
+    setCrossedOptions({
+      ...crossedOptions,
+      [currentQuestion]: {
+        ...crossedOptions[currentQuestion],
+        crossMode: !currentCrossMode,
+      },
+    });
+  };
+
+  const toggleCrossOption = (optionId) => {
+    if (!crossedOptions[currentQuestion]?.crossMode) return;
+
+    const currentCrossed = crossedOptions[currentQuestion]?.crossed || [];
+    const newCrossed = currentCrossed.includes(optionId)
+      ? currentCrossed.filter((id) => id !== optionId)
+      : [...currentCrossed, optionId];
+
+    setCrossedOptions({
+      ...crossedOptions,
+      [currentQuestion]: {
+        ...crossedOptions[currentQuestion],
+        crossed: newCrossed,
+      },
+    });
+    console.log("Crossed options:", crossedOptions); // Debug
+  };
+
+  const isOptionCrossed = (optionId) => {
+    const isCrossed =
+      crossedOptions[currentQuestion]?.crossed?.includes(optionId) || false;
+    console.log(`Option ${optionId} crossed:`, isCrossed); // Debug
+    return (
+      crossedOptions[currentQuestion]?.crossed?.includes(optionId) || false
+    );
+  };
+
+  const isCrossModeActive = () => {
+    return crossedOptions[currentQuestion]?.crossMode || false;
+  };
+
   const currentQ = questions[currentQuestion];
   const isMarked = markedQuestions.includes(currentQuestion);
 
@@ -124,12 +168,29 @@ const TestInterface = ({ testType, onExit }) => {
         <div className="question-area">
           <div className="question-number">
             <span>{currentQuestion + 1}</span>
-            <button
-              className={`mark-button ${isMarked ? "marked" : ""}`}
-              onClick={toggleMarkQuestion}
-            >
-              <i className={`${isMarked ? "fas" : "far"} fa-bookmark`}></i>
-            </button>
+            <div className="question-tools">
+              <button
+                className={`mark-button ${isMarked ? "marked" : ""}`}
+                onClick={toggleMarkQuestion}
+                title="Mark for review"
+              >
+                <i className={`${isMarked ? "fas" : "far"} fa-bookmark`}></i>
+              </button>
+              <button
+                className={`cross-button ${
+                  isCrossModeActive() ? "active" : ""
+                }`}
+                onClick={toggleCrossMode}
+                title="Toggle cross-out mode"
+              >
+                <span className="cross-text">Abc</span>
+              </button>
+              {isCrossModeActive() && (
+                <div className="cross-mode-indicator">
+                  Click on options to cross them out
+                </div>
+              )}
+            </div>
           </div>
           <div className="question-text">
             <p>{currentQ.text}</p>
@@ -140,8 +201,12 @@ const TestInterface = ({ testType, onExit }) => {
                 key={option.id}
                 className={`answer-option ${
                   selectedAnswer === option.id ? "selected" : ""
-                }`}
-                onClick={() => handleAnswerSelect(option.id)}
+                } ${isOptionCrossed(option.id) ? "crossed" : ""}`}
+                onClick={() =>
+                  isCrossModeActive()
+                    ? toggleCrossOption(option.id)
+                    : handleAnswerSelect(option.id)
+                }
               >
                 <div className="option-letter">{option.id}</div>
                 <div className="option-text">{option.text}</div>
