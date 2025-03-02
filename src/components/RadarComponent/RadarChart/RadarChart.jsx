@@ -383,7 +383,7 @@ export default function RadarChart({
                 points={scorePolygonPoints}
                 className="score-area"
                 fill="#0FB86B"
-                fillOpacity="0.4"
+                fillOpacity="0.6"
                 style={{
                   "--duration": `${getMaxDuration()}s`,
                   "--delay": `${getMaxDuration()}s`,
