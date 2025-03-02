@@ -15,6 +15,7 @@
 
   /* Light mode colors */
   --bg-primary: white;
+  --bg-primary-rgb: 255, 255, 255;
   --bg-secondary: #fafafa;
   --text-primary: #343434;
   --border-color: #e5e7eb;
@@ -116,6 +117,7 @@ button:focus-visible {
 [data-theme="dark"] {
   /* Dark mode colors */
   --bg-primary: #1a1a1a;
+  --bg-primary-rgb: 26, 26, 26;
   --bg-secondary: #2d2d2d;
   --text-primary: #ffffffde;
   --border-color: #2d2d2d;

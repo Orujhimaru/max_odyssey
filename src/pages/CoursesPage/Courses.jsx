@@ -3,6 +3,8 @@ import "./Courses.css";
 import verbalIcon from "../../assets/verbal_icon.svg"; // You'll need to create these icons
 import mathIcon from "../../assets/math_icon.svg";
 import examIcon from "../../assets/exam_icon.svg";
+import course1Bg from "../../assets/course1_bg.jpg";
+import mathBg from "../../assets/math_bg_2.png";
 
 const courseData = [
   {
@@ -10,6 +12,7 @@ const courseData = [
     name: "SAT Verbal",
     icon: verbalIcon,
     iconColor: "#456bc4",
+    background: course1Bg,
     progress: {
       current: 54,
       total: 66,
@@ -28,6 +31,7 @@ const courseData = [
     name: "SAT Math",
     icon: mathIcon,
     iconColor: "#4e4e4e",
+    background: mathBg,
     progress: {
       current: 48,
       total: 60,
@@ -46,6 +50,7 @@ const courseData = [
     name: "Exam Preparation",
     icon: examIcon,
     iconColor: "#0fb86b",
+    background: course1Bg,
     progress: {
       current: 12,
       total: 30,
@@ -68,6 +73,16 @@ const Courses = () => {
         <div className="courses-list">
           {courseData.map((course) => (
             <div key={course.id} className="full-course-card">
+              <div
+                className="course-accent-image"
+                style={{ backgroundColor: course.iconColor }}
+                data-course-name={course.name}
+              >
+                <div
+                  className="accent-image"
+                  style={{ backgroundImage: `url(${course.background})` }}
+                />
+              </div>
               <div className="course-title-section">
                 <div
                   className="course-page-icon"
@@ -119,7 +134,7 @@ const Courses = () => {
           ))}
         </div>
         <div className="course-sidebar">
-          <div className="roadmap-section">
+          {/* <div className="roadmap-section">
             <h3>Study Roadmap</h3>
             <div className="calendar-widget">
               <div className="calendar-header">
@@ -143,7 +158,7 @@ const Courses = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="tips-section">
             <h3>Study Tips & Tricks</h3>
