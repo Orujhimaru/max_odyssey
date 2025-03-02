@@ -21,7 +21,7 @@
 }
 
 .logo-container {
-  margin-bottom: 20px;
+  margin-bottom: 36px;
   display: flex;
   background-color: #3d3d3d;
   border-radius: 4px;
@@ -66,6 +66,7 @@
   transition: all 0.3s ease;
   border-radius: 4px;
   padding: 4px;
+  align-items: center;
 }
 
 .nav-item:hover {
