@@ -88,8 +88,8 @@ const Tests = () => {
 
         <div className="tests-tabs">
           <div className="tab active">Recent Tests</div>
-          <div className="tab">Saved Tests</div>
-          <div className="tab">Test History</div>
+          {/* <div className="tab">Saved Tests</div>
+          <div className="tab">Test History</div> */}
         </div>
 
         <div className="tests-list">
