@@ -55,7 +55,7 @@
 }
 
 .full-course-card:hover .course-accent-image {
-  width: 280px;
+  width: 140px;
 }
 
 .accent-image {
@@ -72,8 +72,8 @@
 }
 
 .full-course-card:hover .accent-image {
-  transform: scale(1.1);
-  opacity: 0.5;
+  /* transform: scale(1.1); */
+  opacity: 0.4;
 }
 
 .course-content {
