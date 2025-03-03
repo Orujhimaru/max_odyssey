@@ -2,21 +2,82 @@ import React, { useState } from "react";
 import "./Practice.css";
 
 const Practice = () => {
-  const [activeFilters, setActiveFilters] = useState({
-    difficulty: "all",
-    subject: "all",
-    status: "all",
-    performance: "all",
-  });
-
+  const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [showFilters, setShowFilters] = useState(true);
+  const [selectedTopics, setSelectedTopics] = useState([]);
+  const [showTopicFilter, setShowTopicFilter] = useState(false);
+  const [activeDifficulty, setActiveDifficulty] = useState("all");
+
+  // Math topics
+  const mathTopics = [
+    "Algebra",
+    "Linear Equations",
+    "Quadratic Equations",
+    "Functions",
+    "Exponents & Radicals",
+    "Inequalities",
+    "Systems of Equations",
+    "Coordinate Geometry",
+    "Circles",
+    "Triangles",
+    "Probability",
+    "Statistics",
+    "Data Analysis",
+    "Word Problems",
+    "Trigonometry",
+  ];
+
+  // Verbal topics
+  const verbalTopics = [
+    "Reading Comprehension",
+    "Vocabulary in Context",
+    "Evidence-Based Reading",
+    "Command of Evidence",
+    "Words in Context",
+    "Expression of Ideas",
+    "Standard English Conventions",
+    "Grammar",
+    "Punctuation",
+    "Rhetoric",
+    "Synthesis",
+    "Analysis",
+    "Main Idea",
+    "Author's Purpose",
+    "Inference",
+  ];
 
   // Mock data for practice questions
   const practiceQuestions = [
     {
       id: 1,
-      question: "What is the value of x in the equation 2x + 5 = 13?",
+      title: "Linear Equations in Context",
+      type: "math",
+      difficulty: "medium",
+      topics: ["Algebra", "Linear Equations", "Word Problems"],
+      completionRate: 78,
+      lastAttempted: "2 days ago",
+    },
+    {
+      id: 2,
+      title: "Reading Passage: Science",
+      type: "verbal",
+      difficulty: "hard",
+      topics: ["Reading Comprehension", "Inference", "Evidence-Based Reading"],
+      completionRate: 62,
+      lastAttempted: "1 week ago",
+    },
+    {
+      id: 3,
+      title: "Data Analysis with Graphs",
+      type: "math",
+      difficulty: "easy",
+      topics: ["Statistics", "Data Analysis"],
+      completionRate: 91,
+      lastAttempted: "3 days ago",
+    },
+    {
+      id: 4,
+      title: "What is the value of x in the equation 2x + 5 = 13?",
       difficulty: "easy",
       subject: "math",
       topic: "Algebra",
@@ -27,8 +88,8 @@ const Practice = () => {
       lastAttempted: "2023-06-15",
     },
     {
-      id: 2,
-      question:
+      id: 5,
+      title:
         "Which of the following best describes the author's tone in the passage?",
       difficulty: "medium",
       subject: "verbal",
@@ -40,8 +101,8 @@ const Practice = () => {
       lastAttempted: "2023-06-18",
     },
     {
-      id: 3,
-      question: "If f(x) = 3x² - 2x + 1, what is the value of f(2)?",
+      id: 6,
+      title: "If f(x) = 3x² - 2x + 1, what is the value of f(2)?",
       difficulty: "medium",
       subject: "math",
       topic: "Functions",
@@ -52,8 +113,8 @@ const Practice = () => {
       lastAttempted: "2023-06-20",
     },
     {
-      id: 4,
-      question: "Which sentence contains a grammatical error?",
+      id: 7,
+      title: "Which sentence contains a grammatical error?",
       difficulty: "hard",
       subject: "verbal",
       topic: "Writing",
@@ -64,8 +125,8 @@ const Practice = () => {
       lastAttempted: null,
     },
     {
-      id: 5,
-      question: "What is the area of a circle with radius 5 units?",
+      id: 8,
+      title: "What is the area of a circle with radius 5 units?",
       difficulty: "easy",
       subject: "math",
       topic: "Geometry",
@@ -76,8 +137,8 @@ const Practice = () => {
       lastAttempted: "2023-06-22",
     },
     {
-      id: 6,
-      question:
+      id: 9,
+      title:
         "Which of the following best summarizes the main idea of the passage?",
       difficulty: "hard",
       subject: "verbal",
@@ -90,344 +151,262 @@ const Practice = () => {
     },
   ];
 
-  const handleFilterChange = (filterType, value) => {
-    setActiveFilters({
-      ...activeFilters,
-      [filterType]: value,
-    });
+  // Sort questions by difficulty: easy -> medium -> hard
+  const sortedQuestions = [...practiceQuestions].sort((a, b) => {
+    const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
+    return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+  });
+
+  const toggleTopic = (topic) => {
+    if (selectedTopics.includes(topic)) {
+      setSelectedTopics(selectedTopics.filter((t) => t !== topic));
+    } else {
+      setSelectedTopics([...selectedTopics, topic]);
+    }
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  // Filter questions based on active filter and search query
+  const filteredQuestions = sortedQuestions.filter((question) => {
+    const matchesFilter =
+      activeFilter === "all" ||
+      activeFilter === question.type ||
+      activeFilter === question.subject;
 
-  const toggleFilters = () => {
-    setShowFilters(!showFilters);
-  };
+    const matchesSearch = question.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
 
-  // Apply filters to questions
-  const filteredQuestions = practiceQuestions.filter((question) => {
-    // Filter by difficulty
-    if (
-      activeFilters.difficulty !== "all" &&
-      question.difficulty !== activeFilters.difficulty
-    ) {
-      return false;
-    }
+    const matchesDifficulty =
+      activeDifficulty === "all" || question.difficulty === activeDifficulty;
 
-    // Filter by subject
-    if (
-      activeFilters.subject !== "all" &&
-      question.subject !== activeFilters.subject
-    ) {
-      return false;
-    }
+    const matchesTopics =
+      selectedTopics.length === 0 ||
+      (question.topics &&
+        question.topics.some((topic) => selectedTopics.includes(topic))) ||
+      (question.topic && selectedTopics.includes(question.topic)) ||
+      (question.subtopic && selectedTopics.includes(question.subtopic));
 
-    // Filter by status
-    if (
-      activeFilters.status !== "all" &&
-      question.status !== activeFilters.status
-    ) {
-      return false;
-    }
-
-    // Filter by performance
-    if (activeFilters.performance !== "all") {
-      if (
-        activeFilters.performance === "correct" &&
-        question.performance !== "correct"
-      ) {
-        return false;
-      }
-      if (
-        activeFilters.performance === "incorrect" &&
-        question.performance !== "incorrect"
-      ) {
-        return false;
-      }
-      if (
-        activeFilters.performance === "bookmarked" &&
-        !question.isBookmarked
-      ) {
-        return false;
-      }
-    }
-
-    // Filter by search query
-    if (
-      searchQuery &&
-      !question.question.toLowerCase().includes(searchQuery.toLowerCase())
-    ) {
-      return false;
-    }
-
-    return true;
+    return matchesFilter && matchesSearch && matchesDifficulty && matchesTopics;
   });
 
   return (
     <div className="practice-page">
       <div className="practice-header">
         <h1>Practice Questions</h1>
-        <div className="practice-actions">
-          <div className="search-container">
+        <div className="practice-filters">
+          <div className="filter-buttons">
+            <button
+              className={`filter-button ${
+                activeFilter === "all" ? "active" : ""
+              }`}
+              onClick={() => setActiveFilter("all")}
+            >
+              All
+            </button>
+            <button
+              className={`filter-button ${
+                activeFilter === "math" ? "active" : ""
+              }`}
+              onClick={() => setActiveFilter("math")}
+            >
+              Math
+            </button>
+            <button
+              className={`filter-button ${
+                activeFilter === "verbal" ? "active" : ""
+              }`}
+              onClick={() => setActiveFilter("verbal")}
+            >
+              Verbal
+            </button>
+          </div>
+
+          <div className="filter-dropdown">
+            <button
+              className="filter-dropdown-button"
+              onClick={() => setShowTopicFilter(!showTopicFilter)}
+            >
+              Topics {selectedTopics.length > 0 && `(${selectedTopics.length})`}
+              <i
+                className={`fas fa-chevron-${showTopicFilter ? "up" : "down"}`}
+              ></i>
+            </button>
+
+            {showTopicFilter && (
+              <div className="topic-filter-dropdown">
+                <div className="topic-section">
+                  <h3>Math Topics</h3>
+                  <div className="topic-tags">
+                    {mathTopics.map((topic) => (
+                      <div
+                        key={topic}
+                        className={`topic-tag ${
+                          selectedTopics.includes(topic) ? "selected" : ""
+                        }`}
+                        onClick={() => toggleTopic(topic)}
+                      >
+                        {topic}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="topic-section">
+                  <h3>Verbal Topics</h3>
+                  <div className="topic-tags">
+                    {verbalTopics.map((topic) => (
+                      <div
+                        key={topic}
+                        className={`topic-tag ${
+                          selectedTopics.includes(topic) ? "selected" : ""
+                        }`}
+                        onClick={() => toggleTopic(topic)}
+                      >
+                        {topic}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {selectedTopics.length > 0 && (
+                  <button
+                    className="clear-topics-button"
+                    onClick={() => setSelectedTopics([])}
+                  >
+                    Clear All Topics
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="difficulty-filter">
+            <button
+              className={`difficulty-button ${
+                activeDifficulty === "all" ? "active" : ""
+              }`}
+              onClick={() => setActiveDifficulty("all")}
+            >
+              All Levels
+            </button>
+            <button
+              className={`difficulty-button easy ${
+                activeDifficulty === "easy" ? "active" : ""
+              }`}
+              onClick={() => setActiveDifficulty("easy")}
+            >
+              Easy
+            </button>
+            <button
+              className={`difficulty-button medium ${
+                activeDifficulty === "medium" ? "active" : ""
+              }`}
+              onClick={() => setActiveDifficulty("medium")}
+            >
+              Medium
+            </button>
+            <button
+              className={`difficulty-button hard ${
+                activeDifficulty === "hard" ? "active" : ""
+              }`}
+              onClick={() => setActiveDifficulty("hard")}
+            >
+              Hard
+            </button>
+          </div>
+
+          <div className="search-bar">
+            <i className="fas fa-search"></i>
             <input
               type="text"
               placeholder="Search questions..."
               value={searchQuery}
-              onChange={handleSearchChange}
-              className="search-input"
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <i className="fas fa-search search-icon"></i>
           </div>
-          <button className="filter-toggle" onClick={toggleFilters}>
-            <i className="fas fa-filter"></i>
-            {showFilters ? "Hide Filters" : "Show Filters"}
-          </button>
         </div>
       </div>
 
-      <div className="practice-content">
-        {showFilters && (
-          <div className="filters-panel">
-            <div className="filter-group">
-              <h3>Difficulty</h3>
-              <div className="filter-options">
-                <button
-                  className={`filter-option ${
-                    activeFilters.difficulty === "all" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("difficulty", "all")}
-                >
-                  All
-                </button>
-                <button
-                  className={`filter-option ${
-                    activeFilters.difficulty === "easy" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("difficulty", "easy")}
-                >
-                  Easy
-                </button>
-                <button
-                  className={`filter-option ${
-                    activeFilters.difficulty === "medium" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("difficulty", "medium")}
-                >
-                  Medium
-                </button>
-                <button
-                  className={`filter-option ${
-                    activeFilters.difficulty === "hard" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("difficulty", "hard")}
-                >
-                  Hard
-                </button>
-              </div>
-            </div>
-
-            <div className="filter-group">
-              <h3>Subject</h3>
-              <div className="filter-options">
-                <button
-                  className={`filter-option ${
-                    activeFilters.subject === "all" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("subject", "all")}
-                >
-                  All
-                </button>
-                <button
-                  className={`filter-option ${
-                    activeFilters.subject === "math" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("subject", "math")}
-                >
-                  Math
-                </button>
-                <button
-                  className={`filter-option ${
-                    activeFilters.subject === "verbal" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("subject", "verbal")}
-                >
-                  Verbal
-                </button>
-              </div>
-            </div>
-
-            <div className="filter-group">
-              <h3>Status</h3>
-              <div className="filter-options">
-                <button
-                  className={`filter-option ${
-                    activeFilters.status === "all" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("status", "all")}
-                >
-                  All
-                </button>
-                <button
-                  className={`filter-option ${
-                    activeFilters.status === "not-started" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("status", "not-started")}
-                >
-                  Not Started
-                </button>
-                <button
-                  className={`filter-option ${
-                    activeFilters.status === "in-progress" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("status", "in-progress")}
-                >
-                  In Progress
-                </button>
-                <button
-                  className={`filter-option ${
-                    activeFilters.status === "completed" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("status", "completed")}
-                >
-                  Completed
-                </button>
-              </div>
-            </div>
-
-            <div className="filter-group">
-              <h3>Performance</h3>
-              <div className="filter-options">
-                <button
-                  className={`filter-option ${
-                    activeFilters.performance === "all" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("performance", "all")}
-                >
-                  All
-                </button>
-                <button
-                  className={`filter-option ${
-                    activeFilters.performance === "correct" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("performance", "correct")}
-                >
-                  Correct
-                </button>
-                <button
-                  className={`filter-option ${
-                    activeFilters.performance === "incorrect" ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterChange("performance", "incorrect")}
-                >
-                  Incorrect
-                </button>
-                <button
-                  className={`filter-option ${
-                    activeFilters.performance === "bookmarked" ? "active" : ""
-                  }`}
-                  onClick={() =>
-                    handleFilterChange("performance", "bookmarked")
-                  }
-                >
-                  Bookmarked
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="questions-container">
-          <div className="questions-header">
-            <h2>Questions ({filteredQuestions.length})</h2>
-            <div className="sort-options">
-              <span>Sort by:</span>
-              <select className="sort-select">
-                <option value="newest">Newest</option>
-                <option value="oldest">Oldest</option>
-                <option value="difficulty-asc">
-                  Difficulty (Easy to Hard)
-                </option>
-                <option value="difficulty-desc">
-                  Difficulty (Hard to Easy)
-                </option>
-              </select>
-            </div>
-          </div>
-
-          {filteredQuestions.length === 0 ? (
-            <div className="no-questions">
-              <i className="fas fa-search"></i>
-              <p>
-                No questions match your filters. Try adjusting your criteria.
-              </p>
-            </div>
-          ) : (
-            <div className="questions-list">
-              {filteredQuestions.map((question) => (
-                <div
-                  key={question.id}
-                  className={`question-card ${question.subject}`}
-                >
-                  <div className="question-header">
-                    <div className="question-meta">
-                      <span
-                        className={`difficulty-badge ${question.difficulty}`}
-                      >
-                        {question.difficulty}
-                      </span>
-                      <span className="subject-badge">{question.subject}</span>
-                      <span className="topic-badge">{question.topic}</span>
-                    </div>
-                    <div className="question-actions">
-                      <button
-                        className={`bookmark-button ${
-                          question.isBookmarked ? "bookmarked" : ""
-                        }`}
-                      >
-                        <i
-                          className={`${
-                            question.isBookmarked ? "fas" : "far"
-                          } fa-bookmark`}
-                        ></i>
-                      </button>
-                    </div>
+      <div className="practice-questions">
+        {filteredQuestions.map((question, index) => (
+          <div className="question-card" key={question.id}>
+            <div className="question-left">
+              <span className="question-number">#{index + 1}</span>
+              <div className="question-info">
+                <div className="question-header">
+                  <div className="question-type">
+                    <span
+                      className={`subject-badge ${
+                        question.type || question.subject
+                      }`}
+                    >
+                      {question.type === "math" || question.subject === "math"
+                        ? "M"
+                        : "V"}
+                    </span>
                   </div>
-                  <div className="question-content">
-                    <p>{question.question}</p>
-                  </div>
-                  <div className="question-footer">
-                    <div className="status-indicator">
-                      {question.status === "completed" ? (
-                        <span
-                          className={`performance-badge ${question.performance}`}
-                        >
-                          <i
-                            className={`fas ${
-                              question.performance === "correct"
-                                ? "fa-check"
-                                : "fa-times"
-                            }`}
-                          ></i>
-                          {question.performance === "correct"
-                            ? "Correct"
-                            : "Incorrect"}
-                        </span>
-                      ) : (
-                        <span className={`status-badge ${question.status}`}>
-                          {question.status === "not-started"
-                            ? "Not Started"
-                            : "In Progress"}
-                        </span>
-                      )}
-                    </div>
-                    <button className="practice-button">Practice</button>
+                  <div className="question-type">
+                    <span
+                      className={`difficulty-indicator ${question.difficulty}`}
+                    >
+                      <span className="bar"></span>
+                      <span className="bar"></span>
+                      <span className="bar"></span>
+                    </span>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
-          )}
-        </div>
+            <div className="question-content-row">
+              <h3 className="question-title">{question.title}</h3>
+              <div className="question-meta">
+                <div className="question-topics">
+                  {question.topics &&
+                    question.topics.map((topic) => (
+                      <span
+                        className="topic-tag"
+                        key={topic}
+                        onClick={() => toggleTopic(topic)}
+                      >
+                        {topic}
+                      </span>
+                    ))}
+                  {question.topic && !question.topics && (
+                    <span
+                      className="topic-tag"
+                      key={question.topic}
+                      onClick={() => toggleTopic(question.topic)}
+                    >
+                      {question.topic}
+                    </span>
+                  )}
+                  {question.subtopic && (
+                    <span
+                      className="topic-tag"
+                      key={question.subtopic}
+                      onClick={() => toggleTopic(question.subtopic)}
+                    >
+                      {question.subtopic}
+                    </span>
+                  )}
+                </div>
+                <div className="completion-rate">
+                  <span>{question.completionRate || 0}% solved</span>
+                </div>
+                <div className="question-actions">
+                  <button className="bookmark-button">
+                    <i
+                      className={`${
+                        question.isBookmarked ? "fas" : "far"
+                      } fa-bookmark`}
+                    ></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <button className="practice-button">Add</button>
+          </div>
+        ))}
       </div>
     </div>
   );
