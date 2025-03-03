@@ -83,52 +83,54 @@ const Courses = () => {
                   style={{ backgroundImage: `url(${course.background})` }}
                 />
               </div>
-              <div className="course-title-section">
-                <div
-                  className="course-page-icon"
-                  style={{ backgroundColor: course.iconColor }}
-                >
-                  <img src={course.icon} alt="" />
-                </div>
-                <div className="course-page-title">
-                  <span className="course-page-type">Course</span>
-                  <h3>{course.name}</h3>
-                </div>
-                <div className="course-page-progress">
-                  {course.progress.current} / {course.progress.total}
-                  <div className="course-page-progress-bar">
-                    <div
-                      className="course-page-progress-fill"
-                      style={{
-                        width: `${
-                          (course.progress.current / course.progress.total) *
-                          100
-                        }%`,
-                        backgroundColor: course.iconColor,
-                      }}
-                    />
+              <div className="course-content">
+                <div className="course-title-section">
+                  <div
+                    className="course-page-icon"
+                    style={{ backgroundColor: course.iconColor }}
+                  >
+                    <img src={course.icon} alt="" />
+                  </div>
+                  <div className="course-page-title">
+                    <span className="course-page-type">Course</span>
+                    <h3>{course.name}</h3>
+                  </div>
+                  <div className="course-page-progress">
+                    {course.progress.current} / {course.progress.total}
+                    <div className="course-page-progress-bar">
+                      <div
+                        className="course-page-progress-fill"
+                        style={{
+                          width: `${
+                            (course.progress.current / course.progress.total) *
+                            100
+                          }%`,
+                          backgroundColor: course.iconColor,
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="chapters-grid">
-                {course.chapters.map((chapter, index) => (
-                  <div key={index} className="chapter-item">
-                    {chapter}
-                  </div>
-                ))}
-              </div>
-              <div className="course-page-actions">
-                <div className="course-page-action-icons">
-                  <i className="fas fa-calendar-alt"></i>
-                  <i className="fas fa-info-circle"></i>
-                  <i className="fas fa-sync-alt"></i>
+                <div className="chapters-grid">
+                  {course.chapters.map((chapter, index) => (
+                    <div key={index} className="chapter-item">
+                      {chapter}
+                    </div>
+                  ))}
                 </div>
-                <button
-                  className="enter-course-btn"
-                  style={{ backgroundColor: course.iconColor }}
-                >
-                  Enter Course
-                </button>
+                <div className="course-page-actions">
+                  <div className="course-page-action-icons">
+                    <i className="fas fa-calendar-alt"></i>
+                    <i className="fas fa-info-circle"></i>
+                    <i className="fas fa-sync-alt"></i>
+                  </div>
+                  <button
+                    className="enter-course-btn"
+                    style={{ backgroundColor: course.iconColor }}
+                  >
+                    Enter Course
+                  </button>
+                </div>
               </div>
             </div>
           ))}

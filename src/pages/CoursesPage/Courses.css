@@ -32,17 +32,11 @@
   color: var(--text-primary);
   box-shadow: 0 4px 8px var(--box-shadow);
   position: relative;
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  grid-template-rows: auto auto auto;
-  grid-template-areas:
-    "accent title"
-    "accent chapters"
-    "accent actions";
-  column-gap: 24px;
+  display: flex;
+  flex-direction: row;
   padding: 0;
   overflow: visible;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s ease !important;
 }
 
 .full-course-card:hover {
@@ -51,11 +45,17 @@
 }
 
 .course-accent-image {
-  grid-area: accent;
   height: 100%;
   border-radius: 12px 0 0 12px;
   overflow: hidden;
   position: relative;
+  width: 80px;
+  flex-shrink: 0;
+  transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.full-course-card:hover .course-accent-image {
+  width: 280px;
 }
 
 .accent-image {
@@ -68,19 +68,27 @@
   background-position: center;
   opacity: 0.3;
   mix-blend-mode: overlay;
-  transition: transform 0.3s ease;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .full-course-card:hover .accent-image {
   transform: scale(1.1);
+  opacity: 0.5;
+}
+
+.course-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  transition: padding-left 0.7s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .course-title-section {
   display: flex;
   align-items: center;
   gap: 16px;
-  grid-area: title;
-  padding: 24px 24px 16px 0;
+  padding-bottom: 16px;
 }
 
 .course-page-icon {
@@ -149,8 +157,7 @@
   flex-wrap: wrap;
   gap: 8px;
   column-gap: 80px;
-  grid-area: chapters;
-  padding: 0 24px 16px 0;
+  padding-bottom: 16px;
 }
 
 .chapter-item {
@@ -167,8 +174,7 @@
   justify-content: space-between;
   align-items: center;
   margin-top: 12px;
-  grid-area: actions;
-  padding: 16px 24px 24px 0;
+  padding-top: 16px;
   border-top: 1px solid var(--border-color);
 }
 
@@ -212,29 +218,28 @@
 
 @media (max-width: 768px) {
   .full-course-card {
-    grid-template-columns: 1fr;
-    grid-template-rows: 120px auto auto auto;
-    grid-template-areas:
-      "accent"
-      "title"
-      "chapters"
-      "actions";
+    flex-direction: column;
     padding: 0;
   }
 
   .course-accent-image {
     border-radius: 12px 12px 0 0;
+    height: 120px;
+    width: 100% !important;
+  }
+
+  .course-content {
+    padding: 16px;
   }
 
   .course-title-section,
   .chapters-grid,
   .course-page-actions {
-    padding-left: 24px;
-    padding-right: 24px;
+    padding: 16px;
   }
 
   .chapters-grid {
-    grid-template-columns: 1fr;
+    flex-direction: column;
   }
 
   .course-title-section {
