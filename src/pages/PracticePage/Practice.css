@@ -188,6 +188,7 @@
 
 .question-header {
   display: flex;
+  gap: 8px;
   margin-bottom: 4px;
 }
 
@@ -361,22 +362,28 @@
   margin-top: 16px;
 }
 
-.filter-buttons {
+.subject-switch {
   display: flex;
-  gap: 8px;
 }
 
-.filter-button {
+.switch-button {
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   padding: 8px 16px;
-  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.filter-button.active {
+.switch-button:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.switch-button:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.switch-button.active {
   background-color: var(--verbal-color);
   color: white;
   border-color: var(--verbal-color);
@@ -493,28 +500,46 @@
   border-color: #f44336;
 }
 
-.search-bar {
-  display: flex;
-  align-items: center;
-  background-color: var(--bg-secondary);
+.difficulty-filter-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 200px;
+  background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 8px 16px;
-  flex-grow: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  margin-top: 8px;
+  z-index: 10;
 }
 
-.search-bar i {
-  color: var(--text-primary);
-  opacity: 0.5;
-  margin-right: 8px;
+.difficulty-option {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
 }
 
-.search-bar input {
-  background: none;
-  border: none;
-  color: var(--text-primary);
-  width: 100%;
-  outline: none;
+.difficulty-option:hover {
+  background-color: var(--bg-secondary);
+}
+
+.difficulty-option.selected {
+  background-color: var(--verbal-color);
+  color: white;
+}
+
+.difficulty-option.easy.selected {
+  background-color: #4caf50;
+}
+
+.difficulty-option.medium.selected {
+  background-color: #ff9800;
+}
+
+.difficulty-option.hard.selected {
+  background-color: #f44336;
 }
 
 .practice-questions {
@@ -522,6 +547,51 @@
   flex-direction: column;
   gap: 16px;
   margin-top: 24px;
+}
+
+.practice-questions-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px 12px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.header-number {
+  width: 40px;
+}
+
+.header-type {
+  width: 60px;
+}
+
+.header-difficulty {
+  width: 80px;
+}
+
+.header-question {
+  width: 200px;
+}
+
+.header-tags {
+  width: 150px;
+}
+
+.header-solve-rate {
+  width: 80px;
+}
+
+.header-actions {
+  width: 60px;
+  text-align: right;
 }
 
 .question-card {
@@ -598,7 +668,7 @@
 
 .difficulty-indicator .bar {
   width: 4px;
-  background-color: var(--bg-secondary);
+  background-color: #c7c7c7;
   border-radius: 1px;
 }
 

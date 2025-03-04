@@ -3,9 +3,9 @@ import "./Practice.css";
 
 const Practice = () => {
   const [activeFilter, setActiveFilter] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [showTopicFilter, setShowTopicFilter] = useState(false);
+  const [showDifficultyFilter, setShowDifficultyFilter] = useState(false);
   const [activeDifficulty, setActiveDifficulty] = useState("all");
 
   // Math topics
@@ -172,9 +172,9 @@ const Practice = () => {
       activeFilter === question.type ||
       activeFilter === question.subject;
 
-    const matchesSearch = question.title
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+    // const matchesSearch = question.title
+    //   .toLowerCase()
+    //   .includes(searchQuery.toLowerCase());
 
     const matchesDifficulty =
       activeDifficulty === "all" || question.difficulty === activeDifficulty;
@@ -186,7 +186,7 @@ const Practice = () => {
       (question.topic && selectedTopics.includes(question.topic)) ||
       (question.subtopic && selectedTopics.includes(question.subtopic));
 
-    return matchesFilter && matchesSearch && matchesDifficulty && matchesTopics;
+    return matchesFilter && matchesDifficulty && matchesTopics;
   });
 
   return (
@@ -194,28 +194,24 @@ const Practice = () => {
       <div className="practice-header">
         <h1>Practice Questions</h1>
         <div className="practice-filters">
-          <div className="filter-buttons">
+          <div className="subject-switch">
             <button
-              className={`filter-button ${
-                activeFilter === "all" ? "active" : ""
-              }`}
-              onClick={() => setActiveFilter("all")}
-            >
-              All
-            </button>
-            <button
-              className={`filter-button ${
+              className={`switch-button ${
                 activeFilter === "math" ? "active" : ""
               }`}
-              onClick={() => setActiveFilter("math")}
+              onClick={() =>
+                setActiveFilter(activeFilter === "math" ? "all" : "math")
+              }
             >
               Math
             </button>
             <button
-              className={`filter-button ${
+              className={`switch-button ${
                 activeFilter === "verbal" ? "active" : ""
               }`}
-              onClick={() => setActiveFilter("verbal")}
+              onClick={() =>
+                setActiveFilter(activeFilter === "verbal" ? "all" : "verbal")
+              }
             >
               Verbal
             </button>
@@ -231,7 +227,6 @@ const Practice = () => {
                 className={`fas fa-chevron-${showTopicFilter ? "up" : "down"}`}
               ></i>
             </button>
-
             {showTopicFilter && (
               <div className="topic-filter-dropdown">
                 <div className="topic-section">
@@ -280,54 +275,84 @@ const Practice = () => {
             )}
           </div>
 
-          <div className="difficulty-filter">
+          <div className="filter-dropdown">
             <button
-              className={`difficulty-button ${
-                activeDifficulty === "all" ? "active" : ""
-              }`}
-              onClick={() => setActiveDifficulty("all")}
+              className="filter-dropdown-button"
+              onClick={() => setShowDifficultyFilter(!showDifficultyFilter)}
             >
-              All Levels
+              Difficulty {activeDifficulty !== "all" && `(${activeDifficulty})`}
+              <i
+                className={`fas fa-chevron-${
+                  showDifficultyFilter ? "up" : "down"
+                }`}
+              ></i>
             </button>
-            <button
-              className={`difficulty-button easy ${
-                activeDifficulty === "easy" ? "active" : ""
-              }`}
-              onClick={() => setActiveDifficulty("easy")}
-            >
-              Easy
-            </button>
-            <button
-              className={`difficulty-button medium ${
-                activeDifficulty === "medium" ? "active" : ""
-              }`}
-              onClick={() => setActiveDifficulty("medium")}
-            >
-              Medium
-            </button>
-            <button
-              className={`difficulty-button hard ${
-                activeDifficulty === "hard" ? "active" : ""
-              }`}
-              onClick={() => setActiveDifficulty("hard")}
-            >
-              Hard
-            </button>
-          </div>
-
-          <div className="search-bar">
-            <i className="fas fa-search"></i>
-            <input
-              type="text"
-              placeholder="Search questions..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+            {showDifficultyFilter && (
+              <div className="difficulty-filter-dropdown">
+                <div
+                  className={`difficulty-option ${
+                    activeDifficulty === "all" ? "selected" : ""
+                  }`}
+                  onClick={() => {
+                    setActiveDifficulty("all");
+                    setShowDifficultyFilter(false);
+                  }}
+                >
+                  All Levels
+                </div>
+                <div
+                  className={`difficulty-option easy ${
+                    activeDifficulty === "easy" ? "selected" : ""
+                  }`}
+                  onClick={() => {
+                    setActiveDifficulty("easy");
+                    setShowDifficultyFilter(false);
+                  }}
+                >
+                  Easy
+                </div>
+                <div
+                  className={`difficulty-option medium ${
+                    activeDifficulty === "medium" ? "selected" : ""
+                  }`}
+                  onClick={() => {
+                    setActiveDifficulty("medium");
+                    setShowDifficultyFilter(false);
+                  }}
+                >
+                  Medium
+                </div>
+                <div
+                  className={`difficulty-option hard ${
+                    activeDifficulty === "hard" ? "selected" : ""
+                  }`}
+                  onClick={() => {
+                    setActiveDifficulty("hard");
+                    setShowDifficultyFilter(false);
+                  }}
+                >
+                  Hard
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       <div className="practice-questions">
+        <div className="practice-questions-header">
+          <div className="header-left">
+            <span className="header-number">#</span>
+            <span className="header-type">Type</span>
+            <span className="header-difficulty">Difficulty</span>
+            <span className="header-question">Question</span>
+          </div>
+          <div className="header-right">
+            <span className="header-tags">Tags</span>
+            <span className="header-solve-rate">Solve Rate</span>
+            <span className="header-actions">Actions</span>
+          </div>
+        </div>
         {filteredQuestions.map((question, index) => (
           <div className="question-card" key={question.id}>
             <div className="question-left">
