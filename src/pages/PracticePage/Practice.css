@@ -449,6 +449,12 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
+[data-theme="dark"] .switch-button {
+  border: 1px solid #4d4d4d;
+}
+[data-theme="dark"] .question-card {
+  border: 1px solid #4d4d4d;
+}
 
 .switch-button:first-child {
   border-radius: 8px 0 0 8px;
