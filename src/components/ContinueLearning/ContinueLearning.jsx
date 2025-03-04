@@ -20,10 +20,9 @@ const ContinueLearning = ({ courses }) => {
             >
               <div className="course-type">
                 <i className="fas fa-book-open"></i>
-                <span>{course.type}</span>
+                {/* <span>{course.type}</span> */}{" "}
+                <h3 className="course-name">{course.name}</h3>
               </div>
-
-              <h3 className="course-name">{course.name}</h3>
 
               <div className="progress-indicator">
                 <div className="progress-bar">
