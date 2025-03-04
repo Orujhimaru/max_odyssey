@@ -127,7 +127,7 @@ button:focus-visible {
   --chart-text: #94a3b8;
 
   /* Brand colors - dark mode overrides */
-  --math-color: #d3d3d3; /* Softer red for dark mode */
+  --math-color: #3e3e3e; /* Softer red for dark mode  d3d3d3 -> PREVIOUS VALUE, CHECK OUT WHICH VALUES USE THIS, CHANGED FOR PRACTICE MATH LOGO#*/
   --accent-color: #ffd700; /* Same gold color in dark mode */
 
   /* Radar Chart Dark Colors */

@@ -219,8 +219,7 @@ const Practice = () => {
     <div className="practice-page">
       <div className="practice-header">
         <h1>
-          <span>🦉</span>
-          Practice Arena
+          Practice Arena <span>🦉</span>
         </h1>
         <div className="practice-filters">
           <div className="filter-row">

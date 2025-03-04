@@ -358,7 +358,7 @@
 
 /* Rest of the sidebar styles remain the same */
 
-.course-card {
+.course-card-big {
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 12px;

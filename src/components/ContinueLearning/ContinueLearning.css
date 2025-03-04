@@ -254,3 +254,17 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+.continue-learning-header h2 {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.continue-learning-header h2 span {
+  font-size: 22px;
+  line-height: 1;
+}
