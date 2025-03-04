@@ -145,7 +145,7 @@ export default function ScoreColumnGraph() {
 
   return (
     <>
-      <h2 className="scores-header-text">Score report</h2>
+      <h2 className="scores-header-text">Score report 📈</h2>
       <div className="score-column-container">
         <div className="chart-container">
           <div className="performance-column">

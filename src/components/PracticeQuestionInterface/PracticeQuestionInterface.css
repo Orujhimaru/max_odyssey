@@ -209,3 +209,78 @@
 .nav-button:hover {
   transform: translateY(-2px);
 }
+
+.question-table {
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+.question-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+}
+
+.question-table th,
+.question-table td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+}
+
+.question-table th {
+  background-color: var(--bg-secondary);
+  font-weight: 500;
+}
+
+/* .difficulty-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+} */
+
+.difficulty-badge {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+
+.difficulty-badge .bar {
+  width: 4px;
+  background-color: var(--border-color);
+  border-radius: 2px;
+}
+
+.difficulty-badge .bar:nth-child(1) {
+  height: 6px;
+}
+.difficulty-badge .bar:nth-child(2) {
+  height: 10px;
+}
+.difficulty-badge .bar:nth-child(3) {
+  height: 14px;
+}
+
+.difficulty-badge.easy .bar:nth-child(1) {
+  background-color: #4caf50;
+}
+
+.difficulty-badge.medium .bar:nth-child(1),
+.difficulty-badge.medium .bar:nth-child(2) {
+  background-color: #ff9800;
+}
+
+.difficulty-badge.hard .bar:nth-child(1),
+.difficulty-badge.hard .bar:nth-child(2),
+.difficulty-badge.hard .bar:nth-child(3) {
+  background-color: #f44336;
+}
+
+.difficulty-text {
+  font-size: 14px;
+  color: var(--text-primary);
+  opacity: 0.7;
+  text-transform: capitalize;
+}

@@ -6,7 +6,7 @@ const ContinueLearning = ({ courses }) => {
     <div className="continue-learning">
       <div className="continue-learning-header">
         <h2>
-          Continue Learning<span>📜</span>
+          Continue Learning<span>📖</span>
         </h2>
         {/* <button className="view-all-button">View All</button> */}
       </div>
