@@ -578,29 +578,40 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
 }
 
 .subject-badge.math {
-  background-color: rgba(78, 78, 78, 0.1);
-  color: var(--math-color);
+  background-color: var(--math-color);
 }
 
 .subject-badge.verbal {
-  background-color: rgba(69, 107, 196, 0.1);
-  color: var(--verbal-color);
+  background-color: var(--verbal-color);
 }
 
 .difficulty-indicator {
   display: flex;
   gap: 2px;
-  align-items: center;
+  align-items: flex-end;
+  height: 12px;
 }
 
 .difficulty-indicator .bar {
-  width: 6px;
-  height: 12px;
+  width: 4px;
   background-color: var(--bg-secondary);
   border-radius: 1px;
+}
+
+.difficulty-indicator .bar:nth-child(1) {
+  height: 4px;
+}
+
+.difficulty-indicator .bar:nth-child(2) {
+  height: 8px;
+}
+
+.difficulty-indicator .bar:nth-child(3) {
+  height: 12px;
 }
 
 .difficulty-indicator.easy .bar:nth-child(1) {
@@ -672,4 +683,21 @@
   justify-content: space-between;
   gap: 16px;
   width: 100%;
+}
+
+button {
+  cursor: pointer;
+  outline: none;
+}
+
+button:focus {
+  outline: none;
+}
+
+button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+button:focus-visible {
+  outline: none;
 }

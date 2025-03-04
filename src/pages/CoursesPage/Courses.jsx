@@ -13,6 +13,7 @@ const courseData = [
     icon: verbalIcon,
     iconColor: "#456bc4",
     background: course1Bg,
+    lastUpdated: "2 days ago",
     progress: {
       current: 54,
       total: 66,
@@ -32,6 +33,7 @@ const courseData = [
     icon: mathIcon,
     iconColor: "#4e4e4e",
     background: mathBg,
+    lastUpdated: "5 days ago",
     progress: {
       current: 48,
       total: 60,
@@ -51,6 +53,7 @@ const courseData = [
     icon: examIcon,
     iconColor: "#0fb86b",
     background: course1Bg,
+    lastUpdated: "1 week ago",
     progress: {
       current: 12,
       total: 30,
@@ -120,13 +123,16 @@ const Courses = () => {
                 </div>
                 <div className="course-page-actions">
                   <div className="course-page-action-icons">
-                    <i className="fas fa-calendar-alt"></i>
-                    <i className="fas fa-info-circle"></i>
-                    <i className="fas fa-sync-alt"></i>
+                    <i
+                      className="fas fa-calendar-alt"
+                      data-tooltip={`Last updated: ${course.lastUpdated}`}
+                    ></i>
+                    {/* <i className="fas fa-info-circle"></i> */}
+                    {/* <i className="fas fa-sync-alt"></i> */}
                   </div>
                   <button
                     className="enter-course-btn"
-                    style={{ backgroundColor: course.iconColor }}
+                    style={{ backgroundColor: "var(--verbal-color)" }}
                   >
                     Enter Course
                   </button>
