@@ -15,7 +15,7 @@ const ContinueLearning = ({ courses }) => {
           {courses.map((course) => (
             <div
               key={course.id}
-              className="course-card"
+              className={`course-card ${course.cat}`}
               style={{ backgroundImage: `url(${course.background})` }}
             >
               <div className="course-type">

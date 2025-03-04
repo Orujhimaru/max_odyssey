@@ -82,10 +82,16 @@
 
 .course-name {
   position: relative;
-  color: var(--text-primary);
+  color: white;
   font-size: 16px;
   font-weight: 400;
   /* margin-top: 2px; */
+}
+.course-card.verbal {
+  background-position-y: -8px;
+}
+.course-card.math {
+  background-position-y: -20px;
 }
 
 .progress-indicator {
