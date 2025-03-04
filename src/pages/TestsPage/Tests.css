@@ -170,6 +170,11 @@
   font-size: 14px;
 }
 
+/* background-color: #9ab0ee; */
+.review-button:hover {
+  /* background-color: #e6e6e6; */
+}
+
 .more-button {
   color: var(--text-primary);
   opacity: 0.7;
@@ -186,6 +191,7 @@
 
 .review-button:hover,
 .continue-button:hover {
+  background-color: #eeeeee;
   transform: translateY(-2px);
 }
 
