@@ -2,7 +2,8 @@
   width: 100%;
   height: 100%;
   position: relative;
-  padding: 24px;
+  padding: 12px;
+  padding-top: 20px;
   background-color: var(--bg-secondary);
   overflow-y: auto;
 }
@@ -10,14 +11,29 @@
 .practice-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 24px;
 }
 
+.fa-times-circle {
+  color: #bc2437;
+}
+
 .practice-header h1 {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 500;
   color: var(--text-primary);
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  line-height: 15px;
+}
+
+/* For emojis */
+.practice-header h1 span {
+  font-size: 24px;
+  line-height: 1;
+  margin-right: 2px;
 }
 
 .practice-actions {
@@ -357,14 +373,21 @@
 
 .practice-filters {
   display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filter-row {
+  display: flex;
   gap: 16px;
   align-items: center;
-  flex-wrap: wrap;
 }
 
 .filter-toggles {
   display: flex;
   gap: 8px;
+  width: 100%;
+  justify-content: flex-start;
 }
 
 .filter-toggle {
@@ -385,6 +408,20 @@
   font-size: 12px;
 }
 
+/* Golden bookmark icon styling */
+.filter-toggle i.fa-bookmark {
+  color: #ffd700;
+}
+
+/* .filter-toggle.active i.fa-bookmark {
+  color: white;
+} */
+
+/* Keep the wrong answers icon white when active */
+.filter-toggle.active i.fa-times-circle {
+  color: white;
+}
+
 .filter-toggle:hover {
   background-color: var(--bg-secondary);
 }
@@ -395,8 +432,14 @@
   border-color: var(--verbal-color);
 }
 
-.filter-toggle.active:hover {
-  background-color: #627fd0;
+.filter-toggle.active[class*="bookmark"] {
+  background-color: #ffd700;
+  border-color: #ffd700;
+  color: #000;
+}
+
+.filter-toggle.active[class*="bookmark"]:hover {
+  background-color: #e6c200;
 }
 
 .subject-switch {
@@ -434,7 +477,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   padding: 8px 16px;
@@ -807,4 +850,25 @@ button:focus:not(:focus-visible) {
 
 button:focus-visible {
   outline: none;
+}
+
+/* Bookmark button styling in question card */
+.bookmark-button {
+  opacity: 0.7 !important;
+}
+
+.bookmark-button:hover {
+  opacity: 1 !important;
+}
+
+.bookmark-button i {
+  color: #ffd700;
+}
+
+.bookmark-button i.far {
+  color: var(--text-primary);
+}
+
+.bookmark-button:hover i.far {
+  color: #ffd700;
 }
