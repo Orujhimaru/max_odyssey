@@ -357,9 +357,46 @@
 
 .practice-filters {
   display: flex;
-  flex-wrap: wrap;
   gap: 16px;
-  margin-top: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-toggles {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-toggle i {
+  font-size: 12px;
+}
+
+.filter-toggle:hover {
+  background-color: var(--bg-secondary);
+}
+
+.filter-toggle.active {
+  background-color: var(--verbal-color);
+  color: white;
+  border-color: var(--verbal-color);
+}
+
+.filter-toggle.active:hover {
+  background-color: #627fd0;
 }
 
 .subject-switch {
@@ -409,8 +446,8 @@
 .topic-filter-dropdown {
   position: absolute;
   top: 100%;
-  left: 0;
-  width: 500px;
+  left: -196%;
+  width: 450px;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -503,8 +540,8 @@
 .difficulty-filter-dropdown {
   position: absolute;
   top: 100%;
-  left: 0;
-  width: 200px;
+  left: -23%;
+  width: 150px;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -608,7 +645,7 @@
 
 .question-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.026);
 }
 
 .question-left {
@@ -673,15 +710,15 @@
 }
 
 .difficulty-indicator .bar:nth-child(1) {
-  height: 4px;
+  height: 6px;
 }
 
 .difficulty-indicator .bar:nth-child(2) {
-  height: 8px;
+  height: 10px;
 }
 
 .difficulty-indicator .bar:nth-child(3) {
-  height: 12px;
+  height: 14px;
 }
 
 .difficulty-indicator.easy .bar:nth-child(1) {

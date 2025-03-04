@@ -7,6 +7,8 @@ const Practice = () => {
   const [showTopicFilter, setShowTopicFilter] = useState(false);
   const [showDifficultyFilter, setShowDifficultyFilter] = useState(false);
   const [activeDifficulty, setActiveDifficulty] = useState("all");
+  const [showBookmarked, setShowBookmarked] = useState(false);
+  const [showWrongAnswered, setShowWrongAnswered] = useState(false);
 
   // Math topics
   const mathTopics = [
@@ -186,7 +188,17 @@ const Practice = () => {
       (question.topic && selectedTopics.includes(question.topic)) ||
       (question.subtopic && selectedTopics.includes(question.subtopic));
 
-    return matchesFilter && matchesDifficulty && matchesTopics;
+    const matchesBookmarked = !showBookmarked || question.isBookmarked;
+    const matchesWrongAnswered =
+      !showWrongAnswered || question.performance === "incorrect";
+
+    return (
+      matchesFilter &&
+      matchesDifficulty &&
+      matchesTopics &&
+      matchesBookmarked &&
+      matchesWrongAnswered
+    );
   });
 
   return (
@@ -214,6 +226,23 @@ const Practice = () => {
               }
             >
               Verbal
+            </button>
+          </div>
+
+          <div className="filter-toggles">
+            <button
+              className={`filter-toggle ${showBookmarked ? "active" : ""}`}
+              onClick={() => setShowBookmarked(!showBookmarked)}
+            >
+              <i className="fas fa-bookmark"></i>
+              Bookmarked
+            </button>
+            <button
+              className={`filter-toggle ${showWrongAnswered ? "active" : ""}`}
+              onClick={() => setShowWrongAnswered(!showWrongAnswered)}
+            >
+              <i className="fas fa-times-circle"></i>
+              Wrong Answers
             </button>
           </div>
 
@@ -416,7 +445,7 @@ const Practice = () => {
                   )}
                 </div>
                 <div className="completion-rate">
-                  <span>{question.completionRate || 0}% solved</span>
+                  <span>{question.completionRate || 0}% </span>
                 </div>
                 <div className="question-actions">
                   <button className="bookmark-button">
