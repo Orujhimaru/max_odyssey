@@ -76,11 +76,17 @@
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 [data-theme="dark"] .filter-toggle {
   background-color: rgba(128, 128, 128, 0.1);
   /* border-color: rgba(128, 128, 128, 0.3); */
+}
+
+[data-theme="dark"] .question-number {
+  background-color: #dddddd00;
 }
 
 .filter-toggle:hover {
@@ -191,7 +197,8 @@
   flex-direction: row;
   align-items: center;
   gap: 20px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .question-card:hover {
@@ -214,7 +221,7 @@
 
 .question-header {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   margin-bottom: 4px;
 }
 
@@ -525,7 +532,7 @@
   border-radius: 16px;
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .topic-tag.selected {
@@ -631,12 +638,16 @@
 }
 
 .practice-questions-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 16px 12px;
-  border-bottom: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  font-size: 13px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 12px 16px;
+  background-color: var(--bg-primary);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--text-primary);
+  opacity: 0.7;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .header-left,
@@ -684,7 +695,8 @@
   flex-direction: row;
   align-items: center;
   gap: 20px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .question-card:hover {
@@ -817,6 +829,7 @@
   border-radius: 12px;
   font-size: 12px;
   cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .completion-rate {

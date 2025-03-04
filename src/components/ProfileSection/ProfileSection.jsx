@@ -79,8 +79,7 @@ const ProfileSection = () => {
           <div className="profile-details">
             <h2>Felix Chen</h2>
             <span className="user-rank" style={{ color: userRank.color }}>
-              <i className="fas fa-medal"></i>
-              {userRank.rank} Rank
+              <i className="fas fa-medal"></i> {userRank.rank}
             </span>
           </div>
         </div>

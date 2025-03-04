@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Practice.css";
-
+import PracticeQuestionInterface from "../../components/PracticeQuestionInterface/PracticeQuestionInterface";
 const Practice = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [selectedTopics, setSelectedTopics] = useState([]);
@@ -10,6 +10,7 @@ const Practice = () => {
   const [showBookmarked, setShowBookmarked] = useState(false);
   const [showWrongAnswered, setShowWrongAnswered] = useState(false);
   const [bookmarkedQuestions, setBookmarkedQuestions] = useState(new Set());
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
 
   // Math topics
   const mathTopics = [
@@ -217,180 +218,220 @@ const Practice = () => {
 
   return (
     <div className="practice-page">
-      <div className="practice-header">
-        <h1>
-          Practice Arena <span>🦉</span>
-        </h1>
-        <div className="practice-filters">
-          <div className="filter-row">
-            <div className="subject-switch">
-              <button
-                className={`switch-button ${
-                  activeFilter === "math" ? "active" : ""
-                }`}
-                onClick={() =>
-                  setActiveFilter(activeFilter === "math" ? "all" : "math")
-                }
-              >
-                Math
-              </button>
-              <button
-                className={`switch-button ${
-                  activeFilter === "verbal" ? "active" : ""
-                }`}
-                onClick={() =>
-                  setActiveFilter(activeFilter === "verbal" ? "all" : "verbal")
-                }
-              >
-                Verbal
-              </button>
-            </div>
-
-            <div className="filter-dropdown">
-              <button
-                className="filter-dropdown-button"
-                onClick={() => setShowTopicFilter(!showTopicFilter)}
-              >
-                Topics{" "}
-                {selectedTopics.length > 0 && `(${selectedTopics.length})`}
-                <i
-                  className={`fas fa-chevron-${
-                    showTopicFilter ? "up" : "down"
+      {selectedQuestion ? (
+        <PracticeQuestionInterface
+          question={selectedQuestion}
+          onClose={() => setSelectedQuestion(null)}
+          questionNumber={
+            filteredQuestions.findIndex((q) => q.id === selectedQuestion.id) + 1
+          }
+          isBookmarked={bookmarkedQuestions.has(selectedQuestion.id)}
+          onBookmark={(id) => {
+            const newBookmarked = new Set(bookmarkedQuestions);
+            if (newBookmarked.has(id)) {
+              newBookmarked.delete(id);
+            } else {
+              newBookmarked.add(id);
+            }
+            setBookmarkedQuestions(newBookmarked);
+          }}
+          onNext={() => {
+            const currentIndex = filteredQuestions.findIndex(
+              (q) => q.id === selectedQuestion.id
+            );
+            if (currentIndex < filteredQuestions.length - 1) {
+              setSelectedQuestion(filteredQuestions[currentIndex + 1]);
+            }
+          }}
+          onPrevious={() => {
+            const currentIndex = filteredQuestions.findIndex(
+              (q) => q.id === selectedQuestion.id
+            );
+            if (currentIndex > 0) {
+              setSelectedQuestion(filteredQuestions[currentIndex - 1]);
+            }
+          }}
+        />
+      ) : (
+        <div className="practice-header">
+          <h1>
+            Practice Arena <span>🦉</span>
+          </h1>
+          <div className="practice-filters">
+            <div className="filter-row">
+              <div className="subject-switch">
+                <button
+                  className={`switch-button ${
+                    activeFilter === "math" ? "active" : ""
                   }`}
-                ></i>
-              </button>
-              {showTopicFilter && (
-                <div className="topic-filter-dropdown">
-                  <div className="topic-section">
-                    <h3>Math Topics</h3>
-                    <div className="topic-tags">
-                      {mathTopics.map((topic) => (
-                        <div
-                          key={topic}
-                          className={`topic-tag ${
-                            selectedTopics.includes(topic) ? "selected" : ""
-                          }`}
-                          onClick={() => toggleTopic(topic)}
-                        >
-                          {topic}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  onClick={() =>
+                    setActiveFilter(activeFilter === "math" ? "all" : "math")
+                  }
+                >
+                  Math
+                </button>
+                <button
+                  className={`switch-button ${
+                    activeFilter === "verbal" ? "active" : ""
+                  }`}
+                  onClick={() =>
+                    setActiveFilter(
+                      activeFilter === "verbal" ? "all" : "verbal"
+                    )
+                  }
+                >
+                  Verbal
+                </button>
+              </div>
 
-                  <div className="topic-section">
-                    <h3>Verbal Topics</h3>
-                    <div className="topic-tags">
-                      {verbalTopics.map((topic) => (
-                        <div
-                          key={topic}
-                          className={`topic-tag ${
-                            selectedTopics.includes(topic) ? "selected" : ""
-                          }`}
-                          onClick={() => toggleTopic(topic)}
-                        >
-                          {topic}
-                        </div>
-                      ))}
+              <div className="filter-dropdown">
+                <button
+                  className="filter-dropdown-button"
+                  onClick={() => setShowTopicFilter(!showTopicFilter)}
+                >
+                  Topics{" "}
+                  {selectedTopics.length > 0 && `(${selectedTopics.length})`}
+                  <i
+                    className={`fas fa-chevron-${
+                      showTopicFilter ? "up" : "down"
+                    }`}
+                  ></i>
+                </button>
+                {showTopicFilter && (
+                  <div className="topic-filter-dropdown">
+                    <div className="topic-section">
+                      <h3>Math Topics</h3>
+                      <div className="topic-tags">
+                        {mathTopics.map((topic) => (
+                          <div
+                            key={topic}
+                            className={`topic-tag ${
+                              selectedTopics.includes(topic) ? "selected" : ""
+                            }`}
+                            onClick={() => toggleTopic(topic)}
+                          >
+                            {topic}
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
 
-                  {selectedTopics.length > 0 && (
-                    <button
-                      className="clear-topics-button"
-                      onClick={() => setSelectedTopics([])}
+                    <div className="topic-section">
+                      <h3>Verbal Topics</h3>
+                      <div className="topic-tags">
+                        {verbalTopics.map((topic) => (
+                          <div
+                            key={topic}
+                            className={`topic-tag ${
+                              selectedTopics.includes(topic) ? "selected" : ""
+                            }`}
+                            onClick={() => toggleTopic(topic)}
+                          >
+                            {topic}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {selectedTopics.length > 0 && (
+                      <button
+                        className="clear-topics-button"
+                        onClick={() => setSelectedTopics([])}
+                      >
+                        Clear All Topics
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="filter-dropdown">
+                <button
+                  className="filter-dropdown-button"
+                  onClick={() => setShowDifficultyFilter(!showDifficultyFilter)}
+                >
+                  Difficulty{" "}
+                  {activeDifficulty !== "all" && `(${activeDifficulty})`}
+                  <i
+                    className={`fas fa-chevron-${
+                      showDifficultyFilter ? "up" : "down"
+                    }`}
+                  ></i>
+                </button>
+                {showDifficultyFilter && (
+                  <div className="difficulty-filter-dropdown">
+                    <div
+                      className={`difficulty-option ${
+                        activeDifficulty === "all" ? "selected" : ""
+                      }`}
+                      onClick={() => {
+                        setActiveDifficulty("all");
+                        setShowDifficultyFilter(false);
+                      }}
                     >
-                      Clear All Topics
-                    </button>
-                  )}
-                </div>
-              )}
+                      All Levels
+                    </div>
+                    <div
+                      className={`difficulty-option easy ${
+                        activeDifficulty === "easy" ? "selected" : ""
+                      }`}
+                      onClick={() => {
+                        setActiveDifficulty("easy");
+                        setShowDifficultyFilter(false);
+                      }}
+                    >
+                      Easy
+                    </div>
+                    <div
+                      className={`difficulty-option medium ${
+                        activeDifficulty === "medium" ? "selected" : ""
+                      }`}
+                      onClick={() => {
+                        setActiveDifficulty("medium");
+                        setShowDifficultyFilter(false);
+                      }}
+                    >
+                      Medium
+                    </div>
+                    <div
+                      className={`difficulty-option hard ${
+                        activeDifficulty === "hard" ? "selected" : ""
+                      }`}
+                      onClick={() => {
+                        setActiveDifficulty("hard");
+                        setShowDifficultyFilter(false);
+                      }}
+                    >
+                      Hard
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="filter-dropdown">
-              <button
-                className="filter-dropdown-button"
-                onClick={() => setShowDifficultyFilter(!showDifficultyFilter)}
-              >
-                Difficulty{" "}
-                {activeDifficulty !== "all" && `(${activeDifficulty})`}
-                <i
-                  className={`fas fa-chevron-${
-                    showDifficultyFilter ? "up" : "down"
+            <div className="filter-row down">
+              <div className="filter-toggles">
+                <button
+                  className={`filter-toggle ${showBookmarked ? "active" : ""}`}
+                  onClick={() => setShowBookmarked(!showBookmarked)}
+                >
+                  <i className="fas fa-bookmark"></i>
+                  Bookmarked
+                </button>
+                <button
+                  className={`filter-toggle ${
+                    showWrongAnswered ? "active" : ""
                   }`}
-                ></i>
-              </button>
-              {showDifficultyFilter && (
-                <div className="difficulty-filter-dropdown">
-                  <div
-                    className={`difficulty-option ${
-                      activeDifficulty === "all" ? "selected" : ""
-                    }`}
-                    onClick={() => {
-                      setActiveDifficulty("all");
-                      setShowDifficultyFilter(false);
-                    }}
-                  >
-                    All Levels
-                  </div>
-                  <div
-                    className={`difficulty-option easy ${
-                      activeDifficulty === "easy" ? "selected" : ""
-                    }`}
-                    onClick={() => {
-                      setActiveDifficulty("easy");
-                      setShowDifficultyFilter(false);
-                    }}
-                  >
-                    Easy
-                  </div>
-                  <div
-                    className={`difficulty-option medium ${
-                      activeDifficulty === "medium" ? "selected" : ""
-                    }`}
-                    onClick={() => {
-                      setActiveDifficulty("medium");
-                      setShowDifficultyFilter(false);
-                    }}
-                  >
-                    Medium
-                  </div>
-                  <div
-                    className={`difficulty-option hard ${
-                      activeDifficulty === "hard" ? "selected" : ""
-                    }`}
-                    onClick={() => {
-                      setActiveDifficulty("hard");
-                      setShowDifficultyFilter(false);
-                    }}
-                  >
-                    Hard
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="filter-row">
-            <div className="filter-toggles">
-              <button
-                className={`filter-toggle ${showBookmarked ? "active" : ""}`}
-                onClick={() => setShowBookmarked(!showBookmarked)}
-              >
-                <i className="fas fa-bookmark"></i>
-                Bookmarked
-              </button>
-              <button
-                className={`filter-toggle ${showWrongAnswered ? "active" : ""}`}
-                onClick={() => setShowWrongAnswered(!showWrongAnswered)}
-              >
-                <i className="fas fa-times-circle"></i>
-                Wrong Answers
-              </button>
+                  onClick={() => setShowWrongAnswered(!showWrongAnswered)}
+                >
+                  <i className="fas fa-times-circle"></i>
+                  Wrong Answers
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="practice-questions">
         <div className="practice-questions-header">
@@ -407,7 +448,12 @@ const Practice = () => {
           </div>
         </div>
         {filteredQuestions.map((question, index) => (
-          <div className="question-card" key={question.id}>
+          <div
+            className="question-card"
+            key={question.id}
+            onClick={() => setSelectedQuestion(question)}
+            style={{ cursor: "pointer" }}
+          >
             <div className="question-left">
               <span className="question-number">#{index + 1}</span>
               <div className="question-info">

@@ -62,10 +62,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  transition: background-color var(--transition-duration) ease,
-    color var(--transition-duration) ease,
-    border-color var(--transition-duration) ease,
-    box-shadow var(--transition-duration) ease;
 }
 
 a {
