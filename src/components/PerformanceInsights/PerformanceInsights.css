@@ -65,15 +65,15 @@
 }
 
 .time-value.fast {
-  color: var(--increase-color);
+  color: #2ecc71;
 }
 
 .time-value.okay {
-  color: #ff9800;
+  color: #f39c12;
 }
 
 .time-value.slow {
-  color: var(--decrease-color);
+  color: #e74c3c;
 }
 
 .speed-indicator {
@@ -84,25 +84,28 @@
 .speedometer-icon {
   width: 40px;
   height: 22px;
+  overflow: visible;
+  transform: translateY(-2px);
 }
 
 .speedometer-bg {
   stroke: var(--border-color);
   stroke-width: 6;
+  stroke-opacity: 0.3;
 }
 
 .speed-section.fast {
-  stroke: var(--increase-color);
+  stroke: #2ecc71;
   stroke-width: 6;
 }
 
 .speed-section.okay {
-  stroke: #ff9800;
+  stroke: #f39c12;
   stroke-width: 6;
 }
 
 .speed-section.slow {
-  stroke: var(--decrease-color);
+  stroke: #e74c3c;
   stroke-width: 6;
 }
 

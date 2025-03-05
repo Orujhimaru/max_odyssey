@@ -5,7 +5,7 @@ const PerformanceInsights = () => {
   const timeData = {
     verbal: {
       target: 72, // 1.2 minutes in seconds
-      actual: 84, // 1.4 minutes in seconds
+      actual: 1, // 1.4 minutes in seconds
     },
     math: {
       target: 96, // 1.6 minutes in seconds
@@ -20,45 +20,55 @@ const PerformanceInsights = () => {
   };
 
   const SpeedometerIcon = ({ ratio }) => {
-    // Calculate rotation angle based on ratio (0 to 180 degrees)
-    const angle = Math.min(180, Math.max(0, (ratio - 0.7) * 180));
+    let angle;
+
+    // Get actual time in seconds
+    const actualTime = ratio * timeData.verbal.target;
+
+    // Map time to angle:
+    // 0 seconds -> -180 degrees (start of green)
+    // target time -> -90 degrees (end of yellow)
+    // 120 seconds (2min) -> 0 degrees (end of red)
+    const MAX_TIME = 120; // Maximum time in seconds (2 minutes)
+    const normalizedTime = Math.min(actualTime, MAX_TIME);
+    angle = -180 + (normalizedTime / MAX_TIME) * 180;
 
     return (
       <svg viewBox="0 0 100 60" className="speedometer-icon">
         {/* Gray background arc */}
         <path
-          d="M5 50 A45 45 0 0 1 95 50"
+          d="M10 50 A40 40 0 0 1 90 50"
           className="speedometer-bg"
           fill="none"
-          strokeWidth="8"
+          strokeWidth="6"
           strokeLinecap="round"
         />
 
-        {/* Colored sections */}
+        {/* Colored sections - perfect half circles */}
         <path
-          d="M5 50 A45 45 0 0 1 50 5"
+          d="M10 50 A40 40 0 0 1 37 20"
           className="speed-section fast"
           fill="none"
-          strokeWidth="8"
+          strokeWidth="6"
           strokeLinecap="round"
         />
         <path
-          d="M50 5 A45 45 0 0 1 73 15"
+          d="M37 20 A40 40 0 0 1 63 20"
           className="speed-section okay"
           fill="none"
-          strokeWidth="8"
+          strokeWidth="6"
           strokeLinecap="round"
         />
         <path
-          d="M73 15 A45 45 0 0 1 95 50"
+          d="M63 20 A40 40 0 0 1 90 50"
           className="speed-section slow"
           fill="none"
-          strokeWidth="8"
+          strokeWidth="6"
           strokeLinecap="round"
         />
 
         {/* Needle */}
-        <g transform={`rotate(${angle}, 50, 50)`}>
+        <g transform={`rotate(${angle + 90}, 50, 50)`}>
           <line
             x1="50"
             y1="50"
@@ -74,9 +84,8 @@ const PerformanceInsights = () => {
   };
 
   const getSpeedIndicator = (actual, target) => {
-    const ratio = actual / target;
-    if (ratio <= 1.1) return "fast";
-    if (ratio <= 1.3) return "okay";
+    if (actual <= target * 0.7) return "fast";
+    if (actual <= target) return "okay";
     return "slow";
   };
 
@@ -106,7 +115,7 @@ const PerformanceInsights = () => {
           <div className="insight-content">
             <span className="insight-label">Q# Solved</span>
             <div className="insight-value">
-              <span className="insight-period">2130/</span>847
+              847<span className="insight-period">/ 2130 </span>
             </div>
           </div>
         </div>

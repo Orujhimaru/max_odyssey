@@ -175,7 +175,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 }
 
 .insights-container {
-  margin: 12px 0;
+  /* margin: 12px 0; */
   padding: 12px;
   background-color: var(--bg-secondary);
   border-radius: 16px;
@@ -237,6 +237,7 @@ tspan {
 
   display: flex;
   flex-direction: column;
+  gap: 4px;
 }
 
 .chart-title {
