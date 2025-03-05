@@ -9,7 +9,7 @@ const PerformanceInsights = () => {
     },
     math: {
       target: 96, // 1.6 minutes in seconds
-      actual: 108, // 1.8 minutes in seconds
+      actual: 118, // 1.8 minutes in seconds
     },
   };
 
@@ -20,18 +20,25 @@ const PerformanceInsights = () => {
   };
 
   const SpeedometerIcon = ({ ratio }) => {
-    let angle;
+    const [currentAngle, setCurrentAngle] = React.useState(-180);
 
-    // Get actual time in seconds
-    const actualTime = ratio * timeData.verbal.target;
+    React.useEffect(() => {
+      // Start from leftmost position (-180 degrees)
+      setCurrentAngle(-180);
 
-    // Map time to angle:
-    // 0 seconds -> -180 degrees (start of green)
-    // target time -> -90 degrees (end of yellow)
-    // 120 seconds (2min) -> 0 degrees (end of red)
-    const MAX_TIME = 120; // Maximum time in seconds (2 minutes)
-    const normalizedTime = Math.min(actualTime, MAX_TIME);
-    angle = -180 + (normalizedTime / MAX_TIME) * 180;
+      // Calculate final angle
+      const actualTime = ratio;
+      const MAX_TIME = 120;
+      const normalizedTime = Math.min(actualTime, MAX_TIME);
+      const targetAngle = -180 + (normalizedTime / MAX_TIME) * 180;
+
+      // Animate to final position after a brief delay
+      const timer = setTimeout(() => {
+        setCurrentAngle(targetAngle);
+      }, 200); // Slightly longer delay for better visibility
+
+      return () => clearTimeout(timer);
+    }, [ratio]);
 
     return (
       <svg viewBox="0 0 100 60" className="speedometer-icon">
@@ -68,7 +75,10 @@ const PerformanceInsights = () => {
         />
 
         {/* Needle */}
-        <g transform={`rotate(${angle + 90}, 50, 50)`}>
+        <g
+          transform={`rotate(${currentAngle + 90}, 50, 50)`}
+          className="speedometer-needle-group"
+        >
           <line
             x1="50"
             y1="50"
@@ -138,9 +148,7 @@ const PerformanceInsights = () => {
                   >
                     {formatTime(timeData.verbal.actual)}
                     <div className="speed-indicator">
-                      <SpeedometerIcon
-                        ratio={timeData.verbal.actual / timeData.verbal.target}
-                      />
+                      <SpeedometerIcon ratio={timeData.verbal.actual} />
                     </div>
                   </div>
                   <div className="target-time">
@@ -159,9 +167,7 @@ const PerformanceInsights = () => {
                   >
                     {formatTime(timeData.math.actual)}
                     <div className="speed-indicator">
-                      <SpeedometerIcon
-                        ratio={timeData.math.actual / timeData.math.target}
-                      />
+                      <SpeedometerIcon ratio={timeData.math.actual} />
                     </div>
                   </div>
                   <div className="target-time">
