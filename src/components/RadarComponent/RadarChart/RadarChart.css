@@ -296,9 +296,11 @@
 }
 
 .skill-section-header.verbal {
-  /* color: #456bc4; */
+  color: var(--text-primary);
+  opacity: 0.7;
 }
 
 .skill-section-header.math {
-  color: var(--math-color);
+  color: var(--text-primary);
+  opacity: 0.7;
 }

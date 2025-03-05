@@ -507,7 +507,7 @@
 .topic-filter-dropdown {
   position: absolute;
   top: 100%;
-  left: -196%;
+  left: -160%;
   width: 450px;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
@@ -601,7 +601,7 @@
 .difficulty-filter-dropdown {
   position: absolute;
   top: 100%;
-  left: -23%;
+  left: 8%;
   width: 150px;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);

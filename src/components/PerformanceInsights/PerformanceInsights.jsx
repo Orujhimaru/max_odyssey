@@ -13,6 +13,12 @@ const PerformanceInsights = () => {
     },
   };
 
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
+
   const SpeedometerIcon = ({ ratio }) => {
     // Calculate rotation angle based on ratio (0 to 180 degrees)
     const angle = Math.min(180, Math.max(0, (ratio - 0.7) * 180));
@@ -21,7 +27,7 @@ const PerformanceInsights = () => {
       <svg viewBox="0 0 100 60" className="speedometer-icon">
         {/* Gray background arc */}
         <path
-          d="M10 50 A40 40 0 0 1 90 50"
+          d="M5 50 A45 45 0 0 1 95 50"
           className="speedometer-bg"
           fill="none"
           strokeWidth="8"
@@ -30,21 +36,21 @@ const PerformanceInsights = () => {
 
         {/* Colored sections */}
         <path
-          d="M10 50 A40 40 0 0 1 50 10"
+          d="M5 50 A45 45 0 0 1 50 5"
           className="speed-section fast"
           fill="none"
           strokeWidth="8"
           strokeLinecap="round"
         />
         <path
-          d="M50 10 A40 40 0 0 1 70 20"
+          d="M50 5 A45 45 0 0 1 73 15"
           className="speed-section okay"
           fill="none"
           strokeWidth="8"
           strokeLinecap="round"
         />
         <path
-          d="M70 20 A40 40 0 0 1 90 50"
+          d="M73 15 A45 45 0 0 1 95 50"
           className="speed-section slow"
           fill="none"
           strokeWidth="8"
@@ -57,11 +63,11 @@ const PerformanceInsights = () => {
             x1="50"
             y1="50"
             x2="50"
-            y2="20"
+            y2="15"
             strokeWidth="2"
             className="speedometer-needle"
           />
-          <circle cx="50" cy="50" r="4" className="speedometer-center" />
+          <circle cx="50" cy="50" r="3" className="speedometer-center" />
         </g>
       </svg>
     );
@@ -121,7 +127,7 @@ const PerformanceInsights = () => {
                       timeData.verbal.target
                     )}`}
                   >
-                    {timeData.verbal.actual}"
+                    {formatTime(timeData.verbal.actual)}
                     <div className="speed-indicator">
                       <SpeedometerIcon
                         ratio={timeData.verbal.actual / timeData.verbal.target}
@@ -129,7 +135,7 @@ const PerformanceInsights = () => {
                     </div>
                   </div>
                   <div className="target-time">
-                    target: {timeData.verbal.target}"
+                    target: {formatTime(timeData.verbal.target)}
                   </div>
                 </div>
               </div>
@@ -142,7 +148,7 @@ const PerformanceInsights = () => {
                       timeData.math.target
                     )}`}
                   >
-                    {timeData.math.actual}"
+                    {formatTime(timeData.math.actual)}
                     <div className="speed-indicator">
                       <SpeedometerIcon
                         ratio={timeData.math.actual / timeData.math.target}
@@ -150,7 +156,7 @@ const PerformanceInsights = () => {
                     </div>
                   </div>
                   <div className="target-time">
-                    target: {timeData.math.target}"
+                    target: {formatTime(timeData.math.target)}
                   </div>
                 </div>
               </div>

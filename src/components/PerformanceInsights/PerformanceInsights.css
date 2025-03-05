@@ -83,23 +83,27 @@
 
 .speedometer-icon {
   width: 40px;
-  height: 24px;
+  height: 22px;
 }
 
 .speedometer-bg {
   stroke: var(--border-color);
+  stroke-width: 6;
 }
 
 .speed-section.fast {
   stroke: var(--increase-color);
+  stroke-width: 6;
 }
 
 .speed-section.okay {
   stroke: #ff9800;
+  stroke-width: 6;
 }
 
 .speed-section.slow {
   stroke: var(--decrease-color);
+  stroke-width: 6;
 }
 
 .speedometer-needle {
@@ -141,7 +145,7 @@
 }
 
 .insight-value.time-insights {
-  flex-direction: column;
+  /* flex-wrap: wrap; */
   gap: 12px;
 }
 
