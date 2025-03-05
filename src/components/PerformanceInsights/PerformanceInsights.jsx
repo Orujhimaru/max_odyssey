@@ -21,24 +21,35 @@ const PerformanceInsights = () => {
 
   const SpeedometerIcon = ({ ratio }) => {
     const [currentAngle, setCurrentAngle] = React.useState(-180);
+    const ratioRef = React.useRef(ratio);
 
     React.useEffect(() => {
-      // Start from leftmost position (-180 degrees)
-      setCurrentAngle(-180);
-
-      // Calculate final angle
+      // Calculate target angle
       const actualTime = ratio;
       const MAX_TIME = 120;
       const normalizedTime = Math.min(actualTime, MAX_TIME);
       const targetAngle = -180 + (normalizedTime / MAX_TIME) * 180;
 
+      // On first render or when ratio changes
+      if (ratioRef.current === ratio) {
+        // If it's the first render, set the angle immediately
+        if (currentAngle === -180) {
+          setCurrentAngle(targetAngle);
+        }
+        return;
+      }
+      ratioRef.current = ratio;
+
+      // Start from leftmost position (-180 degrees)
+      setCurrentAngle(-180);
+
       // Animate to final position after a brief delay
       const timer = setTimeout(() => {
         setCurrentAngle(targetAngle);
-      }, 200); // Slightly longer delay for better visibility
+      }, 200);
 
       return () => clearTimeout(timer);
-    }, [ratio]);
+    }, [ratio, currentAngle]);
 
     return (
       <svg viewBox="0 0 100 60" className="speedometer-icon">
