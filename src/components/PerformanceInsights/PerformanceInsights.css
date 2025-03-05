@@ -44,6 +44,107 @@
   flex: 1;
 }
 
+.time-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-direction: column;
+}
+
+.time-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.time-value {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 18px;
+}
+
+.time-value.fast {
+  color: var(--increase-color);
+}
+
+.time-value.okay {
+  color: #ff9800;
+}
+
+.time-value.slow {
+  color: var(--decrease-color);
+}
+
+.speed-indicator {
+  display: flex;
+  align-items: center;
+}
+
+.speedometer-icon {
+  width: 40px;
+  height: 24px;
+}
+
+.speedometer-bg {
+  stroke: var(--border-color);
+}
+
+.speed-section.fast {
+  stroke: var(--increase-color);
+}
+
+.speed-section.okay {
+  stroke: #ff9800;
+}
+
+.speed-section.slow {
+  stroke: var(--decrease-color);
+}
+
+.speedometer-needle {
+  stroke: var(--text-primary);
+  stroke-linecap: round;
+}
+
+.speedometer-center {
+  fill: var(--text-primary);
+}
+
+.target-time {
+  font-size: 12px;
+  opacity: 0.7;
+  color: var(--text-primary);
+}
+
+.subject-label {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.subject-label.verbal {
+  background-color: var(--verbal-color);
+  color: white;
+}
+
+.subject-label.math {
+  background-color: var(--math-color);
+  color: white;
+}
+
+.insight-value .time-section {
+  display: flex;
+  align-items: baseline;
+  margin-right: 16px;
+}
+
+.insight-value.time-insights {
+  flex-direction: column;
+  gap: 12px;
+}
+
 .insight-card {
   display: flex;
   align-items: flex-start;
