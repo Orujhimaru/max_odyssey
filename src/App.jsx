@@ -8,6 +8,7 @@ import ScoreColumnGraph from "./components/ScoreColumnComponent/ScoreColumnGraph
 import Courses from "./pages/CoursesPage/Courses";
 import Tests from "./pages/TestsPage/Tests";
 import Practice from "./pages/PracticePage/Practice";
+import TestReview from "./components/TestReview/TestReview";
 
 const App = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -42,6 +43,7 @@ const App = () => {
             <Route path="/courses" element={<Courses />} />
             <Route path="/tests" element={<Tests />} />
             <Route path="/practice" element={<Practice />} />
+            <Route path="/test-review/:testId" element={<TestReview />} />
           </Routes>
         </div>
       </div>

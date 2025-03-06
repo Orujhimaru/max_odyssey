@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Tests.css";
 import TestInterface from "./TestInterface";
 
@@ -6,6 +7,7 @@ const Tests = () => {
   const [showNewTestModal, setShowNewTestModal] = useState(false);
   const [activeTest, setActiveTest] = useState(null);
   const [testInProgress, setTestInProgress] = useState(false);
+  const navigate = useNavigate();
 
   // Mock data for recent tests
   const recentTests = [
@@ -72,6 +74,10 @@ const Tests = () => {
     }
   };
 
+  const handleReviewClick = (testId) => {
+    navigate(`/test-review/${testId}`);
+  };
+
   if (testInProgress) {
     return <TestInterface testType={activeTest} onExit={exitTest} />;
   }
@@ -126,7 +132,10 @@ const Tests = () => {
               <div className="test-actions">
                 {test.completed ? (
                   <>
-                    <button className="review-button">
+                    <button
+                      className="review-button"
+                      onClick={() => handleReviewClick(test.id)}
+                    >
                       <i className="fas fa-eye"></i> Review
                     </button>
                     <button className="more-button">
