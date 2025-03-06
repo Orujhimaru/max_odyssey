@@ -700,7 +700,7 @@
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 16px;
+  padding: 8px;
   display: flex;
   flex-direction: row;
   align-items: center;
