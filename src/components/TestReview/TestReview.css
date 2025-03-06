@@ -118,6 +118,10 @@
   line-height: 1.6;
 }
 
+.question {
+  padding: 12px;
+}
+
 .question p {
   color: var(--text-primary);
   font-size: 16px;
