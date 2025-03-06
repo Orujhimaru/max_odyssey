@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import PracticeSwitch from "../../components/PracticeSwitch/PracticeSwitch";
 import "./Practice.css";
 import PracticeQuestionInterface from "../../components/PracticeQuestionInterface/PracticeQuestionInterface";
+
 const Practice = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [selectedTopics, setSelectedTopics] = useState([]);
@@ -11,6 +13,7 @@ const Practice = () => {
   const [showWrongAnswered, setShowWrongAnswered] = useState(false);
   const [bookmarkedQuestions, setBookmarkedQuestions] = useState(new Set());
   const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const [isVerbal, setIsVerbal] = useState(false);
 
   // Math topics
   const mathTopics = [
@@ -259,30 +262,12 @@ const Practice = () => {
           </h1>
           <div className="practice-filters">
             <div className="filter-row">
-              <div className="subject-switch">
-                <button
-                  className={`switch-button ${
-                    activeFilter === "math" ? "active" : ""
-                  }`}
-                  onClick={() =>
-                    setActiveFilter(activeFilter === "math" ? "all" : "math")
-                  }
-                >
-                  Math
-                </button>
-                <button
-                  className={`switch-button ${
-                    activeFilter === "verbal" ? "active" : ""
-                  }`}
-                  onClick={() =>
-                    setActiveFilter(
-                      activeFilter === "verbal" ? "all" : "verbal"
-                    )
-                  }
-                >
-                  Verbal
-                </button>
-              </div>
+              <PracticeSwitch
+                isVerbal={activeFilter === "verbal"}
+                onChange={(isVerbal) =>
+                  setActiveFilter(isVerbal ? "verbal" : "math")
+                }
+              />
 
               <div className="filter-dropdown">
                 <button
