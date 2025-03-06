@@ -46,23 +46,23 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
         strokeLinecap="round"
       />
 
-      {/* Colored sections */}
+      {/* Colored sections - perfect half circles */}
       <path
-        d="M 10 50 A 40 40 0 0 1 37 20"
+        d="M 10 49 A 40 40 0 0 1 37 19"
         className="speed-section fast"
         fill="none"
         strokeWidth="6"
         strokeLinecap="round"
       />
       <path
-        d="M 37 20 A 40 40 0 0 1 63 20"
+        d="M 37 19 A 40 40 0 0 1 63 19"
         className="speed-section okay"
         fill="none"
         strokeWidth="6"
         strokeLinecap="round"
       />
       <path
-        d="M 63 20 A 40 40 0 0 1 90 50"
+        d="M 63 19 A 40 40 0 0 1 90 49"
         className="speed-section slow"
         fill="none"
         strokeWidth="6"

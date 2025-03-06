@@ -40,18 +40,18 @@ span.score-box-title-type.math {
 }
 
 span.score-box-title-type.verbal {
-  color: var(--text-primary);
+  color: var(--bar-verbal-color);
   font-size: 18px;
 }
 
 span.score-box-title-type.math {
-  color: var(--text-primary);
+  color: var(--bar-math-color);
   font-size: 18px;
 }
 
 span.score-box-title-type.highlighted {
   font-weight: 600;
-  color: var(--text-primary);
+  opacity: 0.8;
 }
 
 .score-box h2 span:last-child {
