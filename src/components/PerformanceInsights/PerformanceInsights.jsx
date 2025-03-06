@@ -19,7 +19,7 @@ const PerformanceInsights = () => {
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-  const SpeedometerIcon = ({ ratio }) => {
+  const SpeedometerIcon = React.memo(({ ratio }) => {
     const [currentAngle, setCurrentAngle] = React.useState(-180);
     const ratioRef = React.useRef(ratio);
 
@@ -30,7 +30,7 @@ const PerformanceInsights = () => {
       const normalizedTime = Math.min(actualTime, MAX_TIME);
       const targetAngle = -180 + (normalizedTime / MAX_TIME) * 180;
 
-      // On first render or when ratio changes
+      // Only update if the ratio actually changed
       if (ratioRef.current === ratio) {
         // If it's the first render, set the angle immediately
         if (currentAngle === -180) {
@@ -102,7 +102,7 @@ const PerformanceInsights = () => {
         </g>
       </svg>
     );
-  };
+  });
 
   const getSpeedIndicator = (actual, target) => {
     if (actual <= target * 0.7) return "fast";
