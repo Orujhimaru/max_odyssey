@@ -1,0 +1,223 @@
+.test-review-container {
+  padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background-color: var(--bg-secondary);
+  position: relative;
+}
+
+.test-review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.test-info h2 {
+  font-size: 24px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.test-stats {
+  display: flex;
+  gap: 16px;
+  color: var(--text-secondary);
+}
+
+.question-info {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.difficulty {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.difficulty.easy {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.difficulty.medium {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.difficulty.hard {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.topic,
+.subtopic {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.navigation-controls {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: var(--bg-primary);
+  padding: 8px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px var(--box-shadow);
+}
+
+.nav-button {
+  padding: 8px 16px;
+  border-radius: 12px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.test-review-content {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  height: 100%;
+}
+
+.question-section {
+  background-color: var(--bg-primary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  padding: 24px;
+  padding-left: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.passage {
+  padding: 16px;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.question p {
+  color: var(--text-primary);
+  font-size: 16px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.choice {
+  padding: 12px;
+  border-radius: 8px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  border: 1px solid var(--border-color);
+}
+
+.choice.correct {
+  background-color: rgba(47, 112, 193, 0.1);
+  border-color: var(--verbal-color);
+  color: var(--text-primary);
+}
+
+.choice.incorrect {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-color: var(--error-color);
+  color: var(--text-primary);
+}
+
+.choice.correct::before,
+.choice.incorrect::before {
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+}
+
+.choice.correct::before {
+  content: "\f00c"; /* checkmark */
+  color: var(--verbal-color);
+}
+
+.choice.incorrect::before {
+  content: "\f00d"; /* X mark */
+  color: var(--error-color);
+}
+
+.explanation-section {
+  background-color: var(--bg-primary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  padding: 24px;
+}
+
+.explanation-section h3 {
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.explanation-section p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.question-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.bookmark-btn,
+.report-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bookmark-btn:hover,
+.report-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px var(--box-shadow);
+}
+
+.bookmark-btn i.active {
+  color: var(--warning-color);
+}

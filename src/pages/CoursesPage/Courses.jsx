@@ -1,4 +1,6 @@
 import React from "react";
+// del
+import LockOverlay from "../../components/LockOverlay/LockOverlay";
 import "./Courses.css";
 import verbalIcon from "../../assets/verbal_icon.svg"; // You'll need to create these icons
 import mathIcon from "../../assets/math_icon.svg";
@@ -92,10 +94,13 @@ const Courses = () => {
                     className="course-page-icon"
                     style={{ backgroundColor: course.iconColor }}
                   >
-                    <img src={course.icon} alt="" />
+                    <img src={course.icon} alt={course.name} />
                   </div>
                   <div className="course-page-title">
-                    <span className="course-page-type">Course</span>
+                    <div className="course-page-type">
+                      <i className="fas fa-book"></i>
+                      Course
+                    </div>
                     <h3>{course.name}</h3>
                   </div>
                   <div className="course-page-progress">
@@ -138,6 +143,8 @@ const Courses = () => {
                   </button>
                 </div>
               </div>
+              {/* delete this */}
+              <LockOverlay />
             </div>
           ))}
         </div>
