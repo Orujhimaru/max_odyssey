@@ -1,4 +1,5 @@
 import React from "react";
+import { VerbalIcon, MathIcon } from "../../Icons/SubjectIcons";
 import "./ScoreBox.css";
 
 const ScoreBox = ({ title, score, improvement, type, isHighlighted }) => {
@@ -7,13 +8,13 @@ const ScoreBox = ({ title, score, improvement, type, isHighlighted }) => {
   return (
     <div className={`score-box ${type}`}>
       <h2>
-        <span
-          className={`score-box-title-type ${type} ${
+        <div
+          className={`subject-icon ${type} ${
             isHighlighted ? "highlighted" : ""
           }`}
         >
-          {title}
-        </span>
+          {type === "verbal" ? <VerbalIcon /> : <MathIcon />}
+        </div>
         <span>average</span>
       </h2>
       <div className={`score-row ${type}`}>

@@ -25,39 +25,55 @@
   line-height: 14px;
   white-space: nowrap;
   display: flex;
-  gap: 6px;
-  align-items: baseline;
-  height: 22px;
+  gap: 8px;
+  align-items: center;
+  /* height: 32px; */
   width: 100%;
   overflow: hidden;
 }
 
-span.score-box-title-type.verbal,
-span.score-box-title-type.math {
-  /* width: 55px; */
-  display: inline-block;
-  transform-origin: left bottom;
+.subject-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-span.score-box-title-type.verbal {
-  color: var(--bar-verbal-color);
+.subject-icon:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.subject-icon.verbal {
+  background-color: var(--verbal-color);
+}
+
+.subject-icon.math {
+  background-color: var(--math-color);
+}
+
+.subject-icon.highlighted {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.subject-label {
+  color: white;
   font-size: 18px;
-}
-
-span.score-box-title-type.math {
-  color: var(--bar-math-color);
-  font-size: 18px;
-}
-
-span.score-box-title-type.highlighted {
   font-weight: 600;
-  opacity: 0.8;
+  font-family: "DM Sans", sans-serif;
+  line-height: 1;
+  user-select: none;
 }
 
 .score-box h2 span:last-child {
   font-size: 14px;
   line-height: 14px;
   opacity: 0.7;
+  margin-top: 2px;
 }
 
 .score-value {

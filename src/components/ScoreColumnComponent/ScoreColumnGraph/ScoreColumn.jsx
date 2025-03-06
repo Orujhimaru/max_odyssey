@@ -15,13 +15,13 @@ import PredictedScore from "../PredictedScore/PredictedScore";
 import PerformanceInsights from "../../PerformanceInsights/PerformanceInsights";
 
 const data = [
-  { date: "Sep 25", verbal: 520, math: 500 },
-  { date: "Oct 10", verbal: 780, math: 550 },
-  { date: "Oct 10", verbal: 740, math: 550 },
-  { date: "Oct 25", verbal: 760, math: 550 },
-  { date: "Oct 25", verbal: 700, math: 590 },
-  { date: "Nov 8", verbal: 800, math: 630 },
-  { date: "Nov 22", verbal: 400, math: 650 },
+  { date: "#1", verbal: 520, math: 500 },
+  { date: "#2", verbal: 780, math: 550 },
+  { date: "#3", verbal: 740, math: 550 },
+  { date: "#4", verbal: 760, math: 550 },
+  { date: "#5", verbal: 700, math: 590 },
+  { date: "#6", verbal: 800, math: 630 },
+  { date: "#7", verbal: 400, math: 650 },
 ];
 
 const calculateAverage = (data, key) => {
@@ -183,6 +183,16 @@ export default function ScoreColumnGraph() {
                   dataKey="date"
                   stroke="#94a3b8"
                   tick={{ fill: "#94a3b8", className: "x-axis-tick" }}
+                  label={{
+                    value: "Exam",
+                    position: "insideBottomLeft",
+                    offset: -20,
+                    fill: "#94a3b8",
+                    fontSize: 12,
+                    fontFamily: "DM Sans",
+                    dy: -28,
+                    dx: -15,
+                  }}
                   axisLine={false}
                   tickSize={0}
                   dy={10}
