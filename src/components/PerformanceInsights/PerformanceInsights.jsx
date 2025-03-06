@@ -9,8 +9,8 @@ const PerformanceInsights = () => {
       actual: 84, // 1.4 minutes in seconds
     },
     math: {
-      target: 96, // 1.6 minutes in seconds
-      actual: 118, // 1.8 minutes in seconds
+      target: 80, // 1.6 minutes in seconds
+      actual: 50, // 1.8 minutes in seconds
     },
   };
 
@@ -73,13 +73,15 @@ const PerformanceInsights = () => {
                       timeData.verbal.target
                     )}`}
                   >
-                    {formatTime(timeData.verbal.actual)}
+                    <div className="time-text-group">
+                      <span>{formatTime(timeData.verbal.actual)}</span>
+                      <div className="target-time">
+                        target: {formatTime(timeData.verbal.target)}
+                      </div>
+                    </div>
                     <div className="speed-indicator">
                       <SpeedometerIcon ratio={timeData.verbal.actual} />
                     </div>
-                  </div>
-                  <div className="target-time">
-                    target: {formatTime(timeData.verbal.target)}
                   </div>
                 </div>
               </div>
@@ -92,13 +94,15 @@ const PerformanceInsights = () => {
                       timeData.math.target
                     )}`}
                   >
-                    {formatTime(timeData.math.actual)}
+                    <div className="time-text-group">
+                      <span>{formatTime(timeData.math.actual)}</span>
+                      <div className="target-time">
+                        target: {formatTime(timeData.math.target)}
+                      </div>
+                    </div>
                     <div className="speed-indicator">
                       <SpeedometerIcon ratio={timeData.math.actual} />
                     </div>
-                  </div>
-                  <div className="target-time">
-                    target: {formatTime(timeData.math.target)}
                   </div>
                 </div>
               </div>

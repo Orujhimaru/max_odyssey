@@ -6,11 +6,26 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
   const prevRatio = React.useRef(ratio);
 
   React.useEffect(() => {
-    // Calculate target angle
+    // Calculate target angle based on ratio to target time
     const actualTime = ratio;
-    const MAX_TIME = 120;
-    const normalizedTime = Math.min(actualTime, MAX_TIME);
-    const targetAngle = -180 + (normalizedTime / MAX_TIME) * 180;
+    const TARGET_TIME = 80; // Reference target time
+    const normalizedRatio = actualTime / TARGET_TIME; // 1.0 means on target
+
+    // Map the ratio to an angle:
+    // ratio < 0.7 (fast) -> green section (-180 to -120)
+    // ratio 0.7-1.0 (good) -> yellow section (-120 to -60)
+    // ratio > 1.0 (slow) -> red section (-60 to 0)
+    let targetAngle;
+    if (normalizedRatio <= 0.7) {
+      // Fast - green section
+      targetAngle = -180 + (normalizedRatio / 0.7) * 60;
+    } else if (normalizedRatio <= 1.0) {
+      // On target - yellow section
+      targetAngle = -120 + ((normalizedRatio - 0.7) / 0.3) * 60;
+    } else {
+      // Slow - red section
+      targetAngle = -60 + Math.min((normalizedRatio - 1.0) / 0.5, 1) * 60;
+    }
 
     // Only animate if this is not the first render and ratio has changed
     if (firstRender.current) {
