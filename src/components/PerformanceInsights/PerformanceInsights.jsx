@@ -1,11 +1,12 @@
 import React from "react";
 import "./PerformanceInsights.css";
+import SpeedometerIcon from "../SpeedometerIcon/SpeedometerIcon";
 
 const PerformanceInsights = () => {
   const timeData = {
     verbal: {
       target: 72, // 1.2 minutes in seconds
-      actual: 1, // 1.4 minutes in seconds
+      actual: 84, // 1.4 minutes in seconds
     },
     math: {
       target: 96, // 1.6 minutes in seconds
@@ -18,91 +19,6 @@ const PerformanceInsights = () => {
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
-
-  const SpeedometerIcon = React.memo(({ ratio }) => {
-    const [currentAngle, setCurrentAngle] = React.useState(-180);
-    const ratioRef = React.useRef(ratio);
-
-    React.useEffect(() => {
-      // Calculate target angle
-      const actualTime = ratio;
-      const MAX_TIME = 120;
-      const normalizedTime = Math.min(actualTime, MAX_TIME);
-      const targetAngle = -180 + (normalizedTime / MAX_TIME) * 180;
-
-      // Only update if the ratio actually changed
-      if (ratioRef.current === ratio) {
-        // If it's the first render, set the angle immediately
-        if (currentAngle === -180) {
-          setCurrentAngle(targetAngle);
-        }
-        return;
-      }
-      ratioRef.current = ratio;
-
-      // Start from leftmost position (-180 degrees)
-      setCurrentAngle(-180);
-
-      // Animate to final position after a brief delay
-      const timer = setTimeout(() => {
-        setCurrentAngle(targetAngle);
-      }, 200);
-
-      return () => clearTimeout(timer);
-    }, [ratio, currentAngle]);
-
-    return (
-      <svg viewBox="0 0 100 60" className="speedometer-icon">
-        {/* Gray background arc */}
-        <path
-          d="M10 50 A40 40 0 0 1 90 50"
-          className="speedometer-bg"
-          fill="none"
-          strokeWidth="6"
-          strokeLinecap="round"
-        />
-
-        {/* Colored sections - perfect half circles */}
-        <path
-          d="M10 50 A40 40 0 0 1 37 20"
-          className="speed-section fast"
-          fill="none"
-          strokeWidth="6"
-          strokeLinecap="round"
-        />
-        <path
-          d="M37 20 A40 40 0 0 1 63 20"
-          className="speed-section okay"
-          fill="none"
-          strokeWidth="6"
-          strokeLinecap="round"
-        />
-        <path
-          d="M63 20 A40 40 0 0 1 90 50"
-          className="speed-section slow"
-          fill="none"
-          strokeWidth="6"
-          strokeLinecap="round"
-        />
-
-        {/* Needle */}
-        <g
-          transform={`rotate(${currentAngle + 90}, 50, 50)`}
-          className="speedometer-needle-group"
-        >
-          <line
-            x1="50"
-            y1="50"
-            x2="50"
-            y2="15"
-            strokeWidth="2"
-            className="speedometer-needle"
-          />
-          <circle cx="50" cy="50" r="3" className="speedometer-center" />
-        </g>
-      </svg>
-    );
-  });
 
   const getSpeedIndicator = (actual, target) => {
     if (actual <= target * 0.7) return "fast";
