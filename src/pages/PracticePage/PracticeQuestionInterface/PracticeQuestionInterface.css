@@ -64,8 +64,8 @@
   font-size: 14px;
 }
 
-.subject-badge.math {
-  background-color: var(--math-color);
+[data-theme="dark"] .subject-badge.math {
+  background-color: var(--bg-secondary);
   color: white;
 }
 

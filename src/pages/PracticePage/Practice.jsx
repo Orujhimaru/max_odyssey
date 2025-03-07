@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PracticeSwitch from "../../components/PracticeSwitch/PracticeSwitch";
 import "./Practice.css";
-import PracticeQuestionInterface from "../../components/PracticeQuestionInterface/PracticeQuestionInterface";
+import PracticeQuestionInterface from "./PracticeQuestionInterface/PracticeQuestionInterface";
 
 const Practice = () => {
   const [activeFilter, setActiveFilter] = useState("all");
