@@ -15,7 +15,6 @@ const ScoreBox = ({ title, score, improvement, type, isHighlighted }) => {
         >
           {type === "verbal" ? <VerbalIcon /> : <MathIcon />}
         </div>
-        <span>average</span>
       </h2>
       <div className={`score-row ${type}`}>
         <h3 className={`score ${type}`}>{score}</h3>
