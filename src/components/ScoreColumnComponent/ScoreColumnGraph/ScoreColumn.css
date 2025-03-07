@@ -252,7 +252,7 @@ tspan {
 .score-box.math,
 .score-box.verbal {
   /* flex-direction: column; */
-  padding-top: 16px;
+  /* padding-top: 16px; */
 }
 
 @media (max-width: 1044px) {

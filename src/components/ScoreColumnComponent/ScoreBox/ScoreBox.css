@@ -1,5 +1,6 @@
 .score-box {
   display: flex;
+  align-items: center;
   /* flex-direction: column; */
   justify-content: space-between;
   background-color: var(--bg-secondary);
@@ -11,7 +12,7 @@
   /* text-align: center; */
   border: 2px solid var(--border-color);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  width: 140px;
+  /* width: 140px; */
 }
 
 /* .score-box:hover,
@@ -87,7 +88,7 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 6px;
-  width: 90px;
+  /* width: 90px; */
   box-sizing: content-box;
 }
 
@@ -154,7 +155,7 @@
   padding: 10px;
   box-shadow: none;
   border: none;
-  width: 140px;
+  /* width: 140px; */
 }
 
 /* Remove hover effects from individual boxes */
@@ -193,7 +194,7 @@
 }
 
 .score-row.math {
-  align-self: flex-start;
+  /* align-self: flex-start; */
   /* padding-left: 13px; */
 }
 
@@ -220,8 +221,8 @@
   gap: 4px;
 }
 .score-box.math {
-  align-items: flex-end;
-  padding-left: 20px;
+  /* align-items: flex-end; */
+  /* padding-left: 20px; */
   /* width: 140px; */
   gap: 10px;
   border-color: var(--math-color);
