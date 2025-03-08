@@ -39,6 +39,19 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   fill: rgba(250, 250, 250, 0.147);
 }
 
+.average-increase-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.score-boxes-container-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  align-items: center;
+}
+
 .bar-chart-container {
   width: 100%;
   height: 100%;

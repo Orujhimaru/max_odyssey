@@ -292,22 +292,28 @@ export default function ScoreColumnGraph() {
                 )}
               </BarChart>
             </ResponsiveContainer>
-            <div className="score-boxes">
-              <div className="score-boxes-inner">
-                <ScoreBox
-                  title="Verbal"
-                  score={verbalAverage.toFixed(0)}
-                  improvement={verbalChange}
-                  type="verbal"
-                  isHighlighted={hoveredBar === "verbal"}
-                />
-                <ScoreBox
-                  title="Math"
-                  score={mathAverage.toFixed(0)}
-                  improvement={mathChange}
-                  type="math"
-                  isHighlighted={hoveredBar === "math"}
-                />
+            <div className="score-boxes-container-wrapper">
+              <div>
+                <h2 className="insight-label">Average </h2>
+                <h2 className="insight-label">increase</h2>
+              </div>
+              <div className="score-boxes">
+                <div className="score-boxes-inner">
+                  <ScoreBox
+                    title="Verbal"
+                    score={verbalAverage.toFixed(0)}
+                    improvement={verbalChange}
+                    type="verbal"
+                    isHighlighted={hoveredBar === "verbal"}
+                  />
+                  <ScoreBox
+                    title="Math"
+                    score={mathAverage.toFixed(0)}
+                    improvement={mathChange}
+                    type="math"
+                    isHighlighted={hoveredBar === "math"}
+                  />
+                </div>
               </div>
             </div>
           </div>

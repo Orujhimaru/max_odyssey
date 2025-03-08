@@ -70,7 +70,7 @@ const PerformanceInsights = () => {
             <span className="insight-label">Avg. Time/Q</span>
             <div className="insight-value time-insights">
               <div className="time-section">
-                <div className="">
+                <div className="subject-label-container">
                   <span className="subject-label verbal">V</span>
                 </div>
                 <div className="time-details">
@@ -82,7 +82,7 @@ const PerformanceInsights = () => {
                   >
                     <div className="time-text-group">
                       <span>{formatTime(timeData.verbal.actual)}</span>
-                      <div className="target-time">
+                      <div className="insight-label">
                         target: {formatTime(timeData.verbal.target)}
                       </div>
                     </div>
@@ -103,7 +103,7 @@ const PerformanceInsights = () => {
                   >
                     <div className="time-text-group">
                       <span>{formatTime(timeData.math.actual)}</span>
-                      <div className="target-time">
+                      <div className="insight-label">
                         target: {formatTime(timeData.math.target)}
                       </div>
                     </div>
