@@ -45,9 +45,7 @@ const PerformanceInsights = () => {
           </div>
           <div className="insight-content">
             <span className="insight-label">Score Growth</span>
-            <div className="insight-value positive">
-              +180 <span className="insight-period">points</span>
-            </div>
+            <div className="insight-value positive">+180</div>
           </div>
         </div>
 
