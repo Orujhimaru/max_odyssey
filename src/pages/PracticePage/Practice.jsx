@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PracticeSwitch from "../../components/PracticeSwitch/PracticeSwitch";
+import PracticeSwitch from "./PracticeSwitch/PracticeSwitch";
 import "./Practice.css";
 import PracticeQuestionInterface from "./PracticeQuestionInterface/PracticeQuestionInterface";
 

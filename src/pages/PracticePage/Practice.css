@@ -510,7 +510,7 @@
 .topic-filter-dropdown {
   position: absolute;
   top: 100%;
-  left: -160%;
+  left: -140%;
   width: 450px;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);

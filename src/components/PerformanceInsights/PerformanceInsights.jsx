@@ -15,9 +15,14 @@ const PerformanceInsights = () => {
   };
 
   const formatTime = (seconds) => {
+    if (!seconds && seconds !== 0) return "00:00";
+
     const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+    const remainingSeconds = Math.floor(seconds % 60);
+
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+      .toString()
+      .padStart(2, "0")} `;
   };
 
   const getSpeedIndicator = (actual, target) => {
