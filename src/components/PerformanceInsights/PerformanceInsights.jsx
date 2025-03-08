@@ -83,7 +83,8 @@ const PerformanceInsights = () => {
                     <div className="time-text-group">
                       <span>{formatTime(timeData.verbal.actual)}</span>
                       <div className="insight-label">
-                        target: {formatTime(timeData.verbal.target)}
+                        <i className="fas fa-bullseye"></i>{" "}
+                        {formatTime(timeData.verbal.target)}
                       </div>
                     </div>
                     <div className="speed-indicator">
@@ -104,7 +105,8 @@ const PerformanceInsights = () => {
                     <div className="time-text-group">
                       <span>{formatTime(timeData.math.actual)}</span>
                       <div className="insight-label">
-                        target: {formatTime(timeData.math.target)}
+                        <i className="fas fa-bullseye"></i>{" "}
+                        {formatTime(timeData.math.target)}
                       </div>
                     </div>
                     <div className="speed-indicator">

@@ -212,6 +212,13 @@
   color: var(--text-primary);
   opacity: 0.7;
   font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.insight-label i {
+  font-size: 12px;
 }
 
 .insight-value {
