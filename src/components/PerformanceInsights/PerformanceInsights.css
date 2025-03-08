@@ -70,7 +70,11 @@
 .time-text-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  /* gap: 4px; */
+}
+
+.time-text-group > span {
+  line-height: 22px;
 }
 
 .time-value.fast {
@@ -138,19 +142,25 @@
 
 .subject-label {
   font-size: 12px;
-  padding: 4px 6px;
+  padding: 5px 6px;
   border-radius: 4px;
   font-weight: 500;
 }
 
 .subject-label.verbal {
   background-color: var(--verbal-color);
+  padding-inline: 7px;
+  padding-block: 3px;
   color: white;
 }
 
 .subject-label.math {
   background-color: var(--math-color);
   color: white;
+}
+
+.subject-label-container {
+  padding-top: 4px;
 }
 
 .insight-value .time-section {

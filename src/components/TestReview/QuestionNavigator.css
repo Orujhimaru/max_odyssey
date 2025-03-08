@@ -38,7 +38,7 @@
 
 .question-number:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px var(--box-shadow);
+  /* box-shadow: 0 2px 4px var(--box-shadow); */
 }
 
 .question-number.current {

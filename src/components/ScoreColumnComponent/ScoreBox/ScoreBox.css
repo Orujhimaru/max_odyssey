@@ -39,7 +39,7 @@
   justify-content: center;
   /* width: 32px; */
   /* height: 32px; */
-  padding: 6px;
+  padding: 3px;
   border-radius: 8px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -69,6 +69,10 @@
   font-family: "DM Sans", sans-serif;
   line-height: 1;
   user-select: none;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
 }
 
 .score-box h2 span:last-child {

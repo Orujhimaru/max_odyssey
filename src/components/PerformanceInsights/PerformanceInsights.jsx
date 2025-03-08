@@ -70,7 +70,9 @@ const PerformanceInsights = () => {
             <span className="insight-label">Avg. Time/Q</span>
             <div className="insight-value time-insights">
               <div className="time-section">
-                <span className="subject-label verbal">V</span>
+                <div className="">
+                  <span className="subject-label verbal">V</span>
+                </div>
                 <div className="time-details">
                   <div
                     className={`time-value ${getSpeedIndicator(
