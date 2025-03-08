@@ -75,6 +75,10 @@
   align-items: center;
 }
 
+.insight-label.avg {
+  line-height: 12px;
+}
+
 .score-box h2 span:last-child {
   font-size: 14px;
   line-height: 14px;

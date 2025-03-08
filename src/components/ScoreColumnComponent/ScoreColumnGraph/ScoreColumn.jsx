@@ -294,8 +294,8 @@ export default function ScoreColumnGraph() {
             </ResponsiveContainer>
             <div className="score-boxes-container-wrapper">
               <div className="average-increase-container">
-                <h2 className="insight-label">Average </h2>
-                <h2 className="insight-label">increase</h2>
+                <h2 className="insight-label avg">Average </h2>
+                <h2 className="insight-label avg">increase</h2>
               </div>
               <div className="score-boxes">
                 <div className="score-boxes-inner">
