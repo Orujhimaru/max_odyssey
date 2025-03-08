@@ -1,6 +1,7 @@
 import React from "react";
 import "./PerformanceInsights.css";
 import SpeedometerIcon from "../SpeedometerIcon/SpeedometerIcon";
+import Practice from "../../assets/Group 43.svg";
 
 const PerformanceInsights = () => {
   const timeData = {
@@ -83,7 +84,11 @@ const PerformanceInsights = () => {
                     <div className="time-text-group">
                       <span>{formatTime(timeData.verbal.actual)}</span>
                       <div className="insight-label">
-                        <i className="fas fa-bullseye"></i>{" "}
+                        <img
+                          src={Practice}
+                          alt="target"
+                          className="target-icon"
+                        />{" "}
                         {formatTime(timeData.verbal.target)}
                       </div>
                     </div>
@@ -105,7 +110,11 @@ const PerformanceInsights = () => {
                     <div className="time-text-group">
                       <span>{formatTime(timeData.math.actual)}</span>
                       <div className="insight-label">
-                        <i className="fas fa-bullseye"></i>{" "}
+                        <img
+                          src={Practice}
+                          alt="target"
+                          className="target-icon"
+                        />{" "}
                         {formatTime(timeData.math.target)}
                       </div>
                     </div>

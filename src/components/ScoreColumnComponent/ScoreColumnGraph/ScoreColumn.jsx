@@ -293,7 +293,7 @@ export default function ScoreColumnGraph() {
               </BarChart>
             </ResponsiveContainer>
             <div className="score-boxes-container-wrapper">
-              <div>
+              <div className="average-increase-container">
                 <h2 className="insight-label">Average </h2>
                 <h2 className="insight-label">increase</h2>
               </div>

@@ -265,3 +265,9 @@
     grid-template-columns: 1fr;
   }
 }
+
+.target-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+}

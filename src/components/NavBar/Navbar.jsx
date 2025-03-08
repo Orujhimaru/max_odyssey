@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Navbar.css"; // Create a CSS file for styling
-import Logo from "../Navbar/Logo";
+import Logo from "./Logo";
 
 // Import your logos
 import Dashboard from "../../assets/Group 36.svg";

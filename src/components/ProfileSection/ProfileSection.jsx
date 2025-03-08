@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import peasantAvatar from "../../assets/peasent.svg";
 import leftCrown from "../../assets/vector.svg";
 import rightCrown from "../../assets/vector-1.svg";
+import Practice from "../../assets/Group 43.svg";
 import "./ProfileSection.css";
 
 const ProfileSection = () => {
@@ -87,7 +88,7 @@ const ProfileSection = () => {
         <div className="goal-section">
           <div className="goal-header">
             <span>Target Score</span>
-            <i className="fas fa-bullseye"></i>
+            <img src={Practice} alt="target" className="target-icon" />
           </div>
           <div className="goal-score-container">
             <img src={leftCrown} alt="" className="crown-left" />
