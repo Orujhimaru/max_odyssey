@@ -150,6 +150,7 @@
 }
 .percentile-badge {
   /* margin-bottom: 22px; */
+  width: 45px;
   font-family: "DM Sans", sans-serif;
 }
 .score-item.predicted {

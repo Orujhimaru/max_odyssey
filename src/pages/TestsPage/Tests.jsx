@@ -105,7 +105,7 @@ const Tests = () => {
             <span className="test-score-header">Total Score</span>
             <span className="test-verbal-header">Verbal</span>
             <span className="test-math-header">Math</span>
-            <span className="test-actions-header">Actions</span>
+            <span className="test-actions-header pleft">Actions</span>
           </div>
 
           {recentTests.map((test) => (
@@ -138,8 +138,8 @@ const Tests = () => {
                     >
                       <i className="fas fa-eye"></i> Review
                     </button>
-                    <button className="more-button">
-                      <i className="fas fa-ellipsis-v"></i>
+                    <button className="delete-button">
+                      <i className="fas fa-trash"></i>
                     </button>
                   </>
                 ) : (
