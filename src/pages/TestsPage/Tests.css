@@ -23,10 +23,22 @@
   margin-bottom: 24px;
 }
 
+.header-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-emoji {
+  font-size: 24px;
+  line-height: 24px;
+}
+
 .tests-header h1 {
   font-size: 24px;
   font-weight: 500;
   color: var(--text-primary);
+  line-height: 24px;
 }
 
 .new-test-button {
@@ -42,6 +54,8 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin-top: 24px;
+  margin-left: auto;
 }
 
 .new-test-button:hover {

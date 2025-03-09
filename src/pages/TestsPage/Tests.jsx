@@ -86,10 +86,10 @@ const Tests = () => {
     <div className="tests-page">
       <div className="tests-container">
         <div className="tests-header">
-          <h1>Test Center</h1>
-          <button className="new-test-button" onClick={openNewTestModal}>
-            <i className="fas fa-plus"></i> Take a New Test
-          </button>
+          <div className="header-with-icon">
+            <h1>Test Center</h1>
+            <span className="header-emoji">✍️</span>
+          </div>
         </div>
 
         <div className="tests-tabs">
@@ -151,6 +151,9 @@ const Tests = () => {
             </div>
           ))}
         </div>
+        <button className="new-test-button" onClick={openNewTestModal}>
+          <i className="fas fa-plus"></i> Take a New Test
+        </button>
       </div>
 
       {showNewTestModal && (
