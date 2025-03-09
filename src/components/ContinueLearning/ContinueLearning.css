@@ -17,15 +17,17 @@
 }
 
 .course-cards {
+  width: 100%;
   /* flex: 1; */
   display: flex;
+  flex-wrap: wrap;
   /* grid-template-columns: repeat(2, 1fr); */
   gap: 16px;
 }
 
 .course-card {
   min-width: 210px;
-  max-width: 250px;
+  max-width: 240px;
   width: 100%;
   /* max-width: 290px; */
   position: relative;
@@ -251,7 +253,6 @@
   }
 
   .course-card {
-    max-width: none;
   }
 }
 
