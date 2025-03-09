@@ -42,7 +42,7 @@ const ContinueLearning = ({ courses }) => {
             </div>
           ))}
         </div>
-        <div className="quick-actions">
+        {/* <div className="quick-actions">
           <button className="action-button quiz">
             <div className="action-icon">
               <i className="fas fa-clipboard-question"></i>
@@ -67,7 +67,7 @@ const ContinueLearning = ({ courses }) => {
             </div>
             <span>Mini Tests</span>
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

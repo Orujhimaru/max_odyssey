@@ -335,7 +335,7 @@ tspan {
   background-color: white;
   border-radius: 20px;
   border: 1px solid var(--border-color);
-  transition: all 0.2s ease;
+  transition: var(--transition-all);
 }
 
 .switch::before {
@@ -347,7 +347,7 @@ tspan {
   bottom: 1px;
   border-radius: 50%;
   background-color: #6b7280;
-  transition: transform 0.2s ease;
+  transition: var(--transition-transform);
 }
 
 .switch.active {

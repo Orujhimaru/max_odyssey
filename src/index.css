@@ -40,19 +40,27 @@
   --radar-area: url(#scoreGradient);
 
   /* Transitions */
-  --transition-duration: 0.2s;
+  --transition-speed: 0.2s;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-all: all var(--transition-speed) var(--transition-timing);
+  --transition-transform: transform var(--transition-speed)
+    var(--transition-timing);
+  --transition-colors: background-color var(--transition-speed)
+      var(--transition-timing),
+    color var(--transition-speed) var(--transition-timing),
+    border-color var(--transition-speed) var(--transition-timing),
+    opacity var(--transition-speed) var(--transition-timing);
 
   /* Bar colors - light mode */
   --bar-verbal-color: #3b5fa4;
   --bar-math-color: #969696;
-  /* Bar math color alternative #747474 */
   --bar-background: #eee;
   --bar-math-line-color: #4e4e4e;
   background-color: var(--bg-secondary);
 
-  /* Add transitions for theme changes */
-  --theme-transition: background-color 0.2s ease, color 0.2s ease,
-    border-color 0.2s ease, box-shadow 0.2s ease;
+  /* Theme transition */
+  --theme-transition: var(--transition-colors),
+    box-shadow var(--transition-speed) var(--transition-timing);
 }
 
 #root {
@@ -68,7 +76,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  transition: var(--theme-transition);
+  transition: var(--transition-all);
 }
 
 a {

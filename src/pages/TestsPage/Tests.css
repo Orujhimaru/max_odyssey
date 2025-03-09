@@ -53,7 +53,7 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition-all);
   margin-top: 24px;
   margin-left: auto;
 }
@@ -117,7 +117,7 @@
   padding: 16px;
   background-color: var(--bg-secondary);
   border-radius: 12px;
-  transition: transform 0.2s ease;
+  transition: var(--transition-transform);
 }
 
 .test-item:hover {
