@@ -62,7 +62,7 @@
 .time-value {
   display: flex;
   gap: 12px;
-  align-items: center;
+  /* align-items: center; */
   width: 100%;
   justify-content: space-between;
 }
@@ -70,11 +70,13 @@
 .time-text-group {
   display: flex;
   flex-direction: column;
-  /* gap: 4px; */
+  /* width: 50px; */
+  gap: 4px;
+  padding-top: 2px;
 }
 
 .time-text-group > span {
-  line-height: 22px;
+  line-height: 16px;
 }
 
 .time-value.fast {
@@ -160,12 +162,12 @@
 }
 
 .subject-label-container {
-  padding-top: 4px;
+  /* padding-top: 4px; */
 }
 
 .insight-value .time-section {
   display: flex;
-  align-items: baseline;
+  /* align-items: baseline; */
   /* margin-right: 16px; */
 }
 
@@ -213,6 +215,7 @@
   opacity: 0.7;
   font-weight: 400;
   display: flex;
+  /* justify-content: space-between; */
   align-items: center;
   gap: 4px;
 }
