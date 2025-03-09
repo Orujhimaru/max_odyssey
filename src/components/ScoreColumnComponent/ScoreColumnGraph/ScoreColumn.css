@@ -326,3 +326,35 @@ tspan {
     flex-direction: column;
   }
 }
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  background-color: white;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.switch::before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 2px;
+  bottom: 1px;
+  border-radius: 50%;
+  background-color: #6b7280;
+  transition: transform 0.2s ease;
+}
+
+.switch.active {
+  background-color: var(--verbal-color);
+}
+
+.switch.active::before {
+  transform: translateX(19px);
+  background-color: white;
+}
