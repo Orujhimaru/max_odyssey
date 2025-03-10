@@ -145,10 +145,11 @@
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: all 0.2s ease;
   position: relative;
   border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
 }
 
 .choice.correct {
@@ -181,6 +182,26 @@
 .choice.incorrect::before {
   content: "\f00d"; /* X mark */
   color: var(--error-color);
+}
+
+.choice-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  margin-right: 4px;
+}
+
+.choice.correct .choice-letter {
+  border-color: var(--verbal-color);
+}
+
+.choice.incorrect .choice-letter {
+  border-color: var(--error-color);
 }
 
 .explanation-section {

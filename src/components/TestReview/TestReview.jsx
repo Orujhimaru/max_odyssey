@@ -246,20 +246,24 @@ const TestReview = () => {
           <div className="question">
             <p>{question.question}</p>
             <div className="choices">
-              {question.choices.map((choice, index) => (
-                <div
-                  key={index}
-                  className={`choice ${
-                    choice.startsWith(question.correctAnswer)
-                      ? "correct"
-                      : choice.startsWith(question.userAnswer)
-                      ? "incorrect"
-                      : ""
-                  }`}
-                >
-                  {choice}
-                </div>
-              ))}
+              {question.choices.map((choice, index) => {
+                const [letter, ...text] = choice.split(") ");
+                return (
+                  <div
+                    key={index}
+                    className={`choice ${
+                      choice.startsWith(question.correctAnswer)
+                        ? "correct"
+                        : choice.startsWith(question.userAnswer)
+                        ? "incorrect"
+                        : ""
+                    }`}
+                  >
+                    <span className="choice-letter">{letter}</span>
+                    <span>{text.join(") ")}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
