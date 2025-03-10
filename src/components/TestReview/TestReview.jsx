@@ -177,16 +177,22 @@ const TestReview = () => {
           <h2>Section 1, Module 1: Reading and Writing</h2>
           <div className="test-stats">
             <span>Date: Apr 15, 2024</span>
-            <span>Score: 720</span>
+            {/* <span>Score: 720</span> */}
             {/* <span>Time: 1h 45m</span> */}
           </div>
         </div>
         <div className="question-info">
-          <span className={`difficulty ${question.difficulty.toLowerCase()}`}>
-            {question.difficulty}
-          </span>
-          <span className="topic">{question.topic}</span>
-          <span className="subtopic">{question.subtopic}</span>
+          <div className="question-type">
+            <span
+              className={`difficulty-indicator ${question.difficulty.toLowerCase()}`}
+            >
+              <span className="bar"></span>
+              <span className="bar"></span>
+              <span className="bar"></span>
+            </span>
+            <span className="topic">{question.topic}</span>
+            <span className="subtopic">{question.subtopic}</span>
+          </div>
         </div>
       </div>
 
