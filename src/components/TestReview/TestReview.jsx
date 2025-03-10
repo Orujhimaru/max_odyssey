@@ -174,13 +174,14 @@ const TestReview = () => {
       <div className="test-review-header">
         <div className="test-info">
           <h2>Practice Test #3</h2>
-          <h2>Section 1, Module 1: Reading and Writing</h2>
-          <div className="test-stats">
+          <span>Date: Apr 15, 2024</span>
+        </div>
+        <h2>Section 1, Module 1: Reading and Writing</h2>
+        {/* <div className="test-stats">
             <span>Date: Apr 15, 2024</span>
             {/* <span>Score: 720</span> */}
-            {/* <span>Time: 1h 45m</span> */}
-          </div>
-        </div>
+        {/* <span>Time: 1h 45m</span>    </div> */}
+
         <div className="question-info">
           <div className="question-type">
             <span
