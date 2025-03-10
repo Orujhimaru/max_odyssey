@@ -61,12 +61,14 @@ const PerformanceInsights = () => {
           </div>
         </div>
 
-        <div className="insight-card">
-          <div className="insight-icon">
-            <i className="fas fa-clock"></i>
+        <div className="insight-card timerr">
+          <div className="insight-icon-container">
+            <div className="insight-icon">
+              <i className="fas fa-clock"></i>
+            </div>
+            <span className="insight-label">Avg. Time/Q</span>
           </div>
           <div className="insight-content">
-            <span className="insight-label">Avg. Time/Q</span>
             <div className="insight-value time-insights">
               <div className="time-section">
                 <div className="subject-label-container">
