@@ -181,20 +181,6 @@ const TestReview = () => {
             <span>Date: Apr 15, 2024</span>
             {/* <span>Score: 720</span> */}
         {/* <span>Time: 1h 45m</span>    </div> */}
-
-        <div className="question-info">
-          <div className="question-type">
-            <span
-              className={`difficulty-indicator ${question.difficulty.toLowerCase()}`}
-            >
-              <span className="bar"></span>
-              <span className="bar"></span>
-              <span className="bar"></span>
-            </span>
-            <span className="topic">{question.topic}</span>
-            <span className="subtopic">{question.subtopic}</span>
-          </div>
-        </div>
       </div>
 
       {/* Navigation Button */}
@@ -214,7 +200,9 @@ const TestReview = () => {
         >
           Question {currentQuestion + 1} of {mockQuestions.length}
           <i
-            className={`fas fa-chevron-${isNavigatorOpen ? "up" : "down"}`}
+            className={`review-dropdown fas fa-chevron-${
+              isNavigatorOpen ? "up" : "down"
+            }`}
           ></i>
         </button>
 
@@ -245,9 +233,22 @@ const TestReview = () => {
       )}
 
       {/* Main Content */}
+
       <div className="test-review-content">
         {/* Question Section */}
         <div className="question-section">
+          <div className="question-type">
+            <span
+              className={`difficulty-indicator ${question.difficulty.toLowerCase()}`}
+            >
+              <span className="bar"></span>
+              <span className="bar"></span>
+              <span className="bar"></span>
+            </span>
+            <span className="topic">{question.topic}</span>
+            <span className="subtopic">{question.subtopic}</span>
+          </div>
+
           {question.passage && (
             <div className="passage">{question.passage}</div>
           )}

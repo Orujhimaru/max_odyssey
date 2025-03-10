@@ -1,9 +1,9 @@
 .test-review-container {
-  padding: 24px;
+  padding: 12px;
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  /* gap: 24px; */
   background-color: var(--bg-secondary);
   position: relative;
   transition: all 0.2s ease;
@@ -44,14 +44,20 @@
 .question-info {
   display: flex;
   gap: 12px;
-  align-items: center;
-  margin-left: auto;
+  flex: none;
+  /* align-items: center; */
+  /* margin-top: auto; */
 }
 
 .question-type {
   display: flex;
   gap: 8px;
   align-items: center;
+  justify-content: flex-end;
+}
+
+.review-dropdown {
+  padding-left: 8px;
 }
 
 .difficulty-indicator {
@@ -146,7 +152,7 @@
   padding-left: 32px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
   transition: all 0.2s ease;
 }
 
