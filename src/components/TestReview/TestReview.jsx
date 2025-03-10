@@ -240,13 +240,15 @@ const TestReview = () => {
         {/* Question Section */}
         <div className="question-section">
           <div className="question-type">
-            <span
-              className={`difficulty-indicator ${question.difficulty.toLowerCase()}`}
-            >
-              <span className="bar"></span>
-              <span className="bar"></span>
-              <span className="bar"></span>
-            </span>
+            <div className="dif-indicator-container">
+              <span
+                className={`difficulty-indicator ${question.difficulty.toLowerCase()}`}
+              >
+                <span className="bar"></span>
+                <span className="bar"></span>
+                <span className="bar"></span>
+              </span>
+            </div>
             <span className="topic">{question.topic}</span>
             <span className="subtopic">{question.subtopic}</span>
           </div>

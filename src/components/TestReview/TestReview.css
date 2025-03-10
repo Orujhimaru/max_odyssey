@@ -147,11 +147,18 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.dif-indicator-container {
+  background-color: var(--bg-secondary);
+  border-radius: 4px;
+  padding: 7px 5px;
+}
+
 .test-review-content {
   display: grid;
   grid-template-columns: 4fr 2fr;
   gap: 12px;
   height: 100%;
+  padding-top: 12px;
 }
 
 .question-section {
