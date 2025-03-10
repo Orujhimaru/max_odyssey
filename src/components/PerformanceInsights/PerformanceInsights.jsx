@@ -68,7 +68,7 @@ const PerformanceInsights = () => {
             </div>
             <span className="insight-label">Avg. Time/Q</span>
           </div>
-          <div className="insight-content">
+          <div className="insight-content timerr">
             <div className="insight-value time-insights">
               <div className="time-section">
                 <div className="subject-label-container">

@@ -176,7 +176,9 @@ const TestReview = () => {
           <h2>Practice Test #3</h2>
           <span>Date: Apr 15, 2024</span>
         </div>
-        <h2>Section 1, Module 1: Reading and Writing</h2>
+        <h2 className="test-review-header-h2 ">
+          Section 1, Module 1: Reading and Writing
+        </h2>
         {/* <div className="test-stats">
             <span>Date: Apr 15, 2024</span>
             {/* <span>Score: 720</span> */}
