@@ -1,60 +1,111 @@
-.question-navigator {
+.question-navigator-review {
+  background-color: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
   position: absolute;
-  bottom: 80px;
+  top: -420px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 16px;
-  width: 320px;
-  box-shadow: 0 8px 16px var(--box-shadow);
-  z-index: 1000;
+  z-index: 100;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Make sure the navigation-controls has position relative */
+.navigation-controls {
+  position: relative;
+}
+
+.question-navigator-review h3 {
+  font-size: 20px;
+  font-weight: 500;
+  /* margin-bottom: 20px; */
+  color: #333;
+}
+
+.question-status {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.status-indicator.answered {
+  background-color: #5271c2; /* Blue color for answered */
+}
+
+.status-indicator.unanswered {
+  background-color: #f5f5f5; /* Light gray for unanswered */
+  border: 1px solid #e0e0e0;
+}
+
+.status-indicator.marked {
+  background-color: #ffd54f; /* Yellow color for marked */
+}
+
+.status-label {
+  font-size: 16px;
+  color: #333;
 }
 
 .question-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
 }
 
 .question-number {
-  aspect-ratio: 1;
-  border: none;
-  border-radius: 8px;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  /* border: 1px solid var(--border-color); */
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
 .question-number:hover {
-  transform: translateY(-1px);
-  /* box-shadow: 0 2px 4px var(--box-shadow); */
+  transform: translateY(-2px);
+}
+
+.question-number.answered {
+  background-color: #5271c2;
+  color: white;
+}
+
+.question-number.unanswered {
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  color: #333;
+}
+
+.question-number.marked {
+  background-color: #ffd54f;
+  color: #444444;
 }
 
 .question-number.current {
-  background-color: rgba(69, 107, 196, 0.15);
-  border: 1px solid var(--verbal-color);
-  color: var(--text-primary);
-}
-
-.question-number.incorrect {
-  background-color: rgba(147, 12, 12, 0.15);
-  border: 1px solid var(--error-color);
-}
-
-.question-number.bookmarked {
-  background-color: rgba(255, 215, 0, 0.15);
-  border: 1px solid #ffd700;
+  border: 2px solid #333;
 }
 
 /* Combined states */
@@ -67,7 +118,7 @@
 }
 
 /* Add a pointer arrow at the bottom */
-.question-navigator::after {
+.question-navigator-review::after {
   content: "";
   position: absolute;
   bottom: -8px;
