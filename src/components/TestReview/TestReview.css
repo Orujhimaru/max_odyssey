@@ -97,8 +97,8 @@
 
 .test-review-content {
   display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 24px;
+  grid-template-columns: 4fr 2fr;
+  gap: 12px;
   height: 100%;
 }
 
@@ -193,7 +193,7 @@
   border-radius: 50%;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
-  margin-right: 4px;
+  margin-right: 12px;
 }
 
 .choice.correct .choice-letter {
