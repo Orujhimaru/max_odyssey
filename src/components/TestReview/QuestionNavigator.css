@@ -1,5 +1,5 @@
 .question-navigator-review {
-  background-color: white;
+  background-color: var(--bg-primary);
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -25,7 +25,7 @@
   font-size: 20px;
   font-weight: 500;
   /* margin-bottom: 20px; */
-  color: #333;
+  color: var(--text-primary);
 }
 
 .question-status {
@@ -48,21 +48,21 @@
 }
 
 .status-indicator.answered {
-  background-color: #5271c2; /* Blue color for answered */
+  background-color: var(--verbal-color);
 }
 
 .status-indicator.unanswered {
-  background-color: #f5f5f5; /* Light gray for unanswered */
-  border: 1px solid #e0e0e0;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
 }
 
 .status-indicator.marked {
-  background-color: #ffd54f; /* Yellow color for marked */
+  background-color: #ffd54f;
 }
 
 .status-label {
   font-size: 16px;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .question-grid {
@@ -89,23 +89,23 @@
 }
 
 .question-number.answered {
-  background-color: #5271c2;
+  background-color: var(--verbal-color);
   color: white;
 }
 
 .question-number.unanswered {
-  background-color: #f5f5f5;
-  border: 1px solid #e0e0e0;
-  color: #333;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
 }
 
 .question-number.marked {
   background-color: #ffd54f;
-  color: #444444;
+  color: #333;
 }
 
 .question-number.current {
-  border: 2px solid #333;
+  border-color: var(--text-primary);
 }
 
 /* Combined states */
