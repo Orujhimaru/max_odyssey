@@ -391,7 +391,7 @@ export const mockQuestions = [
     topic: "Critical Reasoning",
     subtopic: "Evaluate Argument",
     difficulty: "Hard",
-    isBookmarked: true,
+    isBookmarked: false,
     isIncorrect: true,
     question:
       "A study found that students who play chess regularly score higher on standardized tests than those who don't. The researchers concluded that chess improves cognitive abilities. Which of the following would be most useful to evaluate this conclusion?",
@@ -402,7 +402,7 @@ export const mockQuestions = [
       "D) The average age of the students in the study",
     ],
     correctAnswer: "A",
-    userAnswer: "B",
+    userAnswer: null,
     explanation:
       "To determine if chess actually improves cognitive abilities (causation), we need to know if the chess players already had higher cognitive abilities before playing chess. Option A addresses this potential selection bias.",
   },
