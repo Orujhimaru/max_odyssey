@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./TestInterface.css";
 
 const TestInterface = ({ testType, onExit }) => {
@@ -7,6 +7,22 @@ const TestInterface = ({ testType, onExit }) => {
   const [markedQuestions, setMarkedQuestions] = useState([]);
   const [crossedOptions, setCrossedOptions] = useState({});
   const [timeRemaining, setTimeRemaining] = useState("2:45:00");
+
+  // Add class to body when component mounts
+  useEffect(() => {
+    document.body.classList.add("taking-test");
+
+    // Remove class when component unmounts
+    return () => {
+      document.body.classList.remove("taking-test");
+    };
+  }, []);
+
+  // Handle exit with class removal
+  const handleExit = () => {
+    document.body.classList.remove("taking-test");
+    onExit();
+  };
 
   // Mock questions for the test
   const questions = [
@@ -158,7 +174,7 @@ const TestInterface = ({ testType, onExit }) => {
           <div className="timer">
             <i className="far fa-clock"></i> {timeRemaining}
           </div>
-          <button className="exit-button" onClick={onExit}>
+          <button className="exit-button" onClick={handleExit}>
             <i className="fas fa-times"></i> Exit
           </button>
         </div>
