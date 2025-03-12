@@ -403,15 +403,6 @@ const Practice = () => {
                   <i className="fas fa-bookmark"></i>
                   Bookmarked
                 </button>
-                <button
-                  className={`filter-toggle ${
-                    showWrongAnswered ? "active" : ""
-                  }`}
-                  onClick={() => setShowWrongAnswered(!showWrongAnswered)}
-                >
-                  <i className="fas fa-times-circle"></i>
-                  Wrong Answers
-                </button>
               </div>
             </div>
           </div>
@@ -428,7 +419,14 @@ const Practice = () => {
           </div>
           <div className="header-right">
             <span className="header-tags">Tags</span>
-            <span className="header-solve-rate">Solve Rate</span>
+            <span
+              className="header-solve-rate"
+              // onClick={handleSortBySolveRate}
+              style={{ cursor: "pointer" }}
+            >
+              Solve Rate
+              <i className="fas fa-sort" style={{ marginLeft: "4px" }}></i>
+            </span>
             <span className="header-actions">Actions</span>
           </div>
         </div>

@@ -66,6 +66,7 @@
 #root {
   height: 100%;
   margin-left: 92px;
+  transition: none;
 }
 
 .app {
