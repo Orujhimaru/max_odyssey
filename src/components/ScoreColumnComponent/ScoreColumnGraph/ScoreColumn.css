@@ -51,6 +51,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   justify-content: flex-end;
   gap: 10px;
   align-items: center;
+  padding-right: 11px;
 }
 
 .bar-chart-container {
