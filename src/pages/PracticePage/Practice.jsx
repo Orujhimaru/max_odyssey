@@ -64,7 +64,7 @@ const Practice = () => {
         if (!response.ok) throw new Error("Failed to fetch questions");
         const data = await response.json();
 
-        // console.log("Raw data from API:", data);
+        console.log("Raw data from API:", data);
 
         // Check if data is an array
         if (!Array.isArray(data)) {
@@ -77,11 +77,11 @@ const Practice = () => {
         // Map each question with proper fallbacks
         const transformedQuestions = data.map((q, index) => {
           // Log each question to see its structure
-          // console.log(`Question ${index}:`, q);
+          console.log(`Question ${index}:`, q);
 
           return {
             id: q.id || index + 1,
-            question_text: q.question_text || `Question ${index + 1}`,
+            question_text: q.QuestionText || `Question ${index + 1}`,
             subject_id: q.subject_id || 1,
             difficulty_level: q.difficulty_level || 2,
             correct_answer: q.correct_answer || "",
@@ -91,7 +91,7 @@ const Practice = () => {
           };
         });
 
-        // console.log("Transformed questions:", transformedQuestions);
+        console.log("Transformed questions:", transformedQuestions);
         setQuestions(transformedQuestions);
         setLoading(false);
       } catch (err) {
