@@ -232,13 +232,10 @@
 }
 
 .question-meta {
+  flex-shrink: 0;
   display: flex;
-  flex-direction: row;
   align-items: center;
   gap: 12px;
-  margin-bottom: 0;
-  flex-wrap: wrap;
-  margin-left: auto;
 }
 
 .difficulty-badge {
@@ -831,14 +828,14 @@
 }
 
 .question-title {
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--text-primary);
-  margin: 0;
-  max-width: 60%;
+  flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 500px;
+  font-size: 14px;
+  line-height: 1.4;
+  padding-right: 20px;
 }
 
 .question-topics {
@@ -868,8 +865,8 @@
 
 .question-content-row {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 16px;
   width: 100%;
 }
