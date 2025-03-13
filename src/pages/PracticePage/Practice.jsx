@@ -85,6 +85,7 @@ const Practice = () => {
           choices: Array.isArray(q.choices) ? q.choices : [],
           topic: q.topic || "",
           subtopic: q.subtopic || "",
+          solverate: q.solve_rate || "",
         }));
 
         console.log("Transformed questions:", transformedQuestions);
@@ -427,7 +428,7 @@ const Practice = () => {
                   )}
                 </div>
                 <div className="completion-rate">
-                  <span> </span>
+                  <span> {question.solverate}%</span>
                 </div>
                 <div className="question-actions">
                   <button
