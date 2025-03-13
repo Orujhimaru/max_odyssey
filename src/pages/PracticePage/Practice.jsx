@@ -78,11 +78,13 @@ const Practice = () => {
           id: q.id,
           question_text: q.question_text,
           subject_id: q.subject_id,
-          difficulty_level: q.difficulty_level || 2,
+          difficulty_level: q.difficulty_level || 1,
           correct_answer: q.correct_answer || "",
           explanation: q.explanation || "",
           created_at: q.created_at || new Date().toISOString(),
           choices: Array.isArray(q.choices) ? q.choices : [],
+          topic: q.topic || "",
+          subtopic: q.subtopic || "",
         }));
 
         console.log("Transformed questions:", transformedQuestions);
@@ -378,11 +380,13 @@ const Practice = () => {
                   <div className="question-type">
                     <span
                       className={`difficulty-indicator ${
-                        question.difficulty_level === 1
+                        question.difficulty_level === 0
                           ? "easy"
-                          : question.difficulty_level === 2
+                          : question.difficulty_level === 1
                           ? "medium"
-                          : "hard"
+                          : question.difficulty_level === 2
+                          ? "hard"
+                          : "medium"
                       }`}
                     >
                       <span className="bar"></span>
@@ -396,8 +400,34 @@ const Practice = () => {
             <div className="question-content-row">
               <h3 className="question-title">{question.question_text}</h3>
               <div className="question-meta">
+                <div className="question-topics">
+                  {question.topic && (
+                    <span
+                      className="topic-tag"
+                      key={question.topic}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleTopic(question.topic);
+                      }}
+                    >
+                      {question.topic}
+                    </span>
+                  )}
+                  {question.subtopic && (
+                    <span
+                      className="topic-tag"
+                      key={question.subtopic}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleTopic(question.subtopic);
+                      }}
+                    >
+                      {question.subtopic}
+                    </span>
+                  )}
+                </div>
                 <div className="completion-rate">
-                  <span>0% </span>
+                  <span> </span>
                 </div>
                 <div className="question-actions">
                   <button
