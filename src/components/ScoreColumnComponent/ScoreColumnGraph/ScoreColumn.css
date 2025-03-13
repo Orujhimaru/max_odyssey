@@ -6,6 +6,7 @@
 } */
 
 .chart-container {
+  gap: 8px;
   flex: 1;
   display: flex;
   width: 100%;
@@ -194,7 +195,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   /* margin: 12px 0; */
   padding: 12px;
   background-color: var(--bg-secondary);
-  border-radius: 16px;
+  border-radius: 12px;
   box-shadow: rgba(0, 0, 0, 0.12) -0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
   background-image: radial-gradient(#e8e8e854 0.3px, var(--bg-secondary) 0.4px);
   background-size: 10px 10px;
@@ -253,7 +254,7 @@ tspan {
 
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .chart-title {
