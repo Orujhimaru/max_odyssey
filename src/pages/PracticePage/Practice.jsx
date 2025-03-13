@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PracticeSwitch from "./PracticeSwitch/PracticeSwitch";
 import "./Practice.css";
 import PracticeQuestionInterface from "./PracticeQuestionInterface/PracticeQuestionInterface";
@@ -14,6 +14,9 @@ const Practice = () => {
   const [bookmarkedQuestions, setBookmarkedQuestions] = useState(new Set());
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [isVerbal, setIsVerbal] = useState(false);
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Math topics
   const mathTopics = [
@@ -53,116 +56,73 @@ const Practice = () => {
     "Inference",
   ];
 
-  // Mock data for practice questions
-  const practiceQuestions = [
-    {
-      id: 1,
-      title: "Linear Equations in Context",
-      type: "math",
-      difficulty: "medium",
-      topics: ["Algebra", "Linear Equations", "Word Problems"],
-      completionRate: 78,
-      lastAttempted: "2 days ago",
-    },
-    {
-      id: 2,
-      title: "Reading Passage: Science",
-      type: "verbal",
-      difficulty: "hard",
-      topics: ["Reading Comprehension", "Inference", "Evidence-Based Reading"],
-      completionRate: 62,
-      lastAttempted: "1 week ago",
-    },
-    {
-      id: 3,
-      title: "Data Analysis with Graphs",
-      type: "math",
-      difficulty: "easy",
-      topics: ["Statistics", "Data Analysis"],
-      completionRate: 91,
-      lastAttempted: "3 days ago",
-    },
-    {
-      id: 4,
-      title: "What is the value of x in the equation 2x + 5 = 13?",
-      difficulty: "easy",
-      subject: "math",
-      topic: "Algebra",
-      subtopic: "Linear Equations",
-      isBookmarked: true,
-      status: "completed",
-      performance: "correct",
-      lastAttempted: "2023-06-15",
-    },
-    {
-      id: 5,
-      title:
-        "Which of the following best describes the author's tone in the passage?",
-      difficulty: "medium",
-      subject: "verbal",
-      topic: "Reading",
-      subtopic: "Author's Purpose",
-      isBookmarked: false,
-      status: "completed",
-      performance: "incorrect",
-      lastAttempted: "2023-06-18",
-    },
-    {
-      id: 6,
-      title: "If f(x) = 3x² - 2x + 1, what is the value of f(2)?",
-      difficulty: "medium",
-      subject: "math",
-      topic: "Functions",
-      subtopic: "Quadratic Functions",
-      isBookmarked: true,
-      status: "completed",
-      performance: "correct",
-      lastAttempted: "2023-06-20",
-    },
-    {
-      id: 7,
-      title: "Which sentence contains a grammatical error?",
-      difficulty: "hard",
-      subject: "verbal",
-      topic: "Writing",
-      subtopic: "Grammar",
-      isBookmarked: false,
-      status: "not-started",
-      performance: null,
-      lastAttempted: null,
-    },
-    {
-      id: 8,
-      title: "What is the area of a circle with radius 5 units?",
-      difficulty: "easy",
-      subject: "math",
-      topic: "Geometry",
-      subtopic: "Circles",
-      isBookmarked: false,
-      status: "completed",
-      performance: "correct",
-      lastAttempted: "2023-06-22",
-    },
-    {
-      id: 9,
-      title:
-        "Which of the following best summarizes the main idea of the passage?",
-      difficulty: "hard",
-      subject: "verbal",
-      topic: "Reading",
-      subtopic: "Main Idea",
-      isBookmarked: true,
-      status: "in-progress",
-      performance: null,
-      lastAttempted: "2023-06-25",
-    },
-  ];
+  // Fetch questions when component mounts
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/maxsat/practice");
+        if (!response.ok) throw new Error("Failed to fetch questions");
+        const data = await response.json();
 
-  // Sort questions by difficulty: easy -> medium -> hard
-  const sortedQuestions = [...practiceQuestions].sort((a, b) => {
-    const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
-    return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
-  });
+        // console.log("Raw data from API:", data);
+
+        // Check if data is an array
+        if (!Array.isArray(data)) {
+          console.error("API did not return an array");
+          setError("Invalid data format from API");
+          setLoading(false);
+          return;
+        }
+
+        // Map each question with proper fallbacks
+        const transformedQuestions = data.map((q, index) => {
+          // Log each question to see its structure
+          // console.log(`Question ${index}:`, q);
+
+          return {
+            id: q.id || index + 1,
+            question_text: q.question_text || `Question ${index + 1}`,
+            subject_id: q.subject_id || 1,
+            difficulty_level: q.difficulty_level || 2,
+            correct_answer: q.correct_answer || "",
+            explanation: q.explanation || "",
+            created_at: q.created_at || new Date().toISOString(),
+            choices: Array.isArray(q.choices) ? q.choices : [],
+          };
+        });
+
+        // console.log("Transformed questions:", transformedQuestions);
+        setQuestions(transformedQuestions);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching questions:", err);
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchQuestions();
+  }, []);
+
+  // Helper function to convert difficulty level to labels
+  const getDifficultyLabel = (level) => {
+    switch (level) {
+      case 1:
+        return "easy";
+      case 2:
+        return "medium";
+      case 3:
+        return "hard";
+      default:
+        return "medium";
+    }
+  };
+
+  // Helper function to format date
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
 
   const toggleTopic = (topic) => {
     if (selectedTopics.includes(topic)) {
@@ -171,41 +131,6 @@ const Practice = () => {
       setSelectedTopics([...selectedTopics, topic]);
     }
   };
-
-  // Filter questions based on active filter and search query
-  const filteredQuestions = sortedQuestions.filter((question) => {
-    const matchesFilter =
-      activeFilter === "all" ||
-      activeFilter === question.type ||
-      activeFilter === question.subject;
-
-    // const matchesSearch = question.title
-    //   .toLowerCase()
-    //   .includes(searchQuery.toLowerCase());
-
-    const matchesDifficulty =
-      activeDifficulty === "all" || question.difficulty === activeDifficulty;
-
-    const matchesTopics =
-      selectedTopics.length === 0 ||
-      (question.topics &&
-        question.topics.some((topic) => selectedTopics.includes(topic))) ||
-      (question.topic && selectedTopics.includes(question.topic)) ||
-      (question.subtopic && selectedTopics.includes(question.subtopic));
-
-    const matchesBookmarked =
-      !showBookmarked || bookmarkedQuestions.has(question.id);
-    const matchesWrongAnswered =
-      !showWrongAnswered || question.performance === "incorrect";
-
-    return (
-      matchesFilter &&
-      matchesDifficulty &&
-      matchesTopics &&
-      matchesBookmarked &&
-      matchesWrongAnswered
-    );
-  });
 
   const toggleBookmark = (questionId) => {
     setBookmarkedQuestions((prev) => {
@@ -219,6 +144,15 @@ const Practice = () => {
     });
   };
 
+  // Add loading and error states to your JSX
+  if (loading) {
+    return <div className="loading">Loading questions...</div>;
+  }
+
+  if (error) {
+    return <div className="error">Error: {error}</div>;
+  }
+
   return (
     <div className="practice-page">
       {selectedQuestion ? (
@@ -226,7 +160,7 @@ const Practice = () => {
           question={selectedQuestion}
           onClose={() => setSelectedQuestion(null)}
           questionNumber={
-            filteredQuestions.findIndex((q) => q.id === selectedQuestion.id) + 1
+            questions.findIndex((q) => q.id === selectedQuestion.id) + 1
           }
           isBookmarked={bookmarkedQuestions.has(selectedQuestion.id)}
           onBookmark={(id) => {
@@ -239,19 +173,19 @@ const Practice = () => {
             setBookmarkedQuestions(newBookmarked);
           }}
           onNext={() => {
-            const currentIndex = filteredQuestions.findIndex(
+            const currentIndex = questions.findIndex(
               (q) => q.id === selectedQuestion.id
             );
-            if (currentIndex < filteredQuestions.length - 1) {
-              setSelectedQuestion(filteredQuestions[currentIndex + 1]);
+            if (currentIndex < questions.length - 1) {
+              setSelectedQuestion(questions[currentIndex + 1]);
             }
           }}
           onPrevious={() => {
-            const currentIndex = filteredQuestions.findIndex(
+            const currentIndex = questions.findIndex(
               (q) => q.id === selectedQuestion.id
             );
             if (currentIndex > 0) {
-              setSelectedQuestion(filteredQuestions[currentIndex - 1]);
+              setSelectedQuestion(questions[currentIndex - 1]);
             }
           }}
         />
@@ -289,7 +223,7 @@ const Practice = () => {
                       <div className="topic-tags">
                         {mathTopics.map((topic) => (
                           <div
-                            key={topic}
+                            key={`math-${topic}`}
                             className={`topic-tag ${
                               selectedTopics.includes(topic) ? "selected" : ""
                             }`}
@@ -306,7 +240,7 @@ const Practice = () => {
                       <div className="topic-tags">
                         {verbalTopics.map((topic) => (
                           <div
-                            key={topic}
+                            key={`verbal-${topic}`}
                             className={`topic-tag ${
                               selectedTopics.includes(topic) ? "selected" : ""
                             }`}
@@ -413,108 +347,18 @@ const Practice = () => {
         <div className="practice-questions-header">
           <div className="header-left">
             <span className="header-number">#</span>
-            <span className="header-type">Type</span>
-            <span className="header-difficulty">Difficulty</span>
             <span className="header-question">Question</span>
           </div>
-          <div className="header-right">
-            <span className="header-tags">Tags</span>
-            <span
-              className="header-solve-rate"
-              // onClick={handleSortBySolveRate}
-              style={{ cursor: "pointer" }}
-            >
-              Solve Rate
-              <i className="fas fa-sort" style={{ marginLeft: "4px" }}></i>
-            </span>
-            <span className="header-actions">Actions</span>
-          </div>
         </div>
-        {filteredQuestions.map((question, index) => (
-          <div
-            className="question-card"
-            key={question.id}
-            onClick={() => setSelectedQuestion(question)}
-            style={{ cursor: "pointer" }}
-          >
+
+        {questions.map((question, index) => (
+          <div key={question.id || index} className="question-card">
             <div className="question-left">
-              <span className="question-number">#{index + 1}</span>
-              <div className="question-info">
-                <div className="question-header">
-                  <div className="question-type">
-                    <span
-                      className={`subject-badge ${
-                        question.type || question.subject
-                      }`}
-                    >
-                      {question.type === "math" || question.subject === "math"
-                        ? "M"
-                        : "V"}
-                    </span>
-                  </div>
-                  <div className="question-type">
-                    <span
-                      className={`difficulty-indicator ${question.difficulty}`}
-                    >
-                      <span className="bar"></span>
-                      <span className="bar"></span>
-                      <span className="bar"></span>
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <span className="question-number">#{question.id}</span>
             </div>
             <div className="question-content-row">
-              <h3 className="question-title">{question.title}</h3>
-              <div className="question-meta">
-                <div className="question-topics">
-                  {question.topics &&
-                    question.topics.map((topic) => (
-                      <span
-                        className="topic-tag"
-                        key={topic}
-                        onClick={() => toggleTopic(topic)}
-                      >
-                        {topic}
-                      </span>
-                    ))}
-                  {question.topic && !question.topics && (
-                    <span
-                      className="topic-tag"
-                      key={question.topic}
-                      onClick={() => toggleTopic(question.topic)}
-                    >
-                      {question.topic}
-                    </span>
-                  )}
-                  {question.subtopic && (
-                    <span
-                      className="topic-tag"
-                      key={question.subtopic}
-                      onClick={() => toggleTopic(question.subtopic)}
-                    >
-                      {question.subtopic}
-                    </span>
-                  )}
-                </div>
-                <div className="completion-rate">
-                  <span>{question.completionRate || 0}% </span>
-                </div>
-                <div className="question-actions">
-                  <button
-                    className="bookmark-button"
-                    onClick={() => toggleBookmark(question.id)}
-                  >
-                    <i
-                      className={`${
-                        bookmarkedQuestions.has(question.id) ? "fas" : "far"
-                      } fa-bookmark`}
-                    ></i>
-                  </button>
-                </div>
-              </div>
+              <h3 className="question-title">{question.question_text}</h3>
             </div>
-            {/* <button className="practice-button">Add</button> */}
           </div>
         ))}
       </div>
