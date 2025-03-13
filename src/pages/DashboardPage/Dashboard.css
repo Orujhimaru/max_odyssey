@@ -1,6 +1,6 @@
 .dashboard {
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   position: relative;
   padding: 12px;
   background-color: var(--bg-secondary);
@@ -17,7 +17,7 @@
 }
 
 .dashboard-right {
-  height: 100%;
+  /* height: 100%; */
   display: flex;
   align-items: center;
   flex-direction: column;
