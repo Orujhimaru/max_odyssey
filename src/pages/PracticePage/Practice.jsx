@@ -60,36 +60,30 @@ const Practice = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await fetch("http://localhost:8080/maxsat/practice");
+        const response = await fetch("http://localhost:8080/questions");
         if (!response.ok) throw new Error("Failed to fetch questions");
         const data = await response.json();
 
         console.log("Raw data from API:", data);
 
-        // Check if data is an array
-        if (!Array.isArray(data)) {
-          console.error("API did not return an array");
+        // Check if data.questions exists and is an array
+        if (!data.questions || !Array.isArray(data.questions)) {
+          console.error("API did not return an array of questions");
           setError("Invalid data format from API");
           setLoading(false);
           return;
         }
 
-        // Map each question with proper fallbacks
-        const transformedQuestions = data.map((q, index) => {
-          // Log each question to see its structure
-          console.log(`Question ${index}:`, q);
-
-          return {
-            id: q.id || index + 1,
-            question_text: q.QuestionText || `Question ${index + 1}`,
-            subject_id: q.subject_id || 1,
-            difficulty_level: q.difficulty_level || 2,
-            correct_answer: q.correct_answer || "",
-            explanation: q.explanation || "",
-            created_at: q.created_at || new Date().toISOString(),
-            choices: Array.isArray(q.choices) ? q.choices : [],
-          };
-        });
+        const transformedQuestions = data.questions.map((q, index) => ({
+          id: q.id,
+          question_text: q.question_text,
+          subject_id: q.subject_id,
+          difficulty_level: q.difficulty_level || 2,
+          correct_answer: q.correct_answer || "",
+          explanation: q.explanation || "",
+          created_at: q.created_at || new Date().toISOString(),
+          choices: Array.isArray(q.choices) ? q.choices : [],
+        }));
 
         console.log("Transformed questions:", transformedQuestions);
         setQuestions(transformedQuestions);
@@ -347,17 +341,80 @@ const Practice = () => {
         <div className="practice-questions-header">
           <div className="header-left">
             <span className="header-number">#</span>
+            <span className="header-type">Type</span>
+            <span className="header-difficulty">Difficulty</span>
             <span className="header-question">Question</span>
+          </div>
+          <div className="header-right">
+            <span className="header-tags">Tags</span>
+            <span className="header-solve-rate" style={{ cursor: "pointer" }}>
+              Solve Rate
+              <i className="fas fa-sort" style={{ marginLeft: "4px" }}></i>
+            </span>
+            <span className="header-actions">Actions</span>
           </div>
         </div>
 
         {questions.map((question, index) => (
-          <div key={question.id || index} className="question-card">
+          <div
+            className="question-card"
+            key={question.id}
+            onClick={() => setSelectedQuestion(question)}
+            style={{ cursor: "pointer" }}
+          >
             <div className="question-left">
               <span className="question-number">#{question.id}</span>
+              <div className="question-info">
+                <div className="question-header">
+                  <div className="question-type">
+                    <span
+                      className={`subject-badge ${
+                        question.subject_id === 1 ? "math" : "verbal"
+                      }`}
+                    >
+                      {question.subject_id === 1 ? "M" : "V"}
+                    </span>
+                  </div>
+                  <div className="question-type">
+                    <span
+                      className={`difficulty-indicator ${
+                        question.difficulty_level === 1
+                          ? "easy"
+                          : question.difficulty_level === 2
+                          ? "medium"
+                          : "hard"
+                      }`}
+                    >
+                      <span className="bar"></span>
+                      <span className="bar"></span>
+                      <span className="bar"></span>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div className="question-content-row">
               <h3 className="question-title">{question.question_text}</h3>
+              <div className="question-meta">
+                <div className="completion-rate">
+                  <span>0% </span>
+                </div>
+                <div className="question-actions">
+                  <button
+                    className="bookmark-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleBookmark(question.id);
+                    }}
+                  >
+                    <i
+                      className={`${
+                        bookmarkedQuestions.has(question.id) ? "fas" : "far"
+                      } fa-bookmark`}
+                    ></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         ))}
