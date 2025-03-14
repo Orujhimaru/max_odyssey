@@ -159,7 +159,7 @@ export default function ScoreColumnGraph() {
             <div className="chart-header">
               <h3 className="chart-title">Last {examCount} Mock Exams</h3>
             </div>
-            <ResponsiveContainer width="100%" height={350} ref={chartRef}>
+            <ResponsiveContainer width="100%" height={390} ref={chartRef}>
               <BarChart
                 data={displayData}
                 margin={{
