@@ -86,7 +86,7 @@
   line-height: 16px;
 }
 
-.time-value.fast {
+/* .time-value.fast {
   color: #2ecc71;
 }
 
@@ -96,7 +96,7 @@
 
 .time-value.slow {
   color: #e74c3c;
-}
+} */
 
 .speed-indicator {
   width: 80px;
