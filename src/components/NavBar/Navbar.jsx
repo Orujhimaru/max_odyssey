@@ -28,8 +28,8 @@ const Navbar = ({ isDarkMode, onThemeToggle }) => {
         </div>
         <div className="nav-items">
           <div
-            className={`nav-item ${isActive("/") ? "active" : ""}`}
-            onClick={() => handleNavigation("/")}
+            className={`nav-item ${isActive("/dashboard") ? "active" : ""}`}
+            onClick={() => handleNavigation("/dashboard")}
           >
             <div className="nav-icon-container">
               <img src={Dashboard} alt="Dashboard" className="nav-icon" />

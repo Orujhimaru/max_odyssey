@@ -112,14 +112,6 @@ const App = () => {
               }
             />
             <Route
-              path="/test-review/:testId"
-              element={
-                <ProtectedRoute>
-                  <TestReview />
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/"
               element={
                 isAuthenticated ? (
