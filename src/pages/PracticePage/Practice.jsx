@@ -10,7 +10,7 @@ const Practice = () => {
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [showTopicFilter, setShowTopicFilter] = useState(false);
   const [showDifficultyFilter, setShowDifficultyFilter] = useState(false);
-  const [activeDifficulty, setActiveDifficulty] = useState("all");
+  const [activeDifficulty, setActiveDifficulty] = useState(null);
   const [showBookmarked, setShowBookmarked] = useState(false);
   const [showWrongAnswered, setShowWrongAnswered] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
@@ -20,8 +20,8 @@ const Practice = () => {
   const [error, setError] = useState(null);
 
   const [filters, setFilters] = useState({
-    subject: 1, // Default to Math
-    difficulty: 2,
+    subject: 2, // Default to Math
+    difficulty: "",
     topic: "",
     subtopic: "",
     sort_dir: "asc",
@@ -183,6 +183,26 @@ const Practice = () => {
     }
   };
 
+  // Add an effect to update filters when activeDifficulty changes
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      // Convert activeDifficulty to string or empty string if null
+      difficulty: activeDifficulty !== null ? activeDifficulty.toString() : "",
+      page: 1, // Reset to page 1 when difficulty changes
+    }));
+  }, [activeDifficulty]);
+
+  // Your existing difficulty button handler
+  const handleDifficultyClick = (level) => {
+    // If clicking the already active difficulty, set to null (All)
+    if (activeDifficulty === level) {
+      setActiveDifficulty(null);
+    } else {
+      setActiveDifficulty(level);
+    }
+  };
+
   // Add loading and error states to your JSX
   if (loading) {
     return <div className="loading">Loading questions...</div>;
@@ -301,7 +321,7 @@ const Practice = () => {
                   onClick={() => setShowDifficultyFilter(!showDifficultyFilter)}
                 >
                   Difficulty{" "}
-                  {activeDifficulty !== "all" && `(${activeDifficulty})`}
+                  {activeDifficulty !== null && `(${activeDifficulty})`}
                   <i
                     className={`fas fa-chevron-${
                       showDifficultyFilter ? "up" : "down"
@@ -312,10 +332,10 @@ const Practice = () => {
                   <div className="difficulty-filter-dropdown">
                     <div
                       className={`difficulty-option ${
-                        activeDifficulty === "all" ? "selected" : ""
+                        activeDifficulty === null ? "selected" : ""
                       }`}
                       onClick={() => {
-                        setActiveDifficulty("all");
+                        setActiveDifficulty(null);
                         setShowDifficultyFilter(false);
                       }}
                     >
@@ -323,10 +343,10 @@ const Practice = () => {
                     </div>
                     <div
                       className={`difficulty-option easy ${
-                        activeDifficulty === "easy" ? "selected" : ""
+                        activeDifficulty === 0 ? "selected" : ""
                       }`}
                       onClick={() => {
-                        setActiveDifficulty("easy");
+                        handleDifficultyClick(0);
                         setShowDifficultyFilter(false);
                       }}
                     >
@@ -334,10 +354,10 @@ const Practice = () => {
                     </div>
                     <div
                       className={`difficulty-option medium ${
-                        activeDifficulty === "medium" ? "selected" : ""
+                        activeDifficulty === 1 ? "selected" : ""
                       }`}
                       onClick={() => {
-                        setActiveDifficulty("medium");
+                        handleDifficultyClick(1);
                         setShowDifficultyFilter(false);
                       }}
                     >
@@ -345,10 +365,10 @@ const Practice = () => {
                     </div>
                     <div
                       className={`difficulty-option hard ${
-                        activeDifficulty === "hard" ? "selected" : ""
+                        activeDifficulty === 2 ? "selected" : ""
                       }`}
                       onClick={() => {
-                        setActiveDifficulty("hard");
+                        handleDifficultyClick(2);
                         setShowDifficultyFilter(false);
                       }}
                     >
