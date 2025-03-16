@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PracticeSwitch from "./PracticeSwitch/PracticeSwitch";
 import "./Practice.css";
 import PracticeQuestionInterface from "./PracticeQuestionInterface/PracticeQuestionInterface";
@@ -520,12 +520,36 @@ const BookmarkButton = ({ questionId, isBookmarked, onToggle }) => {
     <button
       className="bookmark-button"
       data-question-id={questionId}
-      onClick={() => {
-        console.log(`BOOKMARK CLICKED: Question ID ${questionId}`);
+      onClick={(e) => {
+        // Stop event propagation
+        e.stopPropagation();
+        e.preventDefault();
+
+        // Show an alert
+        alert(`Bookmark clicked for question ${questionId}`);
+
+        // Call the toggle function using the prop
         onToggle(questionId);
+
+        return false;
+      }}
+      style={{
+        position: "absolute",
+        right: "10px",
+        top: "10px",
+        zIndex: 9999,
+        background: "red",
+        color: "white",
+        padding: "10px",
+        border: "2px solid black",
+        borderRadius: "4px",
+        cursor: "pointer",
+        fontWeight: "bold",
+        fontSize: "14px",
+        pointerEvents: "auto",
       }}
     >
-      <i className={`${isBookmarked ? "fas" : "far"} fa-bookmark`}></i>
+      BOOKMARK
     </button>
   );
 };
