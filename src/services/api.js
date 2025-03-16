@@ -84,13 +84,21 @@ export const api = {
 
   // Toggle bookmark
   toggleBookmark: async (questionId) => {
+    console.log(
+      `Sending bookmark toggle request for question_id: ${questionId}`
+    );
+
     const response = await api.request("/bookmark", {
       method: "POST",
-      body: JSON.stringify({ questionId }),
+      body: JSON.stringify({ question_id: questionId }),
     });
 
     if (!response.ok) {
-      throw new Error("Failed to toggle bookmark");
+      const errorText = await response.text();
+      console.error(
+        `Failed to toggle bookmark: ${response.status} - ${errorText}`
+      );
+      throw new Error(`Failed to toggle bookmark: ${response.status}`);
     }
 
     return response.json();

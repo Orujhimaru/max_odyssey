@@ -135,19 +135,31 @@ const Practice = () => {
   const toggleBookmark = async (questionId) => {
     try {
       console.log(`Toggling bookmark for question ID: ${questionId}`);
+
+      // Make sure we're passing a valid question ID
+      if (!questionId) {
+        console.error("Invalid question ID:", questionId);
+        throw new Error("Invalid question ID");
+      }
+
+      // Call the API with the correct parameter
       await api.toggleBookmark(questionId);
 
       // Update local state
       const newBookmarked = new Set(bookmarkedQuestions);
       if (newBookmarked.has(questionId)) {
+        console.log(`Removing question ${questionId} from bookmarks`);
         newBookmarked.delete(questionId);
       } else {
+        console.log(`Adding question ${questionId} to bookmarks`);
         newBookmarked.add(questionId);
       }
       setBookmarkedQuestions(newBookmarked);
+
+      console.log("Bookmark toggled successfully");
     } catch (error) {
       console.error("Error toggling bookmark:", error);
-      throw error; // Propagate the error to the caller
+      throw error;
     }
   };
 

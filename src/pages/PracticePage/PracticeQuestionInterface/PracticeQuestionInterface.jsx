@@ -187,17 +187,59 @@ const PracticeQuestionInterface = ({
             )}
           </div>
         </div>
-        <div className="header-right">
-          <button
-            type="button"
-            className="bookmark-button"
-            onClick={handleBookmarkClick}
+        <div className="header-actions">
+          <div
+            id="bookmark-action"
+            style={{
+              position: "absolute",
+              right: "50px", // Adjusted to not overlap with close button
+              top: "10px",
+              zIndex: 9999,
+              background: "red",
+              color: "white",
+              padding: "10px",
+              border: "2px solid black",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontWeight: "bold",
+              fontSize: "14px",
+              pointerEvents: "auto",
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              console.log("BOOKMARK CLICKED");
+              if (onBookmark) onBookmark(question.id);
+            }}
           >
             <i className={`${isBookmarked ? "fas" : "far"} fa-bookmark`}></i>
-          </button>
-          <button className="close-button" onClick={onClose}>
+            {" Bookmark"}
+          </div>
+
+          <div
+            id="close-action"
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "10px",
+              zIndex: 9999,
+              background: "#333",
+              color: "white",
+              padding: "10px",
+              border: "2px solid black",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontWeight: "bold",
+              fontSize: "14px",
+              pointerEvents: "auto",
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+          >
             <i className="fas fa-times"></i>
-          </button>
+            {" Close"}
+          </div>
         </div>
       </div>
 
