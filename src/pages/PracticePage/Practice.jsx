@@ -19,6 +19,20 @@ const Practice = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [filters, setFilters] = useState({
+    subject: 1, // Default to Math
+    difficulty: 2,
+    topic: "",
+    subtopic: "",
+    sort_dir: "asc",
+    page: 1,
+    page_size: 10,
+  });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalQuestions, setTotalQuestions] = useState(0);
+
   const navigate = useNavigate();
 
   // Math topics
@@ -59,7 +73,63 @@ const Practice = () => {
     "Inference",
   ];
 
-  // Fetch questions when component mounts
+  // Add handlers for filter changes
+  const handleSubjectChange = (subjectId) => {
+    setFilters((prev) => ({
+      ...prev,
+      subject: subjectId,
+      page: 1, // Reset to first page when changing filters
+    }));
+  };
+
+  const handleDifficultyChange = (difficultyLevel) => {
+    setFilters((prev) => ({
+      ...prev,
+      difficulty: difficultyLevel,
+      page: 1, // Reset to first page when changing filters
+    }));
+  };
+
+  const handlePageChange = (newPage) => {
+    setFilters((prev) => ({
+      ...prev,
+      page: newPage,
+    }));
+  };
+
+  // Add the fetch function
+  const fetchQuestions = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      console.log("Fetching filtered questions with:", filters);
+
+      // Call the new API method
+      const data = await api.getFilteredQuestions(filters);
+
+      console.log("Filtered questions response:", data);
+
+      // Update state with the response data
+      setQuestions(data.questions || []);
+
+      // Update pagination info
+      if (data.pagination) {
+        setCurrentPage(data.pagination.current_page);
+        setTotalQuestions(data.pagination.total_items);
+        setTotalPages(data.pagination.total_pages);
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+      setError(`Failed to load questions: ${error.message}`);
+      setQuestions([]);
+      setLoading(false);
+    }
+  };
+
+  // Add useEffect to fetch questions when filters change
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -67,50 +137,8 @@ const Practice = () => {
       return;
     }
 
-    const fetchQuestions = async () => {
-      try {
-        setLoading(true);
-        const response = await api.request("/questions");
-        if (!response.ok) throw new Error("Failed to fetch questions");
-        const data = await response.json();
-
-        console.log("Raw data from API:", data);
-
-        // Check if data.questions exists and is an array
-        const questionsArray = data.questions || data;
-        if (!Array.isArray(questionsArray)) {
-          console.error("API did not return an array of questions");
-          setError("Invalid data format from API");
-          setLoading(false);
-          return;
-        }
-
-        const transformedQuestions = questionsArray.map((q) => ({
-          id: q.id,
-          question_text: q.question_text,
-          subject_id: q.subject_id,
-          difficulty_level: q.difficulty_level || 1,
-          correct_answer: q.correct_answer || "",
-          explanation: q.explanation || "",
-          solverate: q.solve_rate || 0,
-          created_at: q.created_at || new Date().toISOString(),
-          choices: Array.isArray(q.choices) ? q.choices : [],
-          topic: q.topic || "",
-          subtopic: q.subtopic || "",
-        }));
-
-        console.log("Transformed questions:", transformedQuestions);
-        setQuestions(transformedQuestions);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching questions:", err);
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
     fetchQuestions();
-  }, [navigate]);
+  }, [filters, navigate]);
 
   // Simplify the toggleBookmark function
   const toggleBookmark = async (questionId) => {
@@ -434,12 +462,31 @@ const Practice = () => {
                   )}
                 </div>
                 <div className="completion-rate">
-                  <span> {question.solverate}%</span>
+                  <span> {question.solve_rate}%</span>
                 </div>
               </div>
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Pagination controls */}
+      <div className="pagination">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage <= 1}
+        >
+          Previous
+        </button>
+        <span>
+          Page {currentPage} of {totalPages} ({totalQuestions} questions)
+        </span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage >= totalPages}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
