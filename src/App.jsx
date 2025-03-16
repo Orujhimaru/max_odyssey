@@ -15,6 +15,7 @@ import Tests from "./pages/TestsPage/Tests";
 import Practice from "./pages/PracticePage/Practice";
 import TestReview from "./components/TestReview/TestReview";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 const App = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -26,6 +27,14 @@ const App = () => {
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
+  // Use a ref to track if this is the first render
+  const isFirstRender = React.useRef(true);
+
+  // Get authentication state from localStorage only once during initial render
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return !!localStorage.getItem("token");
+  });
+
   useEffect(() => {
     // Update data-theme attribute and localStorage when theme changes
     document.documentElement.setAttribute(
@@ -35,6 +44,29 @@ const App = () => {
     localStorage.setItem("theme", isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
 
+  // Check for authentication changes
+  useEffect(() => {
+    // Skip the first render to avoid an infinite loop
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    const checkAuth = () => {
+      const hasToken = !!localStorage.getItem("token");
+      if (hasToken !== isAuthenticated) {
+        setIsAuthenticated(hasToken);
+      }
+    };
+
+    // Set up event listener for storage changes (in case token is removed in another tab)
+    window.addEventListener("storage", checkAuth);
+
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+    };
+  }, [isAuthenticated]);
+
   const toggleTheme = () => {
     setIsDarkMode((prevMode) => !prevMode);
   };
@@ -43,16 +75,70 @@ const App = () => {
     <Router>
       <div className="app">
         <Navbar isDarkMode={isDarkMode} onThemeToggle={toggleTheme} />
+
         <div className="content">
           <Routes>
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/courses" element={<Courses />} />
-            <Route path="/tests" element={<Tests />} />
-            <Route path="/practice" element={<Practice />} />
-            {/* <Route path="/questions/:testId" element={<TestReview />} /> */}
-            <Route path="/" element={<Navigate to="/dashboard" />} />
-            <Route path="*" element={<Navigate to="/dashboard" />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/courses"
+              element={
+                <ProtectedRoute>
+                  <Courses />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tests"
+              element={
+                <ProtectedRoute>
+                  <Tests />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/practice"
+              element={
+                <ProtectedRoute>
+                  <Practice />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/test-review/:testId"
+              element={
+                <ProtectedRoute>
+                  <TestReview />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/"
+              element={
+                isAuthenticated ? (
+                  <Navigate to="/dashboard" />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route
+              path="*"
+              element={
+                isAuthenticated ? (
+                  <Navigate to="/dashboard" />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
           </Routes>
         </div>
       </div>

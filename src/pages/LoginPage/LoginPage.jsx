@@ -23,15 +23,19 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const data = await api.login(username);
-      if (data && data.token) {
-        localStorage.setItem("token", data.token);
-        navigate("/practice");
-      } else {
-        setError("Login failed. Please try again.");
-      }
+      const response = await api.login(username);
+      console.log("Login successful:", response);
+
+      // Store the token in localStorage
+      localStorage.setItem("token", response.token);
+
+      // Redirect to dashboard after successful login
+      navigate("/dashboard");
     } catch (err) {
-      setError(err.message || "An error occurred during login");
+      console.error("Login error:", err);
+      setError(
+        err.message || "Failed to login. Please check your credentials."
+      );
     } finally {
       setLoading(false);
     }
