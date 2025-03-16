@@ -75,7 +75,7 @@ const Tests = () => {
   };
 
   const handleReviewClick = (testId) => {
-    navigate(`/test-review/${testId}`);
+    // navigate(`/test-review/${testId}`);
   };
 
   if (testInProgress) {

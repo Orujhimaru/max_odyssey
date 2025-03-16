@@ -250,7 +250,7 @@
 .review-button:hover,
 .continue-button:hover {
   background-color: #fcfcfcb0;
-  transform: translateY(-2px);
+  /* transform: translateY(-12px); */
 }
 
 .delete-button:hover {

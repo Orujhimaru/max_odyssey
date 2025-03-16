@@ -13,7 +13,6 @@ const Practice = () => {
   const [activeDifficulty, setActiveDifficulty] = useState("all");
   const [showBookmarked, setShowBookmarked] = useState(false);
   const [showWrongAnswered, setShowWrongAnswered] = useState(false);
-  const [bookmarkedQuestions, setBookmarkedQuestions] = useState(new Set());
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [isVerbal, setIsVerbal] = useState(false);
   const [questions, setQuestions] = useState([]);
@@ -93,6 +92,7 @@ const Practice = () => {
           difficulty_level: q.difficulty_level || 1,
           correct_answer: q.correct_answer || "",
           explanation: q.explanation || "",
+          solverate: q.solve_rate || 0,
           created_at: q.created_at || new Date().toISOString(),
           choices: Array.isArray(q.choices) ? q.choices : [],
           topic: q.topic || "",
@@ -112,51 +112,15 @@ const Practice = () => {
     fetchQuestions();
   }, [navigate]);
 
-  // Add this function to fetch bookmarked questions
-  const fetchBookmarkedQuestions = async () => {
-    try {
-      const data = await api.getBookmarkedQuestions();
-      console.log("Fetched bookmarked questions:", data);
-
-      // Create a Set of bookmarked question IDs for efficient lookup
-      const bookmarkedIds = new Set(data.map((q) => q.id));
-      setBookmarkedQuestions(bookmarkedIds);
-    } catch (error) {
-      console.error("Error fetching bookmarked questions:", error);
-    }
-  };
-
-  // Call this function when the component mounts
-  useEffect(() => {
-    fetchBookmarkedQuestions();
-  }, []);
-
-  // Add function to toggle bookmark
+  // Simplify the toggleBookmark function
   const toggleBookmark = async (questionId) => {
     try {
       console.log(`Toggling bookmark for question ID: ${questionId}`);
-
-      // Make sure we're passing a valid question ID
-      if (!questionId) {
-        console.error("Invalid question ID:", questionId);
-        throw new Error("Invalid question ID");
-      }
-
-      // Call the API with the correct parameter
       await api.toggleBookmark(questionId);
+      console.log("Bookmark toggled successfully in backend");
 
-      // Update local state
-      const newBookmarked = new Set(bookmarkedQuestions);
-      if (newBookmarked.has(questionId)) {
-        console.log(`Removing question ${questionId} from bookmarks`);
-        newBookmarked.delete(questionId);
-      } else {
-        console.log(`Adding question ${questionId} to bookmarks`);
-        newBookmarked.add(questionId);
-      }
-      setBookmarkedQuestions(newBookmarked);
-
-      console.log("Bookmark toggled successfully");
+      // No need to update any state here since the PracticeQuestionInterface
+      // component handles its own state
     } catch (error) {
       console.error("Error toggling bookmark:", error);
       throw error;
@@ -209,7 +173,7 @@ const Practice = () => {
           questionNumber={
             questions.findIndex((q) => q.id === selectedQuestion.id) + 1
           }
-          isBookmarked={bookmarkedQuestions.has(selectedQuestion.id)}
+          isBookmarked={selectedQuestion.is_bookmarked}
           onBookmark={toggleBookmark}
           onNext={() => {
             const currentIndex = questions.findIndex(
@@ -386,8 +350,8 @@ const Practice = () => {
         <div className="practice-questions-header">
           <div className="header-left">
             <span className="header-number">#</span>
-            <span className="header-type">Type</span>
-            <span className="header-difficulty">Difficulty</span>
+            <span className="header-type">S</span>
+            <span className="header-difficulty">🧩</span>
             <span className="header-question">Question</span>
           </div>
           <div className="header-right">
@@ -396,7 +360,7 @@ const Practice = () => {
               Solve Rate
               <i className="fas fa-sort" style={{ marginLeft: "4px" }}></i>
             </span>
-            <span className="header-actions">Actions</span>
+            {/* <span className="header-actions">Actions</span> */}
           </div>
         </div>
 

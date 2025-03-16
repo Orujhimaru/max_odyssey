@@ -103,4 +103,51 @@ export const api = {
 
     return response.json();
   },
+
+  // Get paginated questions
+  getPaginatedQuestions: async (queryParams) => {
+    const url = `/questions/paginated?${queryParams.toString()}`;
+    console.log("Making API request to:", url);
+
+    try {
+      const response = await api.request(url);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          `Failed to fetch paginated questions: ${response.status} - ${errorText}`
+        );
+        throw new Error(
+          `Server error: ${response.status} - ${
+            errorText || "No error details provided"
+          }`
+        );
+      }
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        console.error("Non-JSON response:", text);
+        throw new Error("Server returned non-JSON response");
+      }
+
+      const data = await response.json();
+
+      // Validate the response structure
+      if (!data || typeof data !== "object") {
+        throw new Error("Invalid response format: not an object");
+      }
+
+      // Ensure questions is at least an empty array
+      if (!Array.isArray(data.questions)) {
+        console.warn("Response missing questions array:", data);
+        data.questions = [];
+      }
+
+      return data;
+    } catch (error) {
+      console.error("API request failed:", error);
+      throw error;
+    }
+  },
 };

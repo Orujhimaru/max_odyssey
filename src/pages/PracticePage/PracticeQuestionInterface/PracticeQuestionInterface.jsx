@@ -97,16 +97,19 @@ const PracticeQuestionInterface = ({
     }
   };
 
-  const handleBookmarkClick = (e) => {
+  const handleBookmarkClick = async (e) => {
     e.stopPropagation();
-    console.log("Bookmark button clicked!");
-    console.log("Question ID:", question.id);
 
-    if (onBookmark) {
-      console.log("Calling onBookmark with question ID:", question.id);
-      onBookmark(question.id);
-    } else {
-      console.warn("onBookmark prop is not provided");
+    try {
+      console.log(`Toggling bookmark for question ID: ${question.id}`);
+
+      // Call the parent component's handler
+      await onBookmark(question.id);
+
+      console.log(`Bookmark toggle requested for question ${question.id}`);
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+      alert(`Failed to bookmark question: ${error.message}`);
     }
   };
 
@@ -205,11 +208,7 @@ const PracticeQuestionInterface = ({
               fontSize: "14px",
               pointerEvents: "auto",
             }}
-            onClick={(e) => {
-              e.stopPropagation();
-              console.log("BOOKMARK CLICKED");
-              if (onBookmark) onBookmark(question.id);
-            }}
+            onClick={handleBookmarkClick}
           >
             <i className={`${isBookmarked ? "fas" : "far"} fa-bookmark`}></i>
             {" Bookmark"}
