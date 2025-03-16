@@ -14,7 +14,7 @@ const Practice = () => {
   const [showBookmarked, setShowBookmarked] = useState(false);
   const [showWrongAnswered, setShowWrongAnswered] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
-  const [isVerbal, setIsVerbal] = useState(false);
+  // const [isVerbal, setIsVerbal] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -201,6 +201,21 @@ const Practice = () => {
     } else {
       setActiveDifficulty(level);
     }
+  };
+
+  // Add an effect to update filters when the switch changes
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      // Convert switch state to subject ID: false (Math) = 1, true (Verbal) = 2
+      subject: activeFilter === "math" ? 2 : 1,
+      page: 1, // Reset to page 1 when subject changes
+    }));
+  }, [activeFilter]);
+
+  // Your existing switch handler
+  const handleSubjectSwitch = () => {
+    setIsVerbal((prev) => !prev);
   };
 
   // Add loading and error states to your JSX

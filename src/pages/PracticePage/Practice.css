@@ -682,6 +682,8 @@
 
 .header-difficulty {
   width: 20px;
+  mix-blend-mode: luminosity;
+  filter: sepia(1);
 }
 
 .header-question {
