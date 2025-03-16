@@ -143,42 +143,6 @@ const Practice = () => {
     }
   };
 
-  // Update the toggleBookmark function with better logging
-  const toggleBookmark = async (questionId, e) => {
-    // We don't need to call stopPropagation here since we're doing it in the onClick
-    // But we'll keep the parameter for consistency
-
-    console.log(`Toggling bookmark for question ID: ${questionId}`);
-
-    try {
-      await api.toggleBookmark(questionId);
-      console.log(
-        `Successfully toggled bookmark for question ID: ${questionId}`
-      );
-
-      // Update local state
-      const newBookmarked = new Set(bookmarkedQuestions);
-      if (newBookmarked.has(questionId)) {
-        console.log(`Removing question ID ${questionId} from bookmarks`);
-        newBookmarked.delete(questionId);
-      } else {
-        console.log(`Adding question ID ${questionId} to bookmarks`);
-        newBookmarked.add(questionId);
-      }
-      setBookmarkedQuestions(newBookmarked);
-    } catch (err) {
-      console.error(
-        `Error toggling bookmark for question ID ${questionId}:`,
-        err
-      );
-    }
-  };
-
-  // Call both functions in useEffect
-  useEffect(() => {
-    fetchBookmarkedQuestions();
-  }, []);
-
   // Helper function to convert difficulty level to labels
   const getDifficultyLabel = (level) => {
     switch (level) {
@@ -226,14 +190,31 @@ const Practice = () => {
             questions.findIndex((q) => q.id === selectedQuestion.id) + 1
           }
           isBookmarked={bookmarkedQuestions.has(selectedQuestion.id)}
-          onBookmark={(id) => {
-            const newBookmarked = new Set(bookmarkedQuestions);
-            if (newBookmarked.has(id)) {
-              newBookmarked.delete(id);
-            } else {
-              newBookmarked.add(id);
+          onBookmark={async (id) => {
+            console.log(`Toggling bookmark for question ID: ${id}`);
+
+            try {
+              // Make the API call
+              await api.request(`/bookmark`, {
+                method: "POST",
+                body: JSON.stringify({ questionId: id }),
+              });
+
+              // Update local state
+              const newBookmarked = new Set(bookmarkedQuestions);
+              if (newBookmarked.has(id)) {
+                newBookmarked.delete(id);
+              } else {
+                newBookmarked.add(id);
+              }
+              setBookmarkedQuestions(newBookmarked);
+            } catch (err) {
+              console.error(
+                `Error toggling bookmark for question ID ${id}:`,
+                err
+              );
+              alert(`Error toggling bookmark: ${err.message}`);
             }
-            setBookmarkedQuestions(newBookmarked);
           }}
           onNext={() => {
             const currentIndex = questions.findIndex(
@@ -496,61 +477,12 @@ const Practice = () => {
                 <div className="completion-rate">
                   <span> {question.solverate}%</span>
                 </div>
-                <div
-                  className="question-actions"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <BookmarkButton
-                    questionId={question.id}
-                    isBookmarked={bookmarkedQuestions.has(question.id)}
-                    onToggle={toggleBookmark}
-                  />
-                </div>
               </div>
             </div>
           </div>
         ))}
       </div>
     </div>
-  );
-};
-
-const BookmarkButton = ({ questionId, isBookmarked, onToggle }) => {
-  return (
-    <button
-      className="bookmark-button"
-      data-question-id={questionId}
-      onClick={(e) => {
-        // Stop event propagation
-        e.stopPropagation();
-        e.preventDefault();
-
-        // Show an alert
-        alert(`Bookmark clicked for question ${questionId}`);
-
-        // Call the toggle function using the prop
-        onToggle(questionId);
-
-        return false;
-      }}
-      style={{
-        position: "absolute",
-        right: "10px",
-        top: "10px",
-        zIndex: 9999,
-        background: "red",
-        color: "white",
-        padding: "10px",
-        border: "2px solid black",
-        borderRadius: "4px",
-        cursor: "pointer",
-        fontWeight: "bold",
-        fontSize: "14px",
-        pointerEvents: "auto",
-      }}
-    >
-      BOOKMARK
-    </button>
   );
 };
 

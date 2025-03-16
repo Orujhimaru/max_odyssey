@@ -64,6 +64,15 @@ export const api = {
     return response.json();
   },
 
+  // Get a single question by ID
+  getQuestion: async (id) => {
+    const response = await api.request(`/questions/${id}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch question: ${response.status}`);
+    }
+    return response.json();
+  },
+
   // Get bookmarked questions
   getBookmarkedQuestions: async () => {
     const response = await api.request("/bookmarks");
@@ -77,7 +86,7 @@ export const api = {
   toggleBookmark: async (questionId) => {
     const response = await api.request("/bookmark", {
       method: "POST",
-      body: JSON.stringify({ question_id: questionId }),
+      body: JSON.stringify({ questionId }),
     });
 
     if (!response.ok) {
