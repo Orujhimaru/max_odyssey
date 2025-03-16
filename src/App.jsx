@@ -46,9 +46,13 @@ const App = () => {
         <div className="content">
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/tests" element={<Tests />} />
             <Route path="/practice" element={<Practice />} />
-            <Route path="/" element={<Navigate to="/login" />} />
-            <Route path="*" element={<Navigate to="/login" />} />
+            {/* <Route path="/questions/:testId" element={<TestReview />} /> */}
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
         </div>
       </div>

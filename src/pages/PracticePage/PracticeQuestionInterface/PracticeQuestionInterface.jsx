@@ -17,6 +17,7 @@ const PracticeQuestionInterface = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [hasLoggedChoices, setHasLoggedChoices] = useState(false);
 
   // Fetch the complete question data
   useEffect(() => {
@@ -54,6 +55,37 @@ const PracticeQuestionInterface = ({
 
     fetchQuestionDetails();
   }, [question]);
+
+  useEffect(() => {
+    if (fullQuestion && fullQuestion.choices && !hasLoggedChoices) {
+      // Only log once
+      console.log("Full question data:", fullQuestion);
+      console.log("Choices:", fullQuestion.choices);
+      console.log("Choices type:", typeof fullQuestion.choices);
+      console.log(
+        "Choices length:",
+        fullQuestion.choices ? fullQuestion.choices.length : 0
+      );
+
+      setHasLoggedChoices(true);
+
+      // If choices is a string, try to parse it
+      if (typeof fullQuestion.choices === "string") {
+        try {
+          const parsedChoices = JSON.parse(fullQuestion.choices);
+          console.log("Parsed choices:", parsedChoices);
+
+          // Update the fullQuestion with parsed choices
+          setFullQuestion({
+            ...fullQuestion,
+            choices: parsedChoices,
+          });
+        } catch (err) {
+          console.error("Error parsing choices:", err);
+        }
+      }
+    }
+  }, [fullQuestion, hasLoggedChoices]);
 
   const handleAnswerSelect = (index) => {
     setSelectedAnswer(index);
@@ -164,28 +196,49 @@ const PracticeQuestionInterface = ({
             <p>{fullQuestion.question_text}</p>
           </div>
           <div className="answer-options">
-            {fullQuestion.choices.map((choice, index) => (
-              <div
-                key={index}
-                className={`answer-option ${
-                  selectedAnswer === index ? "selected" : ""
-                } ${
-                  showExplanation
-                    ? index === fullQuestion.correct_answer_index
-                      ? "correct"
-                      : selectedAnswer === index
-                      ? "incorrect"
-                      : ""
-                    : ""
-                }`}
-                onClick={() => handleAnswerSelect(index)}
-              >
-                <div className="option-letter">
-                  {String.fromCharCode(65 + index)}
+            {fullQuestion.choices ? (
+              Array.isArray(fullQuestion.choices) ? (
+                fullQuestion.choices.map((choice, index) => {
+                  // Extract the choice text without the letter prefix if it exists
+                  const choiceText =
+                    typeof choice === "string" && choice.includes(") ")
+                      ? choice.substring(choice.indexOf(") ") + 2)
+                      : choice;
+
+                  return (
+                    <div
+                      key={index}
+                      className={`answer-option ${
+                        selectedAnswer === index ? "selected" : ""
+                      } ${
+                        showExplanation
+                          ? index === fullQuestion.correct_answer_index
+                            ? "correct"
+                            : selectedAnswer === index
+                            ? "incorrect"
+                            : ""
+                          : ""
+                      }`}
+                      onClick={() => handleAnswerSelect(index)}
+                    >
+                      <div className="option-letter">
+                        {String.fromCharCode(65 + index)}
+                      </div>
+                      <div className="option-text">{choiceText}</div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="error-message">
+                  Choices is not an array:{" "}
+                  {JSON.stringify(fullQuestion.choices)}
                 </div>
-                <div className="option-text">{choice}</div>
+              )
+            ) : (
+              <div className="error-message">
+                No choices available for this question
               </div>
-            ))}
+            )}
           </div>
 
           {!showExplanation && (
