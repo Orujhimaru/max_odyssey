@@ -97,9 +97,16 @@ const PracticeQuestionInterface = ({
     }
   };
 
-  const handleBookmarkClick = async () => {
+  const handleBookmarkClick = (e) => {
+    e.stopPropagation();
+    console.log("Bookmark button clicked!");
+    console.log("Question ID:", question.id);
+
     if (onBookmark) {
+      console.log("Calling onBookmark with question ID:", question.id);
       onBookmark(question.id);
+    } else {
+      console.warn("onBookmark prop is not provided");
     }
   };
 
@@ -157,7 +164,7 @@ const PracticeQuestionInterface = ({
         <div className="question-info">
           <div className="header-left">
             <span className="question-number">#{questionNumber}</span>
-            <h2>{fullQuestion.question_text.split(".")[0]}</h2>
+            {/* <h2>{fullQuestion.question_text.split(".")[0]}</h2> */}
           </div>
           <div className="question-meta">
             <div className="difficulty-indicator">
@@ -180,8 +187,12 @@ const PracticeQuestionInterface = ({
             )}
           </div>
         </div>
-        <div className="question-controls">
-          <button className="bookmark-button" onClick={handleBookmarkClick}>
+        <div className="header-right">
+          <button
+            type="button"
+            className="bookmark-button"
+            onClick={handleBookmarkClick}
+          >
             <i className={`${isBookmarked ? "fas" : "far"} fa-bookmark`}></i>
           </button>
           <button className="close-button" onClick={onClose}>

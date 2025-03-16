@@ -115,31 +115,39 @@ const Practice = () => {
   // Add this function to fetch bookmarked questions
   const fetchBookmarkedQuestions = async () => {
     try {
-      // Check if token exists before making request
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.log("No token found, skipping bookmark fetch");
-        return;
+      const data = await api.getBookmarkedQuestions();
+      console.log("Fetched bookmarked questions:", data);
+
+      // Create a Set of bookmarked question IDs for efficient lookup
+      const bookmarkedIds = new Set(data.map((q) => q.id));
+      setBookmarkedQuestions(bookmarkedIds);
+    } catch (error) {
+      console.error("Error fetching bookmarked questions:", error);
+    }
+  };
+
+  // Call this function when the component mounts
+  useEffect(() => {
+    fetchBookmarkedQuestions();
+  }, []);
+
+  // Add function to toggle bookmark
+  const toggleBookmark = async (questionId) => {
+    try {
+      console.log(`Toggling bookmark for question ID: ${questionId}`);
+      await api.toggleBookmark(questionId);
+
+      // Update local state
+      const newBookmarked = new Set(bookmarkedQuestions);
+      if (newBookmarked.has(questionId)) {
+        newBookmarked.delete(questionId);
+      } else {
+        newBookmarked.add(questionId);
       }
-
-      const response = await api.request("/bookmarks");
-      if (!response.ok) {
-        console.error("Failed to fetch bookmarks:", response.status);
-        return;
-      }
-
-      const bookmarkedData = await response.json();
-      console.log("Bookmarked data:", bookmarkedData);
-
-      // Handle different response formats
-      const bookmarkIds = Array.isArray(bookmarkedData)
-        ? bookmarkedData.map((q) => q.id)
-        : (bookmarkedData.questions || []).map((q) => q.id);
-
-      setBookmarkedQuestions(new Set(bookmarkIds));
-    } catch (err) {
-      console.error("Error fetching bookmarked questions:", err);
-      // Don't fail the whole component if bookmarks fail
+      setBookmarkedQuestions(newBookmarked);
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+      throw error; // Propagate the error to the caller
     }
   };
 
@@ -190,32 +198,7 @@ const Practice = () => {
             questions.findIndex((q) => q.id === selectedQuestion.id) + 1
           }
           isBookmarked={bookmarkedQuestions.has(selectedQuestion.id)}
-          onBookmark={async (id) => {
-            console.log(`Toggling bookmark for question ID: ${id}`);
-
-            try {
-              // Make the API call
-              await api.request(`/bookmark`, {
-                method: "POST",
-                body: JSON.stringify({ questionId: id }),
-              });
-
-              // Update local state
-              const newBookmarked = new Set(bookmarkedQuestions);
-              if (newBookmarked.has(id)) {
-                newBookmarked.delete(id);
-              } else {
-                newBookmarked.add(id);
-              }
-              setBookmarkedQuestions(newBookmarked);
-            } catch (err) {
-              console.error(
-                `Error toggling bookmark for question ID ${id}:`,
-                err
-              );
-              alert(`Error toggling bookmark: ${err.message}`);
-            }
-          }}
+          onBookmark={toggleBookmark}
           onNext={() => {
             const currentIndex = questions.findIndex(
               (q) => q.id === selectedQuestion.id
