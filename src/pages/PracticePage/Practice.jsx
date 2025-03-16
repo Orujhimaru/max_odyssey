@@ -496,20 +496,15 @@ const Practice = () => {
                 <div className="completion-rate">
                   <span> {question.solverate}%</span>
                 </div>
-                <div className="question-actions">
-                  <button
-                    className="bookmark-button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleBookmark(question.id, e);
-                    }}
-                  >
-                    <i
-                      className={`${
-                        bookmarkedQuestions.has(question.id) ? "fas" : "far"
-                      } fa-bookmark`}
-                    ></i>
-                  </button>
+                <div
+                  className="question-actions"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <BookmarkButton
+                    questionId={question.id}
+                    isBookmarked={bookmarkedQuestions.has(question.id)}
+                    onToggle={toggleBookmark}
+                  />
                 </div>
               </div>
             </div>
@@ -517,6 +512,21 @@ const Practice = () => {
         ))}
       </div>
     </div>
+  );
+};
+
+const BookmarkButton = ({ questionId, isBookmarked, onToggle }) => {
+  return (
+    <button
+      className="bookmark-button"
+      data-question-id={questionId}
+      onClick={() => {
+        console.log(`BOOKMARK CLICKED: Question ID ${questionId}`);
+        onToggle(questionId);
+      }}
+    >
+      <i className={`${isBookmarked ? "fas" : "far"} fa-bookmark`}></i>
+    </button>
   );
 };
 
