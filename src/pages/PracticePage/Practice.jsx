@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import PracticeSwitch from "./PracticeSwitch/PracticeSwitch";
 import "./Practice.css";
 import PracticeQuestionInterface from "./PracticeQuestionInterface/PracticeQuestionInterface";
+import { api } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 const Practice = () => {
   const [activeFilter, setActiveFilter] = useState("all");
@@ -17,6 +19,8 @@ const Practice = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   // Math topics
   const mathTopics = [
@@ -58,23 +62,31 @@ const Practice = () => {
 
   // Fetch questions when component mounts
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     const fetchQuestions = async () => {
       try {
-        const response = await fetch("http://localhost:8080/questions");
+        setLoading(true);
+        const response = await api.request("/questions");
         if (!response.ok) throw new Error("Failed to fetch questions");
         const data = await response.json();
 
         console.log("Raw data from API:", data);
 
         // Check if data.questions exists and is an array
-        if (!data.questions || !Array.isArray(data.questions)) {
+        const questionsArray = data.questions || data;
+        if (!Array.isArray(questionsArray)) {
           console.error("API did not return an array of questions");
           setError("Invalid data format from API");
           setLoading(false);
           return;
         }
 
-        const transformedQuestions = data.questions.map((q, index) => ({
+        const transformedQuestions = questionsArray.map((q) => ({
           id: q.id,
           question_text: q.question_text,
           subject_id: q.subject_id,
@@ -85,7 +97,6 @@ const Practice = () => {
           choices: Array.isArray(q.choices) ? q.choices : [],
           topic: q.topic || "",
           subtopic: q.subtopic || "",
-          solverate: q.solve_rate || "",
         }));
 
         console.log("Transformed questions:", transformedQuestions);
@@ -99,6 +110,73 @@ const Practice = () => {
     };
 
     fetchQuestions();
+  }, [navigate]);
+
+  // Add this function to fetch bookmarked questions
+  const fetchBookmarkedQuestions = async () => {
+    try {
+      // Check if token exists before making request
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.log("No token found, skipping bookmark fetch");
+        return;
+      }
+
+      const response = await api.request("/bookmarks");
+      if (!response.ok) {
+        console.error("Failed to fetch bookmarks:", response.status);
+        return;
+      }
+
+      const bookmarkedData = await response.json();
+      console.log("Bookmarked data:", bookmarkedData);
+
+      // Handle different response formats
+      const bookmarkIds = Array.isArray(bookmarkedData)
+        ? bookmarkedData.map((q) => q.id)
+        : (bookmarkedData.questions || []).map((q) => q.id);
+
+      setBookmarkedQuestions(new Set(bookmarkIds));
+    } catch (err) {
+      console.error("Error fetching bookmarked questions:", err);
+      // Don't fail the whole component if bookmarks fail
+    }
+  };
+
+  // Update the toggleBookmark function with better logging
+  const toggleBookmark = async (questionId, e) => {
+    // We don't need to call stopPropagation here since we're doing it in the onClick
+    // But we'll keep the parameter for consistency
+
+    console.log(`Toggling bookmark for question ID: ${questionId}`);
+
+    try {
+      await api.toggleBookmark(questionId);
+      console.log(
+        `Successfully toggled bookmark for question ID: ${questionId}`
+      );
+
+      // Update local state
+      const newBookmarked = new Set(bookmarkedQuestions);
+      if (newBookmarked.has(questionId)) {
+        console.log(`Removing question ID ${questionId} from bookmarks`);
+        newBookmarked.delete(questionId);
+      } else {
+        console.log(`Adding question ID ${questionId} to bookmarks`);
+        newBookmarked.add(questionId);
+      }
+      setBookmarkedQuestions(newBookmarked);
+    } catch (err) {
+      console.error(
+        `Error toggling bookmark for question ID ${questionId}:`,
+        err
+      );
+    }
+  };
+
+  // Call both functions in useEffect
+  useEffect(() => {
+    fetchBookmarkedQuestions();
   }, []);
 
   // Helper function to convert difficulty level to labels
@@ -127,18 +205,6 @@ const Practice = () => {
     } else {
       setSelectedTopics([...selectedTopics, topic]);
     }
-  };
-
-  const toggleBookmark = (questionId) => {
-    setBookmarkedQuestions((prev) => {
-      const newBookmarks = new Set(prev);
-      if (newBookmarks.has(questionId)) {
-        newBookmarks.delete(questionId);
-      } else {
-        newBookmarks.add(questionId);
-      }
-      return newBookmarks;
-    });
   };
 
   // Add loading and error states to your JSX
@@ -435,7 +501,7 @@ const Practice = () => {
                     className="bookmark-button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleBookmark(question.id);
+                      toggleBookmark(question.id, e);
                     }}
                   >
                     <i
