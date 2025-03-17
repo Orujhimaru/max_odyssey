@@ -629,17 +629,22 @@ const Practice = () => {
         let data;
 
         if (showBookmarked) {
-          // Use the dedicated getBookmarkedQuestions method with pagination
+          // Use the dedicated getBookmarkedQuestions method with pagination and sorting
           console.log(
-            `Fetching bookmarked questions - page ${currentPage}, pageSize ${pageSize}`
+            `Fetching bookmarked questions - page ${currentPage}, pageSize ${pageSize}, sortDir ${filters.sort_dir}`
           );
-          data = await api.getBookmarkedQuestions(currentPage, pageSize);
+          data = await api.getBookmarkedQuestions(
+            currentPage,
+            pageSize,
+            filters.sort_dir
+          );
         } else {
           // Use the normal filters when not showing bookmarked
           const paginatedFilters = {
             ...filters,
             page: currentPage,
             page_size: pageSize,
+            sort_dir: filters.sort_dir,
           };
           console.log("Fetching filtered questions with:", paginatedFilters);
           data = await api.getFilteredQuestions(paginatedFilters);
@@ -648,24 +653,28 @@ const Practice = () => {
         console.log("Questions response:", data);
 
         // Update state with the response data
-        setQuestions(data.questions || []);
+        const questionsList = data.questions || [];
+        setQuestions(questionsList);
 
         // Calculate total pages based on total_count from the response
-        const total = data.total_count || 0;
+        // Make sure we're getting the correct count from the response
+        const total = data.total_count || questionsList.length || 0;
         setTotalQuestions(total);
-        setTotalPages(Math.ceil(total / pageSize));
+        setTotalPages(Math.max(1, Math.ceil(total / pageSize)));
 
         setLoading(false);
       } catch (error) {
         console.error("Error fetching questions:", error);
         setError(`Failed to load questions: ${error.message}`);
         setQuestions([]);
+        setTotalQuestions(0);
+        setTotalPages(1);
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [filters, showBookmarked, currentPage, pageSize, navigate]); // Add currentPage and pageSize to dependencies
+  }, [filters, showBookmarked, currentPage, pageSize, navigate]);
 
   return (
     <div className="practice-page">
@@ -690,12 +699,25 @@ const Practice = () => {
         onSolveRateSort={handleSolveRateSort}
       />
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalQuestions={totalQuestions}
-        onPageChange={handlePageChange}
-      />
+      <div className="pagination">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage <= 1}
+        >
+          Previous
+        </button>
+        <span>
+          {totalQuestions > 0
+            ? `Page ${currentPage} of ${totalPages} (${totalQuestions} questions)`
+            : `No questions found`}
+        </span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage >= totalPages || totalQuestions === 0}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
