@@ -276,7 +276,7 @@ const QuestionsHeader = React.memo(({ filters, onSolveRateSort }) => {
 
 // Create a memoized questions section
 const QuestionsSection = React.memo(
-  ({ questions, loading, error, filters, onSolveRateSort }) => {
+  ({ questions, loading, error, onQuestionClick }) => {
     if (loading) {
       return <div className="loading-container">Loading questions...</div>;
     }
@@ -295,14 +295,11 @@ const QuestionsSection = React.memo(
 
     return (
       <div className="practice-questions">
-        {questions.map((question, index) => (
+        {questions.map((question) => (
           <div
             className="question-card"
             key={question.id}
-            onClick={() => {
-              // Implement the logic to open the question interface
-            }}
-            style={{ cursor: "pointer" }}
+            onClick={() => onQuestionClick(question)}
           >
             <div className="question-left">
               <span className="question-number">#{question.id}</span>
@@ -526,26 +523,48 @@ const Practice = () => {
         let data;
 
         if (showBookmarked) {
-          // Use the existing getBookmarkedQuestions method with sort direction
           console.log(
-            `Fetching bookmarked questions with sort direction: ${filters.sort_dir}`
+            `Fetching bookmarked questions - page ${currentPage}, sort direction: ${filters.sort_dir}`
           );
-          data = await api.getBookmarkedQuestions(filters.sort_dir);
+          data = await api.getBookmarkedQuestions(
+            filters.sort_dir,
+            currentPage,
+            pageSize
+          );
         } else {
-          // Use the normal getFilteredQuestions method
           console.log("Fetching filtered questions with:", filters);
           data = await api.getFilteredQuestions(filters);
         }
 
         console.log("Questions response:", data);
 
-        // Update state with the response data
-        setQuestions(data.questions || []);
+        // Make sure we have the questions array
+        const questionsList = data.questions || [];
+        setQuestions(questionsList);
 
-        // Update pagination info
-        const total = data.total_count || 0;
-        setTotalQuestions(total);
-        setTotalPages(Math.max(1, Math.ceil(total / pageSize)));
+        // Check if we have questions before setting pagination info
+        if (questionsList.length > 0) {
+          // Use total_count from the response, or fall back to the length of questions array
+          const total =
+            data.total_count !== undefined
+              ? data.total_count
+              : questionsList.length;
+          setTotalQuestions(total);
+
+          // Calculate total pages, ensuring at least 1 page
+          const calculatedTotalPages = Math.max(1, Math.ceil(total / pageSize));
+          setTotalPages(calculatedTotalPages);
+
+          // Ensure currentPage is valid
+          if (currentPage > calculatedTotalPages) {
+            setCurrentPage(calculatedTotalPages);
+          }
+        } else {
+          // No questions found
+          setTotalQuestions(0);
+          setTotalPages(1);
+          setCurrentPage(1);
+        }
 
         setLoading(false);
       } catch (error) {
@@ -554,12 +573,13 @@ const Practice = () => {
         setQuestions([]);
         setTotalQuestions(0);
         setTotalPages(1);
+        setCurrentPage(1);
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [filters, showBookmarked, navigate]);
+  }, [filters, showBookmarked, currentPage, pageSize, navigate]);
 
   // Simplify the toggleBookmark function
   const toggleBookmark = async (questionId) => {
@@ -653,48 +673,99 @@ const Practice = () => {
     setShowBookmarked((prev) => !prev);
   }, []);
 
+  // Add a handler for question clicks
+  const handleQuestionClick = (question) => {
+    setSelectedQuestion(question);
+  };
+
+  // Add a handler for closing the question interface
+  const handleCloseQuestion = () => {
+    setSelectedQuestion(null);
+  };
+
+  // Add handlers for next/previous question navigation
+  const handleNextQuestion = () => {
+    if (!selectedQuestion) return;
+
+    const currentIndex = questions.findIndex(
+      (q) => q.id === selectedQuestion.id
+    );
+    if (currentIndex >= 0 && currentIndex < questions.length - 1) {
+      setSelectedQuestion(questions[currentIndex + 1]);
+    }
+  };
+
+  const handlePreviousQuestion = () => {
+    if (!selectedQuestion) return;
+
+    const currentIndex = questions.findIndex(
+      (q) => q.id === selectedQuestion.id
+    );
+    if (currentIndex > 0) {
+      setSelectedQuestion(questions[currentIndex - 1]);
+    }
+  };
+
   return (
     <div className="practice-page">
       <Header />
 
-      <FilterControls
-        filters={filters}
-        isVerbal={activeFilter === "verbal"}
-        activeDifficulty={activeDifficulty}
-        onSubjectToggle={handleSubjectSwitch}
-        onDifficultyChange={handleDifficultyClick}
-        onSolveRateSort={handleSolveRateSort}
-        onBookmarkToggle={handleBookmarkToggle}
-        showBookmarked={showBookmarked}
-      />
-      <QuestionsHeader onSolveRateSort={handleSolveRateSort} />
-      <QuestionsSection
-        questions={questions}
-        loading={loading}
-        error={error}
-        filters={filters}
-        onSolveRateSort={handleSolveRateSort}
-      />
+      {selectedQuestion ? (
+        <PracticeQuestionInterface
+          question={selectedQuestion}
+          onClose={handleCloseQuestion}
+          onNextQuestion={handleNextQuestion}
+          onPreviousQuestion={handlePreviousQuestion}
+          hasNext={
+            questions.findIndex((q) => q.id === selectedQuestion.id) <
+            questions.length - 1
+          }
+          hasPrevious={
+            questions.findIndex((q) => q.id === selectedQuestion.id) > 0
+          }
+        />
+      ) : (
+        <>
+          <FilterControls
+            filters={filters}
+            isVerbal={activeFilter === "verbal"}
+            activeDifficulty={activeDifficulty}
+            onSubjectToggle={handleSubjectSwitch}
+            onDifficultyChange={handleDifficultyClick}
+            onSolveRateSort={handleSolveRateSort}
+            onBookmarkToggle={handleBookmarkToggle}
+            showBookmarked={showBookmarked}
+          />
 
-      <div className="pagination">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage <= 1}
-        >
-          Previous
-        </button>
-        <span>
-          {totalQuestions > 0
-            ? `Page ${currentPage} of ${totalPages} (${totalQuestions} questions)`
-            : `No questions found`}
-        </span>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage >= totalPages || totalQuestions === 0}
-        >
-          Next
-        </button>
-      </div>
+          <QuestionsHeader onSolveRateSort={handleSolveRateSort} />
+          <QuestionsSection
+            questions={questions}
+            loading={loading}
+            error={error}
+            onQuestionClick={handleQuestionClick}
+          />
+
+          <div className="pagination">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage <= 1 || questions.length === 0}
+            >
+              Previous
+            </button>
+            <span>
+              {questions.length > 0
+                ? `Page ${currentPage} of ${totalPages} (${totalQuestions} questions)`
+                : `No questions found`}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage >= totalPages || questions.length === 0}
+            >
+              Next
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
