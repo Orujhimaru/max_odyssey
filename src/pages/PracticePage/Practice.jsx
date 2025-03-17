@@ -584,15 +584,28 @@ const Practice = () => {
   // Simplify the toggleBookmark function
   const toggleBookmark = async (questionId) => {
     try {
-      console.log(`Toggling bookmark for question ID: ${questionId}`);
+      // Call your API to toggle the bookmark
       await api.toggleBookmark(questionId);
-      console.log("Bookmark toggled successfully in backend");
 
-      // No need to update any state here since the PracticeQuestionInterface
-      // component handles its own state
+      // Update the questions array to reflect the change
+      setQuestions(
+        questions.map((q) => {
+          if (q.id === questionId) {
+            return { ...q, is_bookmarked: !q.is_bookmarked };
+          }
+          return q;
+        })
+      );
+
+      // Also update selectedQuestion if it's the one being bookmarked
+      if (selectedQuestion && selectedQuestion.id === questionId) {
+        setSelectedQuestion({
+          ...selectedQuestion,
+          is_bookmarked: !selectedQuestion.is_bookmarked,
+        });
+      }
     } catch (error) {
       console.error("Error toggling bookmark:", error);
-      throw error;
     }
   };
 
@@ -720,6 +733,7 @@ const Practice = () => {
           onPreviousQuestion={handlePreviousQuestion}
           hasNext={currentQuestionIndex < questions.length - 1}
           hasPrevious={currentQuestionIndex > 0}
+          onBookmark={toggleBookmark}
         />
       ) : (
         <>
