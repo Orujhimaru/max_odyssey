@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Tests.css";
-import TestInterface from "./TestInterface";
+import TestReview from "../../components/TestReview/TestReview";
 
 const Tests = () => {
   const [showNewTestModal, setShowNewTestModal] = useState(false);
   const [activeTest, setActiveTest] = useState(null);
   const [testInProgress, setTestInProgress] = useState(false);
+  const [reviewingTest, setReviewingTest] = useState(null);
   const navigate = useNavigate();
 
   // Mock data for recent tests
@@ -74,8 +75,12 @@ const Tests = () => {
     }
   };
 
-  const handleReviewClick = (testId) => {
-    // navigate(`/test-review/${testId}`);
+  const handleReviewClick = (test) => {
+    setReviewingTest(test);
+  };
+
+  const handleCloseReview = () => {
+    setReviewingTest(null);
   };
 
   if (testInProgress) {
@@ -84,77 +89,81 @@ const Tests = () => {
 
   return (
     <div className="tests-page">
-      <div className="tests-container">
-        <div className="tests-header">
-          <div className="header-with-icon">
-            <h1>Test Center</h1>
-            <span className="header-emoji">✍️</span>
-          </div>
-        </div>
-
-        <div className="tests-tabs">
-          <div className="tab active">Recent Tests</div>
-          {/* <div className="tab">Saved Tests</div>
-          <div className="tab">Test History</div> */}
-        </div>
-
-        <div className="tests-list">
-          <div className="tests-list-header">
-            <span className="test-name-header">Test Name</span>
-            <span className="test-date-header">Date</span>
-            <span className="test-score-header">Total Score</span>
-            <span className="test-verbal-header">Verbal</span>
-            <span className="test-math-header">Math</span>
-            <span className="test-actions-header pleft">Actions</span>
-          </div>
-
-          {recentTests.map((test) => (
-            <div
-              className={`test-item ${!test.completed ? "incomplete" : ""}`}
-              key={test.id}
-            >
-              <div className="test-name">
-                <span>{test.name}</span>
-                {!test.completed && (
-                  <span className="incomplete-badge">In Progress</span>
-                )}
-              </div>
-              <div className="test-date">{test.date}</div>
-              <div className="test-score">
-                {test.completed ? test.score : "—"}
-              </div>
-              <div className="test-verbal">
-                {test.completed ? test.verbal : "—"}
-              </div>
-              <div className="test-math">
-                {test.completed ? test.math : "—"}
-              </div>
-              <div className="test-actions">
-                {test.completed ? (
-                  <>
-                    <button
-                      className="review-button"
-                      onClick={() => handleReviewClick(test.id)}
-                    >
-                      <i className="fas fa-eye"></i> Review
-                    </button>
-                    <button className="delete-button">
-                      <i className="fas fa-trash"></i>
-                    </button>
-                  </>
-                ) : (
-                  <button className="continue-button">
-                    <i className="fas fa-play"></i> Continue
-                  </button>
-                )}
-              </div>
+      {reviewingTest ? (
+        <TestReview />
+      ) : (
+        <div className="tests-container">
+          <div className="tests-header">
+            <div className="header-with-icon">
+              <h1>Test Center</h1>
+              <span className="header-emoji">✍️</span>
             </div>
-          ))}
+          </div>
+
+          <div className="tests-tabs">
+            <div className="tab active">Recent Tests</div>
+            {/* <div className="tab">Saved Tests</div>
+            <div className="tab">Test History</div> */}
+          </div>
+
+          <div className="tests-list">
+            <div className="tests-list-header">
+              <span className="test-name-header">Test Name</span>
+              <span className="test-date-header">Date</span>
+              <span className="test-score-header">Total Score</span>
+              <span className="test-verbal-header">Verbal</span>
+              <span className="test-math-header">Math</span>
+              <span className="test-actions-header pleft">Actions</span>
+            </div>
+
+            {recentTests.map((test) => (
+              <div
+                className={`test-item ${!test.completed ? "incomplete" : ""}`}
+                key={test.id}
+              >
+                <div className="test-name">
+                  <span>{test.name}</span>
+                  {!test.completed && (
+                    <span className="incomplete-badge">In Progress</span>
+                  )}
+                </div>
+                <div className="test-date">{test.date}</div>
+                <div className="test-score">
+                  {test.completed ? test.score : "—"}
+                </div>
+                <div className="test-verbal">
+                  {test.completed ? test.verbal : "—"}
+                </div>
+                <div className="test-math">
+                  {test.completed ? test.math : "—"}
+                </div>
+                <div className="test-actions">
+                  {test.completed ? (
+                    <>
+                      <button
+                        className="review-button"
+                        onClick={() => handleReviewClick(test)}
+                      >
+                        <i className="fas fa-eye"></i> Review
+                      </button>
+                      <button className="delete-button">
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </>
+                  ) : (
+                    <button className="continue-button">
+                      <i className="fas fa-play"></i> Continue
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          <button className="new-test-button" onClick={openNewTestModal}>
+            <i className="fas fa-plus"></i> Take a New Test
+          </button>
         </div>
-        <button className="new-test-button" onClick={openNewTestModal}>
-          <i className="fas fa-plus"></i> Take a New Test
-        </button>
-      </div>
+      )}
 
       {showNewTestModal && (
         <div className="modal-overlay">
