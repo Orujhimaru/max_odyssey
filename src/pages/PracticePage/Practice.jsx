@@ -1,9 +1,226 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import PracticeSwitch from "./PracticeSwitch/PracticeSwitch";
 import "./Practice.css";
 import PracticeQuestionInterface from "./PracticeQuestionInterface/PracticeQuestionInterface";
 import { api } from "../../services/api";
 import { useNavigate } from "react-router-dom";
+
+// Create separate components for static parts
+const Header = React.memo(() => {
+  return (
+    <div className="practice-header">
+      <h1>
+        Practice Arena <span>🦉</span>
+      </h1>
+    </div>
+  );
+});
+
+// Create a memoized filter controls component
+const FilterControls = React.memo(
+  ({
+    filters,
+    isVerbal,
+    activeDifficulty,
+    onSubjectToggle,
+    onDifficultyChange,
+    onSolveRateSort,
+  }) => {
+    // Debug log to check if props are being passed correctly
+    console.log("FilterControls props received:", {
+      hasSubjectToggle: !!onSubjectToggle,
+      hasDifficultyChange: !!onDifficultyChange,
+      hasSolveRateSort: !!onSolveRateSort,
+    });
+
+    // Create a local handler that will be used if the prop is missing
+    const handleSortClick = () => {
+      console.log("Sort header clicked");
+      if (typeof onSolveRateSort === "function") {
+        onSolveRateSort();
+      } else {
+        console.error("onSolveRateSort function is not available");
+      }
+    };
+
+    return (
+      <div className="practice-filters">
+        <div className="filter-row">
+          <PracticeSwitch isVerbal={isVerbal} onChange={onSubjectToggle} />
+
+          <div className="filter-dropdown">
+            <button className="filter-dropdown-button">Topics </button>
+          </div>
+
+          <div className="filter-dropdown">
+            <button className="filter-dropdown-button">
+              Difficulty {activeDifficulty !== null && `(${activeDifficulty})`}
+            </button>
+          </div>
+        </div>
+
+        <div className="filter-row down">
+          <div className="filter-toggles">
+            <button className={`filter-toggle`}>
+              <i className="fas fa-bookmark"></i>
+              Bookmarked
+            </button>
+          </div>
+        </div>
+
+        {/* Solve rate header - keeping your original icon */}
+        <div className="solve-rate-header" onClick={handleSortClick}>
+          Solve Rate ♦
+        </div>
+      </div>
+    );
+  }
+);
+
+// Create a separate QuestionsHeader component that includes the solve rate header
+const QuestionsHeader = React.memo(({ filters, onSolveRateSort }) => {
+  return (
+    <div className="practice-questions-header">
+      <div className="header-left">
+        <span className="header-number">#</span>
+        <span className="header-type">S</span>
+        <span className="header-difficulty">🧩</span>
+        <span className="header-question">Question</span>
+      </div>
+      <div className="header-right">
+        <span className="header-tags">Tags</span>
+        <div className="solve-rate-header" onClick={onSolveRateSort}>
+          Solve Rate
+          <div className="sort-icons">
+            <i className="fas fa-sort-up"></i>
+            <i className="fas fa-sort-down"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+// Create a memoized questions section
+const QuestionsSection = React.memo(
+  ({ questions, loading, error, filters, onSolveRateSort }) => {
+    if (loading) {
+      return <div className="loading-container">Loading questions...</div>;
+    }
+
+    if (error) {
+      return <div className="error-container">{error}</div>;
+    }
+
+    if (questions.length === 0) {
+      return (
+        <div className="no-questions">
+          No questions found matching your filters.
+        </div>
+      );
+    }
+
+    return (
+      <div className="practice-questions">
+        {questions.map((question, index) => (
+          <div
+            className="question-card"
+            key={question.id}
+            onClick={() => {
+              // Implement the logic to open the question interface
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            <div className="question-left">
+              <span className="question-number">#{question.id}</span>
+              <div className="question-info">
+                <div className="question-header">
+                  <div className="question-type">
+                    <span
+                      className={`subject-badge ${
+                        question.subject_id === 1 ? "math" : "verbal"
+                      }`}
+                    >
+                      {question.subject_id === 1 ? "M" : "V"}
+                    </span>
+                  </div>
+                  <div className="question-type">
+                    <span
+                      className={`difficulty-indicator ${
+                        question.difficulty_level === 0
+                          ? "easy"
+                          : question.difficulty_level === 1
+                          ? "medium"
+                          : question.difficulty_level === 2
+                          ? "hard"
+                          : "medium"
+                      }`}
+                    >
+                      <span className="bar"></span>
+                      <span className="bar"></span>
+                      <span className="bar"></span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="question-content-row">
+              <h3 className="question-title">{question.question_text}</h3>
+              <div className="question-meta">
+                <div className="question-topics">
+                  {question.topic && (
+                    <span className="topic-tag" key={question.topic}>
+                      {question.topic}
+                    </span>
+                  )}
+                  {question.subtopic && (
+                    <span className="topic-tag" key={question.subtopic}>
+                      {question.subtopic}
+                    </span>
+                  )}
+                </div>
+                <div className="completion-rate">
+                  <span> {question.solve_rate}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+);
+
+// Create a memoized pagination component
+const Pagination = React.memo(
+  ({ currentPage, totalPages, totalQuestions, onPageChange }) => {
+    return (
+      <div className="pagination">
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage <= 1}
+        >
+          Previous
+        </button>
+        <span>
+          Page {currentPage} of {totalPages} ({totalQuestions} questions)
+        </span>
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage >= totalPages}
+        >
+          Next
+        </button>
+      </div>
+    );
+  }
+);
 
 const Practice = () => {
   const [activeFilter, setActiveFilter] = useState("verbal");
@@ -14,7 +231,6 @@ const Practice = () => {
   const [showBookmarked, setShowBookmarked] = useState(false);
   const [showWrongAnswered, setShowWrongAnswered] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
-  // const [isVerbal, setIsVerbal] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -215,329 +431,45 @@ const Practice = () => {
 
   // Your existing switch handler
   const handleSubjectSwitch = () => {
-    setIsVerbal((prev) => !prev);
+    setActiveFilter((prev) => (prev === "math" ? "verbal" : "math"));
   };
 
   // Add a handler for the solve rate sort button
-  const handleSolveRateSort = () => {
-    // Toggle between 'asc' and 'desc'
-    const newSortDir = filters.sort_dir === "asc" ? "desc" : "asc";
-
+  const handleSolveRateSort = useCallback(() => {
     setFilters((prev) => ({
       ...prev,
-      sort_dir: newSortDir,
-      page: 1, // Reset to page 1 when sorting changes
+      sort_dir: prev.sort_dir === "asc" ? "desc" : "asc",
+      page: 1,
     }));
-  };
-
-  // Add loading and error states to your JSX
-  if (loading) {
-    return <div className="loading">Loading questions...</div>;
-  }
-
-  if (error) {
-    return <div className="error">Error: {error}</div>;
-  }
+  }, []);
 
   return (
     <div className="practice-page">
-      {selectedQuestion ? (
-        <PracticeQuestionInterface
-          question={selectedQuestion}
-          onClose={() => setSelectedQuestion(null)}
-          questionNumber={
-            questions.findIndex((q) => q.id === selectedQuestion.id) + 1
-          }
-          isBookmarked={selectedQuestion.is_bookmarked}
-          onBookmark={toggleBookmark}
-          onNext={() => {
-            const currentIndex = questions.findIndex(
-              (q) => q.id === selectedQuestion.id
-            );
-            if (currentIndex < questions.length - 1) {
-              setSelectedQuestion(questions[currentIndex + 1]);
-            }
-          }}
-          onPrevious={() => {
-            const currentIndex = questions.findIndex(
-              (q) => q.id === selectedQuestion.id
-            );
-            if (currentIndex > 0) {
-              setSelectedQuestion(questions[currentIndex - 1]);
-            }
-          }}
-        />
-      ) : (
-        <div className="practice-header">
-          <h1>
-            Practice Arena <span>🦉</span>
-          </h1>
-          <div className="practice-filters">
-            <div className="filter-row">
-              <PracticeSwitch
-                isVerbal={activeFilter === "verbal"}
-                onChange={(isVerbal) =>
-                  setActiveFilter(isVerbal ? "verbal" : "math")
-                }
-              />
+      <Header />
 
-              <div className="filter-dropdown">
-                <button
-                  className="filter-dropdown-button"
-                  onClick={() => setShowTopicFilter(!showTopicFilter)}
-                >
-                  Topics{" "}
-                  {selectedTopics.length > 0 && `(${selectedTopics.length})`}
-                  <i
-                    className={`fas fa-chevron-${
-                      showTopicFilter ? "up" : "down"
-                    }`}
-                  ></i>
-                </button>
-                {showTopicFilter && (
-                  <div className="topic-filter-dropdown">
-                    <div className="topic-section">
-                      <h3>Math Topics</h3>
-                      <div className="topic-tags">
-                        {mathTopics.map((topic) => (
-                          <div
-                            key={`math-${topic}`}
-                            className={`topic-tag ${
-                              selectedTopics.includes(topic) ? "selected" : ""
-                            }`}
-                            onClick={() => toggleTopic(topic)}
-                          >
-                            {topic}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+      <FilterControls
+        filters={filters}
+        isVerbal={activeFilter === "verbal"}
+        activeDifficulty={activeDifficulty}
+        onSubjectToggle={handleSubjectSwitch}
+        onDifficultyChange={handleDifficultyClick}
+        onSolveRateSort={handleSolveRateSort}
+      />
+      <QuestionsHeader onSolveRateSort={handleSolveRateSort} />
+      <QuestionsSection
+        questions={questions}
+        loading={loading}
+        error={error}
+        filters={filters}
+        onSolveRateSort={handleSolveRateSort}
+      />
 
-                    <div className="topic-section">
-                      <h3>Verbal Topics</h3>
-                      <div className="topic-tags">
-                        {verbalTopics.map((topic) => (
-                          <div
-                            key={`verbal-${topic}`}
-                            className={`topic-tag ${
-                              selectedTopics.includes(topic) ? "selected" : ""
-                            }`}
-                            onClick={() => toggleTopic(topic)}
-                          >
-                            {topic}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {selectedTopics.length > 0 && (
-                      <button
-                        className="clear-topics-button"
-                        onClick={() => setSelectedTopics([])}
-                      >
-                        Clear All Topics
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="filter-dropdown">
-                <button
-                  className="filter-dropdown-button"
-                  onClick={() => setShowDifficultyFilter(!showDifficultyFilter)}
-                >
-                  Difficulty{" "}
-                  {activeDifficulty !== null && `(${activeDifficulty})`}
-                  <i
-                    className={`fas fa-chevron-${
-                      showDifficultyFilter ? "up" : "down"
-                    }`}
-                  ></i>
-                </button>
-                {showDifficultyFilter && (
-                  <div className="difficulty-filter-dropdown">
-                    <div
-                      className={`difficulty-option ${
-                        activeDifficulty === null ? "selected" : ""
-                      }`}
-                      onClick={() => {
-                        setActiveDifficulty(null);
-                        setShowDifficultyFilter(false);
-                      }}
-                    >
-                      All Levels
-                    </div>
-                    <div
-                      className={`difficulty-option easy ${
-                        activeDifficulty === 0 ? "selected" : ""
-                      }`}
-                      onClick={() => {
-                        handleDifficultyClick(0);
-                        setShowDifficultyFilter(false);
-                      }}
-                    >
-                      Easy
-                    </div>
-                    <div
-                      className={`difficulty-option medium ${
-                        activeDifficulty === 1 ? "selected" : ""
-                      }`}
-                      onClick={() => {
-                        handleDifficultyClick(1);
-                        setShowDifficultyFilter(false);
-                      }}
-                    >
-                      Medium
-                    </div>
-                    <div
-                      className={`difficulty-option hard ${
-                        activeDifficulty === 2 ? "selected" : ""
-                      }`}
-                      onClick={() => {
-                        handleDifficultyClick(2);
-                        setShowDifficultyFilter(false);
-                      }}
-                    >
-                      Hard
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="filter-row down">
-              <div className="filter-toggles">
-                <button
-                  className={`filter-toggle ${showBookmarked ? "active" : ""}`}
-                  onClick={() => setShowBookmarked(!showBookmarked)}
-                >
-                  <i className="fas fa-bookmark"></i>
-                  Bookmarked
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="practice-questions">
-        <div className="practice-questions-header">
-          <div className="header-left">
-            <span className="header-number">#</span>
-            <span className="header-type">S</span>
-            <span className="header-difficulty">🧩</span>
-            <span className="header-question">Question</span>
-          </div>
-          <div className="header-right">
-            <span className="header-tags">Tags</span>
-            <div className="solve-rate-header" onClick={handleSolveRateSort}>
-              Solve Rate
-              <div className="sort-icons">
-                <i className="fas fa-sort-up"></i>
-                <i className="fas fa-sort-down"></i>
-              </div>
-            </div>
-            {/* <span className="header-actions">Actions</span> */}
-          </div>
-        </div>
-
-        {questions.map((question, index) => (
-          <div
-            className="question-card"
-            key={question.id}
-            onClick={() => setSelectedQuestion(question)}
-            style={{ cursor: "pointer" }}
-          >
-            <div className="question-left">
-              <span className="question-number">#{question.id}</span>
-              <div className="question-info">
-                <div className="question-header">
-                  <div className="question-type">
-                    <span
-                      className={`subject-badge ${
-                        question.subject_id === 1 ? "math" : "verbal"
-                      }`}
-                    >
-                      {question.subject_id === 1 ? "M" : "V"}
-                    </span>
-                  </div>
-                  <div className="question-type">
-                    <span
-                      className={`difficulty-indicator ${
-                        question.difficulty_level === 0
-                          ? "easy"
-                          : question.difficulty_level === 1
-                          ? "medium"
-                          : question.difficulty_level === 2
-                          ? "hard"
-                          : "medium"
-                      }`}
-                    >
-                      <span className="bar"></span>
-                      <span className="bar"></span>
-                      <span className="bar"></span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="question-content-row">
-              <h3 className="question-title">{question.question_text}</h3>
-              <div className="question-meta">
-                <div className="question-topics">
-                  {question.topic && (
-                    <span
-                      className="topic-tag"
-                      key={question.topic}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleTopic(question.topic);
-                      }}
-                    >
-                      {question.topic}
-                    </span>
-                  )}
-                  {question.subtopic && (
-                    <span
-                      className="topic-tag"
-                      key={question.subtopic}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleTopic(question.subtopic);
-                      }}
-                    >
-                      {question.subtopic}
-                    </span>
-                  )}
-                </div>
-                <div className="completion-rate">
-                  <span> {question.solve_rate}%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Pagination controls */}
-      <div className="pagination">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage <= 1}
-        >
-          Previous
-        </button>
-        <span>
-          Page {currentPage} of {totalPages} ({totalQuestions} questions)
-        </span>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage >= totalPages}
-        >
-          Next
-        </button>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalQuestions={totalQuestions}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };
