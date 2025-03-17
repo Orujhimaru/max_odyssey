@@ -510,7 +510,7 @@ const Practice = () => {
     }
   };
 
-  // Add useEffect to fetch questions when filters change
+  // Update the useEffect to use the appropriate API method based on showBookmarked
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -518,8 +518,48 @@ const Practice = () => {
       return;
     }
 
-    fetchQuestions();
-  }, [filters, navigate]);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        let data;
+
+        if (showBookmarked) {
+          // Use the existing getBookmarkedQuestions method with sort direction
+          console.log(
+            `Fetching bookmarked questions with sort direction: ${filters.sort_dir}`
+          );
+          data = await api.getBookmarkedQuestions(filters.sort_dir);
+        } else {
+          // Use the normal getFilteredQuestions method
+          console.log("Fetching filtered questions with:", filters);
+          data = await api.getFilteredQuestions(filters);
+        }
+
+        console.log("Questions response:", data);
+
+        // Update state with the response data
+        setQuestions(data.questions || []);
+
+        // Update pagination info
+        const total = data.total_count || 0;
+        setTotalQuestions(total);
+        setTotalPages(Math.max(1, Math.ceil(total / pageSize)));
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+        setError(`Failed to load questions: ${error.message}`);
+        setQuestions([]);
+        setTotalQuestions(0);
+        setTotalPages(1);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [filters, showBookmarked, navigate]);
 
   // Simplify the toggleBookmark function
   const toggleBookmark = async (questionId) => {
@@ -612,69 +652,6 @@ const Practice = () => {
   const handleBookmarkToggle = useCallback(() => {
     setShowBookmarked((prev) => !prev);
   }, []);
-
-  // Modify your useEffect to use filteredQuestions but with default values when bookmarked is active
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        let data;
-
-        if (showBookmarked) {
-          // Use the dedicated getBookmarkedQuestions method with pagination and sorting
-          console.log(
-            `Fetching bookmarked questions - page ${currentPage}, pageSize ${pageSize}, sortDir ${filters.sort_dir}`
-          );
-          data = await api.getBookmarkedQuestions(
-            currentPage,
-            pageSize,
-            filters.sort_dir
-          );
-        } else {
-          // Use the normal filters when not showing bookmarked
-          const paginatedFilters = {
-            ...filters,
-            page: currentPage,
-            page_size: pageSize,
-            sort_dir: filters.sort_dir,
-          };
-          console.log("Fetching filtered questions with:", paginatedFilters);
-          data = await api.getFilteredQuestions(paginatedFilters);
-        }
-
-        console.log("Questions response:", data);
-
-        // Update state with the response data
-        const questionsList = data.questions || [];
-        setQuestions(questionsList);
-
-        // Calculate total pages based on total_count from the response
-        // Make sure we're getting the correct count from the response
-        const total = data.total_count || questionsList.length || 0;
-        setTotalQuestions(total);
-        setTotalPages(Math.max(1, Math.ceil(total / pageSize)));
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching questions:", error);
-        setError(`Failed to load questions: ${error.message}`);
-        setQuestions([]);
-        setTotalQuestions(0);
-        setTotalPages(1);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [filters, showBookmarked, currentPage, pageSize, navigate]);
 
   return (
     <div className="practice-page">
