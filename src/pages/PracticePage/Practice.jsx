@@ -6,7 +6,7 @@ import { api } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 
 const Practice = () => {
-  const [activeFilter, setActiveFilter] = useState("all");
+  const [activeFilter, setActiveFilter] = useState("verbal");
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [showTopicFilter, setShowTopicFilter] = useState(false);
   const [showDifficultyFilter, setShowDifficultyFilter] = useState(false);
@@ -208,7 +208,7 @@ const Practice = () => {
     setFilters((prev) => ({
       ...prev,
       // Convert switch state to subject ID: false (Math) = 1, true (Verbal) = 2
-      subject: activeFilter === "math" ? 2 : 1,
+      subject: activeFilter === "math" ? 1 : 2,
       page: 1, // Reset to page 1 when subject changes
     }));
   }, [activeFilter]);
@@ -216,6 +216,18 @@ const Practice = () => {
   // Your existing switch handler
   const handleSubjectSwitch = () => {
     setIsVerbal((prev) => !prev);
+  };
+
+  // Add a handler for the solve rate sort button
+  const handleSolveRateSort = () => {
+    // Toggle between 'asc' and 'desc'
+    const newSortDir = filters.sort_dir === "asc" ? "desc" : "asc";
+
+    setFilters((prev) => ({
+      ...prev,
+      sort_dir: newSortDir,
+      page: 1, // Reset to page 1 when sorting changes
+    }));
   };
 
   // Add loading and error states to your JSX
@@ -419,10 +431,13 @@ const Practice = () => {
           </div>
           <div className="header-right">
             <span className="header-tags">Tags</span>
-            <span className="header-solve-rate" style={{ cursor: "pointer" }}>
+            <div className="solve-rate-header" onClick={handleSolveRateSort}>
               Solve Rate
-              <i className="fas fa-sort" style={{ marginLeft: "4px" }}></i>
-            </span>
+              <div className="sort-icons">
+                <i className="fas fa-sort-up"></i>
+                <i className="fas fa-sort-down"></i>
+              </div>
+            </div>
             {/* <span className="header-actions">Actions</span> */}
           </div>
         </div>
