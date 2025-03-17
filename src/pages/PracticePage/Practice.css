@@ -71,8 +71,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: transparent;
-  border: 1px solid var(--border-color);
+  background-color: var(--chart-grid);
+  /* border: 1px solid var(--border-color); */
   color: var(--text-primary);
   padding: 10px 16px;
   border-radius: 8px;
@@ -486,6 +486,11 @@
   background-color: var(--verbal-color);
   color: white;
   border-color: var(--verbal-color);
+}
+
+.filter-dropdown-button {
+  background-color: var(--chart-grid);
+  color: var(--text-primary);
 }
 
 .filter-dropdown {
