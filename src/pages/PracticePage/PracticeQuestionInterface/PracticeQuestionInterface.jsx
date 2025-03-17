@@ -5,8 +5,10 @@ import "./PracticeQuestionInterface.css";
 const PracticeQuestionInterface = ({
   question,
   onClose,
-  onNext,
-  onPrevious,
+  onNextQuestion,
+  onPreviousQuestion,
+  hasNext = false,
+  hasPrevious = false,
   questionNumber,
   onBookmark,
   isBookmarked,
@@ -86,6 +88,15 @@ const PracticeQuestionInterface = ({
       }
     }
   }, [fullQuestion, hasLoggedChoices]);
+
+  // Add console logs to verify props are being received
+  useEffect(() => {
+    console.log("Question interface props:", {
+      questionId: question?.id,
+      hasNext,
+      hasPrevious,
+    });
+  }, [question, hasNext, hasPrevious]);
 
   const handleAnswerSelect = (index) => {
     setSelectedAnswer(index);
@@ -320,11 +331,19 @@ const PracticeQuestionInterface = ({
       </div>
 
       <div className="practice-question-footer">
-        <button className="nav-button previous" onClick={onPrevious}>
-          <i className="fas fa-chevron-left"></i> Previous
+        <button
+          onClick={onPreviousQuestion}
+          disabled={!hasPrevious}
+          className="nav-button prev"
+        >
+          Previous
         </button>
-        <button className="nav-button next" onClick={onNext}>
-          Next <i className="fas fa-chevron-right"></i>
+        <button
+          onClick={onNextQuestion}
+          disabled={!hasNext}
+          className="nav-button next"
+        >
+          Next
         </button>
       </div>
     </div>

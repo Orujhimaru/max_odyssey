@@ -673,37 +673,39 @@ const Practice = () => {
     setShowBookmarked((prev) => !prev);
   }, []);
 
-  // Add a handler for question clicks
+  // Add a state to track the current question index
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+  // Update handleQuestionClick to also set the current index
   const handleQuestionClick = (question) => {
-    setSelectedQuestion(question);
+    const index = questions.findIndex((q) => q.id === question.id);
+    if (index !== -1) {
+      setCurrentQuestionIndex(index);
+      setSelectedQuestion(question);
+    }
   };
 
-  // Add a handler for closing the question interface
-  const handleCloseQuestion = () => {
-    setSelectedQuestion(null);
-  };
-
-  // Add handlers for next/previous question navigation
+  // Improve the next/previous handlers
   const handleNextQuestion = () => {
-    if (!selectedQuestion) return;
-
-    const currentIndex = questions.findIndex(
-      (q) => q.id === selectedQuestion.id
-    );
-    if (currentIndex >= 0 && currentIndex < questions.length - 1) {
-      setSelectedQuestion(questions[currentIndex + 1]);
+    if (currentQuestionIndex < questions.length - 1) {
+      const nextIndex = currentQuestionIndex + 1;
+      setCurrentQuestionIndex(nextIndex);
+      setSelectedQuestion(questions[nextIndex]);
     }
   };
 
   const handlePreviousQuestion = () => {
-    if (!selectedQuestion) return;
-
-    const currentIndex = questions.findIndex(
-      (q) => q.id === selectedQuestion.id
-    );
-    if (currentIndex > 0) {
-      setSelectedQuestion(questions[currentIndex - 1]);
+    if (currentQuestionIndex > 0) {
+      const prevIndex = currentQuestionIndex - 1;
+      setCurrentQuestionIndex(prevIndex);
+      setSelectedQuestion(questions[prevIndex]);
     }
+  };
+
+  // Update the close handler to reset the index
+  const handleCloseQuestion = () => {
+    setSelectedQuestion(null);
+    setCurrentQuestionIndex(0);
   };
 
   return (
@@ -716,13 +718,8 @@ const Practice = () => {
           onClose={handleCloseQuestion}
           onNextQuestion={handleNextQuestion}
           onPreviousQuestion={handlePreviousQuestion}
-          hasNext={
-            questions.findIndex((q) => q.id === selectedQuestion.id) <
-            questions.length - 1
-          }
-          hasPrevious={
-            questions.findIndex((q) => q.id === selectedQuestion.id) > 0
-          }
+          hasNext={currentQuestionIndex < questions.length - 1}
+          hasPrevious={currentQuestionIndex > 0}
         />
       ) : (
         <>
