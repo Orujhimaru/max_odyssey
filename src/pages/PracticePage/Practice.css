@@ -1053,3 +1053,27 @@ button:focus-visible {
 .fa-sort-down {
   line-height: 4px;
 }
+
+/* Add these styles to your Practice.css file */
+.disabled-filters {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.disabled-filters button {
+  cursor: not-allowed;
+}
+
+.disabled-sort {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Make sure the bookmark button is still clickable */
+.filter-toggles {
+  pointer-events: auto;
+}
+
+.filter-toggle {
+  cursor: pointer;
+}

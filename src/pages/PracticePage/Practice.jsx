@@ -31,12 +31,13 @@ const FilterControls = React.memo(
     onSubjectToggle,
     onDifficultyChange,
     onSolveRateSort,
+    onBookmarkToggle,
+    showBookmarked,
   }) => {
     // Add state for dropdown visibility
     const [showTopicFilter, setShowTopicFilter] = useState(false);
     const [showDifficultyFilter, setShowDifficultyFilter] = useState(false);
     const [selectedTopics, setSelectedTopics] = useState([]);
-    const [showBookmarked, setShowBookmarked] = useState(false);
 
     // Math topics
     const mathTopics = [
@@ -96,20 +97,29 @@ const FilterControls = React.memo(
 
     return (
       <div className="practice-filters">
-        <div className="filter-row">
-          <PracticeSwitch isVerbal={isVerbal} onChange={onSubjectToggle} />
+        <div
+          className={`filter-row ${showBookmarked ? "disabled-filters" : ""}`}
+        >
+          <PracticeSwitch
+            isVerbal={isVerbal}
+            onChange={onSubjectToggle}
+            disabled={showBookmarked}
+          />
 
           <div className="filter-dropdown">
             <button
               className="filter-dropdown-button"
-              onClick={() => setShowTopicFilter(!showTopicFilter)}
+              onClick={() =>
+                !showBookmarked && setShowTopicFilter(!showTopicFilter)
+              }
+              disabled={showBookmarked}
             >
               Topics {selectedTopics.length > 0 && `(${selectedTopics.length})`}
               <i
                 className={`fas fa-chevron-${showTopicFilter ? "up" : "down"}`}
               ></i>
             </button>
-            {showTopicFilter && (
+            {!showBookmarked && showTopicFilter && (
               <div className="topic-filter-dropdown">
                 <div className="topic-section">
                   <h3>Math Topics</h3>
@@ -160,16 +170,20 @@ const FilterControls = React.memo(
           <div className="filter-dropdown">
             <button
               className="filter-dropdown-button"
-              onClick={() => setShowDifficultyFilter(!showDifficultyFilter)}
+              onClick={() =>
+                !showBookmarked &&
+                setShowDifficultyFilter(!showDifficultyFilter)
+              }
+              disabled={showBookmarked}
             >
-              Difficulty
+              Difficulty {activeDifficulty !== null && `(${activeDifficulty})`}
               <i
                 className={`fas fa-chevron-${
                   showDifficultyFilter ? "up" : "down"
                 }`}
               ></i>
             </button>
-            {showDifficultyFilter && (
+            {!showBookmarked && showDifficultyFilter && (
               <div className="difficulty-filter-dropdown">
                 <div
                   className={`difficulty-option ${
@@ -224,12 +238,22 @@ const FilterControls = React.memo(
           <div className="filter-toggles">
             <button
               className={`filter-toggle ${showBookmarked ? "active" : ""}`}
-              onClick={() => setShowBookmarked(!showBookmarked)}
+              onClick={onBookmarkToggle}
             >
               <i className="fas fa-bookmark"></i>
               Bookmarked
             </button>
           </div>
+        </div>
+
+        {/* Solve rate header */}
+        <div
+          className={`solve-rate-header ${
+            showBookmarked ? "disabled-sort" : ""
+          }`}
+          onClick={() => !showBookmarked && handleSortClick()}
+        >
+          Solve Rate ♦
         </div>
       </div>
     );
@@ -596,6 +620,76 @@ const Practice = () => {
     }));
   }, []);
 
+  // Add a handler for the bookmark toggle
+  const handleBookmarkToggle = useCallback(() => {
+    setShowBookmarked((prev) => !prev);
+  }, []);
+
+  // Modify your useEffect to use filteredQuestions but with default values when bookmarked is active
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        let requestFilters;
+
+        if (showBookmarked) {
+          // Use filteredQuestions but with default values for all filters except bookmarked
+          requestFilters = {
+            subject: -1, // -1 means all subjects
+            difficulty: "", // Empty string means all difficulties
+            topic: "", // Empty string means all topics
+            subtopic: "", // Empty string means all subtopics
+            sort_dir: "asc", // Default sort direction
+            page: 1, // Start at page 1
+            page_size: 50, // Maybe increase page size for bookmarked
+            bookmarked: true, // This is the only filter we care about
+          };
+
+          console.log(
+            "Fetching bookmarked questions with default filters:",
+            requestFilters
+          );
+        } else {
+          // Use the normal filters when not showing bookmarked
+          requestFilters = filters;
+          console.log("Fetching filtered questions with:", requestFilters);
+        }
+
+        // Call the API with the appropriate filters
+        const data = await api.getFilteredQuestions(requestFilters);
+
+        console.log("Questions response:", data);
+
+        // Update state with the response data
+        setQuestions(data.questions || []);
+
+        // Update pagination info
+        if (data.pagination) {
+          setCurrentPage(data.pagination.current_page);
+          setTotalQuestions(data.pagination.total_items);
+          setTotalPages(data.pagination.total_pages);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+        setError(`Failed to load questions: ${error.message}`);
+        setQuestions([]);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [filters, showBookmarked, navigate]); // Keep both dependencies
+
   return (
     <div className="practice-page">
       <Header />
@@ -607,6 +701,8 @@ const Practice = () => {
         onSubjectToggle={handleSubjectSwitch}
         onDifficultyChange={handleDifficultyClick}
         onSolveRateSort={handleSolveRateSort}
+        onBookmarkToggle={handleBookmarkToggle}
+        showBookmarked={showBookmarked}
       />
       <QuestionsHeader onSolveRateSort={handleSolveRateSort} />
       <QuestionsSection
