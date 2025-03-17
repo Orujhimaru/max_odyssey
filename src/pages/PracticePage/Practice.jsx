@@ -409,12 +409,13 @@ const Practice = () => {
     subtopic: "",
     sort_dir: "asc",
     page: 1,
-    page_size: 10,
+    page_size: 20,
   });
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalQuestions, setTotalQuestions] = useState(0);
+  const pageSize = 20; // Number of questions per page
 
   const navigate = useNavigate();
 
@@ -474,10 +475,7 @@ const Practice = () => {
   };
 
   const handlePageChange = (newPage) => {
-    setFilters((prev) => ({
-      ...prev,
-      page: newPage,
-    }));
+    setCurrentPage(newPage);
   };
 
   // Add the fetch function
@@ -628,45 +626,34 @@ const Practice = () => {
         setLoading(true);
         setError(null);
 
-        let requestFilters;
+        let data;
 
         if (showBookmarked) {
-          // Use filteredQuestions but with default values for all filters except bookmarked
-          requestFilters = {
-            subject: -1, // -1 means all subjects
-            difficulty: "", // Empty string means all difficulties
-            topic: "", // Empty string means all topics
-            subtopic: "", // Empty string means all subtopics
-            sort_dir: "asc", // Default sort direction
-            page: 1, // Start at page 1
-            page_size: 50, // Maybe increase page size for bookmarked
-            bookmarked: true, // This is the only filter we care about
-          };
-
+          // Use the dedicated getBookmarkedQuestions method with pagination
           console.log(
-            "Fetching bookmarked questions with default filters:",
-            requestFilters
+            `Fetching bookmarked questions - page ${currentPage}, pageSize ${pageSize}`
           );
+          data = await api.getBookmarkedQuestions(currentPage, pageSize);
         } else {
           // Use the normal filters when not showing bookmarked
-          requestFilters = filters;
-          console.log("Fetching filtered questions with:", requestFilters);
+          const paginatedFilters = {
+            ...filters,
+            page: currentPage,
+            page_size: pageSize,
+          };
+          console.log("Fetching filtered questions with:", paginatedFilters);
+          data = await api.getFilteredQuestions(paginatedFilters);
         }
-
-        // Call the API with the appropriate filters
-        const data = await api.getFilteredQuestions(requestFilters);
 
         console.log("Questions response:", data);
 
         // Update state with the response data
         setQuestions(data.questions || []);
 
-        // Update pagination info
-        if (data.pagination) {
-          setCurrentPage(data.pagination.current_page);
-          setTotalQuestions(data.pagination.total_items);
-          setTotalPages(data.pagination.total_pages);
-        }
+        // Calculate total pages based on total_count from the response
+        const total = data.total_count || 0;
+        setTotalQuestions(total);
+        setTotalPages(Math.ceil(total / pageSize));
 
         setLoading(false);
       } catch (error) {
@@ -678,7 +665,7 @@ const Practice = () => {
     };
 
     fetchData();
-  }, [filters, showBookmarked, navigate]); // Keep both dependencies
+  }, [filters, showBookmarked, currentPage, pageSize, navigate]); // Add currentPage and pageSize to dependencies
 
   return (
     <div className="practice-page">
