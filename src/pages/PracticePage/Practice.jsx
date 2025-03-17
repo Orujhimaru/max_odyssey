@@ -245,16 +245,6 @@ const FilterControls = React.memo(
             </button>
           </div>
         </div>
-
-        {/* Solve rate header */}
-        <div
-          className={`solve-rate-header ${
-            showBookmarked ? "disabled-sort" : ""
-          }`}
-          onClick={() => !showBookmarked && handleSortClick()}
-        >
-          Solve Rate ♦
-        </div>
       </div>
     );
   }
