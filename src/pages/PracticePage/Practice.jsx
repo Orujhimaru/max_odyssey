@@ -36,6 +36,7 @@ const FilterControls = React.memo(
     const [showTopicFilter, setShowTopicFilter] = useState(false);
     const [showDifficultyFilter, setShowDifficultyFilter] = useState(false);
     const [selectedTopics, setSelectedTopics] = useState([]);
+    const [showBookmarked, setShowBookmarked] = useState(false);
 
     // Math topics
     const mathTopics = [
@@ -221,7 +222,10 @@ const FilterControls = React.memo(
 
         <div className="filter-row down">
           <div className="filter-toggles">
-            <button className={`filter-toggle`}>
+            <button
+              className={`filter-toggle ${showBookmarked ? "active" : ""}`}
+              onClick={() => setShowBookmarked(!showBookmarked)}
+            >
               <i className="fas fa-bookmark"></i>
               Bookmarked
             </button>

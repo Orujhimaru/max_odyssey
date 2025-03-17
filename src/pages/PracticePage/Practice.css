@@ -84,7 +84,7 @@
 
 [data-theme="dark"] .filter-toggle {
   border: 1px solid #4d4d4d;
-  background-color: rgba(128, 128, 128, 0.1);
+  background-color: var(--chart-grid);
   /* border-color: rgba(128, 128, 128, 0.3); */
 }
 [data-theme="dark"] .question-card {
@@ -491,6 +491,11 @@
 .filter-dropdown {
   position: relative;
   display: inline-block;
+  /* background-color: var(--chart-grid); */
+}
+
+.fa-chevron-down {
+  margin-left: 4px;
 }
 
 .dropdown-menu {
