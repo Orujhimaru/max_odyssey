@@ -841,7 +841,7 @@
 .difficulty-indicator.hard .bar:nth-child(1),
 .difficulty-indicator.hard .bar:nth-child(2),
 .difficulty-indicator.hard .bar:nth-child(3) {
-  background-color: #db1818;
+  background-color: #c44f4f !important;
 }
 
 .question-actions button {
