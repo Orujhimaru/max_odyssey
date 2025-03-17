@@ -32,12 +32,56 @@ const FilterControls = React.memo(
     onDifficultyChange,
     onSolveRateSort,
   }) => {
-    // Debug log to check if props are being passed correctly
-    console.log("FilterControls props received:", {
-      hasSubjectToggle: !!onSubjectToggle,
-      hasDifficultyChange: !!onDifficultyChange,
-      hasSolveRateSort: !!onSolveRateSort,
-    });
+    // Add state for dropdown visibility
+    const [showTopicFilter, setShowTopicFilter] = useState(false);
+    const [showDifficultyFilter, setShowDifficultyFilter] = useState(false);
+    const [selectedTopics, setSelectedTopics] = useState([]);
+
+    // Math topics
+    const mathTopics = [
+      "Algebra",
+      "Linear Equations",
+      "Quadratic Equations",
+      "Functions",
+      "Exponents & Radicals",
+      "Inequalities",
+      "Systems of Equations",
+      "Coordinate Geometry",
+      "Circles",
+      "Triangles",
+      "Probability",
+      "Statistics",
+      "Data Analysis",
+      "Word Problems",
+      "Trigonometry",
+    ];
+
+    // Verbal topics
+    const verbalTopics = [
+      "Reading Comprehension",
+      "Vocabulary in Context",
+      "Evidence-Based Reading",
+      "Command of Evidence",
+      "Words in Context",
+      "Expression of Ideas",
+      "Standard English Conventions",
+      "Grammar",
+      "Punctuation",
+      "Rhetoric",
+      "Synthesis",
+      "Analysis",
+      "Main Idea",
+      "Author's Purpose",
+      "Inference",
+    ];
+
+    const toggleTopic = (topic) => {
+      if (selectedTopics.includes(topic)) {
+        setSelectedTopics(selectedTopics.filter((t) => t !== topic));
+      } else {
+        setSelectedTopics([...selectedTopics, topic]);
+      }
+    };
 
     // Create a local handler that will be used if the prop is missing
     const handleSortClick = () => {
@@ -55,13 +99,123 @@ const FilterControls = React.memo(
           <PracticeSwitch isVerbal={isVerbal} onChange={onSubjectToggle} />
 
           <div className="filter-dropdown">
-            <button className="filter-dropdown-button">Topics </button>
+            <button
+              className="filter-dropdown-button"
+              onClick={() => setShowTopicFilter(!showTopicFilter)}
+            >
+              Topics {selectedTopics.length > 0 && `(${selectedTopics.length})`}
+              <i
+                className={`fas fa-chevron-${showTopicFilter ? "up" : "down"}`}
+              ></i>
+            </button>
+            {showTopicFilter && (
+              <div className="topic-filter-dropdown">
+                <div className="topic-section">
+                  <h3>Math Topics</h3>
+                  <div className="topic-tags">
+                    {mathTopics.map((topic) => (
+                      <div
+                        key={`math-${topic}`}
+                        className={`topic-tag ${
+                          selectedTopics.includes(topic) ? "selected" : ""
+                        }`}
+                        onClick={() => toggleTopic(topic)}
+                      >
+                        {topic}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="topic-section">
+                  <h3>Verbal Topics</h3>
+                  <div className="topic-tags">
+                    {verbalTopics.map((topic) => (
+                      <div
+                        key={`verbal-${topic}`}
+                        className={`topic-tag ${
+                          selectedTopics.includes(topic) ? "selected" : ""
+                        }`}
+                        onClick={() => toggleTopic(topic)}
+                      >
+                        {topic}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {selectedTopics.length > 0 && (
+                  <button
+                    className="clear-topics-button"
+                    onClick={() => setSelectedTopics([])}
+                  >
+                    Clear All Topics
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="filter-dropdown">
-            <button className="filter-dropdown-button">
-              Difficulty {activeDifficulty !== null && `(${activeDifficulty})`}
+            <button
+              className="filter-dropdown-button"
+              onClick={() => setShowDifficultyFilter(!showDifficultyFilter)}
+            >
+              Difficulty
+              <i
+                className={`fas fa-chevron-${
+                  showDifficultyFilter ? "up" : "down"
+                }`}
+              ></i>
             </button>
+            {showDifficultyFilter && (
+              <div className="difficulty-filter-dropdown">
+                <div
+                  className={`difficulty-option ${
+                    activeDifficulty === null ? "selected" : ""
+                  }`}
+                  onClick={() => {
+                    onDifficultyChange(null);
+                    setShowDifficultyFilter(false);
+                  }}
+                >
+                  All Levels
+                </div>
+                <div
+                  className={`difficulty-option easy ${
+                    activeDifficulty === 0 ? "selected" : ""
+                  }`}
+                  onClick={() => {
+                    onDifficultyChange(0);
+                    setShowDifficultyFilter(false);
+                  }}
+                >
+                  Easy
+                </div>
+                <div
+                  className={`difficulty-option medium ${
+                    activeDifficulty === 1 ? "selected" : ""
+                  }`}
+                  onClick={() => {
+                    onDifficultyChange(1);
+                    setShowDifficultyFilter(false);
+                  }}
+                >
+                  Medium
+                </div>
+                <div
+                  className={`difficulty-option hard ${
+                    activeDifficulty === 2 ? "selected" : ""
+                  }`}
+                  onClick={() => {
+                    onDifficultyChange(2);
+                    setShowDifficultyFilter(false);
+                  }}
+                >
+                  Hard
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -72,11 +226,6 @@ const FilterControls = React.memo(
               Bookmarked
             </button>
           </div>
-        </div>
-
-        {/* Solve rate header - keeping your original icon */}
-        <div className="solve-rate-header" onClick={handleSortClick}>
-          Solve Rate ♦
         </div>
       </div>
     );
