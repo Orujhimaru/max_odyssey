@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Tests.css";
+import TestInterface from "./TestInterface";
 import TestReview from "../../components/TestReview/TestReview";
 
 const Tests = () => {

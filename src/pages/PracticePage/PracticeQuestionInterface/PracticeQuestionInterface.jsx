@@ -10,7 +10,7 @@ const PracticeQuestionInterface = ({
   hasNext = false,
   hasPrevious = false,
   questionNumber,
-  onBookmark,
+  onBookmark = () => {},
   isBookmarked,
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -108,19 +108,9 @@ const PracticeQuestionInterface = ({
     }
   };
 
-  const handleBookmarkClick = async (e) => {
-    e.stopPropagation();
-
-    try {
-      console.log(`Toggling bookmark for question ID: ${question.id}`);
-
-      // Call the parent component's handler
-      await onBookmark(question.id);
-
-      console.log(`Bookmark toggle requested for question ${question.id}`);
-    } catch (error) {
-      console.error("Error toggling bookmark:", error);
-      alert(`Failed to bookmark question: ${error.message}`);
+  const handleBookmarkClick = () => {
+    if (onBookmark && typeof onBookmark === 'function') {
+      onBookmark(question.id);
     }
   };
 
