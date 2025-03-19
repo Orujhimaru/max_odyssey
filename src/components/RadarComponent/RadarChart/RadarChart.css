@@ -58,6 +58,7 @@
   animation: fadeIn var(--duration) ease-out forwards;
   animation-delay: var(--delay);
   transform-origin: center;
+  /* filter: contrast(2.9); */
   opacity: 0;
 }
 
