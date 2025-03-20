@@ -875,6 +875,9 @@
 .question-topics {
   flex-shrink: 0;
   min-width: 150px;
+  display: flex;
+  /* flex-direction: column; */
+  gap: 4px;
 }
 
 .topic-tag {
@@ -1132,5 +1135,20 @@ button:focus-visible {
 @media (max-width: 768px) {
   .question-content-row {
     gap: 8px;
+  }
+}
+
+@media (max-width: 800px) {
+  .question-topics {
+    flex-direction: column;
+    gap: 8px;
+    flex-wrap: wrap; /* In case multiple tags need to wrap */
+    min-width: 120px; /* Slightly smaller minimum width when in row layout */
+    align-items: flex-end;
+  }
+
+  .topic-tag {
+    font-size: 11px; /* Slightly smaller font for better fit */
+    padding: 3px 6px; /* Slightly smaller padding */
   }
 }
