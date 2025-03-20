@@ -236,7 +236,7 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
 .difficulty-badge {
@@ -861,6 +861,7 @@
 
 .question-title {
   flex: 1;
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -872,9 +873,8 @@
 }
 
 .question-topics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-shrink: 0;
+  min-width: 150px;
 }
 
 .topic-tag {
@@ -888,20 +888,17 @@
 }
 
 .completion-rate {
-  display: flex;
-  align-items: center;
-  font-size: 12px;
-  color: var(--text-primary);
-  /* opacity: 0.7; */
-  white-space: nowrap;
+  flex-shrink: 0;
+  /* min-width: 100px; */
 }
 
 .question-content-row {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 16px;
   width: 100%;
+  min-width: 0;
+  justify-content: space-between;
 }
 
 button {
@@ -1129,4 +1126,11 @@ button:focus-visible {
   cursor: pointer;
   user-select: none;
   font-size: 14px;
+}
+
+/* Add media query for very small screens if needed */
+@media (max-width: 768px) {
+  .question-content-row {
+    gap: 8px;
+  }
 }
