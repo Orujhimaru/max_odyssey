@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../../../services/api";
 import "./PracticeQuestionInterface.css";
+import ReactMarkdown from "react-markdown";
 
 const PracticeQuestionInterface = ({
   question,
@@ -109,10 +110,16 @@ const PracticeQuestionInterface = ({
   };
 
   const handleBookmarkClick = () => {
-    if (onBookmark && typeof onBookmark === 'function') {
+    if (onBookmark && typeof onBookmark === "function") {
       onBookmark(question.id);
     }
   };
+
+  // Convert \n to actual newlines and add bold markdown syntax
+  const formattedText = question.question_text
+    ?.replace(/\\n/g, "\n")
+    .replace(/Text 1/g, "**Text 1**")
+    .replace(/Text 2/g, "**Text 2**");
 
   if (loading) {
     return (
@@ -246,7 +253,7 @@ const PracticeQuestionInterface = ({
       <div className="practice-question-content">
         <div className="question-area">
           <div className="question-text">
-            <p>{fullQuestion.question_text}</p>
+            <ReactMarkdown>{formattedText}</ReactMarkdown>
           </div>
           <div className="answer-options">
             {fullQuestion.choices ? (
