@@ -33,6 +33,8 @@ const FilterControls = React.memo(
     onSolveRateSort,
     onBookmarkToggle,
     showBookmarked,
+    hideSolved,
+    handleHideSolvedChange,
   }) => {
     // Add state for dropdown visibility
     const [showTopicFilter, setShowTopicFilter] = useState(false);
@@ -240,9 +242,18 @@ const FilterControls = React.memo(
               className={`filter-toggle ${showBookmarked ? "active" : ""}`}
               onClick={onBookmarkToggle}
             >
-              <i className="fas fa-bookmark"></i>
-              Bookmarked
+              <i className="fas fa-bookmark"></i> Bookmarked
             </button>
+
+            <div className="solved-filter">
+              <input
+                type="checkbox"
+                id="hideSolved"
+                checked={hideSolved}
+                onChange={handleHideSolvedChange}
+              />
+              <label htmlFor="hideSolved">Hide Solved</label>
+            </div>
           </div>
         </div>
       </div>

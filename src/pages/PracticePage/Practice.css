@@ -71,6 +71,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  height: 40px;
   background-color: var(--chart-grid);
   /* border: 1px solid var(--border-color); */
   color: var(--text-primary);
@@ -412,7 +413,8 @@
 
 .filter-toggles {
   display: flex;
-  gap: 8px;
+  gap: 12px;
+  align-items: center;
   width: 100%;
   justify-content: flex-start;
 }
@@ -1076,4 +1078,55 @@ button:focus-visible {
 
 .filter-toggle {
   cursor: pointer;
+}
+
+/* Update styles for the solved filter checkbox container */
+.solved-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  background-color: var(--chart-grid);
+  padding: 10px 16px;
+  border-radius: 8px;
+  height: 40px;
+  border: 1px solid transparent;
+}
+
+.solved-filter:hover {
+  background-color: rgba(64, 64, 64, 0.1);
+  border-color: rgba(128, 128, 128, 0.3);
+}
+
+.solved-filter input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: #4caf50; /* Green checkbox */
+  border: 1px solid #b3b3b3;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border-radius: 3px;
+  position: relative;
+}
+
+.solved-filter input[type="checkbox"]:checked {
+  background-color: #4caf50;
+}
+
+.solved-filter input[type="checkbox"]:checked::after {
+  content: "\2713"; /* Unicode for a sharper checkmark */
+  font-size: 12px;
+  color: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.solved-filter label {
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
 }
