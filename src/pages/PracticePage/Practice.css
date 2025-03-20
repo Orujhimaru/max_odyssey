@@ -388,10 +388,10 @@
     width: 100%;
   }
 
-  .filter-toggle {
+  /* .filter-toggle {
     flex: 1;
     justify-content: center;
-  }
+  } */
 }
 
 .practice-filters {
