@@ -483,7 +483,13 @@ const Practice = () => {
   };
 
   const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+      // Smooth scroll to top
+      window.scrollTo({
+        top: 0,
+      });
+    }
   };
 
   // Update the useEffect that fetches questions
