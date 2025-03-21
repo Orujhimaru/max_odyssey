@@ -252,9 +252,26 @@ const PracticeQuestionInterface = ({
 
       <div className="practice-question-content">
         <div className="question-area">
-          <div className="question-text">
-            <ReactMarkdown>{formattedText}</ReactMarkdown>
+          {/* Passage section */}
+          {question.passage && (
+            <div className="passage-text">
+              <ReactMarkdown>
+                {question.passage
+                  .replace(/\\n/g, "\n")
+                  .replace(/Text 1/g, "**Text 1**")
+                  .replace(/Text 2/g, "**Text 2**")}
+              </ReactMarkdown>
+            </div>
+          )}
+
+          {/* Question text section */}
+          <div className="question-prompt">
+            <h2 className="question-title">Question:</h2>
+            <div className="question-text">
+              <ReactMarkdown>{question.question_text}</ReactMarkdown>
+            </div>
           </div>
+
           <div className="answer-options">
             {fullQuestion.choices ? (
               Array.isArray(fullQuestion.choices) ? (
