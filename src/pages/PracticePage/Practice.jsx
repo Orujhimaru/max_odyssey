@@ -486,39 +486,7 @@ const Practice = () => {
     setCurrentPage(newPage);
   };
 
-  // Add the fetch function
-  const fetchQuestions = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      console.log("Fetching filtered questions with:", filters);
-
-      // Call the new API method
-      const data = await api.getFilteredQuestions(filters);
-
-      console.log("Filtered questions response:", data);
-
-      // Update state with the response data
-      setQuestions(data.questions || []);
-
-      // Update pagination info
-      if (data.pagination) {
-        setCurrentPage(data.pagination.current_page);
-        setTotalQuestions(data.pagination.total_items);
-        setTotalPages(data.pagination.total_pages);
-      }
-
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching questions:", error);
-      setError(`Failed to load questions: ${error.message}`);
-      setQuestions([]);
-      setLoading(false);
-    }
-  };
-
-  // Update the useEffect to use the appropriate API method based on showBookmarked
+  // Update the useEffect that fetches questions
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -532,65 +500,40 @@ const Practice = () => {
         setError(null);
 
         let data;
-
         if (showBookmarked) {
-          console.log(
-            `Fetching bookmarked questions - page ${currentPage}, sort direction: ${filters.sort_dir}`
-          );
           data = await api.getBookmarkedQuestions(
             filters.sort_dir,
             currentPage,
             pageSize
           );
         } else {
-          console.log("Fetching filtered questions with:", filters);
-          data = await api.getFilteredQuestions(filters);
+          data = await api.getFilteredQuestions({
+            ...filters,
+            page: currentPage,
+            page_size: pageSize,
+          });
         }
 
-        console.log("Questions response:", data);
+        // Update to use the correct response structure
+        setQuestions(data.questions || []);
 
-        // Make sure we have the questions array
-        const questionsList = data.questions || [];
-        setQuestions(questionsList);
-
-        // Check if we have questions before setting pagination info
-        if (questionsList.length > 0) {
-          // Use total_count from the response, or fall back to the length of questions array
-          const total =
-            data.total_count !== undefined
-              ? data.total_count
-              : questionsList.length;
-          setTotalQuestions(total);
-
-          // Calculate total pages, ensuring at least 1 page
-          const calculatedTotalPages = Math.max(1, Math.ceil(total / pageSize));
-          setTotalPages(calculatedTotalPages);
-
-          // Ensure currentPage is valid
-          if (currentPage > calculatedTotalPages) {
-            setCurrentPage(calculatedTotalPages);
-          }
-        } else {
-          // No questions found
-          setTotalQuestions(0);
-          setTotalPages(1);
-          setCurrentPage(1);
+        // Access pagination data from the response
+        if (data.pagination) {
+          setCurrentPage(data.pagination.current_page);
+          setTotalQuestions(data.pagination.total_items);
+          setTotalPages(data.pagination.total_pages);
         }
 
         setLoading(false);
       } catch (error) {
         console.error("Error fetching questions:", error);
         setError(`Failed to load questions: ${error.message}`);
-        setQuestions([]);
-        setTotalQuestions(0);
-        setTotalPages(1);
-        setCurrentPage(1);
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [filters, showBookmarked, currentPage, pageSize, navigate]);
+  }, [filters, showBookmarked, currentPage, pageSize]);
 
   // Simplify the toggleBookmark function
   const toggleBookmark = async (questionId) => {
