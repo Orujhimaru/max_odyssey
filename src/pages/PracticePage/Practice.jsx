@@ -314,7 +314,7 @@ const QuestionsSection = React.memo(
           >
             <div className="question-left">
               <span className="question-number">#{question.id}</span>
-              <div className="question-info">
+              <div className="question-info-main">
                 <div className="question-header">
                   <div className="question-type">
                     <span
@@ -683,8 +683,6 @@ const Practice = () => {
 
   return (
     <div className="practice-page">
-      <Header />
-
       {selectedQuestion ? (
         <PracticeQuestionInterface
           question={selectedQuestion}
@@ -697,6 +695,7 @@ const Practice = () => {
         />
       ) : (
         <>
+          <Header />
           <FilterControls
             filters={filters}
             isVerbal={activeFilter === "verbal"}
