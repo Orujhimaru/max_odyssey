@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { api } from "../../../services/api";
 import "./PracticeQuestionInterface.css";
 import ReactMarkdown from "react-markdown";
@@ -16,6 +16,13 @@ const PracticeQuestionInterface = ({
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showExplanation, setShowExplanation] = useState(false);
+  const questionContentRef = useRef(null);
+
+  // Reset selected answer and explanation when question changes
+  useEffect(() => {
+    setSelectedAnswer(null);
+    setShowExplanation(false);
+  }, [question.id]);
 
   // New state for tracking user's question interactions
   const [userQuestionState, setUserQuestionState] = useState({
@@ -69,6 +76,25 @@ const PracticeQuestionInterface = ({
     });
   };
 
+  // Wrap the navigation handlers to include scrolling
+  const handleNext = () => {
+    onNextQuestion();
+    if (questionContentRef.current) {
+      questionContentRef.current.scrollTo({
+        top: 0,
+      });
+    }
+  };
+
+  const handlePrevious = () => {
+    onPreviousQuestion();
+    if (questionContentRef.current) {
+      questionContentRef.current.scrollTo({
+        top: 0,
+      });
+    }
+  };
+
   return (
     <div className="practice-question-interface">
       <div className="practice-question-header">
@@ -99,63 +125,9 @@ const PracticeQuestionInterface = ({
             )}
           </div>
         </div>
-        <div className="header-actions">
-          <div
-            id="bookmark-action"
-            style={{
-              position: "absolute",
-              right: "50px",
-              top: "10px",
-              zIndex: 9999,
-              background: "red",
-              color: "white",
-              padding: "10px",
-              border: "2px solid black",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontWeight: "bold",
-              fontSize: "14px",
-              pointerEvents: "auto",
-            }}
-            onClick={handleBookmarkClick}
-          >
-            <i
-              className={`${
-                userQuestionState.isBookmarked ? "fas" : "far"
-              } fa-bookmark`}
-            ></i>
-            {" Bookmark"}
-          </div>
-
-          <div
-            id="close-action"
-            style={{
-              position: "absolute",
-              right: "10px",
-              top: "10px",
-              zIndex: 9999,
-              background: "#333",
-              color: "white",
-              padding: "10px",
-              border: "2px solid black",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontWeight: "bold",
-              fontSize: "14px",
-              pointerEvents: "auto",
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
-          >
-            <i className="fas fa-times"></i>
-            {" Close"}
-          </div>
-        </div>
       </div>
 
-      <div className="practice-question-content">
+      <div className="practice-question-content" ref={questionContentRef}>
         <div className="question-area-interface">
           {/* Passage section */}
           {question.passage && (
@@ -231,14 +203,14 @@ const PracticeQuestionInterface = ({
       <div className="practice-question-footer">
         <div className="question-navigator-interface">
           <button
-            onClick={onPreviousQuestion}
+            onClick={handlePrevious}
             disabled={!hasPrevious}
             className="nav-button prev"
           >
             Previous
           </button>
           <button
-            onClick={onNextQuestion}
+            onClick={handleNext}
             disabled={!hasNext}
             className="nav-button next"
           >
