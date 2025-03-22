@@ -33,8 +33,10 @@ const FilterControls = React.memo(
     onSolveRateSort,
     onBookmarkToggle,
     showBookmarked,
-    hideSolved,
-    handleHideSolvedChange,
+    solved,
+    handleSolvedChange,
+    incorrect,
+    handleIncorrectChange,
   }) => {
     // Add state for dropdown visibility
     const [showTopicFilter, setShowTopicFilter] = useState(false);
@@ -257,18 +259,24 @@ const FilterControls = React.memo(
             >
               <i className="fas fa-bookmark"></i> Bookmarked
             </button>
-
-            <div className="solved-filter">
-              <input
-                type="checkbox"
-                id="hideSolved"
-                checked={hideSolved}
-                onChange={handleHideSolvedChange}
-              />
-              <label htmlFor="hideSolved">
-                {hideSolved ? "Solved" : "Hide Solved"}
-              </label>
-            </div>
+          </div>{" "}
+          <div className="filter-toggles">
+            <button
+              className={`filter-toggle ${solved === "solved" ? "active" : ""}`}
+              onClick={() => handleFilterToggle("solved")}
+            >
+              <i className="fas fa-check-circle"></i>
+              Solved
+            </button>
+            <button
+              className={`filter-toggle ${
+                incorrect === "incorrect" ? "active" : ""
+              }`}
+              onClick={() => handleFilterToggle("incorrect")}
+            >
+              <i className="fas fa-times-circle"></i>
+              Incorrect
+            </button>
           </div>
         </div>
       </div>
@@ -413,7 +421,7 @@ const Pagination = React.memo(
 );
 
 const Practice = () => {
-  const [activeFilter, setActiveFilter] = useState("verbal");
+  const [activeFilter, setActiveFilter] = useState(null); // null, 'solved', or 'incorrect'
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [showTopicFilter, setShowTopicFilter] = useState(false);
   const [showDifficultyFilter, setShowDifficultyFilter] = useState(false);
@@ -424,7 +432,7 @@ const Practice = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [hideSolved, setHideSolved] = useState(false);
+  const [solved, setHideSolved] = useState(false);
 
   const [filters, setFilters] = useState({
     subject: 2, // Default to Math
@@ -435,6 +443,7 @@ const Practice = () => {
     page: 1,
     page_size: 20,
     solved: false,
+    incorrect: false,
   });
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -699,7 +708,7 @@ const Practice = () => {
   };
 
   // Then update the handleHideSolvedChange function to update filters
-  const handleHideSolvedChange = () => {
+  const handleSolvedChange = () => {
     setHideSolved(!hideSolved);
     setFilters((prev) => ({
       ...prev,
@@ -707,6 +716,28 @@ const Practice = () => {
       page: 1,
     }));
   };
+
+  // const handleFilterToggle = (filter) => {
+  //   // If clicking the active filter, deactivate it
+  //   if (activeFilter === filter) {
+  //     setActiveFilter(null);
+  //     setFilters((prev) => ({
+  //       ...prev,
+  //       solved: false,
+  //       incorrect: false,
+  //       page: 1,
+  //     }));
+  //   } else {
+  //     // Activate the clicked filter, deactivate the other
+  //     setActiveFilter(filter);
+  //     setFilters((prev) => ({
+  //       ...prev,
+  //       solved: filter === "solved",
+  //       incorrect: filter === "incorrect",
+  //       page: 1,
+  //     }));
+  //   }
+  // };
 
   return (
     <div>
@@ -732,8 +763,8 @@ const Practice = () => {
             onSolveRateSort={handleSolveRateSort}
             onBookmarkToggle={handleBookmarkToggle}
             showBookmarked={showBookmarked}
-            handleHideSolvedChange={handleHideSolvedChange}
-            hideSolved={hideSolved}
+            handleHideSolvedChange={handleSolvedChange}
+            hideSolved={solved}
           />
 
           <QuestionsHeader onSolveRateSort={handleSolveRateSort} />

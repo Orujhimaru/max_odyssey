@@ -70,37 +70,50 @@
 
 .filter-toggle {
   display: flex;
-  font-weight: 400;
   align-items: center;
   gap: 8px;
-  height: 40px;
-  background-color: var(--chart-grid);
-  /* border: 1px solid var(--border-color); */
-  color: var(--text-primary);
-  padding: 10px 16px;
+  padding: 8px 16px;
   border-radius: 8px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s ease, border-color 0.2s ease,
-    transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-[data-theme="dark"] .filter-toggle {
-  border: 1px solid #4d4d4d;
-  background-color: var(--chart-grid);
-  /* border-color: rgba(128, 128, 128, 0.3); */
-}
-[data-theme="dark"] .question-card {
-  background-color: #3c3c3c;
+.filter-toggle i {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
 }
 
-[data-theme="dark"] .question-number {
-  background-color: #dddddd00;
+.filter-toggle.active {
+  background-color: var(--verbal-color);
+  color: white;
+  border-color: var(--verbal-color);
 }
 
-.filter-toggle:hover {
-  background-color: rgba(64, 64, 64, 0.1);
-  border-color: rgba(128, 128, 128, 0.3);
+.filter-toggle.active i {
+  opacity: 1;
+}
+
+/* Specific colors for incorrect */
+.filter-toggle.active[data-filter="incorrect"] {
+  background-color: #ff5555;
+  border-color: #ff5555;
+}
+
+.fa-check-circle {
+  color: #4caf50;
+}
+
+.fa-times-circle {
+  color: #ff5555;
+}
+
+/* When active, icons become white */
+.filter-toggle.active .fa-check-circle,
+.filter-toggle.active .fa-times-circle {
+  color: white;
 }
 
 .practice-content {
@@ -406,7 +419,7 @@
 
 .filter-row {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
 }
 
@@ -418,8 +431,6 @@
   display: flex;
   gap: 12px;
   align-items: center;
-  width: 100%;
-  justify-content: flex-start;
 }
 
 .filter-toggle i {
@@ -1164,4 +1175,11 @@ button:focus-visible {
     font-size: 11px; /* Slightly smaller font for better fit */
     padding: 3px 6px; /* Slightly smaller padding */
   }
+}
+
+.solved-filter.disabled,
+.solved-filter .disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
