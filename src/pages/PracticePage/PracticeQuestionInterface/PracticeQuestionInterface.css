@@ -22,7 +22,8 @@
   align-items: center;
   padding: 16px 24px;
   background-color: var(--bg-primary);
-  border-bottom: 1px solid var(--border-color);
+  /* border-bottom: 1px solid var(--border-color); */
+  border-radius: 16px 16px 0px 0px;
 }
 
 .header-left {
@@ -150,6 +151,8 @@
   flex: 1;
   padding: 24px;
   overflow-y: auto;
+  border: 8px solid var(--bg-primary);
+  border-block: none;
 }
 
 .question-area {
