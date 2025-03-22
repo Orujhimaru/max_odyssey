@@ -26,6 +26,9 @@ const PracticeQuestionInterface = ({
     selectedOption: null,
   });
 
+  // Add this at the beginning of the component
+  console.log("Full question object:", question);
+
   const handleAnswerSelect = (index) => {
     setSelectedAnswer(index);
   };
@@ -153,7 +156,7 @@ const PracticeQuestionInterface = ({
       </div>
 
       <div className="practice-question-content">
-        <div className="question-area">
+        <div className="question-area-interface">
           {/* Passage section */}
           {question.passage && (
             <div className="passage-text">
@@ -226,20 +229,22 @@ const PracticeQuestionInterface = ({
       </div>
 
       <div className="practice-question-footer">
-        <button
-          onClick={onPreviousQuestion}
-          disabled={!hasPrevious}
-          className="nav-button prev"
-        >
-          Previous
-        </button>
-        <button
-          onClick={onNextQuestion}
-          disabled={!hasNext}
-          className="nav-button next"
-        >
-          Next
-        </button>
+        <div className="question-navigator-interface">
+          <button
+            onClick={onPreviousQuestion}
+            disabled={!hasPrevious}
+            className="nav-button prev"
+          >
+            Previous
+          </button>
+          <button
+            onClick={onNextQuestion}
+            disabled={!hasNext}
+            className="nav-button next"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );
