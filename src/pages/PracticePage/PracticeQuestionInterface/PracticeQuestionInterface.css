@@ -17,6 +17,7 @@ body {
   position: relative;
   width: calc(100% + 7px);
   /* left: -7px; */
+  margin-left: 4px;
 }
 
 /* .practice-question-interface > * {
@@ -37,7 +38,7 @@ body {
   padding: 16px 24px;
   background-color: var(--bg-primary);
   /* border-bottom: 1px solid var(--border-color); */
-  border-radius: 0px 8px 0px 0px;
+  border-radius: 8px;
 }
 
 .header-left {
@@ -227,7 +228,7 @@ body {
   padding: 16px 24px;
   background-color: var(--bg-primary);
   border-top: 1px solid var(--border-color);
-  border-radius: 0px 0px 8px 0px;
+  border-radius: 8px;
   /* margin-left: 92px; */
 }
 
@@ -291,42 +292,39 @@ body {
   gap: 8px;
 } */
 
+.difficulty-indicator {
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+  /* height: 12px; */
+}
+
 .difficulty-badge {
   display: flex;
-  align-items: flex-end;
   gap: 2px;
-  height: 14px;
+  align-items: flex-end;
+  /* height: 12px; */
 }
 
-.difficulty-badge .bar {
+.difficulty-indicator .bar {
   width: 4px;
-  background-color: var(--border-color);
-  border-radius: 2px;
+  background-color: #c7c7c7;
+  border-radius: 1px;
 }
 
-.difficulty-badge .bar:nth-child(1) {
-  height: 6px;
-}
-.difficulty-badge .bar:nth-child(2) {
-  height: 10px;
-}
-.difficulty-badge .bar:nth-child(3) {
-  height: 14px;
-}
-
-.difficulty-badge.easy .bar:nth-child(1) {
+.difficulty-badge.difficulty-1 .bar:nth-child(1) {
   background-color: #4caf50;
 }
 
-.difficulty-badge.medium .bar:nth-child(1),
-.difficulty-badge.medium .bar:nth-child(2) {
+.difficulty-badge.difficulty-2 .bar:nth-child(1),
+.difficulty-badge.difficulty-2 .bar:nth-child(2) {
   background-color: #ff9800;
 }
 
-.difficulty-badge.hard .bar:nth-child(1),
-.difficulty-badge.hard .bar:nth-child(2),
-.difficulty-badge.hard .bar:nth-child(3) {
-  background-color: #f44336;
+.difficulty-badge.difficulty-3 .bar:nth-child(1),
+.difficulty-badge.difficulty-3 .bar:nth-child(2),
+.difficulty-badge.difficulty-3 .bar:nth-child(3) {
+  background-color: #ff5555 !important;
 }
 
 .difficulty-text {

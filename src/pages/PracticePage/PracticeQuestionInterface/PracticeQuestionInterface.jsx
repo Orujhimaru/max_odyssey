@@ -71,7 +71,7 @@ const PracticeQuestionInterface = ({
       <div className="practice-question-header">
         <div className="question-info">
           <div className="header-left">
-            <span className="question-number">#{questionNumber}</span>
+            <span className="question-number">#{question.id}</span>
           </div>
           <div className="question-meta">
             <div className="difficulty-indicator">
@@ -83,7 +83,11 @@ const PracticeQuestionInterface = ({
                 <span className="bar"></span>
               </span>
               <span className="difficulty-text">
-                Level {question.difficulty_level}
+                {question.difficulty_level === 1
+                  ? "Easy"
+                  : question.difficulty_level === 2
+                  ? "Medium"
+                  : "Hard"}
               </span>
             </div>
             {question.topic && <span className="topic">{question.topic}</span>}
@@ -190,7 +194,7 @@ const PracticeQuestionInterface = ({
                 <div className="option-letter">
                   {String.fromCharCode(65 + index)}
                 </div>
-                <div className="option-text">{choice}</div>
+                <div className="option-text">{choice.slice(2).trim()}</div>
               </div>
             ))}
           </div>
