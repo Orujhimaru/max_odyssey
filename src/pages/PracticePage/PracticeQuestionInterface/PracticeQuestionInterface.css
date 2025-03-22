@@ -223,7 +223,7 @@ body {
 }
 
 .answer-option:hover {
-  transform: translateY(-2px);
+  /* transform: translateY(-2px); */
 }
 
 .answer-option.selected {
@@ -349,7 +349,7 @@ body {
 .difficulty-badge.difficulty-0 .bar:nth-child(1),
 .difficulty-badge.difficulty-0 .bar:nth-child(2),
 .difficulty-badge.difficulty-0 .bar:nth-child(3) {
-  background-color: #ff5555 !important;
+  background-color: #c94343 !important;
 }
 
 .difficulty-text {
@@ -387,3 +387,8 @@ body {
   font-size: 16px;
   line-height: 1.6;
 } */
+@media (max-width: 1100px) {
+  .question-area-interface {
+    flex-direction: column;
+  }
+}

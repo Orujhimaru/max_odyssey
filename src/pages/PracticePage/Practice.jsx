@@ -102,11 +102,24 @@ const FilterControls = React.memo(
         <div
           className={`filter-row ${showBookmarked ? "disabled-filters" : ""}`}
         >
-          <PracticeSwitch
-            isVerbal={isVerbal}
-            onChange={onSubjectToggle}
-            disabled={showBookmarked}
-          />
+          <div className="subject-toggle-container">
+            <button
+              className={`subject-toggle ${
+                filters.subject === 1 ? "active verbal" : ""
+              }`}
+              onClick={() => onSubjectToggle(1)}
+            >
+              V
+            </button>
+            <button
+              className={`math subject-toggle ${
+                filters.subject === 2 ? "active math" : ""
+              }`}
+              onClick={() => onSubjectToggle(2)}
+            >
+              M
+            </button>
+          </div>
 
           <div className="filter-dropdown">
             <button
@@ -252,7 +265,9 @@ const FilterControls = React.memo(
                 checked={hideSolved}
                 onChange={handleHideSolvedChange}
               />
-              <label htmlFor="hideSolved">Hide Solved</label>
+              <label htmlFor="hideSolved">
+                {hideSolved ? "Solved" : "Hide Solved"}
+              </label>
             </div>
           </div>
         </div>
@@ -409,6 +424,7 @@ const Practice = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hideSolved, setHideSolved] = useState(false);
 
   const [filters, setFilters] = useState({
     subject: 2, // Default to Math
@@ -418,6 +434,7 @@ const Practice = () => {
     sort_dir: "asc",
     page: 1,
     page_size: 20,
+    solved: false,
   });
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -681,6 +698,16 @@ const Practice = () => {
     setCurrentQuestionIndex(0);
   };
 
+  // Then update the handleHideSolvedChange function to update filters
+  const handleHideSolvedChange = () => {
+    setHideSolved(!hideSolved);
+    setFilters((prev) => ({
+      ...prev,
+      solved: !hideSolved,
+      page: 1,
+    }));
+  };
+
   return (
     <div>
       {selectedQuestion ? (
@@ -705,6 +732,8 @@ const Practice = () => {
             onSolveRateSort={handleSolveRateSort}
             onBookmarkToggle={handleBookmarkToggle}
             showBookmarked={showBookmarked}
+            handleHideSolvedChange={handleHideSolvedChange}
+            hideSolved={hideSolved}
           />
 
           <QuestionsHeader onSolveRateSort={handleSolveRateSort} />
