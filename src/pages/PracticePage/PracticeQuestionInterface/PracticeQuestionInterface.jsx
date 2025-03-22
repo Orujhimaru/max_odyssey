@@ -129,74 +129,77 @@ const PracticeQuestionInterface = ({
 
       <div className="practice-question-content" ref={questionContentRef}>
         <div className="question-area-interface">
-          {/* Passage section */}
-          {question.passage && (
-            <div className="passage-text">
-              <ReactMarkdown>
-                {question.passage
-                  .replace(/\\n/g, "\n")
-                  .replace(/Text 1/g, "**Text 1**")
-                  .replace(/Text 2/g, "**Text 2**")}
-              </ReactMarkdown>
-            </div>
-          )}
+          <div className="question-text-flex">
+            {/* Passage section */}
+            {question.passage && (
+              <div className="passage-text">
+                <ReactMarkdown>
+                  {question.passage
+                    .replace(/\\n/g, "\n")
+                    .replace(/Text 1/g, "**Text 1**")
+                    .replace(/Text 2/g, "**Text 2**")}
+                </ReactMarkdown>
+              </div>
+            )}
+
+            {showExplanation && (
+              <div className="explanation-container">
+                <h3>Explanation</h3>
+                <p>{question.explanation}</p>
+                <div className="correct-answer">
+                  Correct Answer:{" "}
+                  {String.fromCharCode(65 + question.correct_answer_index)} -{" "}
+                  {question.choices[question.correct_answer_index]}
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Question text section */}
-          <div className="question-prompt">
-            <h2 className="question-title">Question:</h2>
-            <div className="question-text">
-              <ReactMarkdown>{question.question_text}</ReactMarkdown>
-            </div>
-          </div>
 
-          <div className="answer-options">
-            {question.choices.map((choice, index) => (
-              <div
-                key={index}
-                className={`answer-option ${
-                  selectedAnswer === index ? "selected" : ""
-                } ${
-                  showExplanation
-                    ? index === question.correct_answer_index
-                      ? "correct"
-                      : selectedAnswer === index
-                      ? "incorrect"
+          <div className="question-flex-1">
+            <div className="question-prompt">
+              <h2 className="question-title">Question:</h2>
+              <div className="question-text">
+                <ReactMarkdown>{question.question_text}</ReactMarkdown>
+              </div>
+            </div>
+            <div className="answer-options">
+              {question.choices.map((choice, index) => (
+                <div
+                  key={index}
+                  className={`answer-option ${
+                    selectedAnswer === index ? "selected" : ""
+                  } ${
+                    showExplanation
+                      ? index === question.correct_answer_index
+                        ? "correct"
+                        : selectedAnswer === index
+                        ? "incorrect"
+                        : ""
                       : ""
-                    : ""
-                }`}
-                onClick={() => handleAnswerSelect(index)}
-              >
-                <div className="option-letter">
-                  {String.fromCharCode(65 + index)}
+                  }`}
+                  onClick={() => handleAnswerSelect(index)}
+                >
+                  <div className="option-letter">
+                    {String.fromCharCode(65 + index)}
+                  </div>
+                  <div className="option-text">{choice.slice(2).trim()}</div>
                 </div>
-                <div className="option-text">{choice.slice(2).trim()}</div>
+              ))}
+            </div>
+            {!showExplanation && (
+              <div className="submit-container">
+                <button
+                  className="submit-button"
+                  onClick={handleSubmit}
+                  disabled={selectedAnswer === null}
+                >
+                  Submit Answer
+                </button>
               </div>
-            ))}
+            )}
           </div>
-
-          {!showExplanation && (
-            <div className="submit-container">
-              <button
-                className="submit-button"
-                onClick={handleSubmit}
-                disabled={selectedAnswer === null}
-              >
-                Submit Answer
-              </button>
-            </div>
-          )}
-
-          {showExplanation && (
-            <div className="explanation-container">
-              <h3>Explanation</h3>
-              <p>{question.explanation}</p>
-              <div className="correct-answer">
-                Correct Answer:{" "}
-                {String.fromCharCode(65 + question.correct_answer_index)} -{" "}
-                {question.choices[question.correct_answer_index]}
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
