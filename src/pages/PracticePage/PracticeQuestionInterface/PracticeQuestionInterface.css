@@ -310,3 +310,28 @@
   opacity: 0.7;
   text-transform: capitalize;
 }
+
+.passage-text {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.question-prompt {
+  margin-bottom: 24px;
+}
+
+/* .question-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+} */
+
+/* .question-text {
+  font-size: 16px;
+  line-height: 1.6;
+} */
