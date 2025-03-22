@@ -22,10 +22,148 @@ const Header = React.memo(() => {
   );
 });
 
+// Create a separate QuestionsHeader component that includes the solve rate header
+const QuestionsHeader = React.memo(({ filters, onSolveRateSort }) => {
+  return (
+    <div className="practice-questions-header">
+      <div className="header-left">
+        <span className="header-number">#</span>
+        <span className="header-type">S</span>
+        <span className="header-difficulty">🧩</span>
+        <span className="header-question">Question</span>
+      </div>
+      <div className="header-right">
+        <span className="header-tags">Tags</span>
+        <div className="solve-rate-header" onClick={onSolveRateSort}>
+          Solve Rate
+          <div className="sort-icons">
+            <i className="fas fa-sort-up"></i>
+            <i className="fas fa-sort-down"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+// Create a memoized questions section
+const QuestionsSection = React.memo(
+  ({ questions, loading, error, onQuestionClick }) => {
+    if (loading) {
+      return <div className="loading-container">Loading questions...</div>;
+    }
+
+    if (error) {
+      return <div className="error-container">{error}</div>;
+    }
+
+    if (questions.length === 0) {
+      return (
+        <div className="no-questions">
+          No questions found matching your filters.
+        </div>
+      );
+    }
+
+    return (
+      <div className="practice-questions">
+        {questions.map((question) => (
+          <div
+            className="question-card"
+            key={question.id}
+            onClick={() => onQuestionClick(question)}
+          >
+            <div className="question-left">
+              <span className="question-number">#{question.id}</span>
+              <div className="question-info-main">
+                <div className="question-header">
+                  <div className="question-type">
+                    <span
+                      className={`subject-badge ${
+                        question.subject_id === 1 ? "math" : "verbal"
+                      }`}
+                    >
+                      {question.subject_id === 1 ? "M" : "V"}
+                    </span>
+                  </div>
+                  <div className="question-type">
+                    <span
+                      className={`difficulty-indicator ${
+                        question.difficulty_level === 0
+                          ? "easy"
+                          : question.difficulty_level === 1
+                          ? "medium"
+                          : question.difficulty_level === 2
+                          ? "hard"
+                          : "medium"
+                      }`}
+                    >
+                      <span className="bar"></span>
+                      <span className="bar"></span>
+                      <span className="bar"></span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="question-content-row">
+              <h3 className="question-title">{question.question_text}</h3>
+              <div className="question-meta">
+                <div className="question-topics">
+                  {question.topic && (
+                    <span className="topic-tag" key={question.topic}>
+                      {question.topic}
+                    </span>
+                  )}
+                  {question.subtopic && (
+                    <span className="topic-tag" key={question.subtopic}>
+                      {question.subtopic}
+                    </span>
+                  )}
+                </div>
+                <div className="completion-rate">
+                  <span> {question.solve_rate}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+);
+
+// Create a memoized pagination component
+const Pagination = React.memo(
+  ({ currentPage, totalPages, totalQuestions, onPageChange }) => {
+    return (
+      <div className="pagination">
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage <= 1}
+        >
+          Previous
+        </button>
+        <span>
+          Page {currentPage} of {totalPages} ({totalQuestions} questions)
+        </span>
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage >= totalPages}
+        >
+          Next
+        </button>
+      </div>
+    );
+  }
+);
+
 // Create a memoized filter controls component
 const FilterControls = React.memo(
   ({
     filters,
+    activeFilter,
+    setActiveFilter,
     isVerbal,
     activeDifficulty,
     onSubjectToggle,
@@ -96,6 +234,28 @@ const FilterControls = React.memo(
         onSolveRateSort();
       } else {
         console.error("onSolveRateSort function is not available");
+      }
+    };
+
+    const handleFilterToggle = (filter) => {
+      // If clicking the active filter, deactivate it
+      if (activeFilter === filter) {
+        setActiveFilter(null);
+        setFilters((prev) => ({
+          ...prev,
+          solved: false,
+          incorrect: false,
+          page: 1,
+        }));
+      } else {
+        // Activate the clicked filter, deactivate the other
+        setActiveFilter(filter);
+        setFilters((prev) => ({
+          ...prev,
+          solved: filter === "solved",
+          incorrect: filter === "incorrect",
+          page: 1,
+        }));
       }
     };
 
@@ -262,159 +422,27 @@ const FilterControls = React.memo(
           </div>{" "}
           <div className="filter-toggles">
             <button
-              className={`filter-toggle ${solved === "solved" ? "active" : ""}`}
+              className={`filter-toggle ${
+                activeFilter === "solved" ? "active" : ""
+              }`}
               onClick={() => handleFilterToggle("solved")}
+              data-filter="solved"
             >
               <i className="fas fa-check-circle"></i>
               Solved
             </button>
             <button
               className={`filter-toggle ${
-                incorrect === "incorrect" ? "active" : ""
+                activeFilter === "incorrect" ? "active" : ""
               }`}
               onClick={() => handleFilterToggle("incorrect")}
+              data-filter="incorrect"
             >
               <i className="fas fa-times-circle"></i>
               Incorrect
             </button>
           </div>
         </div>
-      </div>
-    );
-  }
-);
-
-// Create a separate QuestionsHeader component that includes the solve rate header
-const QuestionsHeader = React.memo(({ filters, onSolveRateSort }) => {
-  return (
-    <div className="practice-questions-header">
-      <div className="header-left">
-        <span className="header-number">#</span>
-        <span className="header-type">S</span>
-        <span className="header-difficulty">🧩</span>
-        <span className="header-question">Question</span>
-      </div>
-      <div className="header-right">
-        <span className="header-tags">Tags</span>
-        <div className="solve-rate-header" onClick={onSolveRateSort}>
-          Solve Rate
-          <div className="sort-icons">
-            <i className="fas fa-sort-up"></i>
-            <i className="fas fa-sort-down"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-});
-
-// Create a memoized questions section
-const QuestionsSection = React.memo(
-  ({ questions, loading, error, onQuestionClick }) => {
-    if (loading) {
-      return <div className="loading-container">Loading questions...</div>;
-    }
-
-    if (error) {
-      return <div className="error-container">{error}</div>;
-    }
-
-    if (questions.length === 0) {
-      return (
-        <div className="no-questions">
-          No questions found matching your filters.
-        </div>
-      );
-    }
-
-    return (
-      <div className="practice-questions">
-        {questions.map((question) => (
-          <div
-            className="question-card"
-            key={question.id}
-            onClick={() => onQuestionClick(question)}
-          >
-            <div className="question-left">
-              <span className="question-number">#{question.id}</span>
-              <div className="question-info-main">
-                <div className="question-header">
-                  <div className="question-type">
-                    <span
-                      className={`subject-badge ${
-                        question.subject_id === 1 ? "math" : "verbal"
-                      }`}
-                    >
-                      {question.subject_id === 1 ? "M" : "V"}
-                    </span>
-                  </div>
-                  <div className="question-type">
-                    <span
-                      className={`difficulty-indicator ${
-                        question.difficulty_level === 0
-                          ? "easy"
-                          : question.difficulty_level === 1
-                          ? "medium"
-                          : question.difficulty_level === 2
-                          ? "hard"
-                          : "medium"
-                      }`}
-                    >
-                      <span className="bar"></span>
-                      <span className="bar"></span>
-                      <span className="bar"></span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="question-content-row">
-              <h3 className="question-title">{question.question_text}</h3>
-              <div className="question-meta">
-                <div className="question-topics">
-                  {question.topic && (
-                    <span className="topic-tag" key={question.topic}>
-                      {question.topic}
-                    </span>
-                  )}
-                  {question.subtopic && (
-                    <span className="topic-tag" key={question.subtopic}>
-                      {question.subtopic}
-                    </span>
-                  )}
-                </div>
-                <div className="completion-rate">
-                  <span> {question.solve_rate}%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
-);
-
-// Create a memoized pagination component
-const Pagination = React.memo(
-  ({ currentPage, totalPages, totalQuestions, onPageChange }) => {
-    return (
-      <div className="pagination">
-        <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage <= 1}
-        >
-          Previous
-        </button>
-        <span>
-          Page {currentPage} of {totalPages} ({totalQuestions} questions)
-        </span>
-        <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage >= totalPages}
-        >
-          Next
-        </button>
       </div>
     );
   }
@@ -717,28 +745,6 @@ const Practice = () => {
     }));
   };
 
-  // const handleFilterToggle = (filter) => {
-  //   // If clicking the active filter, deactivate it
-  //   if (activeFilter === filter) {
-  //     setActiveFilter(null);
-  //     setFilters((prev) => ({
-  //       ...prev,
-  //       solved: false,
-  //       incorrect: false,
-  //       page: 1,
-  //     }));
-  //   } else {
-  //     // Activate the clicked filter, deactivate the other
-  //     setActiveFilter(filter);
-  //     setFilters((prev) => ({
-  //       ...prev,
-  //       solved: filter === "solved",
-  //       incorrect: filter === "incorrect",
-  //       page: 1,
-  //     }));
-  //   }
-  // };
-
   return (
     <div>
       {selectedQuestion ? (
@@ -756,6 +762,8 @@ const Practice = () => {
           <Header />
           <FilterControls
             filters={filters}
+            setActiveFilter={setActiveFilter}
+            activeFilter={activeFilter}
             isVerbal={activeFilter === "verbal"}
             activeDifficulty={activeDifficulty}
             onSubjectToggle={handleSubjectSwitch}
