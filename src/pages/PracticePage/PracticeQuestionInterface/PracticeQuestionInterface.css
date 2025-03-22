@@ -1,8 +1,22 @@
+html,
+body {
+  /* overflow-x: hidden !important; */
+}
+
+.content {
+  overflow-x: hidden;
+}
+
 .practice-question-interface {
   background-color: var(--bg-secondary);
   z-index: 0;
   display: flex;
   flex-direction: column;
+  height: calc(100vh - 12px);
+  padding-top: 12px;
+  position: relative;
+  width: calc(100% + 7px);
+  /* left: -7px; */
 }
 
 /* .practice-question-interface > * {
@@ -23,7 +37,7 @@
   padding: 16px 24px;
   background-color: var(--bg-primary);
   /* border-bottom: 1px solid var(--border-color); */
-  border-radius: 16px 16px 0px 0px;
+  border-radius: 0px 8px 0px 0px;
 }
 
 .header-left {
@@ -151,8 +165,9 @@
   flex: 1;
   padding: 24px;
   overflow-y: auto;
-  border: 8px solid var(--bg-primary);
+  /* border: 8px solid var(--bg-primary); */
   border-block: none;
+  border-left: none;
 }
 
 .question-area {
@@ -212,6 +227,7 @@
   padding: 16px 24px;
   background-color: var(--bg-primary);
   border-top: 1px solid var(--border-color);
+  border-radius: 0px 0px 8px 0px;
   /* margin-left: 92px; */
 }
 

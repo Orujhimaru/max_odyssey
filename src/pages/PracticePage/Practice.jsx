@@ -682,7 +682,7 @@ const Practice = () => {
   };
 
   return (
-    <div className="practice-page">
+    <div>
       {selectedQuestion ? (
         <PracticeQuestionInterface
           question={selectedQuestion}
@@ -694,7 +694,7 @@ const Practice = () => {
           onBookmark={toggleBookmark}
         />
       ) : (
-        <>
+        <div className="practice-page">
           <Header />
           <FilterControls
             filters={filters}
@@ -734,7 +734,7 @@ const Practice = () => {
               Next
             </button>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
