@@ -19,11 +19,37 @@ const PracticeQuestionInterface = ({
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showExplanation, setShowExplanation] = useState(false);
   const questionContentRef = useRef(null);
+  const [previouslyAnswered, setPreviouslyAnswered] = useState(false);
+  const [previousAnswer, setPreviousAnswer] = useState(null);
+  const [wasCorrect, setWasCorrect] = useState(false);
 
-  // Reset selected answer and explanation when question changes
+  // Check localStorage when question changes
   useEffect(() => {
-    setSelectedAnswer(null);
+    // Reset states when question changes
     setShowExplanation(false);
+
+    // Check if this question was previously answered
+    const storedQuestions = JSON.parse(
+      localStorage.getItem("userQuestionStates") || "[]"
+    );
+
+    const existingQuestion = storedQuestions.find(
+      (q) => q.questionId === question.id
+    );
+
+    if (existingQuestion && existingQuestion.isSolved) {
+      setPreviouslyAnswered(true);
+      setPreviousAnswer(existingQuestion.selectedOption);
+      setWasCorrect(existingQuestion.isCorrect);
+      setSelectedAnswer(existingQuestion.selectedOption);
+      setShowExplanation(true);
+    } else {
+      // Important: Reset all states for new questions
+      setPreviouslyAnswered(false);
+      setPreviousAnswer(null);
+      setWasCorrect(false);
+      setSelectedAnswer(null);
+    }
   }, [question.id]);
 
   // New state for tracking user's question interactions
@@ -39,15 +65,16 @@ const PracticeQuestionInterface = ({
   console.log("Full question object:", question);
 
   const handleAnswerSelect = (index) => {
-    setSelectedAnswer(index);
+    if (!previouslyAnswered) {
+      setSelectedAnswer(index);
+    }
   };
 
   const handleSubmit = () => {
-    if (selectedAnswer !== null) {
+    if (selectedAnswer !== null && !previouslyAnswered) {
       const isCorrect = onSubmit ? onSubmit(selectedAnswer) : false;
       setShowExplanation(true);
-
-      // You can use isCorrect for additional UI feedback if needed
+      setWasCorrect(isCorrect);
     }
   };
 
@@ -191,17 +218,22 @@ const PracticeQuestionInterface = ({
               {question.choices.map((choice, index) => (
                 <div
                   key={index}
-                  className={`answer-option ${
-                    selectedAnswer === index ? "selected" : ""
-                  } ${
-                    showExplanation
-                      ? index === question.correct_answer_index
+                  className={`answer-option 
+                    ${selectedAnswer === index ? "selected" : ""} 
+                    ${
+                      showExplanation && index === question.correct_answer_index
                         ? "correct"
-                        : selectedAnswer === index
-                        ? "incorrect"
                         : ""
-                      : ""
-                  }`}
+                    } 
+                    ${
+                      showExplanation &&
+                      selectedAnswer === index &&
+                      index !== question.correct_answer_index
+                        ? "incorrect inc-selected"
+                        : ""
+                    }
+                    ${previouslyAnswered ? "disabled" : ""}
+                  `}
                   onClick={() => handleAnswerSelect(index)}
                 >
                   <div className="option-letter">
@@ -211,7 +243,7 @@ const PracticeQuestionInterface = ({
                 </div>
               ))}
             </div>
-            {!showExplanation && (
+            {!showExplanation && !previouslyAnswered && (
               <div className="submit-container">
                 <button
                   className="submit-button"

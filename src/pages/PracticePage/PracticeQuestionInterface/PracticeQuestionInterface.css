@@ -408,3 +408,35 @@ body {
     flex-direction: column;
   }
 }
+
+.answer-option.disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.previously-answered-message {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.previously-answered-message p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.answer-option.correct {
+  border-color: #4caf50;
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.answer-option.incorrect {
+  border-color: #f44336;
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+.inc-selected .option-letter {
+  background-color: #2f416c !important;
+}
