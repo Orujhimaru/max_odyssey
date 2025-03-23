@@ -475,6 +475,93 @@ const Practice = () => {
     }));
   };
 
+  const toggleTopic = (topic, subtopic = null) => {
+    let newSelectedTopics = [];
+    let selectedMainTopic = null;
+
+    if (subtopic) {
+      // If clicking a subtopic
+      // Find which main topic this subtopic belongs to
+      for (const [mainTopic, subtopics] of Object.entries(verbalTopics)) {
+        if (subtopics.includes(subtopic)) {
+          selectedMainTopic = mainTopic;
+          break;
+        }
+      }
+
+      if (!selectedMainTopic) {
+        console.error(`Subtopic "${subtopic}" not found in any topic`);
+        return;
+      }
+
+      const topicKey = `${selectedMainTopic}:${subtopic}`;
+
+      // If this subtopic is already selected, deselect it
+      if (selectedTopics.includes(topicKey)) {
+        newSelectedTopics = [];
+      } else {
+        // Otherwise, select only this subtopic
+        newSelectedTopics = [topicKey];
+      }
+    } else {
+      // If clicking a main topic
+      // Check if this topic exists
+      if (!verbalTopics[topic]) {
+        console.error(`Topic "${topic}" not found in verbalTopics`);
+        return;
+      }
+
+      // Get all subtopics for this topic
+      const allSubtopicKeys = verbalTopics[topic].map(
+        (sub) => `${topic}:${sub}`
+      );
+
+      // Check if all subtopics of this topic are already selected
+      const allSubtopicsSelected = allSubtopicKeys.every((key) =>
+        selectedTopics.includes(key)
+      );
+
+      if (allSubtopicsSelected) {
+        // If all are selected, deselect all
+        newSelectedTopics = [];
+      } else {
+        // Otherwise, select all subtopics of this topic
+        newSelectedTopics = [...allSubtopicKeys];
+        selectedMainTopic = topic;
+      }
+    }
+
+    // Update selectedTopics state
+    setSelectedTopics(newSelectedTopics);
+
+    // Prepare filter updates
+    const filterUpdates = {
+      page: 1,
+    };
+
+    // Only add topic and subtopic if we have selections
+    if (newSelectedTopics.length > 0) {
+      filterUpdates.topic = selectedMainTopic;
+
+      // If we selected a specific subtopic (not the whole topic)
+      if (newSelectedTopics.length === 1) {
+        filterUpdates.subtopic = newSelectedTopics[0].split(":")[1];
+      } else {
+        filterUpdates.subtopic = "";
+      }
+    } else {
+      // Clear topic and subtopic filters if nothing is selected
+      filterUpdates.topic = "";
+      filterUpdates.subtopic = "";
+    }
+
+    // Update filters
+    setFilters((prev) => ({
+      ...prev,
+      ...filterUpdates,
+    }));
+  };
+
   return (
     <div>
       {selectedQuestion ? (
@@ -597,99 +684,43 @@ const FilterControls = React.memo(
       "Standard English Convention": ["Boundary", "Form, Structure, and Sense"],
     };
 
-    // const toggleTopic = (topic, subtopic = null) => {
-    //   // // Check if the topic exists in verbalTopics
-    //   // if (!verbalTopics[topic] && !subtopic) {
-    //   //   console.error(`Topic "${topic}" not found in verbalTopics`);
-    //   //   return;
-    //   // }
-    //   console.log
-    //   let newSelectedTopics = [];
-
-    //   if (!subtopic) {
-    //     // If clicking a main topic
-    //     const allSubtopicKeys = verbalTopics[topic].map(
-    //       (sub) => `${topic}:${sub}`
-    //     );
-
-    //     // Check if all subtopics of this topic are already selected
-    //     const allSubtopicsSelected = allSubtopicKeys.every((key) =>
-    //       selectedTopics.includes(key)
-    //     );
-
-    //     if (allSubtopicsSelected) {
-    //       // If all are selected, deselect all (clear selection)
-    //       newSelectedTopics = [];
-    //     } else {
-    //       // Otherwise, select all subtopics of this topic (and only this topic)
-    //       newSelectedTopics = [...allSubtopicKeys];
-    //     }
-    //   } else {
-    //     // If clicking a subtopic
-    //     const topicKey = `${topic}:${subtopic}`;
-
-    //     // If this subtopic is already selected, deselect it
-    //     if (selectedTopics.includes(topicKey)) {
-    //       newSelectedTopics = [];
-    //     } else {
-    //       // Otherwise, select only this subtopic
-    //       newSelectedTopics = [topicKey];
-    //     }
-    //   }
-
-    // Update selectedTopics state
-    //   setSelectedTopics(newSelectedTopics);
-
-    //   // Prepare filter updates
-    //   const filterUpdates = {
-    //     page: 1,
-    //   };
-
-    //   // Only add topic and subtopic if we have selections
-    //   if (newSelectedTopics.length > 0) {
-    //     // Get the topic name (will be the same for all selections since we only allow one topic)
-    //     const topicName = newSelectedTopics[0].split(":")[0];
-
-    //     // Check if all subtopics of this topic are selected
-    //     const allSubtopicKeys = verbalTopics[topicName].map(
-    //       (sub) => `${topicName}:${sub}`
-    //     );
-    //     const allSelected =
-    //       allSubtopicKeys.length === newSelectedTopics.length &&
-    //       allSubtopicKeys.every((key) => newSelectedTopics.includes(key));
-
-    //     if (allSelected) {
-    //       // If all subtopics are selected, just send the topic
-    //       filterUpdates.topic = topicName;
-    //       filterUpdates.subtopic = "";
-    //     } else {
-    //       // Otherwise, send the specific subtopic
-    //       filterUpdates.topic = topicName;
-    //       filterUpdates.subtopic = newSelectedTopics[0].split(":")[1];
-    //     }
-    //   } else {
-    //     // Clear topic and subtopic filters if nothing is selected
-    //     filterUpdates.topic = "";
-    //     filterUpdates.subtopic = "";
-    //   }
-
-    //   // Update filters
-    //   setFilters((prev) => ({
-    //     ...prev,
-    //     ...filterUpdates,
-    //   }));
-    // };
     const toggleTopic = (topic, subtopic = null) => {
-      // Check if the topic exists in verbalTopics
-      if (!verbalTopics[topic] && !subtopic) {
-        console.error(`Topic "${topic}" not found in verbalTopics`);
-        return;
-      }
-
       let newSelectedTopics = [];
+      let selectedMainTopic = null;
 
-      if (!subtopic) {
+      if (subtopic) {
+        // If clicking a subtopic
+        // Find which main topic this subtopic belongs to
+        for (const [mainTopic, subtopics] of Object.entries(verbalTopics)) {
+          if (subtopics.includes(subtopic)) {
+            selectedMainTopic = mainTopic;
+            break;
+          }
+        }
+
+        if (!selectedMainTopic) {
+          console.error(`Subtopic "${subtopic}" not found in any topic`);
+          return;
+        }
+
+        const topicKey = `${selectedMainTopic}:${subtopic}`;
+
+        // If this subtopic is already selected, deselect it
+        if (selectedTopics.includes(topicKey)) {
+          newSelectedTopics = [];
+        } else {
+          // Otherwise, select only this subtopic
+          newSelectedTopics = [topicKey];
+        }
+      } else {
         // If clicking a main topic
+        // Check if this topic exists
+        if (!verbalTopics[topic]) {
+          console.error(`Topic "${topic}" not found in verbalTopics`);
+          return;
+        }
+
+        // Get all subtopics for this topic
         const allSubtopicKeys = verbalTopics[topic].map(
           (sub) => `${topic}:${sub}`
         );
@@ -700,22 +731,12 @@ const FilterControls = React.memo(
         );
 
         if (allSubtopicsSelected) {
-          // If all are selected, deselect all (clear selection)
+          // If all are selected, deselect all
           newSelectedTopics = [];
         } else {
-          // Otherwise, select all subtopics of this topic (and only this topic)
+          // Otherwise, select all subtopics of this topic
           newSelectedTopics = [...allSubtopicKeys];
-        }
-      } else {
-        // If clicking a subtopic
-        const topicKey = `${subtopic}`;
-
-        // If this subtopic is already selected, deselect it
-        if (selectedTopics.includes(topicKey)) {
-          newSelectedTopics = [];
-        } else {
-          // Otherwise, select only this subtopic
-          newSelectedTopics = [topicKey];
+          selectedMainTopic = topic;
         }
       }
 
@@ -729,30 +750,19 @@ const FilterControls = React.memo(
 
       // Only add topic and subtopic if we have selections
       if (newSelectedTopics.length > 0) {
-        // Get the topic name (will be the same for all selections since we only allow one topic)
-        const topicName = newSelectedTopics[0].split(":")[0];
+        filterUpdates.topic = selectedMainTopic;
 
-        // Check if all subtopics of this topic are selected
-        // const allSubtopicKeys = verbalTopics[topicName].map((sub) => `${sub}`);
-        // const allSelected =
-        //   allSubtopicKeys.length === newSelectedTopics.length &&
-        //   allSubtopicKeys.every((key) => newSelectedTopics.includes(key));
-
-        if (topic) {
-          // If all subtopics are selected, just send the topic
-          filterUpdates.topic = topicName;
-          filterUpdates.subtopic = "";
+        // If we selected a specific subtopic (not the whole topic)
+        if (newSelectedTopics.length === 1) {
+          filterUpdates.subtopic = newSelectedTopics[0].split(":")[1];
         } else {
-          // Otherwise, send the specific subtopic
-          filterUpdates.topic = "";
-          filterUpdates.subtopic = newSelectedTopics[0];
+          filterUpdates.subtopic = "";
         }
       } else {
         // Clear topic and subtopic filters if nothing is selected
         filterUpdates.topic = "";
         filterUpdates.subtopic = "";
       }
-      console.log(filterUpdates);
 
       // Update filters
       setFilters((prev) => ({
@@ -760,6 +770,7 @@ const FilterControls = React.memo(
         ...filterUpdates,
       }));
     };
+
     // Create a local handler that will be used if the prop is missing
     const handleSortClick = () => {
       console.log("Sort header clicked");
@@ -832,15 +843,22 @@ const FilterControls = React.memo(
             {!showBookmarked && showTopicFilter && (
               <div className="topic-filter-dropdown">
                 {Object.entries(verbalTopics).map(([topic, subtopics]) => {
-                  const allSubtopicsSelected = subtopics.every((sub) =>
+                  // Check if this topic is selected (all its subtopics are selected)
+                  const isTopicSelected = subtopics.every((sub) =>
                     selectedTopics.includes(`${topic}:${sub}`)
                   );
+
+                  // Get the main topic of the current selection (if any)
+                  const selectedMainTopic =
+                    selectedTopics.length > 0
+                      ? selectedTopics[0].split(":")[0]
+                      : null;
 
                   return (
                     <div key={topic} className="topic-section">
                       <h3
                         className={`topic-header ${
-                          allSubtopicsSelected ? "selected" : ""
+                          isTopicSelected ? "selected" : ""
                         }`}
                         onClick={() => toggleTopic(topic)}
                       >
@@ -851,7 +869,8 @@ const FilterControls = React.memo(
                           <div
                             key={`${topic}-${subtopic}`}
                             className={`topic-tag ${
-                              selectedTopics.includes(`${subtopic}`)
+                              selectedTopics.includes(`${topic}:${subtopic}`) ||
+                              (selectedMainTopic === topic && isTopicSelected)
                                 ? "selected"
                                 : ""
                             }`}
