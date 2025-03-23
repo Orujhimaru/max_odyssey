@@ -104,7 +104,7 @@ const PracticeQuestionInterface = ({
             <span className="question-number">#{question.id}</span>
           </div>
           <div className="question-meta">
-            <div className="difficulty-indicator">
+            <div className="difficulty-indicator-interface">
               <span
                 className={`difficulty-badge difficulty-${question.difficulty_level}`}
               >

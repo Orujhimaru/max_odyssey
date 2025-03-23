@@ -509,6 +509,7 @@
   color: var(--text-primary);
   width: 130px;
   font-weight: 400;
+  white-space: nowrap;
 }
 
 .filter-dropdown {
@@ -518,7 +519,7 @@
 }
 
 .fa-chevron-down {
-  margin-left: 4px;
+  margin-left: 6px;
 }
 
 .dropdown-menu {
@@ -560,13 +561,15 @@
 }
 
 .topic-section {
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .topic-section h3 {
   font-size: 14px;
+  color: var(--text-secondary);
   margin-bottom: 8px;
-  color: var(--text-primary);
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .topic-tags {
@@ -576,20 +579,21 @@
 }
 
 .topic-tag {
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
   padding: 4px 12px;
   border-radius: 16px;
+  background-color: var(--bg-secondary);
   font-size: 13px;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+.topic-tag:hover {
+  background-color: var(--bg-hover);
 }
 
 .topic-tag.selected {
-  background-color: var(--verbal-color);
+  background-color: var(--primary-color);
   color: white;
-  border-color: var(--verbal-color);
 }
 
 .clear-topics-button {
@@ -810,43 +814,24 @@
 }
 
 .difficulty-indicator {
-  display: flex;
-  gap: 2px;
-  align-items: flex-end;
-  /* height: 12px; */
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: 6px;
+  margin-right: 2px;
 }
 
-.difficulty-indicator .bar {
-  width: 4px;
-  background-color: #c7c7c7;
-  border-radius: 1px;
+.difficulty-indicator.easy {
+  background-color: #4caf50; /* green */
 }
 
-.difficulty-indicator .bar:nth-child(1) {
-  height: 6px;
+.difficulty-indicator.medium {
+  background-color: #ff9800; /* orange */
 }
 
-.difficulty-indicator .bar:nth-child(2) {
-  height: 10px;
-}
-
-.difficulty-indicator .bar:nth-child(3) {
-  height: 14px;
-}
-
-.difficulty-indicator.easy .bar:nth-child(1) {
-  background-color: #4caf50;
-}
-
-.difficulty-indicator.medium .bar:nth-child(1),
-.difficulty-indicator.medium .bar:nth-child(2) {
-  background-color: #ff9800;
-}
-
-.difficulty-indicator.hard .bar:nth-child(1),
-.difficulty-indicator.hard .bar:nth-child(2),
-.difficulty-indicator.hard .bar:nth-child(3) {
-  background-color: #ff5555 !important;
+.difficulty-indicator.hard {
+  background-color: #f44336; /* red */
 }
 
 .question-actions button {
@@ -1187,4 +1172,34 @@ button:focus-visible {
 .filter-toggle.active[data-filter="incorrect"] {
   background-color: #ff5555;
   border-color: #ff5555;
+}
+
+.topic-header {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.topic-header:hover {
+  color: var(--verbal-color);
+}
+
+.topic-header.selected {
+  color: var(--verbal-color);
+  border-bottom-color: var(--verbal-color);
+}
+
+.topic-tag.selected {
+  background-color: var(--verbal-color);
+  color: white;
+}
+
+.topic-tag:hover {
+  background-color: var(--verbal-color);
+  opacity: 0.8;
+  color: white;
 }

@@ -67,14 +67,14 @@ const QuestionsSection = React.memo(
 
     return (
       <div className="practice-questions">
-        {questions.map((question) => (
+        {questions.map((question, index) => (
           <div
             className="question-card"
             key={question.id}
             onClick={() => onQuestionClick(question)}
           >
             <div className="question-left">
-              <span className="question-number">#{question.id}</span>
+              <span className="question-number">#{index + 1}</span>
               <div className="question-info-main">
                 <div className="question-header">
                   <div className="question-type">
@@ -200,31 +200,62 @@ const FilterControls = React.memo(
       "Trigonometry",
     ];
 
-    // Verbal topics
-    const verbalTopics = [
-      "Reading Comprehension",
-      "Vocabulary in Context",
-      "Evidence-Based Reading",
-      "Command of Evidence",
-      "Words in Context",
-      "Expression of Ideas",
-      "Standard English Conventions",
-      "Grammar",
-      "Punctuation",
-      "Rhetoric",
-      "Synthesis",
-      "Analysis",
-      "Main Idea",
-      "Author's Purpose",
-      "Inference",
-    ];
+    // Define verbal topics with their subtopics
+    const verbalTopics = {
+      "Craft and Structure": [
+        "Cross-Text Connections",
+        "Text Structure and Purpose",
+        "Words in Context",
+      ],
+      "Expression of Ideas": ["Rhetorical Synthesis", "Transitions"],
+      "Information and Ideas": [
+        "Central Ideas and Details",
+        "Command of Evidence",
+        "Inferences",
+      ],
+      "Standard English Convention": ["Boundary", "Form, Structure, and Sense"],
+    };
 
-    const toggleTopic = (topic) => {
-      if (selectedTopics.includes(topic)) {
-        setSelectedTopics(selectedTopics.filter((t) => t !== topic));
+    const toggleTopic = (topic, subtopic = null) => {
+      if (!subtopic) {
+        // If clicking the main topic
+        const allSubtopicKeys = verbalTopics[topic].map(
+          (sub) => `${topic}:${sub}`
+        );
+        const allSubtopicsSelected = allSubtopicKeys.every((key) =>
+          selectedTopics.includes(key)
+        );
+
+        if (allSubtopicsSelected) {
+          // Deselect all subtopics of this topic
+          setSelectedTopics(
+            selectedTopics.filter((t) => !allSubtopicKeys.includes(t))
+          );
+        } else {
+          // Select all subtopics of this topic
+          const newSelectedTopics = [
+            ...selectedTopics,
+            ...allSubtopicKeys.filter((k) => !selectedTopics.includes(k)),
+          ];
+          setSelectedTopics(newSelectedTopics);
+        }
       } else {
-        setSelectedTopics([...selectedTopics, topic]);
+        // If clicking a subtopic
+        const topicKey = `${topic}:${subtopic}`;
+        if (selectedTopics.includes(topicKey)) {
+          setSelectedTopics(selectedTopics.filter((t) => t !== topicKey));
+        } else {
+          setSelectedTopics([...selectedTopics, topicKey]);
+        }
       }
+
+      // Update filters
+      setFilters((prev) => ({
+        ...prev,
+        topic: topic,
+        subtopic: selectedTopics.join(","),
+        page: 1,
+      }));
     };
 
     // Create a local handler that will be used if the prop is missing
@@ -298,48 +329,39 @@ const FilterControls = React.memo(
             </button>
             {!showBookmarked && showTopicFilter && (
               <div className="topic-filter-dropdown">
-                <div className="topic-section">
-                  <h3>Math Topics</h3>
-                  <div className="topic-tags">
-                    {mathTopics.map((topic) => (
-                      <div
-                        key={`math-${topic}`}
-                        className={`topic-tag ${
-                          selectedTopics.includes(topic) ? "selected" : ""
+                {Object.entries(verbalTopics).map(([topic, subtopics]) => {
+                  const allSubtopicsSelected = subtopics.every((sub) =>
+                    selectedTopics.includes(`${topic}:${sub}`)
+                  );
+
+                  return (
+                    <div key={topic} className="topic-section">
+                      <h3
+                        className={`topic-header ${
+                          allSubtopicsSelected ? "selected" : ""
                         }`}
                         onClick={() => toggleTopic(topic)}
                       >
                         {topic}
+                      </h3>
+                      <div className="topic-tags">
+                        {subtopics.map((subtopic) => (
+                          <div
+                            key={`${topic}-${subtopic}`}
+                            className={`topic-tag ${
+                              selectedTopics.includes(`${topic}:${subtopic}`)
+                                ? "selected"
+                                : ""
+                            }`}
+                            onClick={() => toggleTopic(topic, subtopic)}
+                          >
+                            {subtopic}
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="topic-section">
-                  <h3>Verbal Topics</h3>
-                  <div className="topic-tags">
-                    {verbalTopics.map((topic) => (
-                      <div
-                        key={`verbal-${topic}`}
-                        className={`topic-tag ${
-                          selectedTopics.includes(topic) ? "selected" : ""
-                        }`}
-                        onClick={() => toggleTopic(topic)}
-                      >
-                        {topic}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {selectedTopics.length > 0 && (
-                  <button
-                    className="clear-topics-button"
-                    onClick={() => setSelectedTopics([])}
-                  >
-                    Clear All Topics
-                  </button>
-                )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -353,7 +375,18 @@ const FilterControls = React.memo(
               }
               disabled={showBookmarked}
             >
-              Difficulty {activeDifficulty !== null && `(${activeDifficulty})`}
+              Difficulty
+              {activeDifficulty !== null && (
+                <span
+                  className={`difficulty-indicator ${
+                    activeDifficulty === 0
+                      ? "easy"
+                      : activeDifficulty === 1
+                      ? "medium"
+                      : "hard"
+                  }`}
+                />
+              )}
               <i
                 className={`fas fa-chevron-${
                   showDifficultyFilter ? "up" : "down"
@@ -641,14 +674,6 @@ const Practice = () => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString();
-  };
-
-  const toggleTopic = (topic) => {
-    if (selectedTopics.includes(topic)) {
-      setSelectedTopics(selectedTopics.filter((t) => t !== topic));
-    } else {
-      setSelectedTopics([...selectedTopics, topic]);
-    }
   };
 
   // Add an effect to update filters when activeDifficulty changes
