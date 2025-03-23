@@ -14,6 +14,7 @@ const PracticeQuestionInterface = ({
   questionNumber,
   onBookmark = () => {},
   isBookmarked,
+  onSubmit,
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -43,7 +44,10 @@ const PracticeQuestionInterface = ({
 
   const handleSubmit = () => {
     if (selectedAnswer !== null) {
+      const isCorrect = onSubmit ? onSubmit(selectedAnswer) : false;
       setShowExplanation(true);
+
+      // You can use isCorrect for additional UI feedback if needed
     }
   };
 

@@ -401,10 +401,20 @@ const Practice = () => {
     }
   };
 
-  // // Your existing switch handler
-  // const handleSubjectSwitch = () => {
-  //   setActiveFilter((prev) => (prev === "math" ? "verbal" : "math"));
-  // };
+  // Add an effect to update filters when the switch changes
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      // Convert switch state to subject ID: false (Math) = 1, true (Verbal) = 2
+      subject: activeFilter === "math" ? 1 : 2,
+      page: 1, // Reset to page 1 when subject changes
+    }));
+  }, [activeFilter]);
+
+  // Your existing switch handler
+  const handleSubjectSwitch = () => {
+    setActiveFilter((prev) => (prev === "math" ? "verbal" : "math"));
+  };
 
   // Add a handler for the solve rate sort button
   const handleSolveRateSort = useCallback(() => {
@@ -552,6 +562,62 @@ const Practice = () => {
     }));
   };
 
+  const handleQuestionSubmit = (
+    questionId,
+    selectedAnswer,
+    correctAnswerIndex
+  ) => {
+    // Determine if the answer was correct
+    const isCorrect = selectedAnswer === correctAnswerIndex;
+
+    // Get existing question states from localStorage
+    const storedQuestions = JSON.parse(
+      localStorage.getItem("userQuestionStates") || "[]"
+    );
+
+    // Find if this question already exists in localStorage
+    const existingIndex = storedQuestions.findIndex(
+      (q) => q.questionId === questionId
+    );
+
+    // Create the updated question state
+    const updatedQuestionState = {
+      questionId,
+      isBookmarked:
+        existingIndex >= 0
+          ? storedQuestions[existingIndex].isBookmarked
+          : false,
+      isSolved: true,
+      isCorrect,
+      selectedOption: selectedAnswer,
+      timestamp: new Date().toISOString(),
+    };
+
+    // Update the array
+    if (existingIndex >= 0) {
+      storedQuestions[existingIndex] = {
+        ...storedQuestions[existingIndex],
+        ...updatedQuestionState,
+      };
+    } else {
+      storedQuestions.push(updatedQuestionState);
+    }
+
+    // Save back to localStorage
+    localStorage.setItem("userQuestionStates", JSON.stringify(storedQuestions));
+
+    // You can also update state if needed
+    // For example, to show a "Solved" indicator
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((q) =>
+        q.id === questionId ? { ...q, userState: updatedQuestionState } : q
+      )
+    );
+
+    // Return the result for immediate UI feedback
+    return isCorrect;
+  };
+
   return (
     <div>
       {selectedQuestion ? (
@@ -562,7 +628,16 @@ const Practice = () => {
           onPreviousQuestion={handlePreviousQuestion}
           hasNext={currentQuestionIndex < questions.length - 1}
           hasPrevious={currentQuestionIndex > 0}
+          questionNumber={currentQuestionIndex + 1}
           onBookmark={toggleBookmark}
+          isBookmarked={selectedQuestion.is_bookmarked}
+          onSubmit={(selectedAnswer) =>
+            handleQuestionSubmit(
+              selectedQuestion.id,
+              selectedAnswer,
+              selectedQuestion.correct_answer_index
+            )
+          }
         />
       ) : (
         <div className="practice-page">
@@ -573,6 +648,7 @@ const Practice = () => {
             setActiveFilter={setActiveFilter}
             activeFilter={activeFilter}
             activeDifficulty={activeDifficulty}
+            onSubjectToggle={handleSubjectSwitch}
             onDifficultyChange={handleDifficultyClick}
             onSolveRateSort={handleSolveRateSort}
             onBookmarkToggle={handleBookmarkToggle}
