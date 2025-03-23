@@ -481,6 +481,28 @@ const FilterControls = React.memo(
   }
 );
 
+// Add the debounce hook right after imports
+const useDebounce = (callback, delay) => {
+  const timeoutRef = useRef(null);
+
+  const debouncedFn = useCallback(
+    (...args) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      return new Promise((resolve) => {
+        timeoutRef.current = setTimeout(() => {
+          resolve(callback(...args));
+        }, delay);
+      });
+    },
+    [callback, delay]
+  );
+
+  return debouncedFn;
+};
+
 const Practice = () => {
   const [activeFilter, setActiveFilter] = useState(null); // null, 'solved', or 'incorrect'
   const [selectedTopics, setSelectedTopics] = useState([]);
@@ -579,6 +601,13 @@ const Practice = () => {
     }
   };
 
+  // Create debounced version
+  const debouncedFetchQuestions = useDebounce(
+    (filterParams) => api.getFilteredQuestions(filterParams),
+
+    500
+  );
+
   // Update the useEffect that fetches questions
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -600,11 +629,17 @@ const Practice = () => {
             pageSize
           );
         } else {
-          data = await api.getFilteredQuestions({
+          const cleanup = await debouncedFetchQuestions({
             ...filters,
             page: currentPage,
             page_size: pageSize,
           });
+          return cleanup;
+          // data = await api.getFilteredQuestions({
+          //   ...filters,
+          // page: currentPage,
+          // page_size: pageSize,
+          // });
         }
 
         // Update to use the correct response structure
