@@ -70,12 +70,12 @@
   padding-left: 8px;
 }
 
-.difficulty-indicator {
+/* .difficulty-indicator {
   display: flex;
   gap: 2px;
   align-items: flex-end;
-  /* height: 12px; */
-}
+
+} */
 
 .difficulty-indicator .bar {
   width: 4px;

@@ -88,7 +88,7 @@ const QuestionsSection = React.memo(
                   </div>
                   <div className="question-type">
                     <span
-                      className={`difficulty-indicator ${
+                      className={`difficulty-indicator-bars ${
                         question.difficulty_level === 0
                           ? "easy"
                           : question.difficulty_level === 1
@@ -601,14 +601,15 @@ const Practice = () => {
     }
   };
 
+  // Create a proper callback function for the API call
+  const fetchQuestionsCallback = useCallback((filterParams) => {
+    return api.getFilteredQuestions(filterParams);
+  }, []);
+
   // Create debounced version
-  const debouncedFetchQuestions = useDebounce(
-    (filterParams) => api.getFilteredQuestions(filterParams),
+  const debouncedFetchQuestions = useDebounce(fetchQuestionsCallback, 500);
 
-    500
-  );
-
-  // Update the useEffect that fetches questions
+  // Update the useEffect
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -629,23 +630,15 @@ const Practice = () => {
             pageSize
           );
         } else {
-          const cleanup = await debouncedFetchQuestions({
+          data = await debouncedFetchQuestions({
             ...filters,
             page: currentPage,
             page_size: pageSize,
           });
-          return cleanup;
-          // data = await api.getFilteredQuestions({
-          //   ...filters,
-          // page: currentPage,
-          // page_size: pageSize,
-          // });
         }
 
-        // Update to use the correct response structure
         setQuestions(data.questions || []);
 
-        // Access pagination data from the response
         if (data.pagination) {
           setCurrentPage(data.pagination.current_page);
           setTotalQuestions(data.pagination.total_items);
@@ -661,7 +654,7 @@ const Practice = () => {
     };
 
     fetchData();
-  }, [filters, showBookmarked, currentPage, pageSize]);
+  }, [filters, showBookmarked, currentPage, pageSize, debouncedFetchQuestions]);
 
   // Simplify the toggleBookmark function
   const toggleBookmark = async (questionId) => {
