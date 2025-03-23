@@ -131,7 +131,7 @@ export const api = {
   getFilteredQuestions: async (filters) => {
     // Prepare query parameters
     const queryParams = new URLSearchParams();
-
+    console.log("Filters", filters);
     // Add required subject parameter
     if (filters.subject) {
       queryParams.append("subject", filters.subject);

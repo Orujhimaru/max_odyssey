@@ -158,329 +158,6 @@ const Pagination = React.memo(
   }
 );
 
-// Create a memoized filter controls component
-const FilterControls = React.memo(
-  ({
-    filters,
-    activeFilter,
-    setActiveFilter,
-    isVerbal,
-    activeDifficulty,
-    onSubjectToggle,
-    onDifficultyChange,
-    onSolveRateSort,
-    onBookmarkToggle,
-    showBookmarked,
-    solved,
-    handleSolvedChange,
-    incorrect,
-    handleIncorrectChange,
-  }) => {
-    // Add state for dropdown visibility
-    const [showTopicFilter, setShowTopicFilter] = useState(false);
-    const [showDifficultyFilter, setShowDifficultyFilter] = useState(false);
-    const [selectedTopics, setSelectedTopics] = useState([]);
-
-    // Math topics
-    const mathTopics = [
-      "Algebra",
-      "Linear Equations",
-      "Quadratic Equations",
-      "Functions",
-      "Exponents & Radicals",
-      "Inequalities",
-      "Systems of Equations",
-      "Coordinate Geometry",
-      "Circles",
-      "Triangles",
-      "Probability",
-      "Statistics",
-      "Data Analysis",
-      "Word Problems",
-      "Trigonometry",
-    ];
-
-    // Define verbal topics with their subtopics
-    const verbalTopics = {
-      "Craft and Structure": [
-        "Cross-Text Connections",
-        "Text Structure and Purpose",
-        "Words in Context",
-      ],
-      "Expression of Ideas": ["Rhetorical Synthesis", "Transitions"],
-      "Information and Ideas": [
-        "Central Ideas and Details",
-        "Command of Evidence",
-        "Inferences",
-      ],
-      "Standard English Convention": ["Boundary", "Form, Structure, and Sense"],
-    };
-
-    const toggleTopic = (topic, subtopic = null) => {
-      if (!subtopic) {
-        // If clicking the main topic
-        const allSubtopicKeys = verbalTopics[topic].map(
-          (sub) => `${topic}:${sub}`
-        );
-        const allSubtopicsSelected = allSubtopicKeys.every((key) =>
-          selectedTopics.includes(key)
-        );
-
-        if (allSubtopicsSelected) {
-          // Deselect all subtopics of this topic
-          setSelectedTopics(
-            selectedTopics.filter((t) => !allSubtopicKeys.includes(t))
-          );
-        } else {
-          // Select all subtopics of this topic
-          const newSelectedTopics = [
-            ...selectedTopics,
-            ...allSubtopicKeys.filter((k) => !selectedTopics.includes(k)),
-          ];
-          setSelectedTopics(newSelectedTopics);
-        }
-      } else {
-        // If clicking a subtopic
-        const topicKey = `${topic}:${subtopic}`;
-        if (selectedTopics.includes(topicKey)) {
-          setSelectedTopics(selectedTopics.filter((t) => t !== topicKey));
-        } else {
-          setSelectedTopics([...selectedTopics, topicKey]);
-        }
-      }
-
-      // Update filters
-      setFilters((prev) => ({
-        ...prev,
-        topic: topic,
-        subtopic: selectedTopics.join(","),
-        page: 1,
-      }));
-    };
-
-    // Create a local handler that will be used if the prop is missing
-    const handleSortClick = () => {
-      console.log("Sort header clicked");
-      if (typeof onSolveRateSort === "function") {
-        onSolveRateSort();
-      } else {
-        console.error("onSolveRateSort function is not available");
-      }
-    };
-
-    const handleFilterToggle = (filter) => {
-      // If clicking the active filter, deactivate it
-      if (activeFilter === filter) {
-        setActiveFilter(null);
-        setFilters((prev) => ({
-          ...prev,
-          solved: false,
-          incorrect: false,
-          page: 1,
-        }));
-      } else {
-        // Activate the clicked filter, deactivate the other
-        setActiveFilter(filter);
-        setFilters((prev) => ({
-          ...prev,
-          solved: filter === "solved",
-          incorrect: filter === "incorrect",
-          page: 1,
-        }));
-      }
-    };
-
-    return (
-      <div className="practice-filters">
-        <div
-          className={`filter-row ${showBookmarked ? "disabled-filters" : ""}`}
-        >
-          <div className="subject-toggle-container">
-            <button
-              className={`subject-toggle ${
-                filters.subject === 1 ? "active verbal" : ""
-              }`}
-              onClick={() => onSubjectToggle(1)}
-            >
-              V
-            </button>
-            <button
-              className={`math subject-toggle ${
-                filters.subject === 2 ? "active math" : ""
-              }`}
-              onClick={() => onSubjectToggle(2)}
-            >
-              M
-            </button>
-          </div>
-
-          <div className="filter-dropdown">
-            <button
-              className="filter-dropdown-button"
-              onClick={() =>
-                !showBookmarked && setShowTopicFilter(!showTopicFilter)
-              }
-              disabled={showBookmarked}
-            >
-              Topics {selectedTopics.length > 0 && `(${selectedTopics.length})`}
-              <i
-                className={`fas fa-chevron-${showTopicFilter ? "up" : "down"}`}
-              ></i>
-            </button>
-            {!showBookmarked && showTopicFilter && (
-              <div className="topic-filter-dropdown">
-                {Object.entries(verbalTopics).map(([topic, subtopics]) => {
-                  const allSubtopicsSelected = subtopics.every((sub) =>
-                    selectedTopics.includes(`${topic}:${sub}`)
-                  );
-
-                  return (
-                    <div key={topic} className="topic-section">
-                      <h3
-                        className={`topic-header ${
-                          allSubtopicsSelected ? "selected" : ""
-                        }`}
-                        onClick={() => toggleTopic(topic)}
-                      >
-                        {topic}
-                      </h3>
-                      <div className="topic-tags">
-                        {subtopics.map((subtopic) => (
-                          <div
-                            key={`${topic}-${subtopic}`}
-                            className={`topic-tag ${
-                              selectedTopics.includes(`${topic}:${subtopic}`)
-                                ? "selected"
-                                : ""
-                            }`}
-                            onClick={() => toggleTopic(topic, subtopic)}
-                          >
-                            {subtopic}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          <div className="filter-dropdown">
-            <button
-              className="filter-dropdown-button"
-              onClick={() =>
-                !showBookmarked &&
-                setShowDifficultyFilter(!showDifficultyFilter)
-              }
-              disabled={showBookmarked}
-            >
-              Difficulty
-              {activeDifficulty !== null && (
-                <span
-                  className={`difficulty-indicator ${
-                    activeDifficulty === 0
-                      ? "easy"
-                      : activeDifficulty === 1
-                      ? "medium"
-                      : "hard"
-                  }`}
-                />
-              )}
-              <i
-                className={`fas fa-chevron-${
-                  showDifficultyFilter ? "up" : "down"
-                }`}
-              ></i>
-            </button>
-            {!showBookmarked && showDifficultyFilter && (
-              <div className="difficulty-filter-dropdown">
-                <div
-                  className={`difficulty-option ${
-                    activeDifficulty === null ? "selected" : ""
-                  }`}
-                  onClick={() => {
-                    onDifficultyChange(null);
-                    setShowDifficultyFilter(false);
-                  }}
-                >
-                  All Levels
-                </div>
-                <div
-                  className={`difficulty-option easy ${
-                    activeDifficulty === 0 ? "selected" : ""
-                  }`}
-                  onClick={() => {
-                    onDifficultyChange(0);
-                    setShowDifficultyFilter(false);
-                  }}
-                >
-                  Easy
-                </div>
-                <div
-                  className={`difficulty-option medium ${
-                    activeDifficulty === 1 ? "selected" : ""
-                  }`}
-                  onClick={() => {
-                    onDifficultyChange(1);
-                    setShowDifficultyFilter(false);
-                  }}
-                >
-                  Medium
-                </div>
-                <div
-                  className={`difficulty-option hard ${
-                    activeDifficulty === 2 ? "selected" : ""
-                  }`}
-                  onClick={() => {
-                    onDifficultyChange(2);
-                    setShowDifficultyFilter(false);
-                  }}
-                >
-                  Hard
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="filter-row down">
-          <div className="filter-toggles">
-            <button
-              className={`filter-toggle ${showBookmarked ? "active" : ""}`}
-              onClick={onBookmarkToggle}
-            >
-              <i className="fas fa-bookmark"></i> Bookmarked
-            </button>
-          </div>{" "}
-          <div className="filter-toggles">
-            <button
-              className={`filter-toggle ${
-                activeFilter === "solved" ? "active" : ""
-              }`}
-              onClick={() => handleFilterToggle("solved")}
-              data-filter="solved"
-            >
-              <i className="fas fa-check-circle"></i>
-              Solved
-            </button>
-            <button
-              className={`filter-toggle ${
-                activeFilter === "incorrect" ? "active" : ""
-              }`}
-              onClick={() => handleFilterToggle("incorrect")}
-              data-filter="incorrect"
-            >
-              <i className="fas fa-times-circle"></i>
-              Incorrect
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-);
-
 // Add the debounce hook right after imports
 const useDebounce = (callback, delay) => {
   const timeoutRef = useRef(null);
@@ -815,6 +492,7 @@ const Practice = () => {
           <Header />
           <FilterControls
             filters={filters}
+            setFilters={setFilters}
             setActiveFilter={setActiveFilter}
             activeFilter={activeFilter}
             isVerbal={activeFilter === "verbal"}
@@ -860,5 +538,331 @@ const Practice = () => {
     </div>
   );
 };
+// Create a memoized filter controls component
+const FilterControls = React.memo(
+  ({
+    filters,
+    activeFilter,
+    setFilters,
+    setActiveFilter,
+    isVerbal,
+    activeDifficulty,
+    onSubjectToggle,
+    onDifficultyChange,
+    onSolveRateSort,
+    onBookmarkToggle,
+    showBookmarked,
+    solved,
+    handleSolvedChange,
+    incorrect,
+    handleIncorrectChange,
+  }) => {
+    // Add state for dropdown visibility
+    const [showTopicFilter, setShowTopicFilter] = useState(false);
+    const [showDifficultyFilter, setShowDifficultyFilter] = useState(false);
+    const [selectedTopics, setSelectedTopics] = useState([]);
 
+    // Math topics
+    const mathTopics = [
+      "Algebra",
+      "Linear Equations",
+      "Quadratic Equations",
+      "Functions",
+      "Exponents & Radicals",
+      "Inequalities",
+      "Systems of Equations",
+      "Coordinate Geometry",
+      "Circles",
+      "Triangles",
+      "Probability",
+      "Statistics",
+      "Data Analysis",
+      "Word Problems",
+      "Trigonometry",
+    ];
+
+    // Define verbal topics with their subtopics
+    const verbalTopics = {
+      "Craft and Structure": [
+        "Cross-Text Connections",
+        "Text Structure and Purpose",
+        "Words in Context",
+      ],
+      "Expression of Ideas": ["Rhetorical Synthesis", "Transitions"],
+      "Information and Ideas": [
+        "Central Ideas and Details",
+        "Command of Evidence",
+        "Inferences",
+      ],
+      "Standard English Convention": ["Boundary", "Form, Structure, and Sense"],
+    };
+
+    const toggleTopic = (topic, subtopic) => {
+      let newSelectedTopics;
+
+      if (!subtopic) {
+        // If clicking the main topic
+        const allSubtopicKeys = verbalTopics[topic].map(
+          (sub) => `${topic}:${sub}`
+        );
+        const allSubtopicsSelected = allSubtopicKeys.every((key) =>
+          selectedTopics.includes(key)
+        );
+
+        if (allSubtopicsSelected) {
+          // Deselect all subtopics of this topic
+          newSelectedTopics = selectedTopics.filter(
+            (t) => !allSubtopicKeys.includes(t)
+          );
+        } else {
+          // Select all subtopics of this topic
+          newSelectedTopics = [
+            ...selectedTopics,
+            ...allSubtopicKeys.filter((k) => !selectedTopics.includes(k)),
+          ];
+        }
+      } else {
+        // If clicking a subtopic
+
+        if (selectedTopics.includes(subtopic)) {
+          newSelectedTopics = selectedTopics.filter((t) => t !== subtopic);
+        } else {
+          newSelectedTopics = [...selectedTopics, subtopic];
+        }
+      }
+
+      // Update selectedTopics state
+      setSelectedTopics(newSelectedTopics);
+
+      // Update filters with the new selectedTopics
+      setFilters((prev) => ({
+        ...prev,
+        topic: topic,
+        subtopic: newSelectedTopics.join(","),
+        page: 1,
+      }));
+    };
+
+    // Create a local handler that will be used if the prop is missing
+    const handleSortClick = () => {
+      console.log("Sort header clicked");
+      if (typeof onSolveRateSort === "function") {
+        onSolveRateSort();
+      } else {
+        console.error("onSolveRateSort function is not available");
+      }
+    };
+
+    const handleFilterToggle = (filter) => {
+      // If clicking the active filter, deactivate it
+      if (activeFilter === filter) {
+        setActiveFilter(null);
+        setFilters((prev) => ({
+          ...prev,
+          solved: false,
+          incorrect: false,
+          page: 1,
+        }));
+      } else {
+        // Activate the clicked filter, deactivate the other
+        setActiveFilter(filter);
+        setFilters((prev) => ({
+          ...prev,
+          solved: filter === "solved",
+          incorrect: filter === "incorrect",
+          page: 1,
+        }));
+      }
+    };
+
+    return (
+      <div className="practice-filters">
+        <div
+          className={`filter-row ${showBookmarked ? "disabled-filters" : ""}`}
+        >
+          <div className="subject-toggle-container">
+            <button
+              className={`subject-toggle ${
+                filters.subject === 1 ? "active verbal" : ""
+              }`}
+              onClick={() => onSubjectToggle(1)}
+            >
+              V
+            </button>
+            <button
+              className={`math subject-toggle ${
+                filters.subject === 2 ? "active math" : ""
+              }`}
+              onClick={() => onSubjectToggle(2)}
+            >
+              M
+            </button>
+          </div>
+
+          <div className="filter-dropdown">
+            <button
+              className="filter-dropdown-button"
+              onClick={() =>
+                !showBookmarked && setShowTopicFilter(!showTopicFilter)
+              }
+              disabled={showBookmarked}
+            >
+              Topics {selectedTopics.length > 0 && `(${selectedTopics.length})`}
+              <i
+                className={`fas fa-chevron-${showTopicFilter ? "up" : "down"}`}
+              ></i>
+            </button>
+            {!showBookmarked && showTopicFilter && (
+              <div className="topic-filter-dropdown">
+                {Object.entries(verbalTopics).map(([topic, subtopics]) => {
+                  const allSubtopicsSelected = subtopics.every((sub) =>
+                    selectedTopics.includes(`${topic}:${sub}`)
+                  );
+
+                  return (
+                    <div key={topic} className="topic-section">
+                      <h3
+                        className={`topic-header ${
+                          allSubtopicsSelected ? "selected" : ""
+                        }`}
+                        onClick={() => toggleTopic(topic)}
+                      >
+                        {topic}
+                      </h3>
+                      <div className="topic-tags">
+                        {subtopics.map((subtopic) => (
+                          <div
+                            key={`${topic}-${subtopic}`}
+                            className={`topic-tag ${
+                              selectedTopics.includes(`${subtopic}`)
+                                ? "selected"
+                                : ""
+                            }`}
+                            onClick={() => toggleTopic(topic, subtopic)}
+                          >
+                            {subtopic}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="filter-dropdown">
+            <button
+              className="filter-dropdown-button"
+              onClick={() =>
+                !showBookmarked &&
+                setShowDifficultyFilter(!showDifficultyFilter)
+              }
+              disabled={showBookmarked}
+            >
+              Difficulty
+              {activeDifficulty !== null && (
+                <span
+                  className={`difficulty-indicator ${
+                    activeDifficulty === 0
+                      ? "easy"
+                      : activeDifficulty === 1
+                      ? "medium"
+                      : "hard"
+                  }`}
+                />
+              )}
+              <i
+                className={`fas fa-chevron-${
+                  showDifficultyFilter ? "up" : "down"
+                }`}
+              ></i>
+            </button>
+            {!showBookmarked && showDifficultyFilter && (
+              <div className="difficulty-filter-dropdown">
+                <div
+                  className={`difficulty-option ${
+                    activeDifficulty === null ? "selected" : ""
+                  }`}
+                  onClick={() => {
+                    onDifficultyChange(null);
+                    setShowDifficultyFilter(false);
+                  }}
+                >
+                  All Levels
+                </div>
+                <div
+                  className={`difficulty-option easy ${
+                    activeDifficulty === 0 ? "selected" : ""
+                  }`}
+                  onClick={() => {
+                    onDifficultyChange(0);
+                    setShowDifficultyFilter(false);
+                  }}
+                >
+                  Easy
+                </div>
+                <div
+                  className={`difficulty-option medium ${
+                    activeDifficulty === 1 ? "selected" : ""
+                  }`}
+                  onClick={() => {
+                    onDifficultyChange(1);
+                    setShowDifficultyFilter(false);
+                  }}
+                >
+                  Medium
+                </div>
+                <div
+                  className={`difficulty-option hard ${
+                    activeDifficulty === 2 ? "selected" : ""
+                  }`}
+                  onClick={() => {
+                    onDifficultyChange(2);
+                    setShowDifficultyFilter(false);
+                  }}
+                >
+                  Hard
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="filter-row down">
+          <div className="filter-toggles">
+            <button
+              className={`filter-toggle ${showBookmarked ? "active" : ""}`}
+              onClick={onBookmarkToggle}
+            >
+              <i className="fas fa-bookmark"></i> Bookmarked
+            </button>
+          </div>{" "}
+          <div className="filter-toggles">
+            <button
+              className={`filter-toggle ${
+                activeFilter === "solved" ? "active" : ""
+              }`}
+              onClick={() => handleFilterToggle("solved")}
+              data-filter="solved"
+            >
+              <i className="fas fa-check-circle"></i>
+              Solved
+            </button>
+            <button
+              className={`filter-toggle ${
+                activeFilter === "incorrect" ? "active" : ""
+              }`}
+              onClick={() => handleFilterToggle("incorrect")}
+              data-filter="incorrect"
+            >
+              <i className="fas fa-times-circle"></i>
+              Incorrect
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+);
 export default Practice;

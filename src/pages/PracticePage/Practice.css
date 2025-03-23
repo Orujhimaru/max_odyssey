@@ -593,8 +593,7 @@
 }
 
 .topic-tag.selected {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--bg-hover);
 }
 
 .clear-topics-button {
@@ -875,7 +874,7 @@
 .difficulty-indicator-bars.hard .bar:nth-child(1),
 .difficulty-indicator-bars.hard .bar:nth-child(2),
 .difficulty-indicator-bars.hard .bar:nth-child(3) {
-  background-color: #db1818;
+  background-color: #ef6161;
 }
 
 .question-actions button {
