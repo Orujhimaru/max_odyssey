@@ -138,20 +138,23 @@ const PracticeQuestionInterface = ({
                   remarkPlugins={[remarkGfm]}
                   components={{
                     p: ({ node, className, children, ...props }) => {
-                      if (className === "passage-title") {
-                        return (
-                          <p className="passage-title" {...props}>
-                            {children}
-                          </p>
-                        );
-                      }
+                      // if (className === "passage-title") {
+                      //   return (
+                      //     <p className="passage-title" {...props}>
+                      //       {children}
+                      //     </p>
+                      //   );
+                      // } else if (className === "underline") {
+                      //   return <span className="underline">{children}</span>;
+                      // }
                       return <p {...props}>{children}</p>;
                     },
                   }}
                 >
                   {question.passage
-                    .replace(/Text 1:/g, "# Text 1\n\n")
-                    .replace(/Text 2:/g, "\n\n# Text 2\n\n")}
+                    .replace(/Text 1/g, "# Text 1\n\n")
+                    .replace(/Text 2/g, "\n\n# Text 2\n\n")
+                    .replace(/==(.+?)==/g, "_**$1**_")}
                 </ReactMarkdown>
               </div>
             )}

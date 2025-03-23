@@ -73,6 +73,12 @@
   height: 100%;
 }
 
+em {
+  text-decoration: underline;
+  font-weight: 600;
+  text-underline-offset: 2px;
+}
+
 * {
   margin: 0;
   padding: 0;
