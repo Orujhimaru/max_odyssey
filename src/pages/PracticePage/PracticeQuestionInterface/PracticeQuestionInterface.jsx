@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { api } from "../../../services/api";
 import "./PracticeQuestionInterface.css";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const PracticeQuestionInterface = ({
   question,
@@ -133,11 +134,24 @@ const PracticeQuestionInterface = ({
             {/* Passage section */}
             {question.passage && (
               <div className="passage-text">
-                <ReactMarkdown>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    p: ({ node, className, children, ...props }) => {
+                      if (className === "passage-title") {
+                        return (
+                          <p className="passage-title" {...props}>
+                            {children}
+                          </p>
+                        );
+                      }
+                      return <p {...props}>{children}</p>;
+                    },
+                  }}
+                >
                   {question.passage
-                    .replace(/\\n/g, "\n")
-                    .replace(/Text 1/g, "**Text 1**")
-                    .replace(/Text 2/g, "**Text 2**")}
+                    .replace(/Text 1:/g, "# Text 1\n\n")
+                    .replace(/Text 2:/g, "\n\n# Text 2\n\n")}
                 </ReactMarkdown>
               </div>
             )}
@@ -159,9 +173,11 @@ const PracticeQuestionInterface = ({
 
           <div className="question-flex-1">
             <div className="question-prompt">
-              <h2 className="question-title">Question:</h2>
+              {/* <h2 className="question-title interface">Question:</h2> */}
               <div className="question-text">
-                <ReactMarkdown>{question.question_text}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {question.question_text}
+                </ReactMarkdown>
               </div>
             </div>
             <div className="answer-options">

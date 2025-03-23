@@ -107,6 +107,21 @@ body {
   color: white;
 }
 
+.passage-text h1 {
+  font-size: 1.1em;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.passage-text h1:first-child {
+  margin-top: 0;
+}
+
+.question-title.interface {
+  font-size: 16px;
+}
+
 .difficulty,
 .topic {
   padding: 2px 8px;
