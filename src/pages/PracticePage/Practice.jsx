@@ -708,7 +708,7 @@ const FilterControls = React.memo(
         }
       } else {
         // If clicking a subtopic
-        const topicKey = `${topic}:${subtopic}`;
+        const topicKey = `${subtopic}`;
 
         // If this subtopic is already selected, deselect it
         if (selectedTopics.includes(topicKey)) {
@@ -733,27 +733,26 @@ const FilterControls = React.memo(
         const topicName = newSelectedTopics[0].split(":")[0];
 
         // Check if all subtopics of this topic are selected
-        const allSubtopicKeys = verbalTopics[topicName].map(
-          (sub) => `${topicName}:${sub}`
-        );
-        const allSelected =
-          allSubtopicKeys.length === newSelectedTopics.length &&
-          allSubtopicKeys.every((key) => newSelectedTopics.includes(key));
+        // const allSubtopicKeys = verbalTopics[topicName].map((sub) => `${sub}`);
+        // const allSelected =
+        //   allSubtopicKeys.length === newSelectedTopics.length &&
+        //   allSubtopicKeys.every((key) => newSelectedTopics.includes(key));
 
-        if (allSelected) {
+        if (topic) {
           // If all subtopics are selected, just send the topic
           filterUpdates.topic = topicName;
           filterUpdates.subtopic = "";
         } else {
           // Otherwise, send the specific subtopic
-          filterUpdates.topic = topicName;
-          filterUpdates.subtopic = newSelectedTopics[0].split(":")[1];
+          filterUpdates.topic = "";
+          filterUpdates.subtopic = newSelectedTopics[0];
         }
       } else {
         // Clear topic and subtopic filters if nothing is selected
         filterUpdates.topic = "";
         filterUpdates.subtopic = "";
       }
+      console.log(filterUpdates);
 
       // Update filters
       setFilters((prev) => ({
