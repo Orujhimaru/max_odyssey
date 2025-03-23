@@ -333,7 +333,7 @@ body {
   gap: 8px;
 } */
 
-.difficulty-indicator {
+.difficulty-indicator-interface {
   display: flex;
   gap: 2px;
   align-items: flex-end;
@@ -347,7 +347,7 @@ body {
   /* height: 12px; */
 }
 
-.difficulty-indicator .bar {
+.difficulty-indicator-interface .bar {
   width: 4px;
   background-color: #c7c7c7;
   border-radius: 1px;
