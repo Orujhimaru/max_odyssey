@@ -401,20 +401,10 @@ const Practice = () => {
     }
   };
 
-  // Add an effect to update filters when the switch changes
-  useEffect(() => {
-    setFilters((prev) => ({
-      ...prev,
-      // Convert switch state to subject ID: false (Math) = 1, true (Verbal) = 2
-      subject: activeFilter === "math" ? 1 : 2,
-      page: 1, // Reset to page 1 when subject changes
-    }));
-  }, [activeFilter]);
-
-  // Your existing switch handler
-  const handleSubjectSwitch = () => {
-    setActiveFilter((prev) => (prev === "math" ? "verbal" : "math"));
-  };
+  // // Your existing switch handler
+  // const handleSubjectSwitch = () => {
+  //   setActiveFilter((prev) => (prev === "math" ? "verbal" : "math"));
+  // };
 
   // Add a handler for the solve rate sort button
   const handleSolveRateSort = useCallback(() => {
@@ -582,9 +572,7 @@ const Practice = () => {
             setFilters={setFilters}
             setActiveFilter={setActiveFilter}
             activeFilter={activeFilter}
-            isVerbal={activeFilter === "verbal"}
             activeDifficulty={activeDifficulty}
-            onSubjectToggle={handleSubjectSwitch}
             onDifficultyChange={handleDifficultyClick}
             onSolveRateSort={handleSolveRateSort}
             onBookmarkToggle={handleBookmarkToggle}
