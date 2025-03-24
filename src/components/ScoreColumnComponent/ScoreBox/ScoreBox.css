@@ -54,7 +54,8 @@
 }
 
 .subject-icon.math {
-  background-color: var(--math-color);
+  background-color: var(--bar-math-color);
+  transition: none;
 }
 
 .subject-icon.highlighted {

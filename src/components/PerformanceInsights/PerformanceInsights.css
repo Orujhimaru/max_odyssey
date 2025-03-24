@@ -177,8 +177,9 @@
 }
 
 .subject-label.math {
-  background-color: var(--math-color);
-  color: white;
+  background-color: var(--bar-math-color);
+  color: var(--bar-background);
+  transition: none;
 }
 
 .subject-label-container {
