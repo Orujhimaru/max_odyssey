@@ -34,9 +34,9 @@ const PerformanceInsights = () => {
 
   return (
     <div className="insights-container">
-      <div className="insights-header">
+      {/* <div className="insights-header">
         <h3>Performance Insights</h3>
-      </div>
+      </div> */}
 
       <div className="insights-grid">
         <div className="insight-card">
