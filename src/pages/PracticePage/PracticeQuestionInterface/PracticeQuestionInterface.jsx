@@ -3,6 +3,9 @@ import { api } from "../../../services/api";
 import "./PracticeQuestionInterface.css";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 const PracticeQuestionInterface = ({
   question,
@@ -127,6 +130,12 @@ const PracticeQuestionInterface = ({
     }
   };
 
+  // Check if question has table or image
+  const hasTable = question.html_table && question.html_table.trim() !== "";
+  const hasImage = question.svg_image && question.svg_image.trim() !== "";
+  console.log(hasTable, hasImage);
+  console.log(question);
+
   return (
     <div className="practice-question-interface">
       <div className="practice-question-header">
@@ -162,22 +171,34 @@ const PracticeQuestionInterface = ({
       <div className="practice-question-content" ref={questionContentRef}>
         <div className="question-area-interface">
           <div className="question-text-flex">
+            {/* Table section */}
+            {hasTable && (
+              <div className="tables-container">
+                <div
+                  className="question-table"
+                  dangerouslySetInnerHTML={{ __html: question.html_table }}
+                />
+              </div>
+            )}
+
+            {/* Image section */}
+            {hasImage && (
+              <div className="images-container">
+                <div
+                  className="question-image"
+                  dangerouslySetInnerHTML={{ __html: question.svg_image }}
+                />
+              </div>
+            )}
+
             {/* Passage section */}
             {question.passage && (
               <div className="passage-text">
                 <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
                   components={{
                     p: ({ node, className, children, ...props }) => {
-                      // if (className === "passage-title") {
-                      //   return (
-                      //     <p className="passage-title" {...props}>
-                      //       {children}
-                      //     </p>
-                      //   );
-                      // } else if (className === "underline") {
-                      //   return <span className="underline">{children}</span>;
-                      // }
                       return <p {...props}>{children}</p>;
                     },
                   }}
@@ -204,12 +225,13 @@ const PracticeQuestionInterface = ({
           </div>
 
           {/* Question text section */}
-
           <div className="question-flex-1">
             <div className="question-prompt">
-              {/* <h2 className="question-title interface">Question:</h2> */}
               <div className="question-text">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                >
                   {question.question_text}
                 </ReactMarkdown>
               </div>
@@ -229,7 +251,7 @@ const PracticeQuestionInterface = ({
                       showExplanation &&
                       selectedAnswer === index &&
                       index !== question.correct_answer_index
-                        ? "incorrect inc-selected"
+                        ? "incorrect"
                         : ""
                     }
                     ${previouslyAnswered ? "disabled" : ""}
@@ -239,7 +261,14 @@ const PracticeQuestionInterface = ({
                   <div className="option-letter">
                     {String.fromCharCode(65 + index)}
                   </div>
-                  <div className="option-text">{choice.slice(2).trim()}</div>
+                  <div className="option-text">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm, remarkMath]}
+                      rehypePlugins={[rehypeKatex]}
+                    >
+                      {choice.slice(2).trim()}
+                    </ReactMarkdown>
+                  </div>
                 </div>
               ))}
             </div>
@@ -252,6 +281,14 @@ const PracticeQuestionInterface = ({
                 >
                   Submit Answer
                 </button>
+              </div>
+            )}
+            {previouslyAnswered && (
+              <div className="previously-answered-message">
+                <p>
+                  You've already answered this question{" "}
+                  {wasCorrect ? "correctly" : "incorrectly"}.
+                </p>
               </div>
             )}
           </div>
