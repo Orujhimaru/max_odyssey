@@ -912,12 +912,6 @@ const FilterControls = React.memo(
                     selectedTopics.includes(`${topic}:${sub}`)
                   );
 
-                  // Get the main topic of the current selection (if any)
-                  const selectedMainTopic =
-                    selectedTopics.length > 0
-                      ? selectedTopics[0].split(":")[0]
-                      : null;
-
                   return (
                     <div key={topic} className="topic-section">
                       <h3
@@ -932,13 +926,20 @@ const FilterControls = React.memo(
                         {subtopics.map((subtopic) => (
                           <div
                             key={`${topic}-${subtopic}`}
-                            className={`topic-tag ${
-                              selectedTopics.includes(`${topic}:${subtopic}`) ||
-                              (selectedMainTopic === topic && isTopicSelected)
-                                ? "selected"
-                                : ""
-                            }`}
-                            onClick={() => toggleTopic(null, subtopic)}
+                            className={`topic-tag 
+                              ${
+                                selectedTopics.includes(`${topic}:${subtopic}`)
+                                  ? "selected"
+                                  : ""
+                              } 
+                              ${isTopicSelected ? "disabled" : ""}
+                            `}
+                            onClick={() =>
+                              !isTopicSelected && toggleTopic(null, subtopic)
+                            }
+                            style={{
+                              cursor: isTopicSelected ? "default" : "pointer",
+                            }}
                           >
                             {subtopic}
                           </div>
