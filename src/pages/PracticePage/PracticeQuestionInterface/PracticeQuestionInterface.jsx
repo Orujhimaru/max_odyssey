@@ -233,6 +233,9 @@ const PracticeQuestionInterface = ({
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm, remarkMath]}
                   rehypePlugins={[rehypeKatex]}
+                  components={{
+                    p: ({ node, ...props }) => <p {...props} />,
+                  }}
                 >
                   {question.question_text}
                 </ReactMarkdown>
@@ -268,7 +271,7 @@ const PracticeQuestionInterface = ({
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeKatex]}
                     >
-                      {choice.slice(2).trim()}
+                      {choice}
                     </ReactMarkdown>
                   </div>
                 </div>
