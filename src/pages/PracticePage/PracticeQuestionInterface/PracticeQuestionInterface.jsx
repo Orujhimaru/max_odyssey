@@ -134,7 +134,7 @@ const PracticeQuestionInterface = ({
   const hasTable = question.html_table && question.html_table.trim() !== "";
   const hasImage = question.svg_image && question.svg_image.trim() !== "";
   console.log(hasTable, hasImage);
-  console.log(question1234);
+  console.log(question);
 
   return (
     <div className="practice-question-interface">
@@ -206,7 +206,9 @@ const PracticeQuestionInterface = ({
                   {question.passage
                     .replace(/Text 1/g, "# Text 1\n\n")
                     .replace(/Text 2/g, "\n\n# Text 2\n\n")
-                    .replace(/==(.+?)==/g, "_**$1**_")}
+                    .replace(/______\s*blank/g, " ______ ")
+                    .replace(/______/g, " ______ ")
+                    .replace(/==(.+?)==/g, " _**$1**_")}
                 </ReactMarkdown>
               </div>
             )}

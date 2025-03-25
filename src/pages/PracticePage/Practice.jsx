@@ -751,7 +751,10 @@ const FilterControls = React.memo(
         "Command of Evidence",
         "Inferences",
       ],
-      "Standard English Convention": ["Boundary", "Form, Structure, and Sense"],
+      "Standard English Conventions": [
+        "Boundaries",
+        "Form, Structure, and Sense",
+      ],
     };
 
     const toggleTopic = (topic, subtopic = null) => {

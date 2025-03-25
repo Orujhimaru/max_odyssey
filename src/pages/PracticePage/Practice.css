@@ -1043,6 +1043,7 @@ button:focus-visible {
   align-items: center;
   margin-top: 20px;
   padding: 10px;
+  gap: 12px;
 }
 
 .pagination-button {
