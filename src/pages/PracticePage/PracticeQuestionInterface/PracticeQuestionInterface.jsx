@@ -134,7 +134,7 @@ const PracticeQuestionInterface = ({
   const hasTable = question.html_table && question.html_table.trim() !== "";
   const hasImage = question.svg_image && question.svg_image.trim() !== "";
   console.log(hasTable, hasImage);
-  console.log(question);
+  console.log(question1234);
 
   return (
     <div className="practice-question-interface">

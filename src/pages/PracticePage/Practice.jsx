@@ -618,6 +618,12 @@ const Practice = () => {
     return isCorrect;
   };
 
+  // Add this effect to reset page when filters change
+  useEffect(() => {
+    // Reset to page 1 whenever filters change
+    setCurrentPage(1);
+  }, [filters]);
+
   return (
     <div>
       {selectedQuestion ? (

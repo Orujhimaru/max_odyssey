@@ -440,3 +440,54 @@ body {
 .inc-selected .option-letter {
   background-color: #2f416c !important;
 }
+
+/* Styles for tables and images */
+.tables-container,
+.images-container {
+  margin-bottom: 20px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.question-table {
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background-color: var(--bg-secondary);
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.question-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.question-table th,
+.question-table td {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+}
+
+.question-table th {
+  background-color: var(--bg-hover);
+  font-weight: 600;
+}
+
+.question-table caption {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.question-image {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.question-image svg {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  background-color: white;
+}
