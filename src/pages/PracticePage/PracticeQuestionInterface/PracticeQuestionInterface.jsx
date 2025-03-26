@@ -235,7 +235,37 @@ const PracticeQuestionInterface = ({
                   remarkPlugins={[remarkGfm, remarkMath]}
                   rehypePlugins={[rehypeKatex]}
                   components={{
-                    p: ({ node, ...props }) => <p {...props} />,
+                    // Custom paragraph component to handle KaTeX spans
+                    p: ({ node, children, ...props }) => {
+                      // Check if the first child is a KaTeX span
+                      const hasKatexFirst =
+                        children &&
+                        children[0] &&
+                        React.isValidElement(children[0]) &&
+                        children[0].props.className &&
+                        children[0].props.className.includes("katex");
+
+                      // If the first child is a KaTeX span, apply special styling
+                      if (hasKatexFirst) {
+                        return (
+                          <p
+                            {...props}
+                            style={{ display: "flex", flexDirection: "column" }}
+                          >
+                            {/* Render the KaTeX span as a block element */}
+                            {React.cloneElement(children[0], {
+                              style: { display: "block", marginBottom: "10px" },
+                            })}
+
+                            {/* Render the rest of the children */}
+                            {children.slice(1)}
+                          </p>
+                        );
+                      }
+
+                      // Otherwise, render the paragraph normally
+                      return <p {...props}>{children}</p>;
+                    },
                   }}
                 >
                   {formatMathExpression(question.question_text)}

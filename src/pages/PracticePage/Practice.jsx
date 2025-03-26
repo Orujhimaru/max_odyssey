@@ -598,7 +598,7 @@ const FilterControls = React.memo(
     const mathTopics = {
       Algebra: [
         "Linear Equations (1)",
-        "Linear Functionss",
+        "Linear Functions",
         "Linear Equations (2)",
         "Systems of 2 in 2",
         "Linear Inequalities",
