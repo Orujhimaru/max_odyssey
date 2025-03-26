@@ -213,44 +213,6 @@ const Practice = () => {
 
   const navigate = useNavigate();
 
-  // Math topics
-  const mathTopics = [
-    "Algebra",
-    "Linear Equations",
-    "Quadratic Equations",
-    "Functions",
-    "Exponents & Radicals",
-    "Inequalities",
-    "Systems of Equations",
-    "Coordinate Geometry",
-    "Circles",
-    "Triangles",
-    "Probability",
-    "Statistics",
-    "Data Analysis",
-    "Word Problems",
-    "Trigonometry",
-  ];
-
-  // Verbal topics
-  const verbalTopics = [
-    "Reading Comprehension",
-    "Vocabulary in Context",
-    "Evidence-Based Reading",
-    "Command of Evidence",
-    "Words in Context",
-    "Expression of Ideas",
-    "Standard English Conventions",
-    "Grammar",
-    "Punctuation",
-    "Rhetoric",
-    "Synthesis",
-    "Analysis",
-    "Main Idea",
-    "Author's Purpose",
-    "Inference",
-  ];
-
   // Add handlers for filter changes
   const handleSubjectChange = (subjectId) => {
     setFilters((prev) => ({
@@ -475,93 +437,6 @@ const Practice = () => {
     }));
   };
 
-  const toggleTopic = (topic, subtopic = null) => {
-    let newSelectedTopics = [];
-    let selectedMainTopic = null;
-
-    if (subtopic) {
-      // If clicking a subtopic
-      // Find which main topic this subtopic belongs to
-      for (const [mainTopic, subtopics] of Object.entries(verbalTopics)) {
-        if (subtopics.includes(subtopic)) {
-          selectedMainTopic = mainTopic;
-          break;
-        }
-      }
-
-      if (!selectedMainTopic) {
-        console.error(`Subtopic "${subtopic}" not found in any topic`);
-        return;
-      }
-
-      const topicKey = `${selectedMainTopic}:${subtopic}`;
-
-      // If this subtopic is already selected, deselect it
-      if (selectedTopics.includes(topicKey)) {
-        newSelectedTopics = [];
-      } else {
-        // Otherwise, select only this subtopic
-        newSelectedTopics = [topicKey];
-      }
-    } else {
-      // If clicking a main topic
-      // Check if this topic exists
-      if (!verbalTopics[topic]) {
-        console.error(`Topic "${topic}" not found in verbalTopics`);
-        return;
-      }
-
-      // Get all subtopics for this topic
-      const allSubtopicKeys = verbalTopics[topic].map(
-        (sub) => `${topic}:${sub}`
-      );
-
-      // Check if all subtopics of this topic are already selected
-      const allSubtopicsSelected = allSubtopicKeys.every((key) =>
-        selectedTopics.includes(key)
-      );
-
-      if (allSubtopicsSelected) {
-        // If all are selected, deselect all
-        newSelectedTopics = [];
-      } else {
-        // Otherwise, select all subtopics of this topic
-        newSelectedTopics = [...allSubtopicKeys];
-        selectedMainTopic = topic;
-      }
-    }
-
-    // Update selectedTopics state
-    setSelectedTopics(newSelectedTopics);
-
-    // Prepare filter updates
-    const filterUpdates = {
-      page: 1,
-    };
-
-    // Only add topic and subtopic if we have selections
-    if (newSelectedTopics.length > 0) {
-      filterUpdates.topic = selectedMainTopic;
-
-      // If we selected a specific subtopic (not the whole topic)
-      if (newSelectedTopics.length === 1) {
-        filterUpdates.subtopic = newSelectedTopics[0].split(":")[1];
-      } else {
-        filterUpdates.subtopic = "";
-      }
-    } else {
-      // Clear topic and subtopic filters if nothing is selected
-      filterUpdates.topic = "";
-      filterUpdates.subtopic = "";
-    }
-
-    // Update filters
-    setFilters((prev) => ({
-      ...prev,
-      ...filterUpdates,
-    }));
-  };
-
   const handleQuestionSubmit = (
     questionId,
     selectedAnswer,
@@ -719,24 +594,36 @@ const FilterControls = React.memo(
     const [showDifficultyFilter, setShowDifficultyFilter] = useState(false);
     const [selectedTopics, setSelectedTopics] = useState([]);
 
-    // Math topics
-    const mathTopics = [
-      "Algebra",
-      "Linear Equations",
-      "Quadratic Equations",
-      "Functions",
-      "Exponents & Radicals",
-      "Inequalities",
-      "Systems of Equations",
-      "Coordinate Geometry",
-      "Circles",
-      "Triangles",
-      "Probability",
-      "Statistics",
-      "Data Analysis",
-      "Word Problems",
-      "Trigonometry",
-    ];
+    // Define math topics with their subtopics (shortened subtopics with improved readability)
+    const mathTopics = {
+      Algebra: [
+        "Linear Eqs 1 Var",
+        "Linear Funcs",
+        "Linear Eqs 2 Var",
+        "Systems Linear Eqs",
+        "Linear Ineqs",
+      ],
+      "Advanced Math": [
+        "Equiv Expr",
+        "Nonlinear Eqs & Systems",
+        "Nonlinear Funcs",
+      ],
+      "Problem-Solving and Data Analysis": [
+        "Ratios & Rates",
+        "Percent",
+        "1-Var Data",
+        "2-Var Data",
+        "Probability",
+        "Inference & Margin",
+        "Stat Claims",
+      ],
+      "Geometry and Trigonometry": [
+        "Area & Vol",
+        "Lines & Triangles",
+        "Right Trigs and Trigonometry",
+        "Circles",
+      ],
+    };
 
     // Define verbal topics with their subtopics
     const verbalTopics = {
@@ -764,7 +651,9 @@ const FilterControls = React.memo(
       if (subtopic) {
         // If clicking a subtopic
         // Find which main topic this subtopic belongs to
-        for (const [mainTopic, subtopics] of Object.entries(verbalTopics)) {
+        const topicsToSearch =
+          filters.subject === 1 ? mathTopics : verbalTopics;
+        for (const [mainTopic, subtopics] of Object.entries(topicsToSearch)) {
           if (subtopics.includes(subtopic)) {
             selectedMainTopic = mainTopic;
             break;
@@ -788,13 +677,18 @@ const FilterControls = React.memo(
       } else {
         // If clicking a main topic
         // Check if this topic exists
-        if (!verbalTopics[topic]) {
-          console.error(`Topic "${topic}" not found in verbalTopics`);
+        const topicsToUse = filters.subject === 1 ? mathTopics : verbalTopics;
+        if (!topicsToUse[topic]) {
+          console.error(
+            `Topic "${topic}" not found in ${
+              filters.subject === 1 ? "mathTopics" : "verbalTopics"
+            }`
+          );
           return;
         }
 
         // Get all subtopics for this topic
-        const allSubtopicKeys = verbalTopics[topic].map(
+        const allSubtopicKeys = topicsToUse[topic].map(
           (sub) => `${topic}:${sub}`
         );
 
@@ -915,7 +809,9 @@ const FilterControls = React.memo(
             </button>
             {!showBookmarked && showTopicFilter && (
               <div className="topic-filter-dropdown">
-                {Object.entries(verbalTopics).map(([topic, subtopics]) => {
+                {Object.entries(
+                  filters.subject === 1 ? mathTopics : verbalTopics
+                ).map(([topic, subtopics]) => {
                   // Check if this topic is selected (all its subtopics are selected)
                   const isTopicSelected = subtopics.every((sub) =>
                     selectedTopics.includes(`${topic}:${sub}`)
