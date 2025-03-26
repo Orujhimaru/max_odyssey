@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
+import { formatMathExpression } from "../../../utils/mathUtils";
 
 const PracticeQuestionInterface = ({
   question,
@@ -237,7 +238,7 @@ const PracticeQuestionInterface = ({
                     p: ({ node, ...props }) => <p {...props} />,
                   }}
                 >
-                  {question.question_text}
+                  {formatMathExpression(question.question_text)}
                 </ReactMarkdown>
               </div>
             </div>
@@ -271,7 +272,7 @@ const PracticeQuestionInterface = ({
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeKatex]}
                     >
-                      {choice}
+                      {formatMathExpression(choice)}
                     </ReactMarkdown>
                   </div>
                 </div>

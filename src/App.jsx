@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import "./index.css";
+import "katex/dist/katex.min.css";
 import Dashboard from "./pages/DashboardPage/Dashboard";
 import Navbar from "./components/NavBar/Navbar";
 import ScoreColumnGraph from "./components/ScoreColumnComponent/ScoreColumnGraph/ScoreColumn";
