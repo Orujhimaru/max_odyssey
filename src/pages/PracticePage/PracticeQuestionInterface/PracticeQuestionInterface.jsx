@@ -257,8 +257,12 @@ const PracticeQuestionInterface = ({
                               style: { display: "block", marginBottom: "10px" },
                             })}
 
-                            {/* Render the rest of the children */}
-                            {children.slice(1)}
+                            {/* Group all remaining children in a single div */}
+                            {children.length > 1 && (
+                              <div className="question-text-content">
+                                {children.slice(1)}
+                              </div>
+                            )}
                           </p>
                         );
                       }
