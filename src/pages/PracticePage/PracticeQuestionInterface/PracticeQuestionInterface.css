@@ -422,6 +422,10 @@ body {
   text-align: center;
 }
 
+.katex-html {
+  margin-inline: 4px;
+}
+
 .previously-answered-message p {
   margin: 0;
   color: var(--text-secondary);
