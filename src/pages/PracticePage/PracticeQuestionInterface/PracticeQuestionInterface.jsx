@@ -247,14 +247,20 @@ const PracticeQuestionInterface = ({
 
                       // If the first child is a KaTeX span, apply special styling
                       if (hasKatexFirst) {
+                        // Special case for question ID 2309 - don't use flex
+                        const useFlexStyle =
+                          question.id === 4593
+                            ? { display: "flex", flexDirection: "row" }
+                            : { display: "flex", flexDirection: "column" };
+
                         return (
-                          <p
-                            {...props}
-                            style={{ display: "flex", flexDirection: "column" }}
-                          >
+                          <p {...props} style={useFlexStyle}>
                             {/* Render the KaTeX span as a block element */}
                             {React.cloneElement(children[0], {
-                              style: { display: "block", marginBottom: "10px" },
+                              style: {
+                                display: "block",
+                                marginBottom: "10px",
+                              },
                             })}
 
                             {/* Group all remaining children in a single div */}
@@ -306,7 +312,12 @@ const PracticeQuestionInterface = ({
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeKatex]}
                     >
-                      {formatMathExpression(choice)}
+                      {formatMathExpression(
+                        // Check if the choice starts with a letter followed by ")" and trim it
+                        choice.match(/^[A-Z]\)/)
+                          ? choice.substring(2).trim()
+                          : choice
+                      )}
                     </ReactMarkdown>
                   </div>
                 </div>
