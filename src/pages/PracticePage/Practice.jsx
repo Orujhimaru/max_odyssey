@@ -214,13 +214,18 @@ const Practice = () => {
   const navigate = useNavigate();
 
   // Add handlers for filter changes
-  const handleSubjectChange = (subjectId) => {
-    setFilters((prev) => ({
-      ...prev,
-      subject: subjectId,
-      page: 1, // Reset to first page when changing filters
-    }));
-  };
+  // const handleSubjectChange = (subjectId) => {
+  //   setFilters((prev) => ({
+  //     ...prev,
+  //     subject: subjectId,
+  //     topic: "",
+  //     subtopic: "",
+  //     page: 1, // Reset to first page when changing filters
+  //   }));
+
+  //   // Also reset the selected topics in the UI
+  //   setSelectedTopics([]);
+  // };
 
   const handleDifficultyChange = (difficultyLevel) => {
     setFilters((prev) => ({
@@ -780,7 +785,14 @@ const FilterControls = React.memo(
               className={`subject-toggle ${
                 filters.subject === 1 ? "active verbal" : ""
               }`}
-              onClick={() => onSubjectToggle(1)}
+              onClick={() => {
+                onSubjectToggle(1);
+                setFilters((prev) => ({
+                  ...prev,
+                  topic: "",
+                  subtopic: "",
+                }));
+              }}
             >
               V
             </button>
@@ -788,7 +800,14 @@ const FilterControls = React.memo(
               className={`math subject-toggle ${
                 filters.subject === 2 ? "active math" : ""
               }`}
-              onClick={() => onSubjectToggle(2)}
+              onClick={() => {
+                onSubjectToggle(2);
+                setFilters((prev) => ({
+                  ...prev,
+                  topic: "",
+                  subtopic: "",
+                }));
+              }}
             >
               M
             </button>
