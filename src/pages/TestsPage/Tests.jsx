@@ -1,55 +1,92 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Tests.css";
 import TestInterface from "./TestInterface";
 import TestReview from "../../components/TestReview/TestReview";
+import { api } from "../../services/api";
 
 const Tests = () => {
   const [showNewTestModal, setShowNewTestModal] = useState(false);
   const [activeTest, setActiveTest] = useState(null);
   const [testInProgress, setTestInProgress] = useState(false);
   const [reviewingTest, setReviewingTest] = useState(null);
+  const [examResults, setExamResults] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Fetch exam results when component mounts
+  useEffect(() => {
+    const fetchExamResults = async () => {
+      try {
+        setLoading(true);
+        const results = await api.getUserExamResults();
+        // Check if results is an array, if not, handle accordingly
+        if (Array.isArray(results)) {
+          setExamResults(results);
+        } else if (results && Array.isArray(results.data)) {
+          // If the API returns { data: [...] } structure
+          setExamResults(results.data);
+        } else {
+          // If it's not an array at all, set to empty array
+          console.error("API returned unexpected format:", results);
+          setExamResults([]);
+        }
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+        console.error("Failed to fetch exam results:", err);
+        setExamResults([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExamResults();
+  }, []);
+
+  // Add this to debug the structure
+  console.log("Exam results structure:", examResults);
+
   // Mock data for recent tests
-  const recentTests = [
-    {
-      id: 1,
-      name: "Practice Test #1",
-      date: "May 15, 2023",
-      score: 1420,
-      verbal: 710,
-      math: 710,
-      completed: true,
-    },
-    {
-      id: 2,
-      name: "Practice Test #2",
-      date: "June 3, 2023",
-      score: 1480,
-      verbal: 730,
-      math: 750,
-      completed: true,
-    },
-    {
-      id: 3,
-      name: "Practice Test #3",
-      date: "June 28, 2023",
-      score: 1510,
-      verbal: 750,
-      math: 760,
-      completed: true,
-    },
-    {
-      id: 4,
-      name: "Official SAT Practice Test",
-      date: "July 12, 2023",
-      score: null,
-      verbal: null,
-      math: null,
-      completed: false,
-    },
-  ];
+  // const recentTests = [
+  //   {
+  //     id: 1,
+  //     name: "Practice Test #1",
+  //     date: "May 15, 2023",
+  //     score: 1420,
+  //     verbal: 710,
+  //     math: 710,
+  //     completed: true,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Practice Test #2",
+  //     date: "June 3, 2023",
+  //     score: 1480,
+  //     verbal: 730,
+  //     math: 750,
+  //     completed: true,
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Practice Test #3",
+  //     date: "June 28, 2023",
+  //     score: 1510,
+  //     verbal: 750,
+  //     math: 760,
+  //     completed: true,
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Official SAT Practice Test",
+  //     date: "July 12, 2023",
+  //     score: null,
+  //     verbal: null,
+  //     math: null,
+  //     completed: false,
+  //   },
+  // ];
 
   const openNewTestModal = () => {
     setShowNewTestModal(true);
@@ -117,48 +154,56 @@ const Tests = () => {
               <span className="test-actions-header pleft">Actions</span>
             </div>
 
-            {recentTests.map((test) => (
-              <div
-                className={`test-item ${!test.completed ? "incomplete" : ""}`}
-                key={test.id}
-              >
-                <div className="test-name">
-                  <span>{test.name}</span>
-                  {!test.completed && (
-                    <span className="incomplete-badge">In Progress</span>
-                  )}
-                </div>
-                <div className="test-date">{test.date}</div>
-                <div className="test-score">
-                  {test.completed ? test.score : "—"}
-                </div>
-                <div className="test-verbal">
-                  {test.completed ? test.verbal : "—"}
-                </div>
-                <div className="test-math">
-                  {test.completed ? test.math : "—"}
-                </div>
-                <div className="test-actions">
-                  {test.completed ? (
-                    <>
-                      <button
-                        className="review-button"
-                        onClick={() => handleReviewClick(test)}
-                      >
-                        <i className="fas fa-eye"></i> Review
-                      </button>
-                      <button className="delete-button">
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </>
-                  ) : (
-                    <button className="continue-button">
-                      <i className="fas fa-play"></i> Continue
-                    </button>
-                  )}
-                </div>
+            {loading ? (
+              <div className="loading-message">Loading exam results...</div>
+            ) : error ? (
+              <div className="error-message">Error: {error}</div>
+            ) : !examResults || examResults.length === 0 ? (
+              <div className="no-tests-message">
+                No test results found. Take a test to see your results here.
               </div>
-            ))}
+            ) : (
+              examResults.map((test, index) => (
+                <div className="test-item" key={index}>
+                  <div className="test-name">
+                    Practice Test #{test.exam_number}
+                  </div>
+                  <div className="test-date">
+                    {new Date(test.created_at.Time).toLocaleDateString()}
+                  </div>
+                  <div className="test-score">
+                    {test.verbal_score && test.math_score
+                      ? test.verbal_score.Int32 + test.math_score.Int32
+                      : "In Progress"}
+                  </div>
+                  <div className="test-verbal">
+                    {test.verbal_score ? test.verbal_score.Int32 : "-"}
+                  </div>
+                  <div className="test-math">
+                    {test.math_score ? test.math_score.Int32 : "-"}
+                  </div>
+                  <div className="test-actions">
+                    {test.verbal_score && test.math_score ? (
+                      <>
+                        <button
+                          className="review-button"
+                          onClick={() => handleReviewClick(test)}
+                        >
+                          <i className="fas fa-eye"></i> Review
+                        </button>
+                        <button className="delete-button">
+                          <i className="fas fa-trash"></i>
+                        </button>
+                      </>
+                    ) : (
+                      <button className="continue-button">
+                        <i className="fas fa-play"></i> Continue
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
           <button className="new-test-button" onClick={openNewTestModal}>
             <i className="fas fa-plus"></i> Take a New Test

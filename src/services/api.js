@@ -188,4 +188,24 @@ export const api = {
       throw error;
     }
   },
+  getUserExamResults: async () => {
+    console.log("Fetching user exam results");
+
+    try {
+      const response = await api.request("/exams");
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          `Failed to fetch exam results: ${response.status} - ${errorText}`
+        );
+        throw new Error(`Failed to fetch exam results: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error("API request failed:", error);
+      throw error;
+    }
+  },
 };
