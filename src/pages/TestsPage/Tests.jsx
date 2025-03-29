@@ -251,19 +251,6 @@ const Tests = () => {
                 </div>
               </div>
 
-              <div className="test-option" onClick={() => startTest("custom")}>
-                <div className="test-option-icon">
-                  <i className="fas fa-puzzle-piece"></i>
-                </div>
-                <div className="test-option-details">
-                  <h3>Custom Test</h3>
-                  <p>Create your own test with specific sections</p>
-                </div>
-                <div className="test-option-time">
-                  <i className="far fa-clock"></i> Varies
-                </div>
-              </div>
-
               <div
                 className="test-option"
                 onClick={() => startTest("challenge")}

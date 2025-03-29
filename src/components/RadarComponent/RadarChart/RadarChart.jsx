@@ -100,7 +100,7 @@ export default function RadarChart({
     return Math.max(...scores.map(getDuration));
   };
   // Add the skills data and color function at the top
-  const skills = [
+  const verbalSkills = [
     { id: 1, name: "Similarity", score: 98 },
     { id: 2, name: "Consistency", score: 87 },
     { id: 3, name: "Clarity", score: 76 },
@@ -268,7 +268,7 @@ export default function RadarChart({
               ))}
             </svg>
             <div className="skill-stack">
-              {mathSkills.map((skill) => (
+              {verbalSkills.map((skill) => (
                 <div key={skill.id} className="skill-item">
                   <div className="skill-header">
                     <div className="skill-label">
@@ -430,7 +430,7 @@ export default function RadarChart({
               })}
             </svg>
             <div className="skill-stack">
-              {skills.map((skill) => (
+              {mathSkills.map((skill) => (
                 <div key={skill.id} className="skill-item">
                   <div className="skill-header">
                     <div className="skill-label">

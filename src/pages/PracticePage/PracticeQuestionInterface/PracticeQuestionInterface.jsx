@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
-import "katex/dist/katex.min.css";
+// import "katex/dist/katex.min.css";
 import { formatMathExpression } from "../../../utils/mathUtils";
 
 const PracticeQuestionInterface = ({
@@ -248,13 +248,8 @@ const PracticeQuestionInterface = ({
                       // If the first child is a KaTeX span, apply special styling
                       if (hasKatexFirst) {
                         // Special case for question ID 2309 - don't use flex
-                        const useFlexStyle =
-                          question.id === 4593
-                            ? { display: "flex", flexDirection: "row" }
-                            : { display: "flex", flexDirection: "column" };
-
                         return (
-                          <p {...props} style={useFlexStyle}>
+                          <div {...props}>
                             {/* Render the KaTeX span as a block element */}
                             {React.cloneElement(children[0], {
                               style: {
@@ -269,7 +264,7 @@ const PracticeQuestionInterface = ({
                                 {children.slice(1)}
                               </div>
                             )}
-                          </p>
+                          </div>
                         );
                       }
 
@@ -312,13 +307,26 @@ const PracticeQuestionInterface = ({
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeKatex]}
                     >
-                      {formatMathExpression(
-                        // Check if the choice starts with a letter followed by ")" and trim it
-                        choice.match(/^[A-Z]\)/)
-                          ? choice.substring(2).trim()
-                          : choice
-                      )}
+                      {choice.includes("<figure ")
+                        ? // If the choice contains HTML table, use a placeholder text
+                          // The actual HTML will be inserted using dangerouslySetInnerHTML below
+                          ""
+                        : formatMathExpression(
+                            // Check if the choice starts with a letter followed by ")" and trim it
+                            choice.match(/^[A-Z]\)/)
+                              ? choice.substring(2).trim()
+                              : choice
+                          )}
                     </ReactMarkdown>
+                    {choice.includes("<figure ") && (
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: choice.match(/^[A-Z]\)/)
+                            ? choice.substring(2).trim()
+                            : choice,
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
               ))}

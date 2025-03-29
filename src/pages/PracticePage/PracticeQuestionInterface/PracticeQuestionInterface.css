@@ -379,6 +379,11 @@ body {
   flex: 1;
 }
 
+.question-text-content > span:first-child {
+  display: block;
+  margin-bottom: 6px;
+}
+
 .passage-text {
   margin-bottom: 24px;
   /* padding: 16px; */
