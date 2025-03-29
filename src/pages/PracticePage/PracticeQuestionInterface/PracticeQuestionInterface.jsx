@@ -245,6 +245,14 @@ const PracticeQuestionInterface = ({
                         children[0].props.className &&
                         children[0].props.className.includes("katex");
 
+                      // Check if the second child is also a KaTeX span
+                      const hasKatexSecond =
+                        children &&
+                        children.length > 1 &&
+                        React.isValidElement(children[1]) &&
+                        children[1].props.className &&
+                        children[1].props.className.includes("katex");
+
                       // If the first child is a KaTeX span, apply special styling
                       if (hasKatexFirst) {
                         // Special case for question ID 2309 - don't use flex
@@ -258,10 +266,20 @@ const PracticeQuestionInterface = ({
                               },
                             })}
 
+                            {/* If second child is also KaTeX, render it as block too */}
+                            {hasKatexSecond
+                              ? React.cloneElement(children[1], {
+                                  style: {
+                                    display: "block",
+                                    marginBottom: "10px",
+                                  },
+                                })
+                              : null}
+
                             {/* Group all remaining children in a single div */}
-                            {children.length > 1 && (
+                            {children.length > (hasKatexSecond ? 2 : 1) && (
                               <div className="question-text-content">
-                                {children.slice(1)}
+                                <p>{children.slice(hasKatexSecond ? 2 : 1)}</p>
                               </div>
                             )}
                           </div>

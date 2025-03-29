@@ -178,7 +178,7 @@
 
 .subject-label.math {
   background-color: var(--bar-math-color);
-  color: var(--bar-background);
+  color: white;
   transition: none;
 }
 

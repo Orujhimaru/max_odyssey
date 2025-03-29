@@ -152,7 +152,7 @@ const Courses = () => {
                 </div>
               </div>
               {/* delete this */}
-              <LockOverlay />
+              {/* <LockOverlay /> */}
             </div>
           ))}
         </div>
