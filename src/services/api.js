@@ -208,4 +208,24 @@ export const api = {
       throw error;
     }
   },
+
+  // Add this new method for batch updating questions
+  batchUpdateQuestions: async (questionStates) => {
+    console.log("Sending batch update for questions:", questionStates);
+
+    const response = await api.request("/questions/batch-update", {
+      method: "POST",
+      body: JSON.stringify({ questions: questionStates }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(
+        `Failed to batch update questions: ${response.status} - ${errorText}`
+      );
+      throw new Error(`Failed to batch update questions: ${response.status}`);
+    }
+
+    return response.json();
+  },
 };

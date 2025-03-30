@@ -170,21 +170,12 @@ const PracticeQuestionInterface = ({
       if (userQuestionStates.length > 0) {
         console.log("Sending user question states to API:", userQuestionStates);
 
-        // Send the data to the API
-        const response = await api.request("/questions/batch-update", {
-          method: "POST",
-          body: JSON.stringify({ questions: userQuestionStates }),
-        });
+        // Use the new API method
+        await api.batchUpdateQuestions(userQuestionStates);
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error("Failed to save user question states:", errorText);
-        } else {
-          // Clear localStorage on success
-          localStorage.removeItem("userQuestionStates");
-          console.log("Questions synced successfully");
-          console.log("Successfully saved user question states");
-        }
+        // Clear localStorage on success
+        localStorage.removeItem("userQuestionStates");
+        console.log("Questions synced successfully");
       }
     } catch (error) {
       console.error("Error saving user question states:", error);
