@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { api } from "../../../services/api";
 import "./PracticeQuestionInterface.css";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -16,9 +15,9 @@ const PracticeQuestionInterface = ({
   hasNext = false,
   hasPrevious = false,
   questionNumber,
-  onBookmark = () => {},
   isBookmarked,
   onSubmit,
+  onBookmark,
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -26,6 +25,7 @@ const PracticeQuestionInterface = ({
   const [previouslyAnswered, setPreviouslyAnswered] = useState(false);
   const [previousAnswer, setPreviousAnswer] = useState(null);
   const [wasCorrect, setWasCorrect] = useState(false);
+  const [crossedOptions, setCrossedOptions] = useState({});
 
   // Check localStorage when question changes
   useEffect(() => {
@@ -64,9 +64,11 @@ const PracticeQuestionInterface = ({
     isIncorrect: false,
     selectedOption: null,
   });
+  console.log("State:", userQuestionState); // Correct - will show the object properties
 
   // Add this at the beginning of the component
-  console.log("Full question object:", question);
+
+  // Add this near the top of your component
 
   const handleAnswerSelect = (index) => {
     if (!previouslyAnswered) {
@@ -89,27 +91,9 @@ const PracticeQuestionInterface = ({
         ...prev,
         isBookmarked: !prev.isBookmarked,
       };
-
-      // Update localStorage
-      const storedQuestions = JSON.parse(
-        localStorage.getItem("userQuestionStates") || "[]"
-      );
-      const existingIndex = storedQuestions.findIndex(
-        (q) => q.questionId === question.id
-      );
-
-      if (existingIndex >= 0) {
-        storedQuestions[existingIndex] = newState;
-      } else {
-        storedQuestions.push(newState);
-      }
-
-      localStorage.setItem(
-        "userQuestionStates",
-        JSON.stringify(storedQuestions)
-      );
       return newState;
     });
+    onBookmark(question.id);
   };
 
   // Wrap the navigation handlers to include scrolling
@@ -136,6 +120,42 @@ const PracticeQuestionInterface = ({
   const hasImage = question.svg_image && question.svg_image.trim() !== "";
   console.log(hasTable, hasImage);
   console.log(question);
+
+  const toggleCrossMode = () => {
+    const currentCrossMode = crossedOptions[question.id]?.crossMode || false;
+    setCrossedOptions({
+      ...crossedOptions,
+      [question.id]: {
+        ...crossedOptions[question.id],
+        crossMode: !currentCrossMode,
+      },
+    });
+  };
+
+  const toggleCrossOption = (optionId) => {
+    if (!crossedOptions[question.id]?.crossMode) return;
+
+    const currentCrossed = crossedOptions[question.id]?.crossed || [];
+    const newCrossed = currentCrossed.includes(optionId)
+      ? currentCrossed.filter((id) => id !== optionId)
+      : [...currentCrossed, optionId];
+
+    setCrossedOptions({
+      ...crossedOptions,
+      [question.id]: {
+        ...crossedOptions[question.id],
+        crossed: newCrossed,
+      },
+    });
+  };
+
+  const isOptionCrossed = (optionId) => {
+    return crossedOptions[question.id]?.crossed?.includes(optionId) || false;
+  };
+
+  const isCrossModeActive = () => {
+    return crossedOptions[question.id]?.crossMode || false;
+  };
 
   return (
     <div className="practice-question-interface">
@@ -229,6 +249,66 @@ const PracticeQuestionInterface = ({
 
           {/* Question text section */}
           <div className="question-flex-1">
+            <div className="practice-actions">
+              <div
+                onClick={() => {
+                  console.log("BOOKMARK DIV CLICKED");
+                  handleBookmarkClick();
+                }}
+                style={{
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginLeft: "10px",
+                  padding: "5px",
+                  position: "relative",
+                  zIndex: 10,
+                }}
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill={isBookmarked ? "gold" : "none"}
+                  stroke={isBookmarked ? "gold" : "currentColor"}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </div>
+
+              <div
+                className={`cross-button ${
+                  isCrossModeActive() ? "active" : ""
+                }`}
+                onClick={toggleCrossMode}
+                title="Toggle cross-out mode"
+                style={{
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginLeft: "10px",
+                  padding: "5px",
+                  position: "relative",
+                  zIndex: 10,
+                }}
+              >
+                <span className="cross-text">Abc</span>
+              </div>
+
+              {isCrossModeActive() && (
+                <div
+                  className="cross-mode-indicator"
+                  style={{ marginLeft: "10px" }}
+                >
+                  Click on options to cross them out
+                </div>
+              )}
+            </div>
             <div className="question-prompt">
               <div className="question-text">
                 <ReactMarkdown
@@ -310,8 +390,13 @@ const PracticeQuestionInterface = ({
                         : ""
                     }
                     ${previouslyAnswered ? "disabled" : ""}
+                    ${isOptionCrossed(index) ? "crossed" : ""}
                   `}
-                  onClick={() => handleAnswerSelect(index)}
+                  onClick={() =>
+                    isCrossModeActive()
+                      ? toggleCrossOption(index)
+                      : handleAnswerSelect(index)
+                  }
                 >
                   <div className="option-letter">
                     {String.fromCharCode(65 + index)}
