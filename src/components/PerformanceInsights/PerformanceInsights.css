@@ -124,6 +124,7 @@
 
 [data-theme="dark"] .insight-card {
   border: 1px solid #5b5b5b;
+  background-color: #1a1a1a61;
 }
 
 .speedometer-bg {

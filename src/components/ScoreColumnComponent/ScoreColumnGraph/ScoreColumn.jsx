@@ -232,7 +232,7 @@ export default function ScoreColumnGraph() {
                   fill="var(--bar-verbal-color)"
                   radius={[4, 4, 0, 0]}
                   isAnimationActive={true}
-                  animationBegin={2000}
+                  animationBegin={1400}
                   animationDuration={600}
                   animationEasing="ease-in-out"
                   onMouseEnter={(data, index) => {
@@ -262,7 +262,7 @@ export default function ScoreColumnGraph() {
                   fill="var(--bar-math-color)"
                   radius={[4, 4, 0, 0]}
                   isAnimationActive={true}
-                  animationBegin={2000}
+                  animationBegin={1400}
                   animationDuration={600}
                   animationEasing="ease-in-out"
                   onMouseEnter={(data, index) => {
