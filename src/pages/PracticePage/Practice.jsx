@@ -964,7 +964,7 @@ const FilterControls = React.memo(
             </button>
           </div>{" "}
           <div className="filter-toggles">
-            <button
+            {/* <button
               className={`filter-toggle ${
                 activeFilter === "solved" ? "active" : ""
               }`}
@@ -972,8 +972,8 @@ const FilterControls = React.memo(
               data-filter="solved"
             >
               <i className="fas fa-check-circle"></i>
-              Solved
-            </button>
+              Show solved
+            </button> */}
             <button
               className={`filter-toggle ${
                 activeFilter === "incorrect" ? "active" : ""
