@@ -1046,6 +1046,22 @@ button:focus-visible {
   gap: 12px;
 }
 
+.solved-indicator {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.solved-icon {
+  color: #4caf50;
+  font-size: 16px;
+}
+
+.unsolved-icon {
+  color: #ccc;
+  font-size: 16px;
+}
+
 .pagination-button {
   background-color: var(--primary-color);
   color: white;

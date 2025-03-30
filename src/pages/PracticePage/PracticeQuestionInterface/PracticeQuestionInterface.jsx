@@ -6,6 +6,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 // import "katex/dist/katex.min.css";
 import { formatMathExpression } from "../../../utils/mathUtils";
+import { api } from "../../../services/api"; // Import the API service
 
 const PracticeQuestionInterface = ({
   question,
@@ -157,6 +158,42 @@ const PracticeQuestionInterface = ({
     return crossedOptions[question.id]?.crossMode || false;
   };
 
+  // Handle close with API call
+  const handleClose = async () => {
+    try {
+      // Get user question states from localStorage
+      const userQuestionStates = JSON.parse(
+        localStorage.getItem("userQuestionStates") || "[]"
+      );
+
+      // Only send if there's data to send
+      if (userQuestionStates.length > 0) {
+        console.log("Sending user question states to API:", userQuestionStates);
+
+        // Send the data to the API
+        const response = await api.request("/questions/batch-update", {
+          method: "POST",
+          body: JSON.stringify({ questions: userQuestionStates }),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Failed to save user question states:", errorText);
+        } else {
+          // Clear localStorage on success
+          localStorage.removeItem("userQuestionStates");
+          console.log("Questions synced successfully");
+          console.log("Successfully saved user question states");
+        }
+      }
+    } catch (error) {
+      console.error("Error saving user question states:", error);
+    }
+
+    // Call the original onClose function
+    onClose();
+  };
+
   return (
     <div className="practice-question-interface">
       <div className="practice-question-header">
@@ -186,6 +223,29 @@ const PracticeQuestionInterface = ({
               <span className="topic">{question.subtopic}</span>
             )}
           </div>
+        </div>
+
+        {/* Update the close button to use our new handler */}
+        <div className="header-right">
+          <button
+            className="close-button"
+            onClick={handleClose}
+            title="Close question and save progress"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
       </div>
 
