@@ -122,6 +122,10 @@
   gap: 16px;
 }
 
+[data-theme="dark"] .insight-card {
+  border: 1px solid #5b5b5b;
+}
+
 .speedometer-bg {
   stroke: var(--border-color);
   stroke-width: 6;

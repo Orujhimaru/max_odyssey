@@ -23,7 +23,7 @@
   --box-shadow: rgba(0, 0, 0, 0.2);
   --chart-grid: #94a3b820;
   --chart-text: #94a3b8;
-
+  --border-card-color: #e3e3e3;
   /* Brand colors - light mode */
   --verbal-color: #456bc4;
   --math-color: #4e4e4e;
@@ -145,6 +145,7 @@ button:focus-visible {
   --box-shadow: rgba(0, 0, 0, 0.4);
   --chart-grid: #94a3b840;
   --chart-text: #94a3b8;
+  --border-card-color: #6d6c6c;
 
   /* Brand colors - dark mode overrides */
   --math-color: #3e3e3e; /* Softer red for dark mode  d3d3d3 -> PREVIOUS VALUE, CHECK OUT WHICH VALUES USE THIS, CHANGED FOR PRACTICE MATH LOGO#*/

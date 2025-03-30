@@ -188,8 +188,9 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   display: flex;
   flex-direction: column;
   border-radius: 12px;
-  box-shadow: rgba(0, 0, 0, 0.12) -0px 1px 3px, rgba(0, 0, 0, 0.089) 0px 0px 2px;
+  /* box-shadow: rgba(0, 0, 0, 0.12) -0px 1px 3px, rgba(0, 0, 0, 0.089) 0px 0px 2px; */
   background-image: radial-gradient(#e8e8e854 0.3px, var(--bg-secondary) 0.4px);
+  border: 1px solid var(--border-card-color);
 }
 
 .insights-container {
@@ -197,9 +198,11 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   padding: 12px;
   background-color: var(--bg-secondary);
   border-radius: 12px;
-  box-shadow: rgba(0, 0, 0, 0.12) -0px 1px 3px, rgba(0, 0, 0, 0.089) 0px 0px 2px;
-  background-image: radial-gradient(#e8e8e854 0.3px, var(--bg-secondary) 0.4px);
+  /* box-shadow: rgba(0, 0, 0, 0.12) -0px -1px 0px,
+    rgba(0, 0, 0, 0.089) 0px 0px 1px; */
+  /* background-image: radial-gradient(#e8e8e854 0.3px, var(--bg-secondary) 0.4px); */
   background-size: 10px 10px;
+  border: 1px solid var(--border-card-color);
 }
 
 .x-axis-tick {
