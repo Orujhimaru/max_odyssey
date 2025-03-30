@@ -239,16 +239,12 @@ const PracticeQuestionInterface = ({
                     p: ({ node, children, ...props }) => {
                       // Check if the first child is a KaTeX span
                       const hasKatexFirst =
-                        children &&
-                        children[0] &&
                         React.isValidElement(children[0]) &&
                         children[0].props.className &&
                         children[0].props.className.includes("katex");
 
                       // Check if the second child is also a KaTeX span
                       const hasKatexSecond =
-                        children &&
-                        children.length > 1 &&
                         React.isValidElement(children[1]) &&
                         children[1].props.className &&
                         children[1].props.className.includes("katex");

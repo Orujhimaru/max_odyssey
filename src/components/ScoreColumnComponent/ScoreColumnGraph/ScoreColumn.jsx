@@ -231,7 +231,10 @@ export default function ScoreColumnGraph() {
                   dataKey="verbal"
                   fill="var(--bar-verbal-color)"
                   radius={[4, 4, 0, 0]}
-                  isAnimationActive={false}
+                  isAnimationActive={true}
+                  animationBegin={2000}
+                  animationDuration={600}
+                  animationEasing="ease-in-out"
                   onMouseEnter={(data, index) => {
                     setHoveredIndex(index);
                     setHoveredValue(data.verbal);
@@ -258,7 +261,10 @@ export default function ScoreColumnGraph() {
                   dataKey="math"
                   fill="var(--bar-math-color)"
                   radius={[4, 4, 0, 0]}
-                  isAnimationActive={false}
+                  isAnimationActive={true}
+                  animationBegin={2000}
+                  animationDuration={600}
+                  animationEasing="ease-in-out"
                   onMouseEnter={(data, index) => {
                     setHoveredIndex(index);
                     setHoveredValue(data.math);
