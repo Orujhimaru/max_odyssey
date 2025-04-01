@@ -28,35 +28,6 @@ const PracticeQuestionInterface = ({
   const [wasCorrect, setWasCorrect] = useState(false);
   const [crossedOptions, setCrossedOptions] = useState({});
 
-  // Check localStorage when question changes
-  useEffect(() => {
-    // Reset states when question changes
-    setShowExplanation(false);
-
-    // Check if this question was previously answered
-    const storedQuestions = JSON.parse(
-      localStorage.getItem("userQuestionStates") || "[]"
-    );
-
-    const existingQuestion = storedQuestions.find(
-      (q) => q.questionId === question.id
-    );
-
-    if (existingQuestion && existingQuestion.isSolved) {
-      setPreviouslyAnswered(true);
-      setPreviousAnswer(existingQuestion.selectedOption);
-      setWasCorrect(existingQuestion.isCorrect);
-      setSelectedAnswer(existingQuestion.selectedOption);
-      setShowExplanation(true);
-    } else {
-      // Important: Reset all states for new questions
-      setPreviouslyAnswered(false);
-      setPreviousAnswer(null);
-      setWasCorrect(false);
-      setSelectedAnswer(null);
-    }
-  }, [question.id]);
-
   // New state for tracking user's question interactions
   const [userQuestionState, setUserQuestionState] = useState({
     questionId: question.id,
@@ -67,9 +38,61 @@ const PracticeQuestionInterface = ({
   });
   console.log("State:", userQuestionState); // Correct - will show the object properties
 
-  // Add this at the beginning of the component
+  // Update the useEffect that handles question state
+  useEffect(() => {
+    // Reset states when question changes
+    setShowExplanation(false);
 
-  // Add this near the top of your component
+    // Check if this question was previously answered
+    console.log("Question data:", question);
+    console.log("is_solved:", question.is_solved);
+    console.log("selected_option:", question.selected_option);
+
+    if (question.is_solved) {
+      console.log("Question was previously solved, setting states accordingly");
+      setPreviouslyAnswered(true);
+
+      // Convert selected_option from sql.NullInt32 to a regular number
+      const selectedOption = question.selected_option
+        ? Number(question.selected_option)
+        : null;
+      setPreviousAnswer(selectedOption);
+      setWasCorrect(!question.incorrect);
+      setSelectedAnswer(selectedOption);
+      setShowExplanation(true); // Show explanation for previously solved questions
+
+      // Update user question state
+      setUserQuestionState({
+        ...userQuestionState,
+        questionId: question.id,
+        isBookmarked: question.is_bookmarked || false,
+        isSolved: true,
+        isIncorrect: question.incorrect,
+        selectedOption: selectedOption,
+      });
+    } else {
+      // Reset all states for new questions
+      setPreviouslyAnswered(false);
+      setPreviousAnswer(null);
+      setWasCorrect(false);
+      setSelectedAnswer(null);
+
+      // Initialize user question state for new questions
+      setUserQuestionState({
+        questionId: question.id,
+        isBookmarked: question.is_bookmarked || false,
+        isSolved: false,
+        isIncorrect: false,
+        selectedOption: null,
+      });
+    }
+  }, [
+    question.id,
+    question.is_solved,
+    question.selected_option,
+    question.incorrect,
+    question.is_bookmarked,
+  ]);
 
   const handleAnswerSelect = (index) => {
     if (!previouslyAnswered) {
@@ -446,7 +469,7 @@ const PracticeQuestionInterface = ({
                   onClick={() =>
                     isCrossModeActive()
                       ? toggleCrossOption(index)
-                      : handleAnswerSelect(index)
+                      : !previouslyAnswered && handleAnswerSelect(index)
                   }
                 >
                   <div className="option-letter">
@@ -457,26 +480,8 @@ const PracticeQuestionInterface = ({
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeKatex]}
                     >
-                      {choice.includes("<figure ")
-                        ? // If the choice contains HTML table, use a placeholder text
-                          // The actual HTML will be inserted using dangerouslySetInnerHTML below
-                          ""
-                        : formatMathExpression(
-                            // Check if the choice starts with a letter followed by ")" and trim it
-                            choice.match(/^[A-Z]\)/)
-                              ? choice.substring(2).trim()
-                              : choice
-                          )}
+                      {formatMathExpression(choice)}
                     </ReactMarkdown>
-                    {choice.includes("<figure ") && (
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: choice.match(/^[A-Z]\)/)
-                            ? choice.substring(2).trim()
-                            : choice,
-                        }}
-                      />
-                    )}
                   </div>
                 </div>
               ))}
