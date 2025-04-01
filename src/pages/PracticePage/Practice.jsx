@@ -468,7 +468,7 @@ const Practice = () => {
           ? storedQuestions[existingIndex].isBookmarked
           : false,
       isSolved: true,
-      isCorrect,
+      isIncorrect: !isCorrect,
       selectedOption: selectedAnswer,
       timestamp: new Date().toISOString(),
     };
