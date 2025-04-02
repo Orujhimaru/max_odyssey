@@ -525,3 +525,53 @@ body {
   border-radius: 8px;
   background-color: white;
 }
+
+table {
+  border-spacing: 0px;
+  border: 1px solid #d9d9d9;
+}
+thead tr th {
+  border-inline: 1px solid #d9d9d9;
+}
+
+tbody tr th,
+td {
+  /* display: table-row; */
+  border: 1px solid hsl(0, 0%, 85%);
+  padding: 4px;
+}
+thead tr th {
+  /* display: table-row; */
+  /* border: 1px solid hsl(0, 0%, 85%); */
+  padding: 12px;
+}
+.col {
+  text-align: center;
+  vertical-align: bottom;
+  padding: 10px;
+  min-width: 48px;
+}
+.row {
+  /* text-align: left; */
+}
+td {
+  text-align: center;
+}
+table tbody {
+  border-top: 1px solid #d9d9d9;
+}
+blockquote {
+  margin-bottom: 12px;
+  padding-left: 32px;
+}
+table {
+  /* border: 1px solid #4a4a4a; */
+}
+caption {
+  margin-bottom: 4px;
+}
+th {
+  text-align: center !important;
+  vertical-align: top !important;
+  padding-top: 4px;
+}

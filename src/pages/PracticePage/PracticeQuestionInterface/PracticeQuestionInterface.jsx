@@ -142,7 +142,7 @@ const PracticeQuestionInterface = ({
   // Check if question has table or image
   const hasTable = question.html_table && question.html_table.trim() !== "";
   const hasImage = question.svg_image && question.svg_image.trim() !== "";
-  console.log(hasTable, hasImage);
+  console.log("Has table:", hasTable, "Has image:", hasImage);
   console.log(question);
 
   const toggleCrossMode = () => {
@@ -266,25 +266,14 @@ const PracticeQuestionInterface = ({
       <div className="practice-question-content" ref={questionContentRef}>
         <div className="question-area-interface">
           <div className="question-text-flex">
-            {/* Table section */}
-            {hasTable && (
-              <div className="tables-container">
-                <div
-                  className="question-table"
-                  dangerouslySetInnerHTML={{ __html: question.html_table }}
-                />
-              </div>
-            )}
-
             {/* Image section */}
-            {hasImage && (
-              <div className="images-container">
-                <div
-                  className="question-image"
-                  dangerouslySetInnerHTML={{ __html: question.svg_image }}
-                />
-              </div>
-            )}
+
+            <div className="images-container">
+              <div
+                className="question-image"
+                dangerouslySetInnerHTML={{ __html: question.svg_image }}
+              />
+            </div>
 
             {/* Passage section */}
             {question.passage && (
