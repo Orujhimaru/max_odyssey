@@ -227,6 +227,7 @@
   font-size: 16px;
   font-weight: 500;
   color: var(--text-primary);
+  padding-left: 8px;
 }
 
 .radar-header i {
@@ -299,9 +300,11 @@
 .skill-section-header.verbal {
   color: var(--text-primary);
   opacity: 0.7;
+  padding-left: 8px;
 }
 
 .skill-section-header.math {
   color: var(--text-primary);
   opacity: 0.7;
+  padding-left: 8px;
 }
