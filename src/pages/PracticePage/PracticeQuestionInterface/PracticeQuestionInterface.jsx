@@ -277,24 +277,10 @@ const PracticeQuestionInterface = ({
 
             {/* Passage section */}
             {question.passage && (
-              <div className="passage-text">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm, remarkMath]}
-                  rehypePlugins={[rehypeKatex]}
-                  components={{
-                    p: ({ node, className, children, ...props }) => {
-                      return <p {...props}>{children}</p>;
-                    },
-                  }}
-                >
-                  {question.passage
-                    .replace(/Text 1/g, "# Text 1\n\n")
-                    .replace(/Text 2/g, "\n\n# Text 2\n\n")
-                    .replace(/______\s*blank/g, " ______ ")
-                    .replace(/______/g, " ______ ")
-                    .replace(/==(.+?)==/g, " _**$1**_")}
-                </ReactMarkdown>
-              </div>
+              <div
+                className="passage-text"
+                dangerouslySetInnerHTML={{ __html: question.passage }}
+              />
             )}
 
             {showExplanation && (
