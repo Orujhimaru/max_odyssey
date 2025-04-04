@@ -208,6 +208,28 @@ const PracticeQuestionInterface = ({
     onClose();
   };
 
+  // Update the function to process the passage HTML
+  const processPassageHtml = (html) => {
+    if (!html) return "";
+
+    // Replace \n\u2003 (newline + em space) with <br> (line break)
+    let processed = html.replace(/\n\u2003/g, "<br>");
+
+    // Also replace standalone &emsp; with <br>
+    processed = processed.replace(/&emsp;/g, "<br>");
+
+    // If the passage doesn't have proper paragraph tags, wrap it
+    if (!processed.includes("<p>")) {
+      // Split by <br> tags and wrap each section in paragraph tags
+      const paragraphs = processed.split(/<br\s*\/?>/i);
+      processed = paragraphs
+        .map((p) => (p.trim() ? `<p>${p}</p>` : ""))
+        .join("");
+    }
+
+    return processed;
+  };
+
   return (
     <div className="practice-question-interface">
       <div className="practice-question-header">
@@ -279,7 +301,9 @@ const PracticeQuestionInterface = ({
             {question.passage && (
               <div
                 className="passage-text"
-                dangerouslySetInnerHTML={{ __html: question.passage }}
+                dangerouslySetInnerHTML={{
+                  __html: processPassageHtml(question.passage),
+                }}
               />
             )}
 
