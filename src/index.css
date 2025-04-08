@@ -52,7 +52,7 @@
     opacity var(--transition-speed) var(--transition-timing);
 
   /* Bar colors - light mode */
-  --bar-verbal-color: #3b5fa4;
+  --bar-verbal-color: #5b83d0;
   --bar-math-color: #787878;
   --bar-background: #eee;
   --bar-math-line-color: #4e4e4e;
