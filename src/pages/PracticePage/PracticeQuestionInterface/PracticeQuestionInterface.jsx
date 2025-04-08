@@ -209,26 +209,34 @@ const PracticeQuestionInterface = ({
   };
 
   // Update the function to process the passage HTML
-  const processPassageHtml = (html) => {
-    if (!html) return "";
+  // const processPassageHtml = (html) => {
+  //   if (!html) return "";
 
-    // Replace \n\u2003 (newline + em space) with <br> (line break)
-    let processed = html.replace(/\n\u2003/g, "<br>");
+  //   // Replace HTML entities with actual characters
+  //   let processed = html
+  //     // First handle the em spaces (\u2003) that create extra gaps
+  //     .replace(/\u2003/g, " ")
+  //     // Then handle HTML entities
+  //     .replace(/&ensp;/g, " ")
+  //     .replace(/&emsp;/g, " ")
+  //     // Add line breaks at semicolons and periods (but not if followed by quotation marks)
+  //     .replace(/([;.])\s+(?!["'])/g, "$1<br><br>")
+  //     // Clean up any multiple spaces
+  //     .replace(/\s+/g, " ")
+  //     // Finally handle line breaks
+  //     .replace(/\n/g, "<br>");
 
-    // Also replace standalone &emsp; with <br>
-    processed = processed.replace(/&emsp;/g, "<br>");
+  //   // If the passage doesn't have proper paragraph tags, wrap it
+  //   if (!processed.includes("<p>")) {
+  //     // Split by <br> tags and wrap each section in paragraph tags
+  //     const paragraphs = processed.split(/<br\s*\/?>/i);
+  //     processed = paragraphs
+  //       .map((p) => (p.trim() ? `<p style="margin-bottom: 1em">${p}</p>` : ""))
+  //       .join("    ");
+  //   }
 
-    // If the passage doesn't have proper paragraph tags, wrap it
-    if (!processed.includes("<p>")) {
-      // Split by <br> tags and wrap each section in paragraph tags
-      const paragraphs = processed.split(/<br\s*\/?>/i);
-      processed = paragraphs
-        .map((p) => (p.trim() ? `<p>${p}</p>` : ""))
-        .join("");
-    }
-
-    return processed;
-  };
+  //   return processed;
+  // };
 
   return (
     <div className="practice-question-interface">
@@ -289,20 +297,18 @@ const PracticeQuestionInterface = ({
         <div className="question-area-interface">
           <div className="question-text-flex">
             {/* Image section */}
-
             <div className="images-container">
               <div
                 className="question-image"
                 dangerouslySetInnerHTML={{ __html: question.svg_image }}
               />
             </div>
-
             {/* Passage section */}
             {question.passage && (
               <div
                 className="passage-text"
                 dangerouslySetInnerHTML={{
-                  __html: processPassageHtml(question.passage),
+                  __html: question.passage,
                 }}
               />
             )}
