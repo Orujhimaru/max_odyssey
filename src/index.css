@@ -159,6 +159,7 @@ button:focus-visible {
   --radar-area: url(#scoreGradientDark);
 
   /* Bar colors - dark mode */
+  --bar-verbal-color: #3368cd;
   --bar-math-color: #9c9c9c; /* Matching the math score box */
   --bar-background: #404040;
   --bar-math-line-color: #a9a9a9;
