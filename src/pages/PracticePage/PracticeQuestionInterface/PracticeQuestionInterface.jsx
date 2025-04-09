@@ -308,7 +308,9 @@ const PracticeQuestionInterface = ({
               <div
                 className="passage-text"
                 dangerouslySetInnerHTML={{
-                  __html: question.passage,
+                  __html: question.passage
+                    .replace(/&emsp;/g, "<br>")
+                    .replace(/\s*<br>\s*/g, "<br>"),
                 }}
               />
             )}

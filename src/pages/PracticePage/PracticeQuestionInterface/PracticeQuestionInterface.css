@@ -411,11 +411,11 @@ body {
 
 .passage-text {
   margin-bottom: 24px;
-  /* padding: 16px; */
   background-color: var(--bg-secondary);
   border-radius: 8px;
   font-size: 16px;
   line-height: 1.6;
+  white-space: pre-line;
 }
 
 .question-prompt {
@@ -560,8 +560,9 @@ table tbody {
   border-top: 1px solid #d9d9d9;
 }
 blockquote {
-  margin-bottom: 12px;
-  padding-left: 32px;
+  margin-top: 12px;
+  padding-left: 12px;
+  white-space: pre-line;
 }
 table {
   /* border: 1px solid #4a4a4a; */
