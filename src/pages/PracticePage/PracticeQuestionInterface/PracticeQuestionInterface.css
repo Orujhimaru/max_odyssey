@@ -44,9 +44,13 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  background-color: var(--bg-primary);
+  background-color: #efefef;
   /* border-bottom: 1px solid var(--border-color); */
   border-radius: 8px;
+}
+
+[data-theme="dark"] .practice-question-header {
+  background-color: var(--bg-primary);
 }
 
 .header-left {
@@ -286,10 +290,13 @@ body {
 
 .practice-question-footer {
   padding: 16px 24px;
-  background-color: var(--bg-primary);
+  background-color: #efefef;
   border-top: 1px solid var(--border-color);
   border-radius: 8px;
   /* margin-left: 92px; */
+}
+[data-theme="dark"] .practice-question-footer {
+  background-color: var(--bg-primary);
 }
 
 .submit-button {
