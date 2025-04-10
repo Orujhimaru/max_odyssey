@@ -565,6 +565,7 @@ blockquote {
   white-space: pre-line;
 }
 table {
+  margin: auto;
   /* border: 1px solid #4a4a4a; */
 }
 caption {
