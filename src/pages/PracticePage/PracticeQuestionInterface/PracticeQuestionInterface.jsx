@@ -489,7 +489,7 @@ const PracticeQuestionInterface = ({
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeKatex]}
                     >
-                      {formatMathExpression(choice)}
+                      {formatMathExpression(choice).slice(2)}
                     </ReactMarkdown>
                   </div>
                 </div>
