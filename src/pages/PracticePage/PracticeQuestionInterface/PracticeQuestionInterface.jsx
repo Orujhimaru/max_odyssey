@@ -297,12 +297,14 @@ const PracticeQuestionInterface = ({
         <div className="question-area-interface">
           <div className="question-text-flex">
             {/* Image section */}
-            <div className="images-container">
-              <div
-                className="question-image"
-                dangerouslySetInnerHTML={{ __html: question.svg_image }}
-              />
-            </div>
+            {question.svg_image !== "" && (
+              <div className="images-container">
+                <div
+                  className="question-image"
+                  dangerouslySetInnerHTML={{ __html: question.svg_image }}
+                />
+              </div>
+            )}
             {/* Passage section */}
             {question.passage && (
               <div
