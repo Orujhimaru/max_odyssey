@@ -315,14 +315,14 @@ const PracticeQuestionInterface = ({
             )}
             {/* Passage section */}
             {question.passage && (
-              <div
-                className="passage-text"
-                dangerouslySetInnerHTML={{
-                  __html: question.passage
-                    .replace(/&emsp;/g, "<br>")
-                    .replace(/\s*<br>\s*/g, "<br>"),
-                }}
-              />
+              <div className="passage-text">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                >
+                  {question.passage}
+                </ReactMarkdown>
+              </div>
             )}
 
             {showExplanation && (
