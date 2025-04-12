@@ -305,6 +305,14 @@ const PracticeQuestionInterface = ({
                 />
               </div>
             )}
+            {question.html_table !== "" && (
+              <div className="images-container">
+                <div
+                  className="question-image"
+                  dangerouslySetInnerHTML={{ __html: question.html_table }}
+                />
+              </div>
+            )}
             {/* Passage section */}
             {question.passage && (
               <div
