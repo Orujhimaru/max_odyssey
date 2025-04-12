@@ -425,7 +425,7 @@ const PracticeQuestionInterface = ({
                               },
                             })}
 
-                            {/* If second child is also KaTeX, render it as block too */}
+                            {/* If second child is also KaTeX, render it as block too
                             {hasKatexSecond
                               ? React.cloneElement(children[1], {
                                   style: {
@@ -433,7 +433,7 @@ const PracticeQuestionInterface = ({
                                     marginBottom: "10px",
                                   },
                                 })
-                              : null}
+                              : null} }
 
                             {/* Group all remaining children in a single div */}
                             {children.length > (hasKatexSecond ? 2 : 1) && (
@@ -485,12 +485,16 @@ const PracticeQuestionInterface = ({
                     {String.fromCharCode(65 + index)}
                   </div>
                   <div className="option-text">
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm, remarkMath]}
-                      rehypePlugins={[rehypeKatex]}
-                    >
-                      {formatMathExpression(choice).slice(2)}
-                    </ReactMarkdown>
+                    {choice.slice(2).trim().startsWith("<figure") ? (
+                      <div dangerouslySetInnerHTML={{ __html: choice }} />
+                    ) : (
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm, remarkMath]}
+                        rehypePlugins={[rehypeKatex]}
+                      >
+                        {choice.slice(2)}
+                      </ReactMarkdown>
+                    )}
                   </div>
                 </div>
               ))}
