@@ -103,6 +103,10 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  border-radius: 8px;
+  background-color: #595959b8;
+  padding: 2px;
+  padding-inline: 12px;
 }
 
 .progress-bar {
