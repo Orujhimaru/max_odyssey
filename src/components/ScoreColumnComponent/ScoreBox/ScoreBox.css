@@ -130,8 +130,13 @@
   position: relative;
   padding: 3px;
   border-radius: 10px;
-  background: conic-gradient(from var(--angle), #3b5fa4, #adc6ff, #2d5bc7);
-  animation: rotate-gradient 2s linear infinite;
+  background: conic-gradient(
+    from var(--angle),
+    var(--bg-secondary),
+    #5e6d9029,
+    #066fdd
+  );
+  animation: rotate-gradient 4s linear infinite;
 }
 
 @property --angle {
