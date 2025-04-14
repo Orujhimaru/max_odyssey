@@ -122,10 +122,10 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
   };
 
   return (
-    <svg viewBox="0 0 100 60" className="speedometer-icon">
-      {/* Complete semicircle background with the bottom part filled */}
+    <svg viewBox="0 0 100 56" className="speedometer-icon">
+      {/* Complete semicircle background with the bottom part filled - shorter at bottom */}
       <path
-        d="M 10 50 A 40 40 0 0 1 90 50 L 90 55 A 5 5 0 0 1 85 60 L 15 60 A 5 5 0 0 1 10 55 Z"
+        d="M 10 50 A 40 40 0 0 1 90 50 L 90 47 A 3 3 0 0 1 87 50 L 13 50 A 3 3 0 0 1 10 47 Z"
         fill="#111827"
         stroke="#111827"
         strokeWidth="1"
