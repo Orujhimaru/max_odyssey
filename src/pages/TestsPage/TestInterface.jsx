@@ -151,7 +151,7 @@ const TestInterface = ({ testType, onExit }) => {
   // Transform choices into the format we need
   const options = currentQ.choices.map((choice, index) => ({
     id: String.fromCharCode(65 + index), // Convert 0 to 'A', 1 to 'B', etc.
-    text: choice,
+    text: choice.substring(3).trim(), // Remove first 2 chars and any whitespace
   }));
 
   return (
@@ -206,7 +206,11 @@ const TestInterface = ({ testType, onExit }) => {
           <div className="question-text">
             {currentQ.passage && (
               <div className="passage">
-                <p>{currentQ.passage}</p>
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: currentQ.passage,
+                  }}
+                />
               </div>
             )}
             <p>{currentQ.question}</p>
