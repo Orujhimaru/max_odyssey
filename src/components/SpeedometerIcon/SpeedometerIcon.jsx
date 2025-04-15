@@ -57,9 +57,8 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
       const isLargeTick = i % 15 === 0;
       const angle = i - 180;
       const radian = (angle * Math.PI) / 180;
-      // Make ticks more delicate by adjusting their length
       const outerRadius = 36;
-      const innerRadius = isLargeTick ? 34 : 35; // Shorter difference between inner and outer radius
+      const innerRadius = isLargeTick ? 34 : 35;
 
       const x1 = 50 + innerRadius * Math.cos(radian);
       const y1 = 50 + innerRadius * Math.sin(radian);
@@ -74,7 +73,7 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
           x2={x2}
           y2={y2}
           stroke="white"
-          strokeWidth={isLargeTick ? 0.5 : 0.3} // Much thinner lines
+          strokeWidth={isLargeTick ? 0.5 : 0.3}
         />
       );
     }
@@ -84,10 +83,11 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
   // Generate the segmented blocks around the perimeter
   const createSegments = () => {
     const segments = [];
-    const segmentCount = 12; // Reduced count for wider segments
+    const segmentCount = 12;
     const segmentAngle = 180 / segmentCount;
-    const outerRadius = 52; // Increased outer radius for wider rectangles
-    const innerRadius = 46; // Increased inner radius but keeping the height difference smaller
+    const outerRadius = 52;
+    const innerRadius = 46;
+    const center = { x: 50, y: 50 };
 
     for (let i = 0; i < segmentCount; i++) {
       // Calculate color based on position
@@ -101,21 +101,32 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
       }
 
       const startAngle = -180 + i * segmentAngle;
-      const endAngle = startAngle + segmentAngle * 0.85; // Wider segments
+      const endAngle = startAngle + segmentAngle * 0.85;
 
-      const startRad = (startAngle * Math.PI) / 180;
-      const endRad = (endAngle * Math.PI) / 180;
+      const startRadOuter = (startAngle * Math.PI) / 180;
+      const endRadOuter = (endAngle * Math.PI) / 180;
+      const startRadInner = startRadOuter;
+      const endRadInner = endRadOuter;
 
-      const x1 = 50 + innerRadius * Math.cos(startRad);
-      const y1 = 50 + innerRadius * Math.sin(startRad);
-      const x2 = 50 + outerRadius * Math.cos(startRad);
-      const y2 = 50 + outerRadius * Math.sin(startRad);
-      const x3 = 50 + outerRadius * Math.cos(endRad);
-      const y3 = 50 + outerRadius * Math.sin(endRad);
-      const x4 = 50 + innerRadius * Math.cos(endRad);
-      const y4 = 50 + innerRadius * Math.sin(endRad);
+      // Calculate points using arc paths
+      const x1 = center.x + innerRadius * Math.cos(startRadInner);
+      const y1 = center.y + innerRadius * Math.sin(startRadInner);
+      const x2 = center.x + outerRadius * Math.cos(startRadOuter);
+      const y2 = center.y + outerRadius * Math.sin(startRadOuter);
+      const x3 = center.x + outerRadius * Math.cos(endRadOuter);
+      const y3 = center.y + outerRadius * Math.sin(endRadOuter);
+      const x4 = center.x + innerRadius * Math.cos(endRadInner);
+      const y4 = center.y + innerRadius * Math.sin(endRadInner);
 
-      const path = `M ${x1} ${y1} L ${x2} ${y2} L ${x3} ${y3} L ${x4} ${y4} Z`;
+      // Create path with arcs for curved edges
+      const path = `
+        M ${x1} ${y1}
+        L ${x2} ${y2}
+        A ${outerRadius} ${outerRadius} 0 0 1 ${x3} ${y3}
+        L ${x4} ${y4}
+        A ${innerRadius} ${innerRadius} 0 0 0 ${x1} ${y1}
+        Z
+      `;
 
       segments.push(<path key={`segment-${i}`} d={path} fill={color} />);
     }
