@@ -60,10 +60,10 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
       const outerRadius = 36;
       const innerRadius = isLargeTick ? 34 : 35;
 
-      const x1 = 50 + innerRadius * Math.cos(radian);
-      const y1 = 50 + innerRadius * Math.sin(radian);
-      const x2 = 50 + outerRadius * Math.cos(radian);
-      const y2 = 50 + outerRadius * Math.sin(radian);
+      const x1 = 60 + innerRadius * Math.cos(radian);
+      const y1 = 60 + innerRadius * Math.sin(radian);
+      const x2 = 60 + outerRadius * Math.cos(radian);
+      const y2 = 60 + outerRadius * Math.sin(radian);
 
       ticks.push(
         <line
@@ -87,7 +87,7 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
     const segmentAngle = 180 / segmentCount;
     const outerRadius = 52;
     const innerRadius = 46;
-    const center = { x: 50, y: 50 };
+    const center = { x: 60, y: 60 };
 
     for (let i = 0; i < segmentCount; i++) {
       // Calculate color based on position
@@ -134,10 +134,10 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
   };
 
   return (
-    <svg viewBox="0 0 100 56" className="speedometer-icon">
+    <svg viewBox="0 0 120 70" className="speedometer-icon">
       {/* Complete semicircle background with the bottom part filled - shorter at bottom */}
       <path
-        d="M 10 50 A 40 40 0 0 1 90 50 L 90 47 A 3 3 0 0 1 87 50 L 13 50 A 3 3 0 0 1 10 47 Z"
+        d="M 20 60 A 40 40 0 0 1 100 60 L 100 57 A 3 3 0 0 1 97 60 L 23 60 A 3 3 0 0 1 20 57 Z"
         fill="#111827"
         stroke="#111827"
         strokeWidth="1"
@@ -151,21 +151,21 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
 
       {/* Needle */}
       <g
-        transform={`rotate(${currentAngle + 90}, 50, 50)`}
+        transform={`rotate(${currentAngle + 90}, 60, 60)`}
         className="speedometer-needle-group"
       >
         <line
-          x1="50"
-          y1="50"
-          x2="50"
-          y2="20"
+          x1="60"
+          y1="60"
+          x2="60"
+          y2="30"
           stroke="white"
           strokeWidth="1.5"
           strokeLinecap="round"
         />
         <circle
-          cx="50"
-          cy="50"
+          cx="60"
+          cy="60"
           r="3"
           fill="#111827"
           stroke="white"
