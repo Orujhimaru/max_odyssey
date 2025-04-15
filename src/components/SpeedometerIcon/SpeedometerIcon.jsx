@@ -57,8 +57,8 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
       const isLargeTick = i % 15 === 0;
       const angle = i - 180;
       const radian = (angle * Math.PI) / 180;
-      const outerRadius = 36;
-      const innerRadius = isLargeTick ? 34 : 35;
+      const outerRadius = 44; // Increased to match new background size
+      const innerRadius = isLargeTick ? 42 : 43; // Keeping ticks short but moved out
 
       const x1 = 60 + innerRadius * Math.cos(radian);
       const y1 = 60 + innerRadius * Math.sin(radian);
@@ -135,9 +135,9 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
 
   return (
     <svg viewBox="0 0 120 70" className="speedometer-icon">
-      {/* Complete semicircle background with the bottom part filled - shorter at bottom */}
+      {/* Dark semicircle background */}
       <path
-        d="M 20 60 A 40 40 0 0 1 100 60 L 100 57 A 3 3 0 0 1 97 60 L 23 60 A 3 3 0 0 1 20 57 Z"
+        d="M 15 60 A 45 45 0 0 1 105 60"
         fill="#111827"
         stroke="#111827"
         strokeWidth="1"
