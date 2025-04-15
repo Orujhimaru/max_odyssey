@@ -228,4 +228,28 @@ export const api = {
 
     return response.json();
   },
+
+  // Generate a new exam
+  generateExam: async () => {
+    console.log("Generating new exam");
+
+    try {
+      const response = await api.request("/exams/generate", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          `Failed to generate exam: ${response.status} - ${errorText}`
+        );
+        throw new Error(`Failed to generate exam: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error("API request failed:", error);
+      throw error;
+    }
+  },
 };

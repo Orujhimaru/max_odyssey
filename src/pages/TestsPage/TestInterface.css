@@ -260,7 +260,7 @@
 }
 
 .question-navigator {
-  width: 220px;
+  width: 280px;
   background-color: var(--bg-primary);
   border-left: 1px solid var(--border-color);
   padding: 24px;

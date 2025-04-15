@@ -1,12 +1,41 @@
 import React, { useState, useEffect } from "react";
 import "./TestInterface.css";
+import { api } from "../../services/api";
 
 const TestInterface = ({ testType, onExit }) => {
+  const [examData, setExamData] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [markedQuestions, setMarkedQuestions] = useState([]);
   const [crossedOptions, setCrossedOptions] = useState({});
   const [timeRemaining, setTimeRemaining] = useState("2:45:00");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch exam data when component mounts
+  useEffect(() => {
+    const fetchExamData = async () => {
+      try {
+        setLoading(true);
+        const examData = await api.generateExam();
+        console.log("Generated Exam Response:", examData);
+
+        if (examData && examData.exam_data && examData.exam_data[0]) {
+          setExamData(examData);
+          setCurrentQuestion(0); // Start with first question of first module
+        } else {
+          throw new Error("Invalid exam data structure");
+        }
+      } catch (err) {
+        console.error("Error details:", err);
+        setError("Error loading exam: " + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExamData();
+  }, [testType]);
 
   // Add class to body when component mounts
   useEffect(() => {
@@ -24,77 +53,19 @@ const TestInterface = ({ testType, onExit }) => {
     onExit();
   };
 
-  // Mock questions for the test
-  const questions = [
-    {
-      id: 1,
-      text: "K.D. Leka and colleagues found that the Sun's corona provides an advance indication of solar flares—intense eruptions of electromagnetic radiation that emanate from active regions in the Sun's photosphere and can interfere with telecommunications on Earth. Preceding a flare, the corona temporarily exhibits increased brightness above the region where the flare is _____.",
-      options: [
-        { id: "A", text: "antecedent" },
-        { id: "B", text: "impending" },
-        { id: "C", text: "innocuous" },
-        { id: "D", text: "perpetual" },
-      ],
-      section: "Reading and Writing",
-      module: 1,
-      correctAnswer: "B",
-    },
-    {
-      id: 2,
-      text: "The author's primary purpose in the passage is to",
-      options: [
-        {
-          id: "A",
-          text: "explain a scientific phenomenon and its practical implications",
-        },
-        { id: "B", text: "challenge a widely accepted scientific theory" },
-        {
-          id: "C",
-          text: "compare competing explanations for a natural occurrence",
-        },
-        {
-          id: "D",
-          text: "trace the historical development of a scientific discovery",
-        },
-      ],
-      section: "Reading and Writing",
-      module: 1,
-      correctAnswer: "A",
-    },
-    {
-      id: 3,
-      text: "If x + y = 10 and xy = 21, what is the value of x² + y²?",
-      options: [
-        { id: "A", text: "58" },
-        { id: "B", text: "79" },
-        { id: "C", text: "100" },
-        { id: "D", text: "121" },
-      ],
-      section: "Math",
-      module: 1,
-      correctAnswer: "A",
-    },
-    {
-      id: 4,
-      text: "A line passes through the points (2, 5) and (4, 9). Which of the following is the equation of this line?",
-      options: [
-        { id: "A", text: "y = 2x + 1" },
-        { id: "B", text: "y = 2x + 2" },
-        { id: "C", text: "y = 2x + 3" },
-        { id: "D", text: "y = 3x - 1" },
-      ],
-      section: "Math",
-      module: 1,
-      correctAnswer: "A",
-    },
-  ];
-
   const handleAnswerSelect = (optionId) => {
     setSelectedAnswer(optionId);
   };
 
   const handleNextQuestion = () => {
-    if (currentQuestion < questions.length - 1) {
+    if (!examData) return;
+
+    const currentModule = examData.exam_data.find(
+      (m) => m.module_number === examData.current_module
+    );
+    if (!currentModule) return;
+
+    if (currentQuestion < currentModule.questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
     }
@@ -142,13 +113,9 @@ const TestInterface = ({ testType, onExit }) => {
         crossed: newCrossed,
       },
     });
-    console.log("Crossed options:", crossedOptions); // Debug
   };
 
   const isOptionCrossed = (optionId) => {
-    const isCrossed =
-      crossedOptions[currentQuestion]?.crossed?.includes(optionId) || false;
-    console.log(`Option ${optionId} crossed:`, isCrossed); // Debug
     return (
       crossedOptions[currentQuestion]?.crossed?.includes(optionId) || false
     );
@@ -158,16 +125,44 @@ const TestInterface = ({ testType, onExit }) => {
     return crossedOptions[currentQuestion]?.crossMode || false;
   };
 
-  const currentQ = questions[currentQuestion];
+  if (loading) {
+    return <div className="loading">Loading exam data...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
+
+  if (!examData || !examData.exam_data || !examData.exam_data[0]) {
+    return <div className="error">Invalid exam data structure</div>;
+  }
+
+  // Use the first module's data
+  const currentModule = examData.exam_data[0];
+  const currentQ = currentModule.questions[currentQuestion];
+  console.log("Current question data:", currentQ);
   const isMarked = markedQuestions.includes(currentQuestion);
+
+  // Add safety check for choices
+  if (!currentQ || !currentQ.choices || !Array.isArray(currentQ.choices)) {
+    return <div className="error">Invalid question data structure</div>;
+  }
+
+  // Transform choices into the format we need
+  const options = currentQ.choices.map((choice, index) => ({
+    id: String.fromCharCode(65 + index), // Convert 0 to 'A', 1 to 'B', etc.
+    text: choice,
+  }));
 
   return (
     <div className="test-interface">
       <div className="test-header">
         <div className="test-info">
-          <h1>Section 1, Module 1: Reading and Writing</h1>
+          <h1>
+            {currentQ.question_topic}: {currentQ.question_subtopic}
+          </h1>
           <div className="test-progress">
-            Question {currentQuestion + 1} of {questions.length}
+            Question {currentQuestion + 1} of {currentModule.questions.length}
           </div>
         </div>
         <div className="test-controls">
@@ -209,10 +204,15 @@ const TestInterface = ({ testType, onExit }) => {
             </div>
           </div>
           <div className="question-text">
-            <p>{currentQ.text}</p>
+            {currentQ.passage && (
+              <div className="passage">
+                <p>{currentQ.passage}</p>
+              </div>
+            )}
+            <p>{currentQ.question}</p>
           </div>
           <div className="answer-options">
-            {currentQ.options.map((option) => (
+            {options.map((option) => (
               <div
                 key={option.id}
                 className={`answer-option ${
@@ -250,7 +250,7 @@ const TestInterface = ({ testType, onExit }) => {
             </div>
           </div>
           <div className="question-buttons">
-            {questions.map((q, index) => (
+            {currentModule.questions.map((q, index) => (
               <button
                 key={q.id}
                 className={`question-button ${
@@ -276,7 +276,7 @@ const TestInterface = ({ testType, onExit }) => {
         <button
           className="nav-button next"
           onClick={handleNextQuestion}
-          disabled={currentQuestion === questions.length - 1}
+          disabled={currentQuestion === currentModule.questions.length - 1}
         >
           Next <i className="fas fa-chevron-right"></i>
         </button>
