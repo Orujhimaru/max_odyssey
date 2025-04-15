@@ -57,8 +57,9 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
       const isLargeTick = i % 15 === 0;
       const angle = i - 180;
       const radian = (angle * Math.PI) / 180;
-      const outerRadius = isLargeTick ? 42 : 40;
-      const innerRadius = 38;
+      // Make ticks more delicate by adjusting their length
+      const outerRadius = 36;
+      const innerRadius = isLargeTick ? 34 : 35; // Shorter difference between inner and outer radius
 
       const x1 = 50 + innerRadius * Math.cos(radian);
       const y1 = 50 + innerRadius * Math.sin(radian);
@@ -73,7 +74,7 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
           x2={x2}
           y2={y2}
           stroke="white"
-          strokeWidth={isLargeTick ? 1.5 : 0.8}
+          strokeWidth={isLargeTick ? 0.5 : 0.3} // Much thinner lines
         />
       );
     }
@@ -83,10 +84,10 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
   // Generate the segmented blocks around the perimeter
   const createSegments = () => {
     const segments = [];
-    const segmentCount = 16; // Reduced to 16 segments as requested
+    const segmentCount = 12; // Reduced count for wider segments
     const segmentAngle = 180 / segmentCount;
-    const outerRadius = 48;
-    const innerRadius = 42;
+    const outerRadius = 52; // Increased outer radius for wider rectangles
+    const innerRadius = 46; // Increased inner radius but keeping the height difference smaller
 
     for (let i = 0; i < segmentCount; i++) {
       // Calculate color based on position
@@ -100,7 +101,7 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
       }
 
       const startAngle = -180 + i * segmentAngle;
-      const endAngle = startAngle + segmentAngle * 0.8; // Leave smaller gaps between wider segments
+      const endAngle = startAngle + segmentAngle * 0.85; // Wider segments
 
       const startRad = (startAngle * Math.PI) / 180;
       const endRad = (endAngle * Math.PI) / 180;
