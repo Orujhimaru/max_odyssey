@@ -11,6 +11,17 @@
   color: var(--text-primary);
 }
 
+.insight-card-mini-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 10px;
+}
+
+.insight-card-mini-container > * {
+  flex: 1;
+}
+
 .time-selector {
   display: flex;
   gap: 12px;
@@ -35,6 +46,7 @@
 
 .insights-grid {
   display: flex;
+  flex-direction: column;
   /* grid-template-columns: repeat(2, minmax(0, 1fr)); */
   flex-wrap: wrap;
   gap: 10px;
