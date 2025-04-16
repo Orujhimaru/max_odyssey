@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./TestInterface.css";
 import { api } from "../../services/api";
+import LoadingScreen from "./LoadingScreen";
 
 const TestInterface = ({ testType, onExit }) => {
   const [examData, setExamData] = useState(null);
@@ -11,12 +12,15 @@ const TestInterface = ({ testType, onExit }) => {
   const [timeRemaining, setTimeRemaining] = useState("2:45:00");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showExitDialog, setShowExitDialog] = useState(false);
 
   // Fetch exam data when component mounts
   useEffect(() => {
     const fetchExamData = async () => {
       try {
         setLoading(true);
+
+        // Load the exam data
         const examData = await api.generateExam();
         console.log("Generated Exam Response:", examData);
 
@@ -26,11 +30,19 @@ const TestInterface = ({ testType, onExit }) => {
         } else {
           throw new Error("Invalid exam data structure");
         }
+
+        // Always show the loading screen for exactly 5 seconds
+        setTimeout(() => {
+          setLoading(false);
+        }, 500000);
       } catch (err) {
         console.error("Error details:", err);
         setError("Error loading exam: " + err.message);
-      } finally {
-        setLoading(false);
+
+        // Even on error, show loading for 5 seconds
+        setTimeout(() => {
+          setLoading(false);
+        }, 5000);
       }
     };
 
@@ -47,10 +59,20 @@ const TestInterface = ({ testType, onExit }) => {
     };
   }, []);
 
-  // Handle exit with class removal
-  const handleExit = () => {
+  // Handle exit button click
+  const handleExitClick = () => {
+    setShowExitDialog(true);
+  };
+
+  // Handle exit confirmation
+  const handleExitConfirm = () => {
     document.body.classList.remove("taking-test");
     onExit();
+  };
+
+  // Handle exit cancellation
+  const handleExitCancel = () => {
+    setShowExitDialog(false);
   };
 
   const handleAnswerSelect = (optionId) => {
@@ -126,7 +148,7 @@ const TestInterface = ({ testType, onExit }) => {
   };
 
   if (loading) {
-    return <div className="loading">Loading exam data...</div>;
+    return <LoadingScreen />;
   }
 
   if (error) {
@@ -156,6 +178,21 @@ const TestInterface = ({ testType, onExit }) => {
 
   return (
     <div className="test-interface">
+      {showExitDialog && (
+        <div className="exit-dialog-overlay">
+          <div className="exit-dialog">
+            <p>Are you sure you want to exit? Your progress will be saved.</p>
+            <div className="exit-dialog-buttons">
+              <button className="cancel-button" onClick={handleExitCancel}>
+                Cancel
+              </button>
+              <button className="confirm-button" onClick={handleExitConfirm}>
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="test-header">
         <div className="test-info">
           <h1>
@@ -169,7 +206,7 @@ const TestInterface = ({ testType, onExit }) => {
           <div className="timer">
             <i className="far fa-clock"></i> {timeRemaining}
           </div>
-          <button className="exit-button" onClick={handleExit}>
+          <button className="exit-button" onClick={handleExitClick}>
             <i className="fas fa-times"></i> Exit
           </button>
         </div>

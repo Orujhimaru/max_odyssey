@@ -424,3 +424,63 @@
     grid-template-columns: repeat(5, 1fr);
   }
 }
+
+.exit-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.exit-dialog {
+  background-color: #2d2d2d;
+  padding: 24px;
+  border-radius: 8px;
+  min-width: 300px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.exit-dialog p {
+  margin: 0 0 20px 0;
+  color: #ffffff;
+  text-align: center;
+}
+
+.exit-dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.exit-dialog button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.exit-dialog .cancel-button {
+  background-color: #4a4a4a;
+  color: white;
+}
+
+.exit-dialog .cancel-button:hover {
+  background-color: #5a5a5a;
+}
+
+.exit-dialog .confirm-button {
+  background-color: #4c6ef5;
+  color: white;
+}
+
+.exit-dialog .confirm-button:hover {
+  background-color: #5c7ef5;
+}
