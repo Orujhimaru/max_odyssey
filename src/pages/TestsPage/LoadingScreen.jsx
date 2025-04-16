@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./LoadingScreen.css";
 import Logo from "../../components/NavBar/Logo.jsx";
+import warriorReady from "../../assets/warrior_ready.png";
 
 const LoadingScreen = () => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
@@ -24,6 +25,10 @@ const LoadingScreen = () => {
 
   return (
     <div className="loading-screen">
+      <div className="warrior-background">
+        <img src={warriorReady} alt="Warrior Ready" />
+      </div>
+
       <div className="logo-container-loading">
         <Logo />
         <h2 className="logo-text-loading">AX</h2>
