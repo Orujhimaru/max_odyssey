@@ -5,6 +5,8 @@ import warriorReady from "../../assets/warrior_ready.png";
 
 const LoadingScreen = () => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
+  const [warriorState, setWarriorState] = useState("hidden"); // hidden, visible, or fading
+
   const loadingTexts = [
     "Generating questions...",
     "Setting difficulty levels...",
@@ -13,6 +15,7 @@ const LoadingScreen = () => {
     "Almost ready...",
   ];
 
+  // Handle loading text animation
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTextIndex((prevIndex) =>
@@ -23,9 +26,27 @@ const LoadingScreen = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Handle warrior image animation stages
+  useEffect(() => {
+    // Fade in after 1 second
+    const fadeInTimer = setTimeout(() => {
+      setWarriorState("visible");
+    }, 1000);
+
+    // Start fading out after 6 seconds (1s fade in + 5s visible)
+    const fadeOutTimer = setTimeout(() => {
+      setWarriorState("fading");
+    }, 6000);
+
+    return () => {
+      clearTimeout(fadeInTimer);
+      clearTimeout(fadeOutTimer);
+    };
+  }, []);
+
   return (
     <div className="loading-screen">
-      <div className="warrior-background">
+      <div className={`warrior-background ${warriorState}`}>
         <img src={warriorReady} alt="Warrior Ready" />
       </div>
 

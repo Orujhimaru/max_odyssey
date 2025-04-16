@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-loading);
   color: var(--text-primary);
   transition: var(--theme-transition);
   overflow: hidden; /* Prevent any overflow */
@@ -41,6 +41,22 @@
   align-items: flex-end;
   pointer-events: none; /* Don't interfere with other interactions */
   overflow: hidden;
+  transition: opacity 1s ease-in-out;
+}
+
+/* Warrior animation states */
+.warrior-background.hidden img {
+  opacity: 0;
+}
+
+.warrior-background.visible img {
+  opacity: 0.5;
+  transition: opacity 1s ease-in-out;
+}
+
+.warrior-background.fading img {
+  opacity: 0;
+  transition: opacity 2s ease-in-out; /* Changed to 2 seconds for fade-out */
 }
 
 .warrior-background img {
@@ -48,7 +64,7 @@
   min-width: 100%;
   object-fit: cover;
   object-position: bottom;
-  opacity: 0.5; /* Higher opacity to make the effect more visible */
+  opacity: 0; /* Start invisible */
   mix-blend-mode: plus-lighter; /* Lighter blend mode */
   filter: brightness(1.5) contrast(1.2); /* Enhance visibility */
 }
