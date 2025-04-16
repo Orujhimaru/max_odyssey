@@ -35,7 +35,7 @@
   overflow: hidden; /* Hide text initially */
 }
 
-.logo-text {
+.logo-text-main {
   color: #456bc4;
   font-family: Akshar;
   font-size: 50px;
@@ -161,7 +161,7 @@
   width: 115px;
 }
 
-.navbar:hover .logo-text {
+.navbar:hover .logo-text-main {
   opacity: 1;
   transform: translateX(-2px);
 }

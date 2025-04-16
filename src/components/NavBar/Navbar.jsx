@@ -24,7 +24,7 @@ const Navbar = ({ isDarkMode, onThemeToggle }) => {
       <div>
         <div className="logo-container">
           <Logo />
-          <h2 className="logo-text">AX</h2>
+          <h2 className="logo-text-main">AX</h2>
         </div>
         <div className="nav-items">
           <div
