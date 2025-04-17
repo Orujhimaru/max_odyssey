@@ -165,9 +165,7 @@ const Tests = () => {
             ) : (
               examResults.map((test, index) => (
                 <div className="test-item" key={index}>
-                  <div className="test-name">
-                    Practice Test #{test.exam_number}
-                  </div>
+                  <div className="test-name">Practice Test #{test.id}</div>
                   <div className="test-date">
                     {new Date(test.created_at.Time).toLocaleDateString()}
                   </div>
