@@ -4,10 +4,10 @@ import "./Navbar.css"; // Create a CSS file for styling
 import Logo from "./Logo";
 
 // Import your logos
-import Dashboard from "../../assets/Group 36.svg";
-import Practice from "../../assets/Group 43.svg";
-import Courses from "../../assets/Group 51.svg";
-import Tests from "../../assets/Group 38.svg";
+import Dashboard from "../../assets/dashboard1.svg";
+import Practice from "../../assets/practice1.svg";
+import Courses from "../../assets/courses1.svg";
+import Tests from "../../assets/tests1.svg";
 
 const Navbar = ({ isDarkMode, onThemeToggle }) => {
   const navigate = useNavigate();
