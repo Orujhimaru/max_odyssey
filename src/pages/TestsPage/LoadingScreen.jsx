@@ -31,12 +31,12 @@ const LoadingScreen = () => {
     // Fade in after 1 second
     const fadeInTimer = setTimeout(() => {
       setWarriorState("visible");
-    }, 1000);
+    }, 500);
 
     // Start fading out after 6 seconds (1s fade in + 5s visible)
     const fadeOutTimer = setTimeout(() => {
       setWarriorState("fading");
-    }, 6000);
+    }, 60000);
 
     return () => {
       clearTimeout(fadeInTimer);
@@ -52,7 +52,6 @@ const LoadingScreen = () => {
 
       <div className="logo-container-loading">
         <Logo />
-        <h2 className="logo-text-loading">AX</h2>
       </div>
 
       <div className="loading-text-container">

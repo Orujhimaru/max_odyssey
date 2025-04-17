@@ -34,7 +34,7 @@ const TestInterface = ({ testType, onExit }) => {
         // Always show the loading screen for exactly 5 seconds
         setTimeout(() => {
           setLoading(false);
-        }, 8000);
+        }, 80000);
       } catch (err) {
         console.error("Error details:", err);
         setError("Error loading exam: " + err.message);
