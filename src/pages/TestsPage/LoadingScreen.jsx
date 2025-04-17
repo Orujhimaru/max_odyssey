@@ -36,7 +36,7 @@ const LoadingScreen = () => {
     // Start fading out after 6 seconds (1s fade in + 5s visible)
     const fadeOutTimer = setTimeout(() => {
       setWarriorState("fading");
-    }, 60000);
+    }, 6000);
 
     return () => {
       clearTimeout(fadeInTimer);
