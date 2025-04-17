@@ -132,9 +132,10 @@
   border-radius: 10px;
   background: conic-gradient(
     from var(--angle),
-    var(--bg-secondary),
-    #5e6d9029,
-    #066fdd
+    #333333,
+    #9dbaff29,
+    #9dbaff29,
+    #135aca
   );
   animation: rotate-gradient 4s linear infinite;
 }
