@@ -133,8 +133,9 @@
   background: conic-gradient(
     from var(--angle),
     #333333,
-    #9dbaff29,
-    #9dbaff29,
+    #333333,
+    #333333,
+    #333333,
     #135aca
   );
   animation: rotate-gradient 4s linear infinite;
