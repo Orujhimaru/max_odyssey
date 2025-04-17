@@ -68,11 +68,34 @@
   padding: 4px;
   padding-block: 12px;
   align-items: center;
+  position: relative; /* For absolute positioning of the indicator line */
 }
 
 .nav-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
   cursor: pointer;
+}
+
+/* Active item styling with blue line indicator */
+.nav-item.active::after {
+  content: "";
+  position: absolute;
+  /* bottom: -4px; */
+  /* left: 5px; */
+  width: 0px;
+  height: 3px;
+  left: 14px;
+  bottom: 4px;
+  background-color: #456bc4; /* Same blue as the AX logo */
+  border-radius: 2px;
+  transition: width 0.2s ease;
+}
+
+/* Collapse the blue line when navbar is not hovered */
+.navbar:not(:hover) .nav-item.active::after {
+  width: 20px; /* Width when collapsed, matching icon width + padding */
+  left: 14px;
+  bottom: 4px;
 }
 
 .nav-item a {
