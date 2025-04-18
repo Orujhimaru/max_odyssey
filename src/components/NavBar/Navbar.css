@@ -98,6 +98,11 @@
   bottom: 4px;
 }
 
+/* Hide the active indicator for the Tests nav item */
+.nav-item.active:nth-child(3)::after {
+  display: none;
+}
+
 .nav-item a {
   display: flex;
   align-items: center;

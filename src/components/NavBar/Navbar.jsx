@@ -2,12 +2,12 @@ import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Navbar.css"; // Create a CSS file for styling
 import Logo from "./Logo";
+import TestsIcon from "../../assets/TestsIcon";
 
 // Import your logos
 import Dashboard from "../../assets/dashboard1.svg";
 import Practice from "../../assets/practice1.svg";
 import Courses from "../../assets/courses1.svg";
-import Tests from "../../assets/tests1.svg";
 
 const Navbar = ({ isDarkMode, onThemeToggle }) => {
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ const Navbar = ({ isDarkMode, onThemeToggle }) => {
             onClick={() => handleNavigation("/tests")}
           >
             <div className="nav-icon-container">
-              <img src={Tests} alt="Tests" className="nav-icon tests" />
+              <TestsIcon isActive={isActive("/tests")} />
             </div>
             <span className="nav-text">Tests</span>
           </div>
