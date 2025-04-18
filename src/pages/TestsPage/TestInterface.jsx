@@ -199,7 +199,7 @@ const TestInterface = ({ testType, onExit }) => {
 
       <div className="test-header">
         <div className="test-info">
-          <h1>{currentQ.module_number}</h1>
+          <h1>{currentQ.question_topic}</h1>
         </div>
 
         <div className="timer">

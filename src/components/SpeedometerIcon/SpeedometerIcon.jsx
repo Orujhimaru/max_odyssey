@@ -95,7 +95,7 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
       if (i < segmentCount * 0.6) {
         color = "#2563EB"; // Blue for first 60%
       } else if (i < segmentCount * 0.8) {
-        color = "#7C3AED"; // Purple for next 20%
+        color = "#EF4444"; // Purple for next 20%
       } else {
         color = "#EF4444"; // Red for last 20%
       }
