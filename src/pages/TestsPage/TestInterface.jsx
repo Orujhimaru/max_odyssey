@@ -13,6 +13,7 @@ const TestInterface = ({ testType, onExit }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const [navigatorOpen, setNavigatorOpen] = useState(false);
 
   // Fetch exam data when component mounts
   useEffect(() => {
@@ -193,19 +194,26 @@ const TestInterface = ({ testType, onExit }) => {
           </div>
         </div>
       )}
+
+      {/* Navigator overlay */}
+
       <div className="test-header">
         <div className="test-info">
           <h1>
             {currentQ.question_topic}: {currentQ.question_subtopic}
           </h1>
-          <div className="test-progress">
-            Question {currentQuestion + 1} of {currentModule.questions.length}
-          </div>
         </div>
         <div className="test-controls">
           <div className="timer">
             <i className="far fa-clock"></i> {timeRemaining}
           </div>
+          <button
+            className="navigator-toggle-button"
+            onClick={() => setNavigatorOpen(!navigatorOpen)}
+            title={navigatorOpen ? "Close navigator" : "Open navigator"}
+          >
+            <i className="fas fa-list-ol"></i>
+          </button>
           <button className="exit-button" onClick={handleExitClick}>
             <i className="fas fa-times"></i> Exit
           </button>
@@ -214,6 +222,19 @@ const TestInterface = ({ testType, onExit }) => {
 
       <div className="test-content">
         <div className="question-area">
+          <div>
+            <div className="question-text">
+              {currentQ.passage && (
+                <div className="passage">
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: currentQ.passage,
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
           <div>
             <div className="exam-question-container">
               <div className="exam-question-number">
@@ -243,20 +264,6 @@ const TestInterface = ({ testType, onExit }) => {
                 )}
               </div>
             </div>
-            <div className="question-text">
-              {currentQ.passage && (
-                <div className="passage">
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: currentQ.passage,
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-          <div>
-            {" "}
             <p>{currentQ.question}</p>
             <div className="answer-options">
               {options.map((option) => (
@@ -279,9 +286,19 @@ const TestInterface = ({ testType, onExit }) => {
           </div>
         </div>
 
-        <div className="question-navigator">
+        <div
+          className={`sliding-question-navigator ${
+            navigatorOpen ? "open" : "closed"
+          }`}
+        >
           <div className="navigator-header">
             <h3>Question Navigator</h3>
+            <button
+              className="close-navigator"
+              onClick={() => setNavigatorOpen(false)}
+            >
+              <i className="fas fa-times"></i>
+            </button>
             <div className="navigator-legend">
               <div className="legend-item">
                 <div className="legend-marker answered"></div>
@@ -304,7 +321,10 @@ const TestInterface = ({ testType, onExit }) => {
                 className={`question-button ${
                   index === currentQuestion ? "current" : ""
                 } ${markedQuestions.includes(index) ? "marked" : ""}`}
-                onClick={() => setCurrentQuestion(index)}
+                onClick={() => {
+                  setCurrentQuestion(index);
+                  setNavigatorOpen(false);
+                }}
               >
                 {index + 1}
               </button>
