@@ -51,7 +51,7 @@ const WeeklyTasks = () => {
 
       <div className="progress-bar-container">
         <div
-          className="progress-bar"
+          className="progress-bar-tasks"
           style={{ width: `${progressPercentage}%` }}
         ></div>
       </div>
