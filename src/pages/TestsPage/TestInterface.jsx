@@ -214,61 +214,68 @@ const TestInterface = ({ testType, onExit }) => {
 
       <div className="test-content">
         <div className="question-area">
-          <div className="question-number">
-            <span>{currentQuestion + 1}</span>
-            <div className="question-tools">
-              <button
-                className={`mark-button ${isMarked ? "marked" : ""}`}
-                onClick={toggleMarkQuestion}
-                title="Mark for review"
-              >
-                <i className={`${isMarked ? "fas" : "far"} fa-bookmark`}></i>
-              </button>
-              <button
-                className={`cross-button ${
-                  isCrossModeActive() ? "active" : ""
-                }`}
-                onClick={toggleCrossMode}
-                title="Toggle cross-out mode"
-              >
-                <span className="cross-text">Abc</span>
-              </button>
-              {isCrossModeActive() && (
-                <div className="cross-mode-indicator">
-                  Click on options to cross them out
+          <div>
+            <div className="exam-question-container">
+              <div className="exam-question-number">
+                <span>{currentQuestion + 1}</span>
+              </div>
+              <div className="question-tools">
+                <button
+                  className={`mark-button ${isMarked ? "marked" : ""}`}
+                  onClick={toggleMarkQuestion}
+                  title="Mark for review"
+                >
+                  <i className={`${isMarked ? "fas" : "far"} fa-bookmark`}></i>
+                </button>
+                <button
+                  className={`cross-button ${
+                    isCrossModeActive() ? "active" : ""
+                  }`}
+                  onClick={toggleCrossMode}
+                  title="Toggle cross-out mode"
+                >
+                  <span className="cross-text">Abc</span>
+                </button>
+                {isCrossModeActive() && (
+                  <div className="cross-mode-indicator">
+                    Click on options to cross them out
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="question-text">
+              {currentQ.passage && (
+                <div className="passage">
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: currentQ.passage,
+                    }}
+                  />
                 </div>
               )}
             </div>
           </div>
-          <div className="question-text">
-            {currentQ.passage && (
-              <div className="passage">
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: currentQ.passage,
-                  }}
-                />
-              </div>
-            )}
+          <div>
+            {" "}
             <p>{currentQ.question}</p>
-          </div>
-          <div className="answer-options">
-            {options.map((option) => (
-              <div
-                key={option.id}
-                className={`answer-option ${
-                  selectedAnswer === option.id ? "selected" : ""
-                } ${isOptionCrossed(option.id) ? "crossed" : ""}`}
-                onClick={() =>
-                  isCrossModeActive()
-                    ? toggleCrossOption(option.id)
-                    : handleAnswerSelect(option.id)
-                }
-              >
-                <div className="option-letter">{option.id}</div>
-                <div className="option-text">{option.text}</div>
-              </div>
-            ))}
+            <div className="answer-options">
+              {options.map((option) => (
+                <div
+                  key={option.id}
+                  className={`answer-option ${
+                    selectedAnswer === option.id ? "selected" : ""
+                  } ${isOptionCrossed(option.id) ? "crossed" : ""}`}
+                  onClick={() =>
+                    isCrossModeActive()
+                      ? toggleCrossOption(option.id)
+                      : handleAnswerSelect(option.id)
+                  }
+                >
+                  <div className="option-letter">{option.id}</div>
+                  <div className="option-text">{option.text}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

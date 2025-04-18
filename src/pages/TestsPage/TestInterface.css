@@ -77,18 +77,33 @@
   gap: 24px;
 }
 
-.question-number {
+.exam-question-number {
   display: flex;
   align-items: center;
   gap: 12px;
+  background-color: var(--bar-verbal-color);
+  padding: 10px;
+  padding-inline: 17.5px;
+  border-radius: 4px;
 }
 
-.question-number span {
+.exam-question-container {
+  display: flex;
+  align-items: center;
+  /* gap: 12px; */
+  background-color: var(--bar-background);
+  padding: 0px;
+  padding-inline: 15px;
+  padding-left: 0px;
+  border-radius: 4px;
+}
+
+.exam-question-number span {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  /* width: 32px; */
+  /* height: 32px; */
   /* background-color: var(--verbal-color); */
   color: var(--text-primary);
   border-radius: 50%;
@@ -96,7 +111,9 @@
 }
 
 .question-tools {
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 12px;
   position: relative;
@@ -193,7 +210,7 @@
 }
 
 .answer-option:hover {
-  transform: translateY(-2px);
+  /* transform: translateY(-2px); */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -204,8 +221,8 @@
 
 .answer-option.crossed {
   color: var(--text-secondary);
-  opacity: 0.7;
-  background-color: rgba(0, 0, 0, 0.02);
+  opacity: 0.5;
+  /* background-color: rgba(0, 0, 0, 0.02); */
 }
 
 .answer-option.crossed .option-letter {
@@ -221,7 +238,7 @@
   left: 58px;
   right: 11px;
   height: 2px;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: var(--bar-math-color);
   pointer-events: none;
   z-index: 1;
 }
