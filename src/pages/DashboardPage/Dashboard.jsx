@@ -4,13 +4,17 @@ import ScoreColumnGraph from "../../components/ScoreColumnComponent/ScoreColumnG
 import { coursesProgress } from "../../data/courseProgress";
 import ContinueLearning from "../../components/ContinueLearning/ContinueLearning";
 import ProfileSection from "../../components/ProfileSection/ProfileSection";
+import WeeklyTasks from "../../components/WeeklyTasks/WeeklyTasks";
 import "./Dashboard.css";
 
 const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="dashboard-left">
-        <ContinueLearning courses={coursesProgress} />
+        <div className="top-row">
+          <ContinueLearning courses={coursesProgress} />
+          <WeeklyTasks />
+        </div>
         <ScoreColumnGraph />
       </div>
       <div className="dashboard-right">

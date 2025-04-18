@@ -20,7 +20,7 @@
   width: 100%;
   /* flex: 1; */
   display: flex;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   /* grid-template-columns: repeat(2, 1fr); */
   gap: 16px;
 }

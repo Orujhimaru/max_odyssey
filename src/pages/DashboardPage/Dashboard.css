@@ -86,3 +86,20 @@
   padding: 24px;
   box-shadow: 0 4px 8px var(--box-shadow);
 }
+
+.top-row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+/* .top-row > * {
+  flex: 1;
+} */
+
+@media (max-width: 1200px) {
+  .top-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
