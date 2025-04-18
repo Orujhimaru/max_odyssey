@@ -31,18 +31,18 @@ const TestInterface = ({ testType, onExit }) => {
           throw new Error("Invalid exam data structure");
         }
 
-        // Always show the loading screen for exactly 5 seconds
+        // Always show the loading screen for at least 12 seconds to allow the full animation sequence
         setTimeout(() => {
           setLoading(false);
-        }, 8000);
+        }, 12000);
       } catch (err) {
         console.error("Error details:", err);
         setError("Error loading exam: " + err.message);
 
-        // Even on error, show loading for 5 seconds
+        // Even on error, show loading for the full animation sequence
         setTimeout(() => {
           setLoading(false);
-        }, 5000);
+        }, 12000);
       }
     };
 

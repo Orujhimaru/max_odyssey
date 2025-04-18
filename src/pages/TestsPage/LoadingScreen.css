@@ -41,22 +41,57 @@
   align-items: flex-end;
   pointer-events: none; /* Don't interfere with other interactions */
   overflow: hidden;
-  transition: opacity 1s ease-in-out;
+}
+
+/* Philosopher background image */
+.philosopher-background {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: -1; /* Below everything else */
+  width: 50%; /* Takes up right half of the screen */
+  max-width: 700px;
+  display: flex;
+  justify-content: flex-end; /* Align to the right */
+  align-items: flex-end;
+  pointer-events: none; /* Don't interfere with other interactions */
+  overflow: hidden;
 }
 
 /* Warrior animation states */
 .warrior-background.hidden img {
   opacity: 0;
+  transform: translateX(-20px);
 }
 
 .warrior-background.visible img {
-  opacity: 0.5;
-  transition: opacity 1s ease-in-out;
+  opacity: 0.7;
+  transform: translateX(30px);
+  transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
 }
 
 .warrior-background.fading img {
   opacity: 0;
-  transition: opacity 2s ease-in-out; /* Changed to 2 seconds for fade-out */
+  transform: translateX(60px);
+  transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+}
+
+/* Philosopher animation states */
+.philosopher-background.hidden img {
+  opacity: 0;
+  transform: translateX(60px);
+}
+
+.philosopher-background.visible img {
+  opacity: 0.7;
+  transform: translateX(0);
+  transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+}
+
+.philosopher-background.fading img {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
 }
 
 .warrior-background img {
@@ -65,8 +100,22 @@
   object-fit: cover;
   object-position: bottom;
   opacity: 0; /* Start invisible */
+  transform: translateX(-20px); /* Starting position */
   mix-blend-mode: plus-lighter; /* Lighter blend mode */
   filter: brightness(1.5) contrast(1.2); /* Enhance visibility */
+  transition: opacity 0.1s, transform 0.1s; /* Quick initial transition */
+}
+
+.philosopher-background img {
+  width: 90%;
+  max-height: 90vh;
+  object-fit: contain;
+  object-position: bottom right;
+  opacity: 0; /* Start invisible */
+  transform: translateX(60px); /* Starting position */
+  mix-blend-mode: plus-lighter; /* Lighter blend mode */
+  filter: brightness(1.5) contrast(1.2); /* Enhance visibility */
+  transition: opacity 0.1s, transform 0.1s; /* Quick initial transition */
 }
 
 /* Logo container styles - similar to navbar */
@@ -127,6 +176,7 @@
   z-index: 2; /* Above the warrior image */
 }
 
+/* Revert text animation changes back to original */
 .loading-text {
   position: absolute;
   width: 100%;
@@ -139,6 +189,17 @@
   transition: all 0.5s ease;
 }
 
+/* Apply the original transition to active text */
+.loading-text.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Adjust for elements after the active one */
+.loading-text.active ~ .loading-text {
+  transform: translateY(-100%);
+}
+
 /* Light/dark mode specific styles for loading text */
 .light-mode .loading-text {
   color: #333;
@@ -146,15 +207,6 @@
 
 .dark-mode .loading-text {
   color: #f5f5f5;
-}
-
-.loading-text.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.loading-text.active ~ .loading-text {
-  transform: translateY(-100%);
 }
 
 /* Loading spinner */

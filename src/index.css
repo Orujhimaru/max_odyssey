@@ -17,7 +17,7 @@
   --bg-primary: white;
   --bg-primary-rgb: 255, 255, 255;
   --bg-secondary: #fafafa;
-  --bg-loading: #0f0f0f;
+  --bg-loading: #070707;
   --text-primary: #343434;
   --border-color: #e5e7eb;
   --seperator-color: #e5e7eb;
@@ -140,7 +140,7 @@ button:focus-visible {
   --bg-primary: #1a1a1a;
   --bg-primary-rgb: 26, 26, 26;
   --bg-secondary: #2d2d2d;
-  --bg-loading: #0f0f0f;
+  --bg-loading: #070707;
   --text-primary: #ffffffde;
   --border-color: #2d2d2d;
   --seperator-color: #aaaaaa;
