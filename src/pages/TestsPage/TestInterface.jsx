@@ -163,7 +163,7 @@ const TestInterface = ({ testType, onExit }) => {
   // Use the first module's data
   const currentModule = examData.exam_data[0];
   const currentQ = currentModule.questions[currentQuestion];
-  console.log("Current question data:", currentQ);
+  // console.log("Current question data:", currentQ);
   const isMarked = markedQuestions.includes(currentQuestion);
 
   // Add safety check for choices
@@ -199,9 +199,7 @@ const TestInterface = ({ testType, onExit }) => {
 
       <div className="test-header">
         <div className="test-info">
-          <h1>
-            {currentQ.question_topic}: {currentQ.question_subtopic}
-          </h1>
+          <h1>{currentQ.module_number}</h1>
         </div>
 
         <div className="timer">
