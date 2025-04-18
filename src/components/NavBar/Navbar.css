@@ -195,6 +195,14 @@
 }
 
 /* Scale up specific icons */
+.nav-item:nth-child(1) .nav-icon {
+  /* Dashboard icon */
+  transform: scale(1.12);
+  transform-origin: center;
+  position: relative;
+  top: -1px;
+}
+
 .nav-item:nth-child(2) .nav-icon {
   /* Courses icon */
   transform: scale(1.18);
