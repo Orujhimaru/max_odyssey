@@ -203,10 +203,12 @@ const TestInterface = ({ testType, onExit }) => {
             {currentQ.question_topic}: {currentQ.question_subtopic}
           </h1>
         </div>
+
+        <div className="timer">
+          <i className="far fa-clock"></i> {timeRemaining}
+        </div>
+
         <div className="test-controls">
-          <div className="timer">
-            <i className="far fa-clock"></i> {timeRemaining}
-          </div>
           <button
             className="navigator-toggle-button"
             onClick={() => setNavigatorOpen(!navigatorOpen)}

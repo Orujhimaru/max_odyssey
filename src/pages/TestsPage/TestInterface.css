@@ -16,11 +16,15 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+.test-info {
+  flex: 1;
+}
+
 .test-info h1 {
   font-size: 18px;
   font-weight: 500;
   color: var(--text-primary);
-  margin-bottom: 4px;
+  margin-bottom: 0;
 }
 
 .test-progress {
@@ -33,6 +37,8 @@
   display: flex;
   align-items: center;
   gap: 24px;
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .navigator-toggle-button {
@@ -58,10 +64,14 @@
 .timer {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   color: var(--text-primary);
+  padding: 0 20px;
+  min-width: 120px;
+  text-align: center;
 }
 
 .exit-button {
@@ -454,13 +464,25 @@
 @media (max-width: 768px) {
   .test-header {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+  }
+
+  .test-info {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .timer {
+    margin: 8px 0;
+    order: 2;
   }
 
   .test-controls {
     width: 100%;
     justify-content: space-between;
+    order: 3;
   }
 
   .question-buttons {
