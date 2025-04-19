@@ -620,7 +620,7 @@ const FilterControls = React.memo(
         "Models and Scatterplots",
         "Probability",
         "Sample Statistics",
-        "Studeis and Experiments",
+        "Studies and Experiments",
       ],
       "Geometry and Trigonometry": [
         "Area & Volume",
