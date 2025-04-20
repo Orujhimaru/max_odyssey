@@ -21,8 +21,8 @@ const ScoreBox = ({ title, score, improvement, type, isHighlighted }) => {
         <div className={`improvement ${isIncrease ? "increase" : "decrease"}`}>
           <div className={`triangle ${isIncrease ? "increase" : "decrease"}`} />
           <span>
-            {isIncrease ? "+" : "-"}
-            {Math.abs(improvement)}
+            {/* {isIncrease ? "+" : "-"} */}
+            {/* {Math.abs(improvement)} */}
           </span>
         </div>
       </div>
