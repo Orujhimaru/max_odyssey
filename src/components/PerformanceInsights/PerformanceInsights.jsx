@@ -1,19 +1,25 @@
 import React from "react";
 import "./PerformanceInsights.css";
-import SpeedometerIcon from "../SpeedometerIcon/SpeedometerIcon";
 import Practice from "../../assets/Group 43.svg";
 
 const PerformanceInsights = () => {
   const timeData = {
     verbal: {
-      target: 72, // 1.2 minutes in seconds
-      actual: 84, // 1.4 minutes in seconds
+      target: 71, // Target seconds per question
+      actual: 84, // 1:24 actual seconds per question
+      diff: -12, // Seconds behind target (negative means slower)
     },
     math: {
-      target: 80, // 1.6 minutes in seconds
-      actual: 50, // 1.8 minutes in seconds
+      target: 95, // Target seconds per question
+      actual: 50, // 0:50 actual seconds per question
+      diff: 30, // Seconds ahead of target (positive is faster)
     },
   };
+
+  // The full bar represents 120 seconds (2 minutes)
+  const TOTAL_BAR_TIME = 120;
+  // Each segment represents 30 seconds
+  const SEGMENT_TIME = 30;
 
   const formatTime = (seconds) => {
     if (!seconds && seconds !== 0) return "00:00";
@@ -21,15 +27,70 @@ const PerformanceInsights = () => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
 
-    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
-      .toString()
-      .padStart(2, "0")} `;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-  const getSpeedIndicator = (actual, target) => {
-    if (actual <= target * 0.7) return "fast";
-    if (actual <= target) return "okay";
-    return "slow";
+  const renderPerformanceBar = (actual, target, type) => {
+    // Calculate fill percentage based on actual time as a portion of 120 seconds
+    const fillPercentage = Math.min(100, (actual / TOTAL_BAR_TIME) * 100);
+
+    // Define zone boundaries - where color changes from green to red
+    // For verbal: first 2 segments (60s, 50% of bar) are green zone
+    // For math: first 3 segments (90s, 75% of bar) are green zone
+    const greenZonePercentage = type === "verbal" ? 50 : 75;
+
+    // Calculate width of green and red parts within the filled area
+    let greenWidth = 0;
+    let redWidth = 0;
+
+    if (fillPercentage <= greenZonePercentage) {
+      // All filled portion is within green zone
+      greenWidth = fillPercentage;
+      redWidth = 0;
+    } else {
+      // Fill extends into red zone
+      greenWidth = greenZonePercentage;
+      redWidth = fillPercentage - greenZonePercentage;
+    }
+
+    return (
+      <div className="performance-bar-container">
+        <div className="performance-bar">
+          {/* Background segments for visual separation */}
+          <div className="bar-segment"></div>
+          <div className="bar-segment"></div>
+          <div className="bar-segment"></div>
+          <div className="bar-segment"></div>
+
+          {/* Green fill (up to the zone boundary) */}
+          {greenWidth > 0 && (
+            <div
+              className="bar-fill green"
+              style={{
+                width: `${greenWidth}%`,
+                left: "0%",
+              }}
+            ></div>
+          )}
+
+          {/* Red fill (after the zone boundary) */}
+          {redWidth > 0 && (
+            <div
+              className="bar-fill red"
+              style={{
+                width: `${redWidth}%`,
+                left: `${greenZonePercentage}%`,
+              }}
+            ></div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const formatDiffTime = (diff) => {
+    const absSeconds = Math.abs(diff);
+    return `${diff > 0 ? "+" : "-"}0:${absSeconds.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -68,7 +129,7 @@ const PerformanceInsights = () => {
             <div className="insight-icon">
               <i className="fas fa-clock"></i>
             </div>
-            <span className="insight-label">Avg. Time/Q</span>
+            <span className="insight-label">Your Speed</span>
           </div>
           <div className="insight-content timerr">
             <div className="insight-value time-insights">
@@ -77,52 +138,43 @@ const PerformanceInsights = () => {
                   <span className="subject-label verbal">V</span>
                 </div>
                 <div className="time-details">
-                  <div
-                    className={`time-value ${getSpeedIndicator(
-                      timeData.verbal.actual,
-                      timeData.verbal.target
-                    )}`}
-                  >
+                  <div className="time-value verbal-time">
                     <div className="time-text-group">
-                      <span>{formatTime(timeData.verbal.actual)}</span>
-                      <div className="insight-label">
-                        <img
-                          src={Practice}
-                          alt="target"
-                          className="target-icon"
-                        />{" "}
-                        {formatTime(timeData.verbal.target)}
+                      <span className="speed-time">
+                        {formatTime(timeData.verbal.actual)}
+                      </span>
+                      <div className="speed-diff negative">
+                        ({formatDiffTime(timeData.verbal.diff)} vs. goal)
                       </div>
                     </div>
-                    <div className="speed-indicator">
-                      <SpeedometerIcon ratio={timeData.verbal.actual} />
-                    </div>
+                    {renderPerformanceBar(
+                      timeData.verbal.actual,
+                      timeData.verbal.target,
+                      "verbal"
+                    )}
                   </div>
                 </div>
               </div>
+
               <div className="time-section">
-                <span className="subject-label math">M</span>
+                <div className="subject-label-container">
+                  <span className="subject-label math">M</span>
+                </div>
                 <div className="time-details">
-                  <div
-                    className={`time-value ${getSpeedIndicator(
-                      timeData.math.actual,
-                      timeData.math.target
-                    )}`}
-                  >
+                  <div className="time-value math-time">
                     <div className="time-text-group">
-                      <span>{formatTime(timeData.math.actual)}</span>
-                      <div className="insight-label">
-                        <img
-                          src={Practice}
-                          alt="target"
-                          className="target-icon"
-                        />{" "}
-                        {formatTime(timeData.math.target)}
+                      <span className="speed-time">
+                        {formatTime(timeData.math.actual)}
+                      </span>
+                      <div className="speed-diff positive">
+                        ({formatDiffTime(timeData.math.diff)} vs. goal)
                       </div>
                     </div>
-                    <div className="speed-indicator">
-                      <SpeedometerIcon ratio={timeData.math.actual} />
-                    </div>
+                    {renderPerformanceBar(
+                      timeData.math.actual,
+                      timeData.math.target,
+                      "math"
+                    )}
                   </div>
                 </div>
               </div>

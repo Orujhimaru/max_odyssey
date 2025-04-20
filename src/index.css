@@ -28,6 +28,7 @@
   /* Brand colors - light mode */
   --verbal-color: #456bc4;
   --math-color: #4e4e4e;
+  --philosophy-color: #6a0dad; /* Purple color for philosophy */
   --increase-color: #82ce84;
   --decrease-color: #ec5e54;
   --accent-color: #ffd700;
@@ -151,6 +152,7 @@ button:focus-visible {
 
   /* Brand colors - dark mode overrides */
   --math-color: #3e3e3e; /* Softer red for dark mode  d3d3d3 -> PREVIOUS VALUE, CHECK OUT WHICH VALUES USE THIS, CHANGED FOR PRACTICE MATH LOGO#*/
+  --philosophy-color: #9370db; /* Lighter purple for dark mode */
   --accent-color: #ffd700; /* Same gold color in dark mode */
 
   /* Radar Chart Dark Colors */
