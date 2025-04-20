@@ -365,7 +365,7 @@
 .bar-segment {
   flex: 1;
   height: 100%;
-  border-right: 1px solid rgba(0, 0, 0, 0.4);
+  border-right: 1px solid rgb(102 102 102 / 40%);
   position: relative;
   z-index: 2; /* Place above the fill */
   background-color: transparent; /* Make transparent to see the fill */
