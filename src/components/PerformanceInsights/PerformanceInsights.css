@@ -123,10 +123,6 @@
   /* align-items: flex-start; */
 }
 
-.insight-card.timerr {
-  padding: 20px;
-}
-
 [data-theme="dark"] .insight-card {
   border: 1px solid #5b5b5b;
   background-color: var(--bg-secondary);
@@ -184,14 +180,14 @@
   padding-inline: 7px;
   padding-block: 3px;
   color: white;
-  margin-right: 10px;
+  /* margin-right: 10px; */
 }
 
 .subject-label.math {
   background-color: var(--bar-math-color, #7b68ee);
   color: white;
   transition: none;
-  margin-right: 10px;
+  /* margin-right: 10px; */
 }
 
 .subject-label-container {
@@ -360,7 +356,7 @@
 .performance-bar {
   position: relative;
   height: 12px;
-  border-radius: 6px;
+  border-radius: 3px;
   overflow: hidden;
   background-color: #333; /* Dark gray for unfilled portions */
   display: flex;

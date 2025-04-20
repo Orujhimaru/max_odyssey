@@ -11,7 +11,7 @@ const PerformanceInsights = () => {
     },
     math: {
       target: 95, // Target seconds per question
-      actual: 50, // 0:50 actual seconds per question
+      actual: 70, // 0:50 actual seconds per question
       diff: 30, // Seconds ahead of target (positive is faster)
     },
   };
@@ -34,10 +34,10 @@ const PerformanceInsights = () => {
     // Calculate fill percentage based on actual time as a portion of 120 seconds
     const fillPercentage = Math.min(100, (actual / TOTAL_BAR_TIME) * 100);
 
-    // Define zone boundaries - where color changes from green to red
-    // For verbal: first 2 segments (60s, 50% of bar) are green zone
-    // For math: first 3 segments (90s, 75% of bar) are green zone
-    const greenZonePercentage = type === "verbal" ? 50 : 75;
+    // Define green zone based on target time rather than fixed segments
+    // For verbal: green up to 71 seconds (59.17% of bar)
+    // For math: green up to 95 seconds (79.17% of bar)
+    const greenZonePercentage = (target / TOTAL_BAR_TIME) * 100;
 
     // Calculate width of green and red parts within the filled area
     let greenWidth = 0;
@@ -62,7 +62,7 @@ const PerformanceInsights = () => {
           <div className="bar-segment"></div>
           <div className="bar-segment"></div>
 
-          {/* Green fill (up to the zone boundary) */}
+          {/* Green fill (up to the target) */}
           {greenWidth > 0 && (
             <div
               className="bar-fill green"
@@ -73,7 +73,7 @@ const PerformanceInsights = () => {
             ></div>
           )}
 
-          {/* Red fill (after the zone boundary) */}
+          {/* Red fill (after the target) */}
           {redWidth > 0 && (
             <div
               className="bar-fill red"
@@ -144,7 +144,7 @@ const PerformanceInsights = () => {
                         {formatTime(timeData.verbal.actual)}
                       </span>
                       <div className="speed-diff negative">
-                        ({formatDiffTime(timeData.verbal.diff)} vs. goal)
+                        ({formatDiffTime(timeData.verbal.diff)})
                       </div>
                     </div>
                     {renderPerformanceBar(
@@ -167,7 +167,7 @@ const PerformanceInsights = () => {
                         {formatTime(timeData.math.actual)}
                       </span>
                       <div className="speed-diff positive">
-                        ({formatDiffTime(timeData.math.diff)} vs. goal)
+                        ({formatDiffTime(timeData.math.diff)} )
                       </div>
                     </div>
                     {renderPerformanceBar(
