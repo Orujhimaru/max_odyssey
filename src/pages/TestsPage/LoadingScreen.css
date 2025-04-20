@@ -218,7 +218,7 @@
   text-align: center;
   font-size: 24px;
   font-weight: 500;
-  color: var(--bg-secondary);
+  color: var(--radar-number);
   opacity: 0;
   transform: translateY(100%);
   transition: all 0.5s ease;
@@ -251,7 +251,7 @@
   height: 50px;
   border: 5px solid rgba(var(--bg-primary-rgb), 0.1);
   border-radius: 50%;
-  border-top-color: var(--bg-secondary);
+  border-top-color: var(--radar-number);
   animation: spin 1s ease-in-out infinite;
   z-index: 2; /* Above the warrior image */
 }
