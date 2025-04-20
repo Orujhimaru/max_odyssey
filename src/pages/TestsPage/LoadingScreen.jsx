@@ -3,7 +3,6 @@ import "./LoadingScreen.css";
 import Logo from "../../components/NavBar/Logo.jsx";
 import warriorReady from "../../assets/warrior_ready.png";
 import philosopher from "../../assets/philosopher(1).png";
-import backgroundTexture from "../../assets/stucco-grined-cracked-background.png"; // Import the background image
 
 const LoadingScreen = () => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
@@ -38,12 +37,12 @@ const LoadingScreen = () => {
 
     const fadeOutWarriorTimer = setTimeout(() => {
       setWarriorState("fading");
-    }, 5000); // At 5 seconds, start the 1.5s transition
+    }, 50000); // At 5 seconds, start the 1.5s transition
 
     // Philosopher image animation (appears as warrior starts fading)
     const fadeInPhilosopherTimer = setTimeout(() => {
       setPhilosopherState("visible");
-    }, 5000); // Start appearing exactly when warrior starts fading
+    }, 15000); // Start appearing exactly when warrior starts fading
 
     const fadeOutPhilosopherTimer = setTimeout(() => {
       setPhilosopherState("fading");
@@ -60,9 +59,6 @@ const LoadingScreen = () => {
   return (
     <div className="loading-screen">
       {/* Background texture image */}
-      <div className="background-texture">
-        <img src={backgroundTexture} alt="Background Texture" />
-      </div>
 
       <div className={`warrior-background ${warriorState}`}>
         <img src={warriorReady} alt="Warrior Ready" />

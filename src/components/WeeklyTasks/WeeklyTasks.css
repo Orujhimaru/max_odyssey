@@ -272,6 +272,7 @@
   margin-top: 0;
   margin-bottom: 0;
   border: 1px solid #dddddd;
+  padding-top: 8px;
   /* max-width: 300px; */
 }
 [data-theme="dark"] .daily-tasks {
