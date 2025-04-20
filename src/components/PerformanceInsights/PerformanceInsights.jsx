@@ -11,7 +11,7 @@ const PerformanceInsights = () => {
     },
     math: {
       target: 95, // Target seconds per question
-      actual: 70, // 0:50 actual seconds per question
+      actual: 105, // 0:50 actual seconds per question
       diff: 30, // Seconds ahead of target (positive is faster)
     },
   };

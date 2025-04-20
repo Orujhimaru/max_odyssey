@@ -268,10 +268,14 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   margin-top: 0;
   margin-bottom: 0;
-  max-width: 300px;
+  border: 1px solid #dddddd;
+  /* max-width: 300px; */
+}
+[data-theme="dark"] .daily-tasks {
+  border-color: #4d4d4d;
 }
 
 .daily-tasks-header {
@@ -323,6 +327,9 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 24px;
 }
 
 .task-item-simple {
