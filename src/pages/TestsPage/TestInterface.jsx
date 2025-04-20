@@ -35,7 +35,7 @@ const TestInterface = ({ testType, onExit }) => {
         // Always show the loading screen for at least 12 seconds to allow the full animation sequence
         setTimeout(() => {
           setLoading(false);
-        }, 12000);
+        }, 120000);
       } catch (err) {
         console.error("Error details:", err);
         setError("Error loading exam: " + err.message);
