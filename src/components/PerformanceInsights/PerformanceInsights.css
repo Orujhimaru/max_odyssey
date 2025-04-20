@@ -358,14 +358,14 @@
   height: 12px;
   border-radius: 3px;
   overflow: hidden;
-  background-color: #333; /* Dark gray for unfilled portions */
+  background-color: var(--bar-background); /* Dark gray for unfilled portions */
   display: flex;
 }
 
 .bar-segment {
   flex: 1;
   height: 100%;
-  border-right: 1px solid rgb(102 102 102 / 40%);
+  border-right: 1px solid rgb(209 209 209 / 40%);
   position: relative;
   z-index: 2; /* Place above the fill */
   background-color: transparent; /* Make transparent to see the fill */
@@ -385,11 +385,11 @@
 }
 
 .bar-fill.green {
-  background-color: var(--increase-color, #2ecc71);
+  background-color: var(--bar-increase-color);
 }
 
 .bar-fill.red {
-  background-color: var(--decrease-color, #e74c3c);
+  background-color: var(--bar-decrease-color);
 }
 
 .time-section {

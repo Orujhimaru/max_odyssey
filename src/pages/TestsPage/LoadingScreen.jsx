@@ -37,12 +37,12 @@ const LoadingScreen = () => {
 
     const fadeOutWarriorTimer = setTimeout(() => {
       setWarriorState("fading");
-    }, 50000); // At 5 seconds, start the 1.5s transition
+    }, 5000); // At 5 seconds, start the 1.5s transition
 
     // Philosopher image animation (appears as warrior starts fading)
     const fadeInPhilosopherTimer = setTimeout(() => {
       setPhilosopherState("visible");
-    }, 15000); // Start appearing exactly when warrior starts fading
+    }, 5000); // Start appearing exactly when warrior starts fading
 
     const fadeOutPhilosopherTimer = setTimeout(() => {
       setPhilosopherState("fading");

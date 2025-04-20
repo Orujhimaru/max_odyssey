@@ -33,6 +33,8 @@
   --decrease-color: #ec5e54;
   --accent-color: #ffd700;
   --error-color: #a82121;
+  --bar-increase-color: #4874d9;
+  --bar-decrease-color: #d24e44;
 
   /* Radar Chart Colors - light mode */
   --radar-grid: #eeeeee;
@@ -149,6 +151,8 @@ button:focus-visible {
   --chart-grid: #94a3b840;
   --chart-text: #94a3b8;
   --border-card-color: #6d6c6c;
+  --bar-increase-color: #4464ac;
+  --bar-decrease-color: #b1433b;
 
   /* Brand colors - dark mode overrides */
   --math-color: #3e3e3e; /* Softer red for dark mode  d3d3d3 -> PREVIOUS VALUE, CHECK OUT WHICH VALUES USE THIS, CHANGED FOR PRACTICE MATH LOGO#*/
