@@ -18,13 +18,21 @@
 
 .test-info {
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .test-info h1 {
   font-size: 18px;
   font-weight: 500;
   color: var(--text-primary);
-  margin-bottom: 0;
+  margin-bottom: 8px;
+}
+
+.test-info h2 {
+  font-size: 16px;
+  font-weight: normal;
+  opacity: 0.8;
 }
 
 .test-progress {
@@ -618,4 +626,52 @@
 .navigator-overlay.active {
   display: block;
   opacity: 1;
+}
+
+/* Add these styles to support empty modules and module navigation */
+
+.empty-module {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 40px;
+}
+
+.no-questions-message {
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 40px;
+  border-radius: 8px;
+  max-width: 600px;
+}
+
+.no-questions-message h2 {
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.no-questions-message p {
+  color: var(--text-primary);
+  opacity: 0.8;
+}
+
+.nav-button.next-module {
+  background-color: var(--verbal-color);
+  color: white;
+  font-weight: 500;
+}
+
+.nav-button.next-module:hover {
+  background-color: #3a5cb8;
+}
+
+.nav-button.finish {
+  background-color: var(--increase-color);
+  color: white;
+  font-weight: 500;
+}
+
+.nav-button.finish:hover {
+  background-color: #27ae60;
 }
