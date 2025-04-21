@@ -30,15 +30,21 @@ const TestInterface = ({ testType, onExit }) => {
           console.log(
             "Module structure:",
             examData.exam_data.map(
-              (m) =>
-                `Module ${m.module_number}: ${m.module_type} (${
+              (m, index) =>
+                `Module ${index + 1}: ${m.module_type} (${
                   m.questions?.length || 0
                 } questions)`
             )
           );
+
+          // Check if current_module is set correctly
+          if (!examData.current_module) {
+            console.warn("No current_module set in exam data, defaulting to 1");
+            examData.current_module = 1; // Default to first module if not set
+          }
         }
 
-        if (examData && examData.exam_data && examData.exam_data[0]) {
+        if (examData && examData.exam_data && examData.exam_data.length > 0) {
           setExamData(examData);
           setCurrentQuestion(0); // Start with first question of first module
         } else {
@@ -96,63 +102,68 @@ const TestInterface = ({ testType, onExit }) => {
   const handleNextQuestion = () => {
     if (!examData) return;
 
-    const currentModule = examData.exam_data.find(
-      (m) => m.module_number === examData.current_module
-    );
-    if (!currentModule) return;
+    // Get the current module using array indexing
+    const currentModule = examData.exam_data[examData.current_module - 1];
+    if (!currentModule || !currentModule.questions) return;
 
     if (currentQuestion < currentModule.questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
     }
+
+    // Add logging to help with debugging
+    console.log(
+      `Moving to question ${currentQuestion + 1} in module ${
+        examData.current_module
+      }`
+    );
   };
 
   const handlePreviousQuestion = () => {
+    if (!examData) return;
+
+    // Access current module using array indexing
+    const currentModule = examData.exam_data[examData.current_module - 1];
+    if (!currentModule || !currentModule.questions) return;
+
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
       setSelectedAnswer(null);
+
+      // Add logging for debugging
+      console.log(
+        `Moving to question ${currentQuestion - 1} in module ${
+          examData.current_module
+        }`
+      );
     }
   };
 
   // New function to handle module navigation
   const handleNextModule = () => {
-    if (!examData || !examData.exam_data) {
-      console.error("No exam data available");
-      return;
-    }
-
-    // Get current module index (which should be directly 0, 1, 2, or 3)
-    const currentModuleIndex = examData.current_module - 1; // Convert from 1-based to 0-based if needed
+    if (!examData) return;
 
     console.log(
-      `Current module index: ${currentModuleIndex}, current_module: ${examData.current_module}`
+      "Navigating to next module. Current module:",
+      examData.current_module
     );
 
     // Check if there's a next module
-    if (currentModuleIndex < examData.exam_data.length - 1) {
-      // Simply increment to the next module
-      const nextModuleIndex = currentModuleIndex + 1;
-      const nextModule = examData.exam_data[nextModuleIndex];
+    if (examData.current_module < examData.exam_data.length) {
+      // Increment the current module
+      const newModuleNumber = examData.current_module + 1;
+      console.log("Moving to module:", newModuleNumber);
 
-      console.log(
-        `Moving from module index ${currentModuleIndex} to ${nextModuleIndex}`
-      );
-
-      // Update the examData state with the new current_module
-      setExamData({
-        ...examData,
-        current_module: nextModuleIndex + 1, // Convert back to 1-based if needed
-      });
+      // Update the current module in the exam data
+      setExamData((prev) => ({
+        ...prev,
+        current_module: newModuleNumber,
+      }));
 
       // Reset to the first question of the new module
       setCurrentQuestion(0);
-      setSelectedAnswer(null);
-
-      // Reset module-specific states
-      setMarkedQuestions([]); // Clear marked questions when changing modules
-      setCrossedOptions({}); // Reset crossed options
     } else {
-      console.log("Already at the last module");
+      console.log("Already at the last module:", examData.current_module);
     }
   };
 
@@ -476,20 +487,23 @@ const TestInterface = ({ testType, onExit }) => {
           <i className="fas fa-chevron-left"></i> Previous
         </button>
 
-        {currentQuestion === currentModule.questions.length - 1 &&
-        !isLastModule ? (
-          <button className="nav-button next-module" onClick={handleNextModule}>
-            Next Module <i className="fas fa-arrow-right"></i>
-          </button>
-        ) : (
-          <button
-            className="nav-button next"
-            onClick={handleNextQuestion}
-            disabled={currentQuestion === currentModule.questions.length - 1}
-          >
+        {/* Show Next button if not at last question */}
+        {currentQuestion < currentModule.questions.length - 1 && (
+          <button className="nav-button next" onClick={handleNextQuestion}>
             Next <i className="fas fa-chevron-right"></i>
           </button>
         )}
+
+        {/* Show Next Module button only if at the last question and not the last module */}
+        {currentQuestion === currentModule.questions.length - 1 &&
+          !isLastModule && (
+            <button
+              className="nav-button next-module"
+              onClick={handleNextModule}
+            >
+              Next Module <i className="fas fa-arrow-right"></i>
+            </button>
+          )}
       </div>
     </div>
   );

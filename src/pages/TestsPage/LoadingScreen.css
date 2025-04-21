@@ -120,13 +120,13 @@
 .philosopher-background.visible img {
   opacity: 0.7;
   transform: translateX(0);
-  transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+  animation: movePhilosopherLeft 1.5s ease-in-out forwards;
 }
 
 .philosopher-background.fading img {
   opacity: 0;
   transform: translateX(-20px);
-  transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+  animation: fadePhilosopherOut 1.5s ease-in-out forwards;
 }
 
 .warrior-background img {
@@ -274,5 +274,29 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Add keyframe animation for philosopher entering from right */
+@keyframes movePhilosopherLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  100% {
+    opacity: 0.7;
+    transform: translateX(0);
+  }
+}
+
+/* Add keyframe animation for philosopher exiting */
+@keyframes fadePhilosopherOut {
+  0% {
+    opacity: 0.7;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-20px);
   }
 }
