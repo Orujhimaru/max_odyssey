@@ -370,6 +370,12 @@
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.test-option.selected {
+  border-color: var(--verbal-color);
+  background-color: rgba(69, 107, 196, 0.05);
 }
 
 .test-option:hover {

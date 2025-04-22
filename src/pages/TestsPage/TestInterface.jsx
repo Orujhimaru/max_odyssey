@@ -3,7 +3,18 @@ import "./TestInterface.css";
 import { api } from "../../services/api";
 import LoadingScreen from "./LoadingScreen";
 
+// Debugging: Track component mount/unmount cycles and effect runs
+console.log("TestInterface.jsx module loaded");
+let mountCount = 0;
+let effectRunCount = 0;
+
 const TestInterface = ({ testType, onExit }) => {
+  // Create a ref to track component instance
+  const componentIdRef = useRef(`TestInterface_${++mountCount}`);
+  const componentId = componentIdRef.current;
+
+  console.log(`${componentId}: Component rendering with testType:`, testType);
+
   const [examData, setExamData] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -20,7 +31,15 @@ const TestInterface = ({ testType, onExit }) => {
   const debugRef = useRef({
     selectedAnswers: {},
     userAnswers: {},
+    testTypeRef: null,
+    effectRunCount: 0,
   });
+
+  // Track when testType changes
+  useEffect(() => {
+    console.log(`${componentId}: testType changed:`, testType);
+    debugRef.current.testTypeRef = testType;
+  }, [testType, componentId]);
 
   // Helper function to generate a unique key for a question
   const getQuestionKey = (moduleIndex, questionIndex, questionId) => {
@@ -32,6 +51,7 @@ const TestInterface = ({ testType, onExit }) => {
 
   // Load saved answers from localStorage when component mounts
   useEffect(() => {
+    console.log(`${componentId}: Load saved answers effect running`);
     const savedAnswers = localStorage.getItem("testUserAnswers");
     console.log("Loading saved answers from localStorage:", savedAnswers);
 
@@ -64,7 +84,7 @@ const TestInterface = ({ testType, onExit }) => {
         console.error("Error parsing saved answers:", e);
       }
     }
-  }, []);
+  }, [componentId]);
 
   // Update debug ref when selectedAnswers changes
   useEffect(() => {
@@ -80,13 +100,28 @@ const TestInterface = ({ testType, onExit }) => {
 
   // Fetch exam data when component mounts
   useEffect(() => {
+    const thisEffectRun = ++effectRunCount;
+    debugRef.current.effectRunCount = thisEffectRun;
+
+    console.log(`${componentId}: Fetch exam effect running #${thisEffectRun}`, {
+      testType,
+      testTypeRef: debugRef.current.testTypeRef,
+      mountCount,
+    });
+
     const fetchExamData = async () => {
       try {
+        console.log(
+          `${componentId}: Starting exam data fetch #${thisEffectRun}`
+        );
         setLoading(true);
 
         // Check if we're continuing an existing test
         if (testType.type === "continue" && testType.examData) {
-          console.log("Continuing existing test:", testType.examData);
+          console.log(
+            `${componentId}: Continuing existing test #${thisEffectRun}:`,
+            testType.examData
+          );
 
           // Use the provided exam data for continuing
           const examData = testType.examData;
@@ -117,13 +152,19 @@ const TestInterface = ({ testType, onExit }) => {
         }
 
         // For new tests, generate a new exam
+        console.log(
+          `${componentId}: Calling api.generateExam() #${thisEffectRun}`
+        );
         const examData = await api.generateExam();
-        console.log("Generated Exam Response:", examData);
+        console.log(
+          `${componentId}: Generated Exam Response #${thisEffectRun}:`,
+          examData
+        );
 
         // Diagnostic log to see module structure
         if (examData && examData.exam_data) {
           console.log(
-            "Module structure:",
+            `${componentId}: Module structure #${thisEffectRun}:`,
             examData.exam_data.map(
               (m, index) =>
                 `Module ${index + 1}: ${m.module_type} (${
@@ -134,16 +175,22 @@ const TestInterface = ({ testType, onExit }) => {
 
           // Check if current_module is set correctly
           if (!examData.current_module) {
-            console.warn("No current_module set in exam data, defaulting to 1");
+            console.warn(
+              `${componentId}: No current_module set in exam data, defaulting to 1`
+            );
             examData.current_module = 1; // Default to first module if not set
           }
         }
 
         if (examData && examData.exam_data && examData.exam_data.length > 0) {
+          console.log(`${componentId}: Setting exam data #${thisEffectRun}`);
           setExamData(examData);
           setCurrentQuestion(0); // Start with first question of first module
 
           // Save exam ID to localStorage
+          console.log(
+            `${componentId}: Saving exam ID to localStorage: ${examData.id}`
+          );
           localStorage.setItem("currentExamId", examData.id);
         } else {
           throw new Error("Invalid exam data structure");
@@ -154,7 +201,7 @@ const TestInterface = ({ testType, onExit }) => {
           setLoading(false);
         }, 12000);
       } catch (err) {
-        console.error("Error details:", err);
+        console.error(`${componentId}: Error details #${thisEffectRun}:`, err);
         setError("Error loading exam: " + err.message);
 
         // Even on error, show loading for the full animation sequence
@@ -165,17 +212,33 @@ const TestInterface = ({ testType, onExit }) => {
     };
 
     fetchExamData();
-  }, [testType]);
+
+    // Cleanup function
+    return () => {
+      console.log(
+        `${componentId}: Fetch exam effect cleanup #${thisEffectRun}`
+      );
+    };
+  }, [testType, componentId]);
 
   // Add class to body when component mounts
   useEffect(() => {
+    console.log(`${componentId}: Body class effect running`);
     document.body.classList.add("taking-test");
 
     // Remove class when component unmounts
     return () => {
+      console.log(`${componentId}: Body class effect cleanup`);
       document.body.classList.remove("taking-test");
     };
-  }, []);
+  }, [componentId]);
+
+  // Log when component unmounts
+  useEffect(() => {
+    return () => {
+      console.log(`${componentId}: Component unmounting`);
+    };
+  }, [componentId]);
 
   // Handle exit button click
   const handleExitClick = () => {

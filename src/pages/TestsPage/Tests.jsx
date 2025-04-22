@@ -1,11 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Tests.css";
 import TestInterface from "./TestInterface";
 import TestReview from "../../components/TestReview/TestReview";
 import { api } from "../../services/api";
 
+// Debug logging
+console.log("Tests.jsx module loaded");
+let testsComponentMountCount = 0;
+
 const Tests = () => {
+  // Create component instance ID for tracking
+  const componentIdRef = useRef(`Tests_${++testsComponentMountCount}`);
+  const componentId = componentIdRef.current;
+
+  console.log(`${componentId}: Component rendering`);
+
   const [showNewTestModal, setShowNewTestModal] = useState(false);
   const [activeTest, setActiveTest] = useState(null);
   const [testInProgress, setTestInProgress] = useState(false);
@@ -14,14 +24,29 @@ const Tests = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hasOngoingTest, setHasOngoingTest] = useState(false);
+  const [selectedTestType, setSelectedTestType] = useState("official"); // Default selection
   const navigate = useNavigate();
+
+  // Track component lifecycle
+  useEffect(() => {
+    console.log(`${componentId}: Component mounted`);
+
+    return () => {
+      console.log(`${componentId}: Component unmounting`);
+    };
+  }, [componentId]);
 
   // Fetch exam results when component mounts
   useEffect(() => {
+    console.log(`${componentId}: Fetching exam results effect running`);
+
     const fetchExamResults = async () => {
       try {
+        console.log(`${componentId}: Starting exam results fetch`);
         setLoading(true);
         const results = await api.getUserExamResults();
+        console.log(`${componentId}: Received exam results:`, results);
+
         // Check if results is an array, if not, handle accordingly
         if (Array.isArray(results)) {
           setExamResults(results);
@@ -40,14 +65,17 @@ const Tests = () => {
           setHasOngoingTest(ongoingTest);
         } else {
           // If it's not an array at all, set to empty array
-          console.error("API returned unexpected format:", results);
+          console.error(
+            `${componentId}: API returned unexpected format:`,
+            results
+          );
           setExamResults([]);
           setHasOngoingTest(false);
         }
         setError(null);
       } catch (err) {
         setError(err.message);
-        console.error("Failed to fetch exam results:", err);
+        console.error(`${componentId}: Failed to fetch exam results:`, err);
         setExamResults([]);
         setHasOngoingTest(false);
       } finally {
@@ -56,52 +84,17 @@ const Tests = () => {
     };
 
     fetchExamResults();
-  }, []);
+
+    return () => {
+      console.log(`${componentId}: Exam results fetch effect cleanup`);
+    };
+  }, [componentId]);
 
   // Add this to debug the structure
-  console.log("Exam results structure:", examResults);
-
-  // Mock data for recent tests
-  // const recentTests = [
-  //   {
-  //     id: 1,
-  //     name: "Practice Test #1",
-  //     date: "May 15, 2023",
-  //     score: 1420,
-  //     verbal: 710,
-  //     math: 710,
-  //     completed: true,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Practice Test #2",
-  //     date: "June 3, 2023",
-  //     score: 1480,
-  //     verbal: 730,
-  //     math: 750,
-  //     completed: true,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Practice Test #3",
-  //     date: "June 28, 2023",
-  //     score: 1510,
-  //     verbal: 750,
-  //     math: 760,
-  //     completed: true,
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Official SAT Practice Test",
-  //     date: "July 12, 2023",
-  //     score: null,
-  //     verbal: null,
-  //     math: null,
-  //     completed: false,
-  //   },
-  // ];
+  console.log(`${componentId}: Exam results structure:`, examResults);
 
   const openNewTestModal = () => {
+    console.log(`${componentId}: Opening new test modal`);
     if (hasOngoingTest) {
       alert(
         "You already have a test in progress. Please complete or delete it before starting a new one."
@@ -112,20 +105,35 @@ const Tests = () => {
   };
 
   const closeNewTestModal = () => {
+    console.log(`${componentId}: Closing new test modal`);
     setShowNewTestModal(false);
+    setSelectedTestType("official"); // Reset to default selection
   };
 
-  const startTest = (testType) => {
-    setActiveTest({ type: testType });
+  // Just select the test type without starting
+  const handleSelectTestType = (testType) => {
+    console.log(`${componentId}: Selected test type:`, testType);
+    setSelectedTestType(testType);
+  };
+
+  // Start the test with the selected type
+  const startTest = () => {
+    console.log(`${componentId}: Starting test of type:`, selectedTestType);
+    setActiveTest({ type: selectedTestType });
     setTestInProgress(true);
     setShowNewTestModal(false);
   };
 
   const continueTest = async (test) => {
+    console.log(`${componentId}: Continuing test:`, test.id);
     try {
       setLoading(true);
       // Fetch the complete exam data using the test ID
       const examData = await api.getExamById(test.id);
+      console.log(
+        `${componentId}: Retrieved exam data for continuing:`,
+        examData.id
+      );
 
       // Set the active test with the retrieved data
       setActiveTest({
@@ -156,7 +164,7 @@ const Tests = () => {
 
       setTestInProgress(true);
     } catch (error) {
-      console.error("Failed to load test:", error);
+      console.error(`${componentId}: Failed to load test:`, error);
       alert(`Failed to load test: ${error.message}`);
     } finally {
       setLoading(false);
@@ -164,6 +172,7 @@ const Tests = () => {
   };
 
   const exitTest = () => {
+    console.log(`${componentId}: Exiting test`);
     if (
       window.confirm(
         "Are you sure you want to exit? Your progress will be saved."
@@ -356,8 +365,10 @@ const Tests = () => {
 
             <div className="test-options">
               <div
-                className="test-option"
-                onClick={() => startTest("official")}
+                className={`test-option ${
+                  selectedTestType === "official" ? "selected" : ""
+                }`}
+                onClick={() => handleSelectTestType("official")}
               >
                 <div className="test-option-icon">
                   <i className="fas fa-book"></i>
@@ -371,7 +382,12 @@ const Tests = () => {
                 </div>
               </div>
 
-              <div className="test-option" onClick={() => startTest("quick")}>
+              <div
+                className={`test-option ${
+                  selectedTestType === "quick" ? "selected" : ""
+                }`}
+                onClick={() => handleSelectTestType("quick")}
+              >
                 <div className="test-option-icon">
                   <i className="fas fa-stopwatch"></i>
                 </div>
@@ -385,8 +401,10 @@ const Tests = () => {
               </div>
 
               <div
-                className="test-option"
-                onClick={() => startTest("challenge")}
+                className={`test-option ${
+                  selectedTestType === "challenge" ? "selected" : ""
+                }`}
+                onClick={() => handleSelectTestType("challenge")}
               >
                 <div className="test-option-icon">
                   <i className="fas fa-fire"></i>
@@ -405,10 +423,7 @@ const Tests = () => {
               <button className="cancel-button" onClick={closeNewTestModal}>
                 Cancel
               </button>
-              <button
-                className="start-test-button"
-                onClick={() => startTest("official")}
-              >
+              <button className="start-test-button" onClick={startTest}>
                 Start Test
               </button>
             </div>

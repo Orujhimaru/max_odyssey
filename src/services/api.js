@@ -230,28 +230,63 @@ export const api = {
   },
 
   // Generate a new exam
-  generateExam: async () => {
-    console.log("Generating new exam");
+  generateExam: (() => {
+    let isGenerating = false;
+    let pendingPromise = null;
 
-    try {
-      const response = await api.request("/exams/generate", {
-        method: "POST",
-      });
+    return async () => {
+      const callId = Math.random().toString(36).substring(2, 10);
+      console.log(`API: generateExam called (ID: ${callId})`);
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(
-          `Failed to generate exam: ${response.status} - ${errorText}`
-        );
-        throw new Error(`Failed to generate exam: ${response.status}`);
+      // If already generating, return the pending promise
+      if (isGenerating && pendingPromise) {
+        console.log(`API: Returning existing pending promise (ID: ${callId})`);
+        return pendingPromise;
       }
 
-      return response.json();
-    } catch (error) {
-      console.error("API request failed:", error);
-      throw error;
-    }
-  },
+      try {
+        isGenerating = true;
+
+        // Create the promise
+        pendingPromise = (async () => {
+          console.log(
+            `API: Making POST request to /exams/generate (ID: ${callId})`
+          );
+          const response = await api.request("/exams/generate", {
+            method: "POST",
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error(
+              `API: Failed to generate exam (ID: ${callId}): ${response.status} - ${errorText}`
+            );
+            throw new Error(`Failed to generate exam: ${response.status}`);
+          }
+
+          const data = await response.json();
+          console.log(
+            `API: Exam generated successfully (ID: ${callId}), exam ID: ${data.id}`
+          );
+          return data;
+        })();
+
+        // Wait for the promise to resolve
+        const result = await pendingPromise;
+        return result;
+      } catch (error) {
+        console.error(`API: Request failed (ID: ${callId}):`, error);
+        throw error;
+      } finally {
+        // Reset the generating flag and pending promise after a short delay
+        // This prevents immediate subsequent calls but allows future ones
+        setTimeout(() => {
+          isGenerating = false;
+          pendingPromise = null;
+        }, 1000);
+      }
+    };
+  })(),
 
   // Get exam by ID
   getExamById: async (examId) => {
