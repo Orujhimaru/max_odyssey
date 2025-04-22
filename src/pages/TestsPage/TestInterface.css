@@ -411,6 +411,16 @@
   color: white;
 }
 
+.question-button.answered {
+  background-color: rgba(69, 107, 196, 0.3);
+  border: 1px solid var(--verbal-color);
+}
+
+.legend-marker.answered {
+  background-color: rgba(69, 107, 196, 0.3);
+  border: 1px solid var(--verbal-color);
+}
+
 .test-footer {
   display: flex;
   justify-content: space-between;

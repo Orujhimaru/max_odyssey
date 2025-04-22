@@ -253,6 +253,28 @@ export const api = {
     }
   },
 
+  // Get exam by ID
+  getExamById: async (examId) => {
+    console.log(`Fetching exam with ID: ${examId}`);
+
+    try {
+      const response = await api.request(`/exams/${examId}`);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          `Failed to fetch exam: ${response.status} - ${errorText}`
+        );
+        throw new Error(`Failed to fetch exam: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error("API request failed:", error);
+      throw error;
+    }
+  },
+
   // Delete an exam by ID
   removeExamById: async (examId) => {
     console.log(`Removing exam with ID: ${examId}`);
@@ -269,6 +291,35 @@ export const api = {
           `Failed to remove exam: ${response.status} - ${errorText}`
         );
         throw new Error(`Failed to remove exam: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error("API request failed:", error);
+      throw error;
+    }
+  },
+
+  // Update an exam with user answers
+  updateExam: async (examId, currentModule, userAnswers) => {
+    console.log(`Updating exam ${examId} with user answers:`, userAnswers);
+
+    try {
+      const response = await api.request("/exams/update", {
+        method: "POST",
+        body: JSON.stringify({
+          exam_id: examId,
+          current_module: currentModule,
+          user_progress: userAnswers,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          `Failed to update exam: ${response.status} - ${errorText}`
+        );
+        throw new Error(`Failed to update exam: ${response.status}`);
       }
 
       return response.json();

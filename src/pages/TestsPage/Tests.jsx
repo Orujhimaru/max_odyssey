@@ -116,9 +116,51 @@ const Tests = () => {
   };
 
   const startTest = (testType) => {
-    setActiveTest(testType);
+    setActiveTest({ type: testType });
     setTestInProgress(true);
     setShowNewTestModal(false);
+  };
+
+  const continueTest = async (test) => {
+    try {
+      setLoading(true);
+      // Fetch the complete exam data using the test ID
+      const examData = await api.getExamById(test.id);
+
+      // Set the active test with the retrieved data
+      setActiveTest({
+        type: "continue",
+        examData: examData,
+        testId: test.id,
+      });
+
+      // Store the exam ID in localStorage for resuming later if needed
+      localStorage.setItem("currentExamId", test.id);
+
+      // Prepare user answers from the exam data's user_progress
+      if (examData.user_progress && Array.isArray(examData.user_progress)) {
+        const userAnswers = {};
+
+        // Convert the array of answer objects to the expected format for localStorage
+        examData.user_progress.forEach((answer) => {
+          userAnswers[answer.question_id] = {
+            question_index: answer.question_index,
+            question_id: answer.question_id,
+            selected_option: answer.selected_option,
+          };
+        });
+
+        // Save the user answers to localStorage
+        localStorage.setItem("testUserAnswers", JSON.stringify(userAnswers));
+      }
+
+      setTestInProgress(true);
+    } catch (error) {
+      console.error("Failed to load test:", error);
+      alert(`Failed to load test: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const exitTest = () => {
@@ -180,6 +222,12 @@ const Tests = () => {
 
   return (
     <div className="tests-page">
+      {loading && (
+        <div className="global-loading-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
+
       {reviewingTest ? (
         <TestReview />
       ) : (
@@ -207,7 +255,7 @@ const Tests = () => {
               <span className="test-actions-header pleft">Actions</span>
             </div>
 
-            {loading ? (
+            {loading && !examResults.length ? (
               <div className="loading-message">Loading exam results...</div>
             ) : error ? (
               <div className="error-message">Error: {error}</div>
@@ -216,55 +264,69 @@ const Tests = () => {
                 No test results found. Take a test to see your results here.
               </div>
             ) : (
-              examResults.map((test, index) => (
-                <div className="test-item" key={index}>
-                  <div className="test-name">Practice Test #{test.id}</div>
-                  <div className="test-date">
-                    {new Date(test.created_at.Time).toLocaleDateString()}
+              examResults.map((test, index) => {
+                const isInProgress = !test.verbal_score || !test.math_score;
+                return (
+                  <div
+                    className={`test-item ${isInProgress ? "in-progress" : ""}`}
+                    key={index}
+                  >
+                    <div className="test-name">
+                      Practice Test #{test.id}
+                      {isInProgress && (
+                        <span className="in-progress-badge">In Progress</span>
+                      )}
+                    </div>
+                    <div className="test-date">
+                      {new Date(test.created_at.Time).toLocaleDateString()}
+                    </div>
+                    <div className="test-score">
+                      {test.verbal_score && test.math_score
+                        ? test.verbal_score.Int32 + test.math_score.Int32
+                        : "-"}
+                    </div>
+                    <div className="test-verbal">
+                      {test.verbal_score ? test.verbal_score.Int32 : "-"}
+                    </div>
+                    <div className="test-math">
+                      {test.math_score ? test.math_score.Int32 : "-"}
+                    </div>
+                    <div className="test-actions">
+                      {test.verbal_score && test.math_score ? (
+                        <>
+                          <button
+                            className="review-button"
+                            onClick={() => handleReviewClick(test)}
+                          >
+                            <i className="fas fa-eye"></i> Review
+                          </button>
+                          <button
+                            className="delete-button"
+                            onClick={() => handleDeleteTest(test)}
+                          >
+                            <i className="fas fa-trash"></i>
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            className="continue-button"
+                            onClick={() => continueTest(test)}
+                          >
+                            <i className="fas fa-play"></i> Continue
+                          </button>
+                          <button
+                            className="delete-button"
+                            onClick={() => handleDeleteTest(test)}
+                          >
+                            <i className="fas fa-trash"></i>
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
-                  <div className="test-score">
-                    {test.verbal_score && test.math_score
-                      ? test.verbal_score.Int32 + test.math_score.Int32
-                      : "In Progress"}
-                  </div>
-                  <div className="test-verbal">
-                    {test.verbal_score ? test.verbal_score.Int32 : "-"}
-                  </div>
-                  <div className="test-math">
-                    {test.math_score ? test.math_score.Int32 : "-"}
-                  </div>
-                  <div className="test-actions">
-                    {test.verbal_score && test.math_score ? (
-                      <>
-                        <button
-                          className="review-button"
-                          onClick={() => handleReviewClick(test)}
-                        >
-                          <i className="fas fa-eye"></i> Review
-                        </button>
-                        <button
-                          className="delete-button"
-                          onClick={() => handleDeleteTest(test)}
-                        >
-                          <i className="fas fa-trash"></i>
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button className="continue-button">
-                          <i className="fas fa-play"></i> Continue
-                        </button>
-                        <button
-                          className="delete-button"
-                          onClick={() => handleDeleteTest(test)}
-                        >
-                          <i className="fas fa-trash"></i>
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
           <button

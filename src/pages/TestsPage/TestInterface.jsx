@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./TestInterface.css";
 import { api } from "../../services/api";
 import LoadingScreen from "./LoadingScreen";
@@ -6,7 +6,8 @@ import LoadingScreen from "./LoadingScreen";
 const TestInterface = ({ testType, onExit }) => {
   const [examData, setExamData] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [userAnswers, setUserAnswers] = useState({});
   const [markedQuestions, setMarkedQuestions] = useState([]);
   const [crossedOptions, setCrossedOptions] = useState({});
   const [timeRemaining, setTimeRemaining] = useState("2:45:00");
@@ -15,13 +16,107 @@ const TestInterface = ({ testType, onExit }) => {
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [navigatorOpen, setNavigatorOpen] = useState(false);
 
+  // Debug ref to track state changes
+  const debugRef = useRef({
+    selectedAnswers: {},
+    userAnswers: {},
+  });
+
+  // Helper function to generate a unique key for a question
+  const getQuestionKey = (moduleIndex, questionIndex, questionId) => {
+    // Use the question ID if available, otherwise create a composite key
+    return questionId
+      ? `q_${questionId}`
+      : `m_${moduleIndex}_q_${questionIndex}`;
+  };
+
+  // Load saved answers from localStorage when component mounts
+  useEffect(() => {
+    const savedAnswers = localStorage.getItem("testUserAnswers");
+    console.log("Loading saved answers from localStorage:", savedAnswers);
+
+    if (savedAnswers) {
+      try {
+        const parsedAnswers = JSON.parse(savedAnswers);
+        setUserAnswers(parsedAnswers);
+
+        // Also populate the selectedAnswers state from the loaded answers
+        const answers = {};
+        Object.values(parsedAnswers).forEach((answer) => {
+          if (answer) {
+            // Create question key using our helper function
+            const questionKey = getQuestionKey(
+              answer.module_index,
+              answer.question_index,
+              answer.question_id
+            );
+            answers[questionKey] = answer.selected_option;
+          }
+        });
+
+        console.log("Loaded answers mapped to selectedAnswers:", answers);
+        setSelectedAnswers(answers);
+
+        // Update debug ref
+        debugRef.current.selectedAnswers = answers;
+        debugRef.current.userAnswers = parsedAnswers;
+      } catch (e) {
+        console.error("Error parsing saved answers:", e);
+      }
+    }
+  }, []);
+
+  // Update debug ref when selectedAnswers changes
+  useEffect(() => {
+    debugRef.current.selectedAnswers = selectedAnswers;
+    console.log("selectedAnswers updated:", selectedAnswers);
+  }, [selectedAnswers]);
+
+  // Update debug ref when userAnswers changes
+  useEffect(() => {
+    debugRef.current.userAnswers = userAnswers;
+    console.log("userAnswers updated:", userAnswers);
+  }, [userAnswers]);
+
   // Fetch exam data when component mounts
   useEffect(() => {
     const fetchExamData = async () => {
       try {
         setLoading(true);
 
-        // Load the exam data
+        // Check if we're continuing an existing test
+        if (testType.type === "continue" && testType.examData) {
+          console.log("Continuing existing test:", testType.examData);
+
+          // Use the provided exam data for continuing
+          const examData = testType.examData;
+
+          // Validate the data
+          if (examData && examData.exam_data && examData.exam_data.length > 0) {
+            setExamData(examData);
+
+            // Set the correct module and question
+            if (!examData.current_module) {
+              console.warn(
+                "No current_module set in exam data, defaulting to 1"
+              );
+              examData.current_module = 1;
+            }
+
+            setCurrentQuestion(0); // Start with first question of the current module
+          } else {
+            throw new Error("Invalid exam data structure for continued test");
+          }
+
+          // Always show the loading screen for at least 5 seconds for continued tests
+          setTimeout(() => {
+            setLoading(false);
+          }, 5000);
+
+          return; // Exit early since we already have the data
+        }
+
+        // For new tests, generate a new exam
         const examData = await api.generateExam();
         console.log("Generated Exam Response:", examData);
 
@@ -47,6 +142,9 @@ const TestInterface = ({ testType, onExit }) => {
         if (examData && examData.exam_data && examData.exam_data.length > 0) {
           setExamData(examData);
           setCurrentQuestion(0); // Start with first question of first module
+
+          // Save exam ID to localStorage
+          localStorage.setItem("currentExamId", examData.id);
         } else {
           throw new Error("Invalid exam data structure");
         }
@@ -85,8 +183,34 @@ const TestInterface = ({ testType, onExit }) => {
   };
 
   // Handle exit confirmation
-  const handleExitConfirm = () => {
+  const handleExitConfirm = async () => {
     document.body.classList.remove("taking-test");
+
+    try {
+      // Get the exam ID from localStorage
+      const examId = localStorage.getItem("currentExamId");
+
+      if (examId && examData) {
+        // Prepare user progress array from userAnswers object
+        const userProgress = Object.values(userAnswers);
+        console.log("Saving user progress to server:", userProgress);
+
+        // Send user answers to the server
+        await api.updateExam(examId, examData.current_module, userProgress);
+        console.log("Exam updated successfully with user answers");
+
+        // Clear the localStorage items for this exam
+        localStorage.removeItem("currentExamId");
+        localStorage.removeItem("testUserAnswers");
+      } else {
+        console.error(
+          "No exam ID found in localStorage or examData is missing"
+        );
+      }
+    } catch (error) {
+      console.error("Error updating exam:", error);
+    }
+
     onExit();
   };
 
@@ -95,8 +219,61 @@ const TestInterface = ({ testType, onExit }) => {
     setShowExitDialog(false);
   };
 
-  const handleAnswerSelect = (optionId) => {
-    setSelectedAnswer(optionId);
+  const handleAnswerSelect = (optionId, questionId, questionIndex) => {
+    if (!examData) return;
+
+    // Get current module index (0-based)
+    const moduleIndex = examData.current_module - 1;
+
+    // Create unique key for this question
+    const questionKey = getQuestionKey(moduleIndex, questionIndex, questionId);
+
+    console.log(
+      `Selecting answer ${optionId} for question key ${questionKey} (module: ${moduleIndex}, index: ${questionIndex}, id: ${questionId})`
+    );
+
+    // Create a new object for the selected answers to avoid mutation issues
+    const newSelectedAnswers = { ...selectedAnswers, [questionKey]: optionId };
+
+    // Update selected answers state for this specific question
+    setSelectedAnswers(newSelectedAnswers);
+
+    // Create a standardized answer object
+    const answerObject = {
+      module_index: moduleIndex,
+      question_index: questionIndex,
+      question_id: questionId,
+      selected_option: optionId,
+    };
+
+    // Create a storage key for userAnswers
+    const storageKey = questionId
+      ? questionId
+      : `m${moduleIndex}_q${questionIndex}`;
+
+    // Update user answers object with the new format
+    const updatedAnswers = {
+      ...userAnswers,
+      [storageKey]: answerObject,
+    };
+
+    // Save to state
+    setUserAnswers(updatedAnswers);
+
+    // Save to localStorage - stringify and then immediately parse to verify format
+    const stringified = JSON.stringify(updatedAnswers);
+    console.log("Saving to localStorage:", stringified);
+    localStorage.setItem("testUserAnswers", stringified);
+
+    // Verify what was saved
+    const savedAgain = localStorage.getItem("testUserAnswers");
+    console.log("Verified localStorage after save:", savedAgain);
+    try {
+      const parsed = JSON.parse(savedAgain);
+      console.log("Parsed from localStorage:", parsed);
+    } catch (e) {
+      console.error("Error parsing saved answers during verification:", e);
+    }
   };
 
   const handleNextQuestion = () => {
@@ -107,16 +284,13 @@ const TestInterface = ({ testType, onExit }) => {
     if (!currentModule || !currentModule.questions) return;
 
     if (currentQuestion < currentModule.questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(null);
+      const nextQuestionIndex = currentQuestion + 1;
+      console.log(`Moving to next question: ${nextQuestionIndex}`);
+      setCurrentQuestion(nextQuestionIndex);
     }
 
     // Add logging to help with debugging
-    console.log(
-      `Moving to question ${currentQuestion + 1} in module ${
-        examData.current_module
-      }`
-    );
+    console.log(`Current selected answers:`, selectedAnswers);
   };
 
   const handlePreviousQuestion = () => {
@@ -127,15 +301,12 @@ const TestInterface = ({ testType, onExit }) => {
     if (!currentModule || !currentModule.questions) return;
 
     if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
-      setSelectedAnswer(null);
+      const prevQuestionIndex = currentQuestion - 1;
+      console.log(`Moving to previous question: ${prevQuestionIndex}`);
+      setCurrentQuestion(prevQuestionIndex);
 
       // Add logging for debugging
-      console.log(
-        `Moving to question ${currentQuestion - 1} in module ${
-          examData.current_module
-        }`
-      );
+      console.log(`Current selected answers:`, selectedAnswers);
     }
   };
 
@@ -162,6 +333,11 @@ const TestInterface = ({ testType, onExit }) => {
 
       // Reset to the first question of the new module
       setCurrentQuestion(0);
+
+      console.log(
+        "Current selected answers after module change:",
+        selectedAnswers
+      );
     } else {
       console.log("Already at the last module:", examData.current_module);
     }
@@ -319,6 +495,23 @@ const TestInterface = ({ testType, onExit }) => {
     text: choice.substring(3).trim(), // Remove first 2 chars and any whitespace
   }));
 
+  // Get the current question's info for generating its key
+  const currentQuestionId = currentQ.id;
+  const moduleIndex = examData.current_module - 1;
+  const questionKey = getQuestionKey(
+    moduleIndex,
+    currentQuestion,
+    currentQuestionId
+  );
+
+  // Get the current answer for this specific question using the key
+  const currentQuestionAnswer = selectedAnswers[questionKey] || null;
+
+  console.log(
+    `Current question key: ${questionKey}, Selected answer: ${currentQuestionAnswer}`
+  );
+  console.log(`Question ID from data: ${currentQuestionId}`);
+
   return (
     <div className="test-interface">
       {showExitDialog && (
@@ -336,6 +529,32 @@ const TestInterface = ({ testType, onExit }) => {
           </div>
         </div>
       )}
+
+      {/* Debug info - you can set display to block to enable */}
+      <div
+        className="debug-info"
+        style={{
+          position: "fixed",
+          bottom: 0,
+          right: 0,
+          background: "rgba(0,0,0,0.7)",
+          color: "white",
+          padding: "10px",
+          fontSize: "12px",
+          maxWidth: "300px",
+          maxHeight: "200px",
+          overflow: "auto",
+          zIndex: 9999,
+          display: "none",
+        }}
+      >
+        <p>Current Module: {examData.current_module}</p>
+        <p>Current Question: {currentQuestion}</p>
+        <p>Question ID: {currentQuestionId || "undefined"}</p>
+        <p>Question Key: {questionKey}</p>
+        <p>Selected Answer: {currentQuestionAnswer}</p>
+        <pre>{JSON.stringify(selectedAnswers, null, 2)}</pre>
+      </div>
 
       {/* Navigator overlay */}
 
@@ -415,12 +634,16 @@ const TestInterface = ({ testType, onExit }) => {
                 <div
                   key={option.id}
                   className={`answer-option ${
-                    selectedAnswer === option.id ? "selected" : ""
+                    currentQuestionAnswer === option.id ? "selected" : ""
                   } ${isOptionCrossed(option.id) ? "crossed" : ""}`}
                   onClick={() =>
                     isCrossModeActive()
                       ? toggleCrossOption(option.id)
-                      : handleAnswerSelect(option.id)
+                      : handleAnswerSelect(
+                          option.id,
+                          currentQuestionId,
+                          currentQuestion
+                        )
                   }
                 >
                   <div className="option-letter">{option.id}</div>
@@ -460,20 +683,30 @@ const TestInterface = ({ testType, onExit }) => {
             </div>
           </div>
           <div className="question-buttons">
-            {currentModule.questions.map((q, index) => (
-              <button
-                key={q.id || index}
-                className={`question-button ${
-                  index === currentQuestion ? "current" : ""
-                } ${markedQuestions.includes(index) ? "marked" : ""}`}
-                onClick={() => {
-                  setCurrentQuestion(index);
-                  setNavigatorOpen(false);
-                }}
-              >
-                {index + 1}
-              </button>
-            ))}
+            {currentModule.questions.map((q, index) => {
+              // Create consistent key for this question
+              const qKey = getQuestionKey(moduleIndex, index, q.id);
+
+              // Check if this question has been answered
+              const isAnswered = !!selectedAnswers[qKey];
+
+              return (
+                <button
+                  key={q.id || index}
+                  className={`question-button ${
+                    index === currentQuestion ? "current" : ""
+                  } ${markedQuestions.includes(index) ? "marked" : ""} ${
+                    isAnswered ? "answered" : ""
+                  }`}
+                  onClick={() => {
+                    setCurrentQuestion(index);
+                    setNavigatorOpen(false);
+                  }}
+                >
+                  {index + 1}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
