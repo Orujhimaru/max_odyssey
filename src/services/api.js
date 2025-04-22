@@ -252,4 +252,29 @@ export const api = {
       throw error;
     }
   },
+
+  // Delete an exam by ID
+  removeExamById: async (examId) => {
+    console.log(`Removing exam with ID: ${examId}`);
+
+    try {
+      const response = await api.request("/exams/remove", {
+        method: "POST",
+        body: JSON.stringify({ exam_id: examId }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          `Failed to remove exam: ${response.status} - ${errorText}`
+        );
+        throw new Error(`Failed to remove exam: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error("API request failed:", error);
+      throw error;
+    }
+  },
 };

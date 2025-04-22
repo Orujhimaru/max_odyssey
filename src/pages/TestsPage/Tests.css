@@ -63,6 +63,49 @@
   transform: translateY(-2px);
 }
 
+.new-test-button.disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  position: relative;
+}
+
+.new-test-button.disabled:hover {
+  transform: none;
+}
+
+.new-test-button .tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  margin-bottom: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.new-test-button.disabled:hover .tooltip {
+  opacity: 1;
+}
+
+.new-test-button .tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+}
+
 .tests-tabs {
   display: flex;
   gap: 24px;
@@ -238,6 +281,12 @@
   border-radius: 4px;
 }
 
+.delete-button:hover {
+  color: #e74c3c;
+  opacity: 1;
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
 .continue-button {
   display: flex;
   align-items: center;
@@ -251,12 +300,6 @@
 .continue-button:hover {
   background-color: #fcfcfcb0;
   /* transform: translateY(-12px); */
-}
-
-.delete-button:hover {
-  opacity: 1;
-  background-color: rgba(158, 86, 86, 0.1);
-  color: var(--error-color);
 }
 
 /* Modal styles */

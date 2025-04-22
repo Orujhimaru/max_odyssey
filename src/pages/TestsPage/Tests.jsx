@@ -13,6 +13,7 @@ const Tests = () => {
   const [examResults, setExamResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hasOngoingTest, setHasOngoingTest] = useState(false);
   const navigate = useNavigate();
 
   // Fetch exam results when component mounts
@@ -24,19 +25,31 @@ const Tests = () => {
         // Check if results is an array, if not, handle accordingly
         if (Array.isArray(results)) {
           setExamResults(results);
+          // Check if there's an ongoing test
+          const ongoingTest = results.some(
+            (test) => !test.verbal_score || !test.math_score
+          );
+          setHasOngoingTest(ongoingTest);
         } else if (results && Array.isArray(results.data)) {
           // If the API returns { data: [...] } structure
           setExamResults(results.data);
+          // Check if there's an ongoing test
+          const ongoingTest = results.data.some(
+            (test) => !test.verbal_score || !test.math_score
+          );
+          setHasOngoingTest(ongoingTest);
         } else {
           // If it's not an array at all, set to empty array
           console.error("API returned unexpected format:", results);
           setExamResults([]);
+          setHasOngoingTest(false);
         }
         setError(null);
       } catch (err) {
         setError(err.message);
         console.error("Failed to fetch exam results:", err);
         setExamResults([]);
+        setHasOngoingTest(false);
       } finally {
         setLoading(false);
       }
@@ -89,6 +102,12 @@ const Tests = () => {
   // ];
 
   const openNewTestModal = () => {
+    if (hasOngoingTest) {
+      alert(
+        "You already have a test in progress. Please complete or delete it before starting a new one."
+      );
+      return;
+    }
     setShowNewTestModal(true);
   };
 
@@ -119,6 +138,40 @@ const Tests = () => {
 
   const handleCloseReview = () => {
     setReviewingTest(null);
+  };
+
+  const handleDeleteTest = async (test) => {
+    if (
+      window.confirm(
+        `Are you sure you want to delete Practice Test #${test.id}? This action cannot be undone.`
+      )
+    ) {
+      try {
+        await api.removeExamById(test.id);
+        // After successful deletion, refresh the exam results
+        const results = await api.getUserExamResults();
+
+        if (Array.isArray(results)) {
+          setExamResults(results);
+          const ongoingTest = results.some(
+            (test) => !test.verbal_score || !test.math_score
+          );
+          setHasOngoingTest(ongoingTest);
+        } else if (results && Array.isArray(results.data)) {
+          setExamResults(results.data);
+          const ongoingTest = results.data.some(
+            (test) => !test.verbal_score || !test.math_score
+          );
+          setHasOngoingTest(ongoingTest);
+        } else {
+          setExamResults([]);
+          setHasOngoingTest(false);
+        }
+      } catch (error) {
+        console.error("Failed to delete test:", error);
+        alert(`Failed to delete test: ${error.message}`);
+      }
+    }
   };
 
   if (testInProgress) {
@@ -189,22 +242,42 @@ const Tests = () => {
                         >
                           <i className="fas fa-eye"></i> Review
                         </button>
-                        <button className="delete-button">
+                        <button
+                          className="delete-button"
+                          onClick={() => handleDeleteTest(test)}
+                        >
                           <i className="fas fa-trash"></i>
                         </button>
                       </>
                     ) : (
-                      <button className="continue-button">
-                        <i className="fas fa-play"></i> Continue
-                      </button>
+                      <>
+                        <button className="continue-button">
+                          <i className="fas fa-play"></i> Continue
+                        </button>
+                        <button
+                          className="delete-button"
+                          onClick={() => handleDeleteTest(test)}
+                        >
+                          <i className="fas fa-trash"></i>
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
               ))
             )}
           </div>
-          <button className="new-test-button" onClick={openNewTestModal}>
+          <button
+            className={`new-test-button ${hasOngoingTest ? "disabled" : ""}`}
+            onClick={openNewTestModal}
+            disabled={hasOngoingTest}
+          >
             <i className="fas fa-plus"></i> Take a New Test
+            {hasOngoingTest && (
+              <span className="tooltip">
+                Complete or delete your ongoing test first
+              </span>
+            )}
           </button>
         </div>
       )}
