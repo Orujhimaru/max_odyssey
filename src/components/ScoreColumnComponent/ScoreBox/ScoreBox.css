@@ -139,6 +139,7 @@
     #0058e3
   );
   animation: rotate-gradient 4s linear infinite;
+  margin-bottom: 6px;
 }
 
 @property --angle {
