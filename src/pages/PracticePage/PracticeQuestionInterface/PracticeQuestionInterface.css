@@ -534,6 +534,18 @@ v bnm- .question-table caption {
 .question-image {
   margin-bottom: 20px;
   text-align: center;
+  margin-inline: 40px;
+  padding-block: 30px;
+}
+
+/* Only apply white background to images, not tables */
+.question-image:not(:has(table)) {
+  background-color: white;
+}
+
+/* For browsers that don't support :has, use a separate class */
+.question-image-with-svg {
+  background-color: white;
 }
 
 .question-image svg {
