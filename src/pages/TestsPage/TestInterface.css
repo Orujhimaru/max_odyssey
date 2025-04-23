@@ -689,3 +689,85 @@
 .nav-button.finish:hover {
   background-color: #27ae60;
 }
+
+/* Add styles for images and tables */
+.images-container {
+  margin-bottom: 20px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.question-image {
+  margin-bottom: 20px;
+  text-align: center;
+  margin-inline: 40px;
+  padding-block: 30px;
+}
+
+/* Only apply white background to images, not tables */
+.question-image:not(:has(table)) {
+  background-color: white;
+}
+
+/* For browsers that don't support :has, use a separate class */
+.question-image-with-svg {
+  background-color: white;
+}
+
+.question-image svg {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* KaTeX styling */
+.katex-html {
+  margin-bottom: 10px;
+}
+
+.katex-display {
+  display: block;
+  margin: 1em 0;
+  text-align: center;
+}
+
+/* Fix for multiple KaTeX elements in same line */
+span.katex-html + span.katex-html {
+  margin-top: 10px;
+}
+
+/* Table styling */
+table {
+  border-spacing: 0px;
+  border: 1px solid #d9d9d9;
+  margin: auto;
+}
+
+thead tr th {
+  border-inline: 1px solid #d9d9d9;
+  padding: 12px;
+  text-align: center !important;
+  vertical-align: top !important;
+  padding-top: 4px;
+}
+
+tbody tr th,
+td {
+  border: 1px solid hsl(0, 0%, 85%);
+  padding: 4px;
+  text-align: center;
+}
+
+table tbody {
+  border-top: 1px solid #d9d9d9;
+}
+
+.passage {
+  margin-bottom: 24px;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-line;
+  padding: 16px;
+}

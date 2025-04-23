@@ -2,6 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import "./TestInterface.css";
 import { api } from "../../services/api";
 import LoadingScreen from "./LoadingScreen";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import { formatMathExpression } from "../../utils/mathUtils";
 
 // Debugging: Track component mount/unmount cycles and effect runs
 console.log("TestInterface.jsx module loaded");
@@ -655,10 +660,14 @@ const TestInterface = ({ testType, onExit }) => {
   }
 
   // Transform choices into the format we need
-  const options = currentQ.choices.map((choice, index) => ({
-    id: String.fromCharCode(65 + index), // Convert 0 to 'A', 1 to 'B', etc.
-    text: choice.substring(3).trim(), // Remove first 2 chars and any whitespace
-  }));
+  const options = currentQ.choices.map((choice, index) => {
+    const text = choice.substring(3).trim(); // Remove first 2 chars and any whitespace
+    return {
+      id: String.fromCharCode(65 + index), // Convert 0 to 'A', 1 to 'B', etc.
+      text: text,
+      containsHtml: text.includes("<table") || text.includes("<figure"),
+    };
+  });
 
   // Get the current question's info
   const currentQuestionId = currentQ.id;
@@ -720,17 +729,34 @@ const TestInterface = ({ testType, onExit }) => {
       <div className="test-content">
         <div className="question-area">
           <div>
-            <div className="question-text">
-              {currentQ.passage && (
-                <div className="passage">
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: currentQ.passage,
-                    }}
-                  />
-                </div>
-              )}
-            </div>
+            {/* Image section */}
+            {currentQ.svg_image && currentQ.svg_image !== "" && (
+              <div className="images-container">
+                <div
+                  className="question-image question-image-with-svg"
+                  dangerouslySetInnerHTML={{ __html: currentQ.svg_image }}
+                />
+              </div>
+            )}
+            {currentQ.html_table && currentQ.html_table !== "" && (
+              <div className="images-container">
+                <div
+                  className="question-image"
+                  dangerouslySetInnerHTML={{ __html: currentQ.html_table }}
+                />
+              </div>
+            )}
+            {/* Passage section */}
+            {currentQ.passage && (
+              <div className="passage">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                >
+                  {currentQ.passage}
+                </ReactMarkdown>
+              </div>
+            )}
           </div>
           <div>
             <div className="exam-question-container">
@@ -761,7 +787,82 @@ const TestInterface = ({ testType, onExit }) => {
                 )}
               </div>
             </div>
-            <p>{currentQ.question}</p>
+            <div className="question-text">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm, remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+                components={{
+                  // Custom paragraph component to handle KaTeX spans
+                  p: ({ node, children, ...props }) => {
+                    const childArray = React.Children.toArray(children);
+
+                    // Check if the first element is a KaTeX element
+                    const firstElement = childArray[0];
+                    const firstIsKatex =
+                      React.isValidElement(firstElement) &&
+                      firstElement.props &&
+                      firstElement.props.className &&
+                      firstElement.props.className.includes("katex");
+
+                    // If the first element is not KaTeX, don't apply display:block to any KaTeX elements
+                    if (!firstIsKatex) {
+                      return <p {...props}>{children}</p>;
+                    }
+
+                    // Find all KaTeX spans among the children
+                    const katexElements = childArray.filter(
+                      (child) =>
+                        React.isValidElement(child) &&
+                        child.props.className &&
+                        child.props.className.includes("katex")
+                    );
+
+                    // If we have any KaTeX elements and the first one is KaTeX
+                    if (katexElements.length > 0) {
+                      // Store a counter in closure to track KaTeX elements
+                      let katexCount = 0;
+
+                      return (
+                        <div {...props}>
+                          {React.Children.map(children, (child) => {
+                            // Check if this is a KaTeX element
+                            if (
+                              React.isValidElement(child) &&
+                              child.props.className &&
+                              child.props.className.includes("katex")
+                            ) {
+                              // Increment the counter
+                              katexCount++;
+
+                              // Only apply block style to the first two
+                              if (katexCount <= 2) {
+                                return React.cloneElement(child, {
+                                  style: {
+                                    display: "block",
+                                    marginBottom: "10px",
+                                  },
+                                });
+                              }
+
+                              // Return other KaTeX elements unchanged
+                              return child;
+                            }
+
+                            // Return all other elements unchanged
+                            return child;
+                          })}
+                        </div>
+                      );
+                    }
+
+                    // Otherwise, render the paragraph normally
+                    return <p {...props}>{children}</p>;
+                  },
+                }}
+              >
+                {currentQ.question && formatMathExpression(currentQ.question)}
+              </ReactMarkdown>
+            </div>
             <div className="answer-options">
               {options.map((option) => (
                 <div
@@ -780,7 +881,18 @@ const TestInterface = ({ testType, onExit }) => {
                   }
                 >
                   <div className="option-letter">{option.id}</div>
-                  <div className="option-text">{option.text}</div>
+                  <div className="option-text">
+                    {option.text && option.text.includes("<") ? (
+                      <div dangerouslySetInnerHTML={{ __html: option.text }} />
+                    ) : (
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm, remarkMath]}
+                        rehypePlugins={[rehypeKatex]}
+                      >
+                        {formatMathExpression(option.text)}
+                      </ReactMarkdown>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
