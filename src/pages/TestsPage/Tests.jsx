@@ -236,12 +236,39 @@ const Tests = () => {
     }
   };
 
-  const exitTest = () => {
+  const exitTest = async () => {
     console.log(`${componentId}: Exiting test`);
     // The TestInterface component already has its own confirmation dialog
     // so we don't need to show another one here
     setTestInProgress(false);
     setActiveTest(null);
+
+    // Fetch the latest exam results to refresh the list
+    try {
+      setLoading(true);
+      const results = await api.getUserExamResults();
+
+      if (Array.isArray(results)) {
+        setExamResults(results);
+        const ongoingTest = results.some(
+          (test) => !test.verbal_score || !test.math_score
+        );
+        setHasOngoingTest(ongoingTest);
+      } else if (results && Array.isArray(results.data)) {
+        setExamResults(results.data);
+        const ongoingTest = results.data.some(
+          (test) => !test.verbal_score || !test.math_score
+        );
+        setHasOngoingTest(ongoingTest);
+      } else {
+        setExamResults([]);
+        setHasOngoingTest(false);
+      }
+    } catch (error) {
+      console.error("Failed to fetch exam results:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleReviewClick = (test) => {
