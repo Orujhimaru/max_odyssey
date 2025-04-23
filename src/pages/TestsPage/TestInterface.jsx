@@ -354,32 +354,15 @@ const TestInterface = ({ testType, onExit }) => {
       const examId = localStorage.getItem("currentExamId");
 
       if (examId && examData) {
-        // Create user progress with our simplified approach
+        // Create user progress in the exact format the backend expects
         const userProgress = organizeUserProgress(userAnswers);
 
-        // Convert to the format expected by API
-        const apiUserProgress = [];
+        console.log("Sending user progress to server:", userProgress);
 
-        // Extract answers from each module
-        Object.entries(userProgress.modules).forEach(
-          ([moduleKey, moduleData]) => {
-            // Get module index (0-based)
-            const moduleIndex = parseInt(moduleKey.replace("module_", "")) - 1;
-
-            if (moduleData.questions && Array.isArray(moduleData.questions)) {
-              moduleData.questions.forEach((question) => {
-                apiUserProgress.push({
-                  module_index: moduleIndex,
-                  question_index: question.question_id - 1, // Convert to 0-based for API
-                  selected_option: question.answer,
-                });
-              });
-            }
-          }
-        );
-
-        // Send user answers to the server
-        await api.updateExam(examId, examData.current_module, apiUserProgress);
+        // Send user answers to the server in the exact format the backend expects
+        await api.updateExam(examId, {
+          user_progress: userProgress,
+        });
 
         // Clear the localStorage items for this exam
         localStorage.removeItem("currentExamId");

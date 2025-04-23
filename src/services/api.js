@@ -336,16 +336,18 @@ export const api = {
   },
 
   // Update an exam with user answers
-  updateExam: async (examId, currentModule, userAnswers) => {
-    console.log(`Updating exam ${examId} with user answers:`, userAnswers);
+  updateExam: async (examId, userProgressData) => {
+    console.log(
+      `Updating exam ${examId} with user progress:`,
+      userProgressData
+    );
 
     try {
       const response = await api.request("/exams/update", {
         method: "POST",
         body: JSON.stringify({
           exam_id: examId,
-          current_module: currentModule,
-          user_progress: userAnswers,
+          ...userProgressData,
         }),
       });
 
