@@ -331,12 +331,7 @@ const PracticeQuestionInterface = ({
             {/* Passage section */}
             {question.passage && (
               <div className="passage-text">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm, remarkMath]}
-                  rehypePlugins={[rehypeKatex]}
-                >
-                  {question.passage}
-                </ReactMarkdown>
+                <div dangerouslySetInnerHTML={{ __html: question.passage }} />
               </div>
             )}
 
@@ -438,54 +433,62 @@ const PracticeQuestionInterface = ({
                         return <p {...props}>{children}</p>;
                       }
 
-                      // Find all KaTeX spans among the children
-                      const katexElements = childArray.filter(
-                        (child) =>
+                      // Find indexes of KaTeX elements
+                      const katexIndexes = [];
+                      childArray.forEach((child, index) => {
+                        if (
                           React.isValidElement(child) &&
                           child.props.className &&
                           child.props.className.includes("katex")
-                      );
+                        ) {
+                          katexIndexes.push(index);
+                        }
+                      });
 
-                      // If we have any KaTeX elements and the first one is KaTeX
-                      if (katexElements.length > 0) {
-                        // Store a counter in closure to track KaTeX elements
-                        let katexCount = 0;
+                      // Check if we have at least two KaTeX elements and if they're consecutive
+                      const hasConsecutiveKatex =
+                        katexIndexes.length >= 2 &&
+                        katexIndexes[1] === katexIndexes[0] + 1;
 
-                        return (
-                          <div {...props}>
-                            {React.Children.map(children, (child) => {
-                              // Check if this is a KaTeX element
-                              if (
-                                React.isValidElement(child) &&
-                                child.props.className &&
-                                child.props.className.includes("katex")
-                              ) {
-                                // Increment the counter
-                                katexCount++;
-
-                                // Only apply block style to the first two
-                                if (katexCount <= 2) {
-                                  return React.cloneElement(child, {
-                                    style: {
-                                      display: "block",
-                                      marginBottom: "10px",
-                                    },
-                                  });
-                                }
-
-                                // Return other KaTeX elements unchanged
-                                return child;
+                      // Apply styles only to first element, and to second if it's consecutive
+                      return (
+                        <div {...props}>
+                          {React.Children.map(children, (child, index) => {
+                            // Check if this is a KaTeX element
+                            if (
+                              React.isValidElement(child) &&
+                              child.props.className &&
+                              child.props.className.includes("katex")
+                            ) {
+                              // First element always gets block display
+                              if (index === katexIndexes[0]) {
+                                return React.cloneElement(child, {
+                                  style: {
+                                    display: "block",
+                                    marginBottom: "10px",
+                                  },
+                                });
                               }
 
-                              // Return all other elements unchanged
-                              return child;
-                            })}
-                          </div>
-                        );
-                      }
+                              // Second element gets block display only if consecutive to first
+                              if (
+                                index === katexIndexes[1] &&
+                                hasConsecutiveKatex
+                              ) {
+                                return React.cloneElement(child, {
+                                  style: {
+                                    display: "block",
+                                    marginBottom: "10px",
+                                  },
+                                });
+                              }
+                            }
 
-                      // Otherwise, render the paragraph normally
-                      return <p {...props}>{children}</p>;
+                            // Return all other elements unchanged
+                            return child;
+                          })}
+                        </div>
+                      );
                     },
                   }}
                 >
