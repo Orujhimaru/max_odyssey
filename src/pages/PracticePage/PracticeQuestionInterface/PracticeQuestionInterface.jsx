@@ -145,6 +145,21 @@ const PracticeQuestionInterface = ({
   console.log("Has table:", hasTable, "Has image:", hasImage);
   console.log(question);
 
+  // Check if an answer choice contains HTML
+  const containsHtml = (text) => {
+    if (!text) return false;
+    return text.includes("<table") || text.includes("<figure");
+  };
+
+  // Log the question choices to diagnose the issue
+  if (question.choices) {
+    console.log("Question choices:", question.choices);
+    question.choices.forEach((choice, index) => {
+      console.log(`Choice ${index + 1}:`, choice);
+      console.log(`Contains HTML:`, containsHtml(choice));
+    });
+  }
+
   const toggleCrossMode = () => {
     const currentCrossMode = crossedOptions[question.id]?.crossMode || false;
     setCrossedOptions({
@@ -493,8 +508,11 @@ const PracticeQuestionInterface = ({
                     {String.fromCharCode(65 + index)}
                   </div>
                   <div className="option-text">
-                    {choice.slice(2).trim().startsWith("<figure") ? (
-                      <div dangerouslySetInnerHTML={{ __html: choice }} />
+                    {choice.slice(2).trim().startsWith("<figure") ||
+                    choice.slice(2).trim().startsWith("<table") ? (
+                      <div
+                        dangerouslySetInnerHTML={{ __html: choice.slice(2) }}
+                      />
                     ) : (
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm, remarkMath]}

@@ -583,3 +583,21 @@ th {
   vertical-align: top !important;
   padding-top: 4px;
 }
+
+/* Styles for tables in answer options */
+.option-text table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+
+.option-text table th,
+.option-text table td {
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  text-align: center;
+}
+
+.option-text table th {
+  background-color: var(--bg-secondary);
+}
