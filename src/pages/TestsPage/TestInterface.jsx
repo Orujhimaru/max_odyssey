@@ -263,6 +263,8 @@ const TestInterface = ({ testType, onExit }) => {
   // Handle exit button click
   const handleExitClick = () => {
     setShowExitDialog(true);
+    // Prevent scrolling of the underlying content
+    document.body.style.overflow = "hidden";
   };
 
   // Helper function to organize user progress data into modules
@@ -343,6 +345,8 @@ const TestInterface = ({ testType, onExit }) => {
 
   // Handle exit confirmation
   const handleExitConfirm = async () => {
+    // Restore scrolling
+    document.body.style.overflow = "";
     document.body.classList.remove("taking-test");
 
     try {
@@ -391,6 +395,8 @@ const TestInterface = ({ testType, onExit }) => {
   // Handle exit cancellation
   const handleExitCancel = () => {
     setShowExitDialog(false);
+    // Restore scrolling
+    document.body.style.overflow = "";
   };
 
   const handleNextQuestion = () => {
@@ -537,6 +543,22 @@ const TestInterface = ({ testType, onExit }) => {
   if (!hasQuestions) {
     return (
       <div className="test-interface">
+        {showExitDialog && (
+          <div className="exit-dialog-overlay">
+            <div className="exit-dialog">
+              <p>Are you sure you want to exit? Your progress will be saved.</p>
+              <div className="exit-dialog-buttons">
+                <button className="cancel-button" onClick={handleExitCancel}>
+                  Cancel
+                </button>
+                <button className="confirm-button" onClick={handleExitConfirm}>
+                  OK
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="test-header">
           <div className="test-info">
             <h1>
@@ -577,22 +599,6 @@ const TestInterface = ({ testType, onExit }) => {
             </button>
           )}
         </div>
-
-        {showExitDialog && (
-          <div className="exit-dialog-overlay">
-            <div className="exit-dialog">
-              <p>Are you sure you want to exit? Your progress will be saved.</p>
-              <div className="exit-dialog-buttons">
-                <button className="cancel-button" onClick={handleExitCancel}>
-                  Cancel
-                </button>
-                <button className="confirm-button" onClick={handleExitConfirm}>
-                  OK
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     );
   }

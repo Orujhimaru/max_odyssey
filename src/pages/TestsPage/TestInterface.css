@@ -514,11 +514,14 @@
   left: 0;
   right: 0;
   bottom: 0;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  pointer-events: all;
 }
 
 .exit-dialog {
@@ -528,6 +531,7 @@
   width: 90%;
   max-width: 400px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .exit-dialog p {
