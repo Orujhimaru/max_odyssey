@@ -181,10 +181,8 @@ const TestInterface = ({ testType, onExit }) => {
             throw new Error("Invalid exam data structure for continued test");
           }
 
-          // Allow sufficient time for the loading animation to play for continued tests
-          setTimeout(() => {
-            setLoading(false);
-          }, 5000);
+          // No need to show loading screen for continued tests
+          setLoading(false);
 
           return; // Exit early since we already have the data
         }
@@ -244,7 +242,7 @@ const TestInterface = ({ testType, onExit }) => {
           throw new Error("Invalid exam data structure");
         }
 
-        // Allow sufficient time for the full loading animation sequence
+        // Shorter delay for loading screen animation
         setTimeout(() => {
           setLoading(false);
         }, 12000);
@@ -252,7 +250,7 @@ const TestInterface = ({ testType, onExit }) => {
         console.error(`${componentId}: Error details #${thisEffectRun}:`, err);
         setError("Error loading exam: " + err.message);
 
-        // Even on error, show the full loading animation
+        // Shorter delay even on error
         setTimeout(() => {
           setLoading(false);
         }, 12000);
