@@ -423,47 +423,63 @@ const PracticeQuestionInterface = ({
                   components={{
                     // Custom paragraph component to handle KaTeX spans
                     p: ({ node, children, ...props }) => {
-                      // Check if the first child is a KaTeX span
-                      const hasKatexFirst =
-                        React.isValidElement(children[0]) &&
-                        children[0].props.className &&
-                        children[0].props.className.includes("katex");
+                      const childArray = React.Children.toArray(children);
 
-                      // Check if the second child is also a KaTeX span
-                      const hasKatexSecond =
-                        React.isValidElement(children[1]) &&
-                        children[1].props.className &&
-                        children[1].props.className.includes("katex");
+                      // Check if the first element is a KaTeX element
+                      const firstElement = childArray[0];
+                      const firstIsKatex =
+                        React.isValidElement(firstElement) &&
+                        firstElement.props &&
+                        firstElement.props.className &&
+                        firstElement.props.className.includes("katex");
 
-                      // If the first child is a KaTeX span, apply special styling
-                      if (hasKatexFirst) {
-                        // Special case for question ID 2309 - don't use flex
+                      // If the first element is not KaTeX, don't apply display:block to any KaTeX elements
+                      if (!firstIsKatex) {
+                        return <p {...props}>{children}</p>;
+                      }
+
+                      // Find all KaTeX spans among the children
+                      const katexElements = childArray.filter(
+                        (child) =>
+                          React.isValidElement(child) &&
+                          child.props.className &&
+                          child.props.className.includes("katex")
+                      );
+
+                      // If we have any KaTeX elements and the first one is KaTeX
+                      if (katexElements.length > 0) {
+                        // Store a counter in closure to track KaTeX elements
+                        let katexCount = 0;
+
                         return (
                           <div {...props}>
-                            {/* Render the KaTeX span as a block element */}
-                            {React.cloneElement(children[0], {
-                              style: {
-                                display: "block",
-                                marginBottom: "10px",
-                              },
+                            {React.Children.map(children, (child) => {
+                              // Check if this is a KaTeX element
+                              if (
+                                React.isValidElement(child) &&
+                                child.props.className &&
+                                child.props.className.includes("katex")
+                              ) {
+                                // Increment the counter
+                                katexCount++;
+
+                                // Only apply block style to the first two
+                                if (katexCount <= 2) {
+                                  return React.cloneElement(child, {
+                                    style: {
+                                      display: "block",
+                                      marginBottom: "10px",
+                                    },
+                                  });
+                                }
+
+                                // Return other KaTeX elements unchanged
+                                return child;
+                              }
+
+                              // Return all other elements unchanged
+                              return child;
                             })}
-
-                            {/* If second child is also KaTeX, render it as block too
-                            {hasKatexSecond
-                              ? React.cloneElement(children[1], {
-                                  style: {
-                                    display: "block",
-                                    marginBottom: "10px",
-                                  },
-                                })
-                              : null} }
-
-                            {/* Group all remaining children in a single div */}
-                            {children.length > (hasKatexSecond ? 2 : 1) && (
-                              <div className="question-text-content">
-                                <p>{children.slice(hasKatexSecond ? 2 : 1)}</p>
-                              </div>
-                            )}
                           </div>
                         );
                       }

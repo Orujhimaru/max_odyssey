@@ -460,7 +460,18 @@ body {
 }
 
 .katex-html {
-  margin-inline: 4px;
+  margin-bottom: 10px;
+}
+
+.katex-display {
+  display: block;
+  margin: 1em 0;
+  text-align: center;
+}
+
+/* Fix for multiple KaTeX elements in same line */
+span.katex-html + span.katex-html {
+  margin-top: 10px;
 }
 
 .previously-answered-message p {
