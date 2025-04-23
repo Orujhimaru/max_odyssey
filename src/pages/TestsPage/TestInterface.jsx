@@ -158,6 +158,16 @@ const TestInterface = ({ testType, onExit }) => {
               examData.current_module = 1;
             }
 
+            // Set appropriate timer based on module number
+            const moduleNumber = examData.current_module;
+            if (moduleNumber <= 2) {
+              // 32 minutes for modules 1 and 2 (Reading and Writing)
+              setTimeRemaining("32:00");
+            } else {
+              // 35 minutes for modules 3 and 4 (Math)
+              setTimeRemaining("35:00");
+            }
+
             // If lastQuestionIndex is provided, use it to set the current question
             if (testType.lastQuestionIndex !== undefined) {
               console.log(
@@ -208,6 +218,16 @@ const TestInterface = ({ testType, onExit }) => {
             );
             examData.current_module = 1; // Default to first module if not set
           }
+
+          // Set appropriate timer based on module number
+          const moduleNumber = examData.current_module;
+          if (moduleNumber <= 2) {
+            // 32 minutes for modules 1 and 2 (Reading and Writing)
+            setTimeRemaining("32:00");
+          } else {
+            // 35 minutes for modules 3 and 4 (Math)
+            setTimeRemaining("35:00");
+          }
         }
 
         if (examData && examData.exam_data && examData.exam_data.length > 0) {
@@ -248,6 +268,22 @@ const TestInterface = ({ testType, onExit }) => {
       );
     };
   }, [testType, componentId]);
+
+  // Update timer when changing modules
+  useEffect(() => {
+    // Skip if there's no exam data yet
+    if (!examData) return;
+
+    // Set appropriate timer based on module number
+    const moduleNumber = examData.current_module;
+    if (moduleNumber <= 2) {
+      // 32 minutes for modules 1 and 2 (Reading and Writing)
+      setTimeRemaining("32:00");
+    } else {
+      // 35 minutes for modules 3 and 4 (Math)
+      setTimeRemaining("35:00");
+    }
+  }, [examData?.current_module]);
 
   // Add class to body when component mounts
   useEffect(() => {
@@ -447,6 +483,15 @@ const TestInterface = ({ testType, onExit }) => {
 
       // Reset to the first question of the new module
       setCurrentQuestion(0);
+
+      // Set the appropriate timer based on the new module
+      if (newModuleNumber <= 2) {
+        // 32 minutes for modules 1 and 2 (Reading and Writing)
+        setTimeRemaining("32:00");
+      } else {
+        // 35 minutes for modules 3 and 4 (Math)
+        setTimeRemaining("35:00");
+      }
 
       console.log(
         "Current selected answers after module change:",

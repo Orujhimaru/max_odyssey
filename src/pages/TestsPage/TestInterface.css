@@ -364,6 +364,7 @@
 
 .legend-marker.answered {
   background-color: var(--verbal-color);
+  border: none;
 }
 
 .legend-marker.unanswered {
@@ -401,24 +402,25 @@
 }
 
 .question-button.current {
-  background-color: var(--verbal-color);
-  color: white;
-  border-color: var(--verbal-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 2px solid var(--verbal-color);
 }
 
 .question-button.marked {
   background-color: #ffd602;
-  color: white;
+  color: black;
 }
 
 .question-button.answered {
-  background-color: rgba(69, 107, 196, 0.3);
-  border: 1px solid var(--verbal-color);
+  background-color: var(--verbal-color);
+  color: white;
+  border: none;
 }
 
 .legend-marker.answered {
-  background-color: rgba(69, 107, 196, 0.3);
-  border: 1px solid var(--verbal-color);
+  background-color: var(--verbal-color);
+  border: none;
 }
 
 .test-footer {
