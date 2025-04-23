@@ -525,7 +525,7 @@
   align-items: center;
   z-index: 10000;
   pointer-events: all;
-  transition: opacity 0.15s ease;
+  transition: opacity 0s ease;
 }
 
 .exit-dialog {
@@ -583,7 +583,7 @@
   border-left: 1px solid var(--border-color);
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  transition: transform 0.15s ease-in-out;
+  transition: transform 0s ease-in-out;
   display: flex;
   flex-direction: column;
   padding: 20px;
