@@ -142,6 +142,17 @@
   margin-bottom: 6px;
 }
 
+[data-theme="light"] .score-boxes {
+  background: conic-gradient(
+    from var(--angle),
+    #e6e6e6,
+    #e6e6e6,
+    #e6e6e6,
+    #e6e6e6,
+    #0058e3
+  );
+}
+
 @property --angle {
   syntax: "<angle>";
   initial-value: 0deg;
