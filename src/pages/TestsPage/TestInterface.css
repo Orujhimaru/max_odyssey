@@ -423,7 +423,8 @@
 
 .test-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 12px;
   padding: 16px 24px;
   background-color: var(--bg-primary);
   border-top: 1px solid var(--border-color);

@@ -158,7 +158,15 @@ const TestInterface = ({ testType, onExit }) => {
               examData.current_module = 1;
             }
 
-            setCurrentQuestion(0); // Start with first question of the current module
+            // If lastQuestionIndex is provided, use it to set the current question
+            if (testType.lastQuestionIndex !== undefined) {
+              console.log(
+                `Setting current question to last position: ${testType.lastQuestionIndex}`
+              );
+              setCurrentQuestion(testType.lastQuestionIndex);
+            } else {
+              setCurrentQuestion(0); // Default to first question if no last position
+            }
           } else {
             throw new Error("Invalid exam data structure for continued test");
           }
@@ -545,7 +553,9 @@ const TestInterface = ({ testType, onExit }) => {
         <div className="test-header">
           <div className="test-info">
             <h1>
-              Module {examData.current_module}: {currentModule.module_type}
+              {examData.current_module <= 2
+                ? `Section 1, Module ${examData.current_module}: Reading and Writing`
+                : `Section 2, Module ${examData.current_module}: Math`}
             </h1>
           </div>
           <div className="timer">
@@ -634,9 +644,10 @@ const TestInterface = ({ testType, onExit }) => {
       <div className="test-header">
         <div className="test-info">
           <h1>
-            Module {examData.current_module}: {currentModule.module_type}
+            {examData.current_module <= 2
+              ? `Section 1, Module ${examData.current_module}: Reading and Writing`
+              : `Section 2, Module ${examData.current_module}: Math`}
           </h1>
-          <h2>{currentQ.question_topic}</h2>
         </div>
 
         <div className="timer">

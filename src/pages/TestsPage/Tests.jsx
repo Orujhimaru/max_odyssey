@@ -132,35 +132,100 @@ const Tests = () => {
       const examData = await api.getExamById(test.id);
       console.log(
         `${componentId}: Retrieved exam data for continuing:`,
-        examData.id
+        examData
       );
 
-      // Set the active test with the retrieved data
-      setActiveTest({
-        type: "continue",
-        examData: examData,
-        testId: test.id,
-      });
+      // Check if we have user progress data in the new format
+      if (examData.user_progress && examData.user_progress.modules) {
+        console.log("Found user progress data:", examData.user_progress);
+
+        // Keep track of the current module from user progress
+        const currentModule = examData.user_progress.current_module || 1;
+
+        // Update the current_module in the exam data
+        examData.current_module = currentModule;
+
+        // Save the user progress to localStorage in the exact format
+        localStorage.setItem(
+          "testUserProgress",
+          JSON.stringify({ user_progress: examData.user_progress })
+        );
+
+        // Convert the user progress to the format needed for selectedAnswers in TestInterface
+        const userAnswers = {};
+        let lastQuestionIndex = 0;
+        let lastModuleIndex = 0;
+        let foundAnsweredQuestions = false;
+
+        // Process each module's questions to find the last answered question
+        Object.entries(examData.user_progress.modules).forEach(
+          ([moduleKey, moduleData]) => {
+            // Get module index (0-based)
+            const moduleIndex = parseInt(moduleKey.replace("module_", "")) - 1;
+
+            if (moduleData.questions && Array.isArray(moduleData.questions)) {
+              moduleData.questions.forEach((question) => {
+                const questionId = question.question_id;
+                const questionIndex = questionId - 1; // Convert 1-based to 0-based
+
+                // Create a key for this answer
+                const storageKey = `${questionIndex}`;
+
+                // Store the answer
+                userAnswers[storageKey] = {
+                  module_index: moduleIndex,
+                  question_index: questionIndex,
+                  selected_option: question.answer,
+                };
+
+                // Keep track of the last question answered in the current module
+                if (moduleIndex === currentModule - 1) {
+                  foundAnsweredQuestions = true;
+                  if (questionIndex > lastQuestionIndex) {
+                    lastQuestionIndex = questionIndex;
+                  }
+                }
+
+                // Also track the last module with any answers
+                if (moduleIndex > lastModuleIndex) {
+                  lastModuleIndex = moduleIndex;
+                }
+              });
+            }
+          }
+        );
+
+        // If we didn't find any answered questions in the current module,
+        // we'll default to the first question (which is already 0)
+        console.log(
+          `Last question index identified: ${lastQuestionIndex} in module ${currentModule}`
+        );
+
+        // Save the converted user answers to localStorage
+        localStorage.setItem("testUserAnswers", JSON.stringify(userAnswers));
+
+        // Set the active test with the retrieved data
+        // Include the last question position so we can jump directly to it
+        setActiveTest({
+          type: "continue",
+          examData: examData,
+          testId: test.id,
+          lastQuestionIndex: lastQuestionIndex,
+          lastModuleIndex: lastModuleIndex,
+        });
+      } else {
+        console.warn("No user progress data found or in unexpected format");
+
+        // Set the active test with just the exam data
+        setActiveTest({
+          type: "continue",
+          examData: examData,
+          testId: test.id,
+        });
+      }
 
       // Store the exam ID in localStorage for resuming later if needed
       localStorage.setItem("currentExamId", test.id);
-
-      // Prepare user answers from the exam data's user_progress
-      if (examData.user_progress && Array.isArray(examData.user_progress)) {
-        const userAnswers = {};
-
-        // Convert the array of answer objects to the expected format for localStorage
-        examData.user_progress.forEach((answer) => {
-          userAnswers[answer.question_id] = {
-            question_index: answer.question_index,
-            question_id: answer.question_id,
-            selected_option: answer.selected_option,
-          };
-        });
-
-        // Save the user answers to localStorage
-        localStorage.setItem("testUserAnswers", JSON.stringify(userAnswers));
-      }
 
       setTestInProgress(true);
     } catch (error) {
