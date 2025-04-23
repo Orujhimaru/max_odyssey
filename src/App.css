@@ -85,12 +85,12 @@ button:focus-visible {
 /* Add these styles to your App.css file */
 body.taking-test #root {
   margin-left: 0 !important;
-  transition: margin-left 0.3s ease;
+  /* transition: margin-left 0.3s ease; */
 }
 
 body.taking-test .navbar {
   left: -86px !important;
-  transition: left 0.3s ease;
+  /* transition: left 0.3s ease; */
 }
 
 /* Add transitions for smooth animation */

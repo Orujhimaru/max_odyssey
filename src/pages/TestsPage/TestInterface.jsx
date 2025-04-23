@@ -181,10 +181,8 @@ const TestInterface = ({ testType, onExit }) => {
             throw new Error("Invalid exam data structure for continued test");
           }
 
-          // Always show the loading screen for at least 5 seconds for continued tests
-          setTimeout(() => {
-            setLoading(false);
-          }, 5000);
+          // No need to show loading screen for continued tests
+          setLoading(false);
 
           return; // Exit early since we already have the data
         }
@@ -244,18 +242,18 @@ const TestInterface = ({ testType, onExit }) => {
           throw new Error("Invalid exam data structure");
         }
 
-        // Always show the loading screen for at least 12 seconds to allow the full animation sequence
+        // Shorter delay for loading screen animation
         setTimeout(() => {
           setLoading(false);
-        }, 12000);
+        }, 1000);
       } catch (err) {
         console.error(`${componentId}: Error details #${thisEffectRun}:`, err);
         setError("Error loading exam: " + err.message);
 
-        // Even on error, show loading for the full animation sequence
+        // Shorter delay even on error
         setTimeout(() => {
           setLoading(false);
-        }, 12000);
+        }, 1000);
       }
     };
 
@@ -389,11 +387,14 @@ const TestInterface = ({ testType, onExit }) => {
 
   // Handle exit confirmation
   const handleExitConfirm = async () => {
-    // Restore scrolling
-    document.body.style.overflow = "";
-    document.body.classList.remove("taking-test");
-
     try {
+      // First hide the exit dialog
+      setShowExitDialog(false);
+
+      // Restore scrolling and remove body class
+      document.body.style.overflow = "";
+      document.body.classList.remove("taking-test");
+
       // Get the exam ID from localStorage
       const examId = localStorage.getItem("currentExamId");
 
@@ -412,11 +413,14 @@ const TestInterface = ({ testType, onExit }) => {
         localStorage.removeItem("currentExamId");
         localStorage.removeItem("testUserProgress");
       }
+
+      // Exit immediately without delay
+      onExit();
     } catch (error) {
       console.error("Error updating exam:", error);
+      // Even if there's an error, we should still exit immediately
+      onExit();
     }
-
-    onExit();
   };
 
   // Handle exit cancellation

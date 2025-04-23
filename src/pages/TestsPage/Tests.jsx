@@ -238,14 +238,10 @@ const Tests = () => {
 
   const exitTest = () => {
     console.log(`${componentId}: Exiting test`);
-    if (
-      window.confirm(
-        "Are you sure you want to exit? Your progress will be saved."
-      )
-    ) {
-      setTestInProgress(false);
-      setActiveTest(null);
-    }
+    // The TestInterface component already has its own confirmation dialog
+    // so we don't need to show another one here
+    setTestInProgress(false);
+    setActiveTest(null);
   };
 
   const handleReviewClick = (test) => {
