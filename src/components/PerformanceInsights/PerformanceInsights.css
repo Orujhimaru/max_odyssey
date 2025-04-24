@@ -82,7 +82,7 @@
 .target-time-indicator {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
 }
 
 .target-time-indicator > span {
