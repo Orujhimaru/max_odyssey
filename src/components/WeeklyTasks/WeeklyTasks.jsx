@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./WeeklyTasks.css";
-import Practice from "../../assets/Group 43.svg";
+import StarSign from "../../assets/star-sign.svg";
+
 const WeeklyTasks = () => {
   // State to track which task box is active
   const [activeTaskIndex, setActiveTaskIndex] = useState(null);
@@ -53,16 +54,18 @@ const WeeklyTasks = () => {
       </div>
 
       <div className="task-section">
-        {/* Task description appears above the boxes */}
-        <div className="task-description-container">
-          {activeTaskIndex !== null && (
-            <div className="task-description">
-              <img src={Practice} alt="target" className="target-icon" />
-              {tasks[activeTaskIndex].text.toUpperCase()}
+        {/* Single text area that shows either UP NEXT or task text */}
+        <div className="text-display-area">
+          {activeTaskIndex === null ? (
+            <div className="up-next-header">
+              <img src={StarSign} alt="star sign" className="star-sign-icon" />
+              <span className="up-next-text">UP NEXT FOR YOU!</span>
             </div>
-          )}
-          {activeTaskIndex === null && (
-            <div className="task-description empty"></div>
+          ) : (
+            <div className="task-description">
+              <img src={StarSign} alt="star sign" className="star-sign-icon" />
+              <span>{tasks[activeTaskIndex].text.toUpperCase()}</span>
+            </div>
           )}
         </div>
 

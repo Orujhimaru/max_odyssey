@@ -204,12 +204,9 @@
   /* margin-right: 10px; */
 }
 
-.subject-label-container {
-  /* padding-top: 4px; */
-}
-
 .insight-value .time-section {
   display: flex;
+  width: fit-content;
   /* align-items: baseline; */
   /* margin-right: 16px; */
 }
@@ -217,7 +214,7 @@
 .insight-value.time-insights {
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 36px;
+  justify-content: center;
 }
 
 .insight-card {
@@ -238,7 +235,7 @@
 
 .insight-icon {
   /* width: 32px; */
-  /* height: 32px; */
+  height: 36px;
   padding: 10px;
   border-radius: 8px;
   display: flex;
@@ -254,11 +251,9 @@
   gap: 4px;
 }
 
-.insight-content.timerr {
-  padding-left: 40px;
-}
 .insight-card.timerr {
   flex: 2;
+  flex-direction: column;
 }
 
 .insight-label {
@@ -270,6 +265,7 @@
   /* justify-content: space-between; */
   align-items: center;
   gap: 4px;
+  white-space: nowrap;
 }
 
 .insight-label i {
