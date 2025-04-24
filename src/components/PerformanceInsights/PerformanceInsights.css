@@ -204,6 +204,7 @@
 .insight-value.time-insights {
   flex-wrap: wrap;
   gap: 12px;
+  margin-top: 36px;
 }
 
 .insight-card {
