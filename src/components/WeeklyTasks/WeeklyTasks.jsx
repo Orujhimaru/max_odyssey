@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./WeeklyTasks.css";
-
+import Practice from "../../assets/Group 43.svg";
 const WeeklyTasks = () => {
   // State to track which task box is active
   const [activeTaskIndex, setActiveTaskIndex] = useState(null);
@@ -13,7 +13,12 @@ const WeeklyTasks = () => {
     { id: 4, text: "Complete practice quiz", completed: false },
     { id: 5, text: "Study philosophy concepts", completed: false },
     { id: 6, text: "Read passage analysis", completed: false },
-    { id: 7, text: "Take timed practice test", completed: false },
+    {
+      id: 7,
+      text: "Take timed practice test",
+      completed: false,
+      isSpecial: true,
+    },
   ];
 
   // Calculate progress for display
@@ -38,9 +43,6 @@ const WeeklyTasks = () => {
             🎯
           </span>
         </h2>
-        <div className="progress-percentage">
-          {completedTasks}/{totalTasks}
-        </div>
       </div>
 
       <div className="progress-bar-container">
@@ -55,6 +57,7 @@ const WeeklyTasks = () => {
         <div className="task-description-container">
           {activeTaskIndex !== null && (
             <div className="task-description">
+              <img src={Practice} alt="target" className="target-icon" />
               {tasks[activeTaskIndex].text.toUpperCase()}
             </div>
           )}
@@ -70,10 +73,11 @@ const WeeklyTasks = () => {
               key={task.id}
               className={`task-box ${task.completed ? "completed" : ""} ${
                 activeTaskIndex === index ? "active" : ""
-              }`}
+              } ${task.isSpecial ? "star" : ""}`}
               onClick={() => handleTaskClick(index)}
             >
               {task.completed && <div className="checkmark">✓</div>}
+              {task.isSpecial && <div className="star-icon">★</div>}
             </div>
           ))}
         </div>
