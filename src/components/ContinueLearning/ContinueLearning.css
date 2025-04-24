@@ -36,7 +36,7 @@
   background-position: center;
   border-radius: 12px;
   padding: 12px;
-  height: 145px;
+  height: 150px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -98,7 +98,7 @@
 
 .progress-indicator {
   position: absolute;
-  bottom: 16px;
+  bottom: 12px;
   right: 16px;
   display: flex;
   align-items: center;
