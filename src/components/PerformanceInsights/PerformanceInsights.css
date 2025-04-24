@@ -79,15 +79,28 @@
   gap: 16px;
 }
 
+.target-time-indicator {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.target-time-indicator > span {
+  font-size: 18px;
+  font-weight: 600;
+  font-family: "DM Sans", sans-serif;
+  line-height: 16px;
+}
 .time-value {
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 175px;
 }
 
 .time-text-group {
   display: flex;
-  align-items: baseline;
+  justify-content: space-between;
 }
 
 .time-text-group > span {

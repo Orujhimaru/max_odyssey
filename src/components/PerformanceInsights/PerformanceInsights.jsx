@@ -27,7 +27,9 @@ const PerformanceInsights = () => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
 
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   const renderPerformanceBar = (actual, target, type) => {
@@ -90,7 +92,11 @@ const PerformanceInsights = () => {
 
   const formatDiffTime = (diff) => {
     const absSeconds = Math.abs(diff);
-    return `${diff > 0 ? "+" : "-"}0:${absSeconds.toString().padStart(2, "0")}`;
+    const minutes = Math.floor(absSeconds / 60);
+    const seconds = absSeconds % 60;
+    return `${diff > 0 ? "+" : "-"}${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -143,8 +149,15 @@ const PerformanceInsights = () => {
                       <span className="speed-time">
                         {formatTime(timeData.verbal.actual)}
                       </span>
-                      <div className="speed-diff negative">
-                        ({formatDiffTime(timeData.verbal.diff)})
+                      <div className="target-time-indicator">
+                        <img
+                          src={Practice}
+                          alt="target"
+                          className="target-icon"
+                        />{" "}
+                        <span className="margin-left">
+                          {formatTime(timeData.math.target)}
+                        </span>
                       </div>
                     </div>
                     {renderPerformanceBar(
@@ -166,8 +179,14 @@ const PerformanceInsights = () => {
                       <span className="speed-time">
                         {formatTime(timeData.math.actual)}
                       </span>
-                      <div className="speed-diff positive">
-                        ({formatDiffTime(timeData.math.diff)} )
+                      <div className="target-time-indicator">
+                        <img
+                          src={Practice}
+                          alt="target"
+                          className="target-icon"
+                        />
+
+                        <span>{formatTime(timeData.math.target)}</span>
                       </div>
                     </div>
                     {renderPerformanceBar(
