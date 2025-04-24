@@ -1,39 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import "./WeeklyTasks.css";
 
 const WeeklyTasks = () => {
-  // Sample tasks that would be tracked and completed automatically by the system
-  const dailyTasks = [
-    {
-      id: 1,
-      text: "Complete 5 verbal exercises",
-      completed: true,
-      progress: { current: 5, total: 5 },
-    },
-    {
-      id: 2,
-      text: "Solve 5 math problems",
-      completed: false,
-      progress: { current: 3, total: 5 },
-    },
-    {
-      id: 3,
-      text: "Review 3 challenging topics",
-      completed: false,
-      progress: { current: 1, total: 3 },
-    },
-    {
-      id: 4,
-      text: "Complete 1 practice quiz",
-      completed: true,
-      progress: { current: 1, total: 1 },
-    },
+  // State to track which task box is active
+  const [activeTaskIndex, setActiveTaskIndex] = useState(null);
+
+  // Sample tasks data - updated to 7 tasks
+  const tasks = [
+    { id: 1, text: "Complete verbal exercises", completed: false },
+    { id: 2, text: "Solve math problems", completed: false },
+    { id: 3, text: "Review challenging topics", completed: false },
+    { id: 4, text: "Complete practice quiz", completed: false },
+    { id: 5, text: "Study philosophy concepts", completed: false },
+    { id: 6, text: "Read passage analysis", completed: false },
+    { id: 7, text: "Take timed practice test", completed: false },
   ];
 
-  // Calculate progress percentage
-  const completedTasks = dailyTasks.filter((task) => task.completed).length;
-  const totalTasks = dailyTasks.length;
-  const progressPercentage = (completedTasks / totalTasks) * 100;
+  // Calculate progress for display
+  const completedTasks = 2;
+  const totalTasks = 4;
+
+  // Toggle active task
+  const handleTaskClick = (index) => {
+    if (activeTaskIndex === index) {
+      setActiveTaskIndex(null);
+    } else {
+      setActiveTaskIndex(index);
+    }
+  };
 
   return (
     <div className="daily-tasks">
@@ -52,48 +46,38 @@ const WeeklyTasks = () => {
       <div className="progress-bar-container">
         <div
           className="progress-bar-tasks"
-          style={{ width: `${progressPercentage}%` }}
+          style={{ width: `${(completedTasks / totalTasks) * 100}%` }}
         ></div>
       </div>
 
-      <ul className="task-list">
-        {dailyTasks.map((task) => (
-          <li key={task.id} className="task-item-simple">
+      <div className="task-section">
+        {/* Task description appears above the boxes */}
+        <div className="task-description-container">
+          {activeTaskIndex !== null && (
+            <div className="task-description">
+              {tasks[activeTaskIndex].text.toUpperCase()}
+            </div>
+          )}
+          {activeTaskIndex === null && (
+            <div className="task-description empty"></div>
+          )}
+        </div>
+
+        {/* Fixed row of 7 boxes */}
+        <div className="task-boxes">
+          {tasks.map((task, index) => (
             <div
-              className={`task-status-indicator ${
-                task.completed ? "completed" : ""
+              key={task.id}
+              className={`task-box ${task.completed ? "completed" : ""} ${
+                activeTaskIndex === index ? "active" : ""
               }`}
+              onClick={() => handleTaskClick(index)}
             >
-              {task.completed ? (
-                <i className="fas fa-check"></i>
-              ) : (
-                <span className="task-progress">
-                  {task.progress.current}/{task.progress.total}
-                </span>
-              )}
+              {task.completed && <div className="checkmark">✓</div>}
             </div>
-            <div className="task-details">
-              <span
-                className={`task-text ${task.completed ? "completed" : ""}`}
-              >
-                {task.text}
-              </span>
-              {!task.completed && task.progress.current > 0 && (
-                <div className="task-progress-bar">
-                  <div
-                    className="task-progress-fill"
-                    style={{
-                      width: `${
-                        (task.progress.current / task.progress.total) * 100
-                      }%`,
-                    }}
-                  ></div>
-                </div>
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
