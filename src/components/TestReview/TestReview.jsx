@@ -3,6 +3,11 @@ import QuestionNavigator from "./QuestionNavigator";
 import { mockQuestions } from "../../data/mockQuestions";
 import "./TestReview.css";
 import { api } from "../../services/api";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import { formatMathExpression } from "../../utils/mathUtils";
 
 const TestReview = ({ testId }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -70,7 +75,10 @@ const TestReview = ({ testId }) => {
                   question: q.question,
                   choices:
                     q.options && Array.isArray(q.options)
-                      ? q.options.map((o) => `${o.id}) ${o.text}`)
+                      ? q.options.map((o) => ({
+                          id: o.id,
+                          text: o.text,
+                        }))
                       : [],
                   correctAnswer: q.correct_answer,
                   userAnswer: userAnswer,
@@ -232,37 +240,90 @@ const TestReview = ({ testId }) => {
           )}
 
           <div className="question">
-            <p>{question.question}</p>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm, remarkMath]}
+              rehypePlugins={[rehypeKatex]}
+              components={{
+                p: ({ node, children, ...props }) => {
+                  const childArray = React.Children.toArray(children);
+                  const firstElement = childArray[0];
+                  const firstIsKatex =
+                    React.isValidElement(firstElement) &&
+                    firstElement.props &&
+                    firstElement.props.className &&
+                    firstElement.props.className.includes("katex");
+
+                  if (!firstIsKatex) {
+                    return <p {...props}>{children}</p>;
+                  }
+
+                  // Find all KaTeX elements
+                  const katexElements = childArray.filter(
+                    (child) =>
+                      React.isValidElement(child) &&
+                      child.props &&
+                      child.props.className &&
+                      child.props.className.includes("katex")
+                  );
+
+                  // Apply block display to all KaTeX elements
+                  return (
+                    <div {...props}>
+                      {React.Children.map(children, (child) => {
+                        if (
+                          React.isValidElement(child) &&
+                          child.props &&
+                          child.props.className &&
+                          child.props.className.includes("katex")
+                        ) {
+                          return React.cloneElement(child, {
+                            style: {
+                              display: "block",
+                              marginBottom: "10px",
+                            },
+                          });
+                        }
+                        return child;
+                      })}
+                    </div>
+                  );
+                },
+              }}
+            >
+              {formatMathExpression(question.question)}
+            </ReactMarkdown>
+
             <div className="choices">
               {question.choices &&
                 Array.isArray(question.choices) &&
                 question.choices.map((choice, index) => {
-                  // Add safe parsing for choice parts
-                  let letter = "";
-                  let text = "";
-
-                  try {
-                    const parts = choice.split(") ");
-                    letter = parts[0] || "";
-                    text = parts.length > 1 ? parts.slice(1).join(") ") : "";
-                  } catch (err) {
-                    letter = String.fromCharCode(65 + index); // Default to A, B, C...
-                    text = choice || "";
-                  }
+                  const choiceId = choice.id;
+                  const isCorrect = choiceId === question.correctAnswer;
+                  const isUserAnswer =
+                    choiceId === question.userAnswer && !isCorrect;
 
                   return (
                     <div
                       key={index}
-                      className={`choice ${
-                        choice.startsWith(question.correctAnswer)
-                          ? "correct"
-                          : choice.startsWith(question.userAnswer)
-                          ? "incorrect"
-                          : ""
+                      className={`choice ${isCorrect ? "correct" : ""} ${
+                        isUserAnswer ? "incorrect" : ""
                       }`}
                     >
-                      <span className="choice-letter">{letter}</span>
-                      <span>{text}</span>
+                      <span className="choice-letter">{choiceId}</span>
+                      <span className="choice-content">
+                        {choice.text && choice.text.includes("<") ? (
+                          <div
+                            dangerouslySetInnerHTML={{ __html: choice.text }}
+                          />
+                        ) : (
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm, remarkMath]}
+                            rehypePlugins={[rehypeKatex]}
+                          >
+                            {formatMathExpression(choice.text)}
+                          </ReactMarkdown>
+                        )}
+                      </span>
                     </div>
                   );
                 })}
@@ -273,7 +334,12 @@ const TestReview = ({ testId }) => {
         {/* Explanation Section */}
         <div className="explanation-section">
           <h3>Explanation</h3>
-          <p>{question.explanation}</p>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+          >
+            {formatMathExpression(question.explanation)}
+          </ReactMarkdown>
           <div className="question-actions">
             <button className="bookmark-btn">
               <i

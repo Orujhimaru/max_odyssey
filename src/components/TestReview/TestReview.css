@@ -208,7 +208,13 @@
   position: relative;
   border: 1px solid var(--border-color);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+}
+
+.choice-content {
+  flex: 1;
+  display: block;
+  padding-left: 4px;
 }
 
 .choice.correct {
@@ -392,4 +398,20 @@
 
 .question-image table tr:nth-child(even) {
   background-color: #f9f9f9;
+}
+
+/* KaTeX styling for the TestReview component */
+.katex-html {
+  margin-bottom: 10px;
+}
+
+.katex-display {
+  display: block;
+  margin: 1em 0;
+  text-align: center;
+}
+
+/* Fix for multiple KaTeX elements in same line */
+span.katex-html + span.katex-html {
+  margin-top: 10px;
 }
