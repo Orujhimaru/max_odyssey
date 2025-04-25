@@ -354,23 +354,41 @@
 /* Task description now uses same styling as up-next-header */
 .task-description {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   color: #9a9a9a;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
   animation: fadeIn 0.2s ease;
   letter-spacing: 0.5px;
+  width: 100%;
 }
 
-.task-description span {
-  font-size: 12px;
+.task-info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.task-text {
+  padding-top: 2px;
+  display: flex;
+  font-size: 13px;
+  justify-content: space-between;
   font-weight: 600;
   color: #777777;
+  margin-bottom: 4px;
 }
 
-[data-theme="dark"] .task-description span {
-  color: #aaaaaa;
+.task-progress {
+  font-size: 13px;
+  font-weight: 800;
+  color: #4c6ef5;
+  padding-right: 4px;
+}
+
+.task-description.empty {
+  opacity: 0;
 }
 
 /* Animation for task description */
@@ -405,15 +423,11 @@
   vertical-align: middle;
 }
 
-.task-description.empty {
-  opacity: 0;
-}
-
 /* Row of task boxes */
 .task-boxes {
   display: flex;
-  /* justify-content: space-between; */
-  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .task-box {
