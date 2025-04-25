@@ -1,7 +1,6 @@
 .profile-section {
   background-color: var(--bg-primary);
   border-radius: 12px;
-  padding: 10px;
   margin-bottom: 12px;
   border: 1px solid var(--border-color);
   width: 100%;
@@ -47,8 +46,8 @@
 
 .profile-image {
   overflow: hidden;
-  width: 64px;
-  height: 64px;
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--border-color);
@@ -67,6 +66,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding-top: 12px;
 }
 
 .profile-details h2 {
@@ -225,4 +225,24 @@
 .subject-icon {
   /* ... */
   transition: var(--transition-all);
+}
+
+.icon-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  margin: 8px 0;
+}
+
+.profile-icon {
+  width: 36px;
+  height: 36px;
+  opacity: 0.85;
+  transition: transform 0.2s ease;
+}
+
+.profile-icon:hover {
+  transform: scale(1.1);
 }

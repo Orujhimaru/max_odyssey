@@ -3,6 +3,9 @@ import peasantAvatar from "../../assets/peasent.svg";
 import leftCrown from "../../assets/vector.svg";
 import rightCrown from "../../assets/vector-1.svg";
 import Practice from "../../assets/Group 43.svg";
+import Group69 from "../../assets/Group 69.svg";
+import Group70 from "../../assets/Group 70.svg";
+import Group71 from "../../assets/Group 71.svg";
 import "./ProfileSection.css";
 
 const ProfileSection = () => {
@@ -79,11 +82,23 @@ const ProfileSection = () => {
           </div>
           <div className="profile-details">
             <h2>Felix Chen</h2>
-            <span className="user-rank" style={{ color: userRank.color }}>
+            {/* <span className="user-rank" style={{ color: userRank.color }}>
               <i className="fas fa-medal"></i> {userRank.rank}
-            </span>
+            </span> */}
+
+            <div className="icon-row">
+              <img src={Group69} alt="Icon 1" className="profile-icon" />
+              <img src={Group70} alt="Icon 2" className="profile-icon" />
+              <img src={Group71} alt="Icon 3" className="profile-icon" />
+            </div>
           </div>
         </div>
+
+        {/* <div className="icon-row">
+          <img src={Group69} alt="Icon 1" className="profile-icon" />
+          <img src={Group70} alt="Icon 2" className="profile-icon" />
+          <img src={Group71} alt="Icon 3" className="profile-icon" />
+        </div> */}
 
         <div className="goal-section">
           <div className="goal-header">
