@@ -159,7 +159,7 @@
   align-items: center;
   padding: 16px;
   background-color: var(--bg-secondary);
-  border-radius: 12px;
+  border-radius: 8px;
   transition: var(--transition-transform);
 }
 
@@ -518,19 +518,33 @@
 }
 
 .test-item.in-progress {
-  background-color: rgba(69, 107, 196, 0.05);
-  position: relative;
-  border: 1px solid var(--verbal-color);
+  background: linear-gradient(90deg, var(--verbal-color) 50%, transparent 50%)
+      top / 12px 1px repeat-x,
+    linear-gradient(0deg, var(--verbal-color) 50%, transparent 50%) right / 1px
+      12px repeat-y,
+    linear-gradient(90deg, var(--verbal-color) 50%, transparent 50%) bottom /
+      12px 1px repeat-x,
+    linear-gradient(0deg, var(--verbal-color) 50%, transparent 50%) left / 1px
+      12px repeat-y;
+  animation: borderMove 0.8s linear infinite;
+}
+
+@keyframes borderMove {
+  0% {
+    background-position: 0 top, right 0, 12px bottom, left 12px;
+  }
+  100% {
+    background-position: 12px top, right 12px, 0 bottom, left 0;
+  }
 }
 
 .in-progress-badge {
-  display: inline-block;
-  background-color: #ff9d00;
+  background-color: var(--verbal-color);
   color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
   font-size: 12px;
   font-weight: 500;
-  padding: 3px 8px;
-  border-radius: 4px;
   margin-left: 8px;
 }
 
