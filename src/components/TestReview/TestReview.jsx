@@ -37,60 +37,133 @@ const TestReview = ({ testId }) => {
         localStorage.setItem("reviewingTestId", id.toString());
 
         // Fetch exam data
+        console.log(`TestReview: Fetching exam data for ID ${id}`);
         const data = await api.getExamById(id);
+        console.log(`TestReview: Received exam data:`, data);
         setExamData(data);
 
         // Process questions for display
         if (data && data.exam_data && Array.isArray(data.exam_data)) {
+          console.log(
+            `TestReview: Processing ${data.exam_data.length} modules`
+          );
           const allQuestions = [];
 
           // Process each module's questions
           data.exam_data.forEach((module, moduleIndex) => {
-            if (module.questions && Array.isArray(module.questions)) {
-              module.questions.forEach((q) => {
-                // Find user's answer for this question
-                let userAnswer = null;
-                if (data.user_progress && data.user_progress.modules) {
-                  const moduleKey = `module_${moduleIndex + 1}`;
-                  const moduleData = data.user_progress.modules[moduleKey];
+            try {
+              console.log(`TestReview: Processing module ${moduleIndex + 1}`);
 
-                  if (moduleData && moduleData.questions) {
-                    const answerData = moduleData.questions.find(
-                      (a) => a.question_id === q.id
+              if (!module) {
+                console.warn(
+                  `TestReview: Module ${moduleIndex + 1} is undefined`
+                );
+                return;
+              }
+
+              if (!module.questions) {
+                console.warn(
+                  `TestReview: No questions in module ${moduleIndex + 1}`
+                );
+                return;
+              }
+
+              if (!Array.isArray(module.questions)) {
+                console.warn(
+                  `TestReview: Questions in module ${
+                    moduleIndex + 1
+                  } is not an array:`,
+                  module.questions
+                );
+                return;
+              }
+
+              console.log(
+                `TestReview: Processing ${
+                  module.questions.length
+                } questions in module ${moduleIndex + 1}`
+              );
+
+              module.questions.forEach((q, qIndex) => {
+                try {
+                  if (!q) {
+                    console.warn(
+                      `TestReview: Question ${qIndex} in module ${
+                        moduleIndex + 1
+                      } is undefined`
                     );
-                    if (answerData) {
-                      userAnswer = answerData.answer;
+                    return;
+                  }
+
+                  console.log(
+                    `TestReview: Processing question ID ${q.id || "unknown"}`
+                  );
+
+                  // Find user's answer for this question
+                  let userAnswer = null;
+                  if (data.user_progress && data.user_progress.modules) {
+                    const moduleKey = `module_${moduleIndex + 1}`;
+                    const moduleData = data.user_progress.modules[moduleKey];
+
+                    if (moduleData && moduleData.questions) {
+                      const answerData = moduleData.questions.find(
+                        (a) => a.question_id === q.id
+                      );
+                      if (answerData) {
+                        userAnswer = answerData.answer;
+                      }
                     }
                   }
-                }
 
-                // Create processed question
-                allQuestions.push({
-                  id: q.id,
-                  question: q.question,
-                  choices: q.options.map((o) => `${o.id}) ${o.text}`),
-                  correctAnswer: q.correct_answer,
-                  userAnswer: userAnswer,
-                  explanation: q.explanation || "No explanation available",
-                  isBookmarked: false,
-                  difficulty: q.difficulty || "medium",
-                  topic: q.topic || "General",
-                  subtopic: q.subtopic || "",
-                  moduleIndex: moduleIndex,
-                  moduleName: `Section ${moduleIndex + 1}, Module ${
-                    moduleIndex + 1
-                  }: ${moduleIndex < 2 ? "Reading and Writing" : "Math"}`,
-                });
+                  // Create processed question
+                  allQuestions.push({
+                    id: q.id,
+                    question: q.question,
+                    choices:
+                      q.options && Array.isArray(q.options)
+                        ? q.options.map((o) => `${o.id}) ${o.text}`)
+                        : [],
+                    correctAnswer: q.correct_answer,
+                    userAnswer: userAnswer,
+                    explanation: q.explanation || "No explanation available",
+                    isBookmarked: false,
+                    difficulty: q.difficulty || "medium",
+                    topic: q.topic || "General",
+                    subtopic: q.subtopic || "",
+                    moduleIndex: moduleIndex,
+                    moduleName: `Section ${moduleIndex + 1}, Module ${
+                      moduleIndex + 1
+                    }: ${moduleIndex < 2 ? "Reading and Writing" : "Math"}`,
+                  });
+                } catch (qError) {
+                  console.error(
+                    `TestReview: Error processing question ${qIndex} in module ${
+                      moduleIndex + 1
+                    }:`,
+                    qError
+                  );
+                }
               });
+            } catch (moduleError) {
+              console.error(
+                `TestReview: Error processing module ${moduleIndex + 1}:`,
+                moduleError
+              );
             }
           });
 
+          console.log(
+            `TestReview: Processed ${allQuestions.length} questions total`
+          );
           setQuestions(allQuestions);
+        } else {
+          console.warn("TestReview: Invalid exam data structure:", data);
+          setError("Invalid exam data structure");
         }
 
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching exam data:", error);
+        console.error("TestReview: Error fetching exam data:", error);
         setError(error.message);
         setLoading(false);
       }
@@ -112,7 +185,21 @@ const TestReview = ({ testId }) => {
     return <div className="error">No questions found for review</div>;
   }
 
-  const question = questions[currentQuestion];
+  // Safely get the current question with a fallback
+  const question = questions[currentQuestion] || {
+    id: "unknown",
+    question: "Question data unavailable",
+    choices: [],
+    correctAnswer: "",
+    userAnswer: "",
+    explanation: "No explanation available",
+    isBookmarked: false,
+    difficulty: "medium",
+    topic: "General",
+    subtopic: "",
+    moduleIndex: 0,
+    moduleName: "Unknown module",
+  };
 
   return (
     <div className="test-review-container">
@@ -205,7 +292,20 @@ const TestReview = ({ testId }) => {
             <p>{question.question}</p>
             <div className="choices">
               {question.choices.map((choice, index) => {
-                const [letter, ...text] = choice.split(") ");
+                // Add defensive coding to handle potentially invalid format
+                let letter = "";
+                let text = "";
+
+                try {
+                  const parts = choice.split(") ");
+                  letter = parts[0] || "";
+                  text = parts.length > 1 ? parts.slice(1).join(") ") : "";
+                } catch (err) {
+                  console.error("Error parsing choice:", choice, err);
+                  letter = `Option ${index + 1}`;
+                  text = choice || "";
+                }
+
                 return (
                   <div
                     key={index}
@@ -218,7 +318,7 @@ const TestReview = ({ testId }) => {
                     }`}
                   >
                     <span className="choice-letter">{letter}</span>
-                    <span>{text.join(") ")}</span>
+                    <span>{text}</span>
                   </div>
                 );
               })}
