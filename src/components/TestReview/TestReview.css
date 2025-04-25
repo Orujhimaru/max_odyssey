@@ -310,3 +310,86 @@
 .bookmark-btn i.active {
   color: var(--warning-color);
 }
+
+/* Styles for SVG images, HTML tables, and passages */
+.images-container {
+  width: 100%;
+  margin: 15px 0;
+  overflow-x: auto;
+}
+
+.question-image {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 15px;
+}
+
+/* Dark mode styles for images and tables */
+@media (prefers-color-scheme: dark) {
+  .question-image {
+    background-color: #2a2a2a;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .question-image table th {
+    background-color: #3a3a3a;
+  }
+
+  .question-image table td,
+  .question-image table th {
+    border-color: #444;
+  }
+
+  .question-image table tr:nth-child(even) {
+    background-color: #333;
+  }
+
+  .passage {
+    background-color: #2a2a2a;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.question-image-with-svg svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.passage {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.passage p {
+  margin-bottom: 10px;
+}
+
+/* Table styles */
+.question-image table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+
+.question-image table th,
+.question-image table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.question-image table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.question-image table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}

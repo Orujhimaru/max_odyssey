@@ -317,7 +317,7 @@
 
 .progress-bar-tasks {
   height: 100%;
-  background: linear-gradient(90deg, var(--verbal-color), var(--math-color));
+  background: linear-gradient(90deg, #f4d60d, #d8a50a);
   border-radius: 3px;
   transition: width 0.3s ease;
 }
