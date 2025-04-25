@@ -326,7 +326,7 @@ const Tests = () => {
       )}
 
       {reviewingTest ? (
-        <TestReview />
+        <TestReview testId={reviewingTest.id} />
       ) : (
         <div className="tests-container">
           <div className="tests-header">
@@ -363,6 +363,8 @@ const Tests = () => {
             ) : (
               examResults.map((test, index) => {
                 const isInProgress = !test.verbal_score || !test.math_score;
+                const isFinished =
+                  test.user_progress && test.user_progress.is_finished;
                 return (
                   <div
                     className={`test-item ${isInProgress ? "in-progress" : ""}`}
@@ -370,8 +372,11 @@ const Tests = () => {
                   >
                     <div className="test-name">
                       Practice Test #{test.id}
-                      {isInProgress && (
+                      {isInProgress && !isFinished && (
                         <span className="in-progress-badge">In Progress</span>
+                      )}
+                      {isFinished && (
+                        <span className="finished-badge">Finished</span>
                       )}
                     </div>
                     <div className="test-date">
@@ -390,6 +395,21 @@ const Tests = () => {
                     </div>
                     <div className="test-actions">
                       {test.verbal_score && test.math_score ? (
+                        <>
+                          <button
+                            className="review-button"
+                            onClick={() => handleReviewClick(test)}
+                          >
+                            <i className="fas fa-eye"></i> Review
+                          </button>
+                          <button
+                            className="delete-button"
+                            onClick={() => handleDeleteTest(test)}
+                          >
+                            <i className="fas fa-trash"></i>
+                          </button>
+                        </>
+                      ) : isFinished ? (
                         <>
                           <button
                             className="review-button"

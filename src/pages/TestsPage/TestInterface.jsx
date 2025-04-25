@@ -31,6 +31,7 @@ const TestInterface = ({ testType, onExit }) => {
   const [error, setError] = useState(null);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [navigatorOpen, setNavigatorOpen] = useState(false);
+  const [isFinishing, setIsFinishing] = useState(false);
 
   // Debug ref to track state changes
   const debugRef = useRef({
@@ -307,9 +308,12 @@ const TestInterface = ({ testType, onExit }) => {
     };
   }, [componentId]);
 
-  // Handle exit button click
+  // Handle exit button click, with optional isFinishing parameter
   const handleExitClick = () => {
+    // For regular exit, isFinishing should be false
+    setIsFinishing(false);
     setShowExitDialog(true);
+
     // Prevent scrolling of the underlying content
     document.body.style.overflow = "hidden";
   };
@@ -380,6 +384,23 @@ const TestInterface = ({ testType, onExit }) => {
       // Organize the updated answers
       const userProgress = organizeUserProgress(updated);
 
+      // Check if there's an existing userProgress in localStorage
+      const savedProgress = localStorage.getItem("testUserProgress");
+      if (savedProgress) {
+        try {
+          const parsedData = JSON.parse(savedProgress);
+          if (
+            parsedData.user_progress &&
+            parsedData.user_progress.is_finished
+          ) {
+            // Preserve the is_finished flag
+            userProgress.is_finished = parsedData.user_progress.is_finished;
+          }
+        } catch (error) {
+          console.error("Error preserving is_finished flag:", error);
+        }
+      }
+
       // Save to localStorage
       localStorage.setItem(
         "testUserProgress",
@@ -402,21 +423,34 @@ const TestInterface = ({ testType, onExit }) => {
 
       // Get the exam ID from localStorage
       const examId = localStorage.getItem("currentExamId");
+      console.log("ExamID from localStorage:", examId);
 
       if (examId && examData) {
         // Create user progress in the exact format the backend expects
         const userProgress = organizeUserProgress(userAnswers);
 
-        console.log("Sending user progress to server:", userProgress);
+        // Use the isFinishing state directly - this is the key fix
+        userProgress.is_finished = isFinishing;
+
+        console.log(
+          `Setting is_finished=${isFinishing} based on isFinishing state`
+        );
+        console.log(
+          "Final user progress with is_finished:",
+          JSON.stringify(userProgress, null, 2)
+        );
 
         // Send user answers to the server in the exact format the backend expects
-        await api.updateExam(examId, {
+        const response = await api.updateExam(examId, {
           user_progress: userProgress,
         });
+
+        console.log("Server response:", response);
 
         // Clear the localStorage items for this exam
         localStorage.removeItem("currentExamId");
         localStorage.removeItem("testUserProgress");
+        localStorage.removeItem("testUserAnswers");
       }
 
       // Exit immediately without delay
@@ -558,6 +592,20 @@ const TestInterface = ({ testType, onExit }) => {
     return crossedOptions[currentQuestion]?.crossMode || false;
   };
 
+  // Add new function to handle finishing the test
+  const handleFinishTest = () => {
+    console.log("handleFinishTest called - finishing the test");
+
+    // Set isFinishing state to true - this will be used in handleExitConfirm
+    setIsFinishing(true);
+
+    // Show the confirmation dialog
+    setShowExitDialog(true);
+
+    // Prevent scrolling of the underlying content
+    document.body.style.overflow = "hidden";
+  };
+
   if (loading) {
     return <LoadingScreen />;
   }
@@ -591,7 +639,11 @@ const TestInterface = ({ testType, onExit }) => {
         {showExitDialog && (
           <div className="exit-dialog-overlay">
             <div className="exit-dialog">
-              <p>Are you sure you want to exit? Your progress will be saved.</p>
+              <p>
+                {isFinishing
+                  ? "Are you sure you want to finish this test? This will submit all your answers and end the test."
+                  : "Are you sure you want to exit? Your progress will be saved."}
+              </p>
               <div className="exit-dialog-buttons">
                 <button className="cancel-button" onClick={handleExitCancel}>
                   Cancel
@@ -616,7 +668,7 @@ const TestInterface = ({ testType, onExit }) => {
             <i className="far fa-clock"></i> {timeRemaining}
           </div>
           <div className="test-controls">
-            <button className="exit-button" onClick={handleExitClick}>
+            <button className="exit-button" onClick={() => handleExitClick()}>
               <i className="fas fa-times"></i> Exit
             </button>
           </div>
@@ -641,7 +693,7 @@ const TestInterface = ({ testType, onExit }) => {
             </button>
           )}
           {isLastModule && (
-            <button className="nav-button finish" onClick={handleExitClick}>
+            <button className="nav-button finish" onClick={handleFinishTest}>
               Finish Test <i className="fas fa-check"></i>
             </button>
           )}
@@ -684,7 +736,11 @@ const TestInterface = ({ testType, onExit }) => {
       {showExitDialog && (
         <div className="exit-dialog-overlay">
           <div className="exit-dialog">
-            <p>Are you sure you want to exit? Your progress will be saved.</p>
+            <p>
+              {isFinishing
+                ? "Are you sure you want to finish this test? This will submit all your answers and end the test."
+                : "Are you sure you want to exit? Your progress will be saved."}
+            </p>
             <div className="exit-dialog-buttons">
               <button className="cancel-button" onClick={handleExitCancel}>
                 Cancel
@@ -720,7 +776,7 @@ const TestInterface = ({ testType, onExit }) => {
           >
             <i className="fas fa-list-ol"></i>
           </button>
-          <button className="exit-button" onClick={handleExitClick}>
+          <button className="exit-button" onClick={() => handleExitClick()}>
             <i className="fas fa-times"></i> Exit
           </button>
         </div>
@@ -988,6 +1044,17 @@ const TestInterface = ({ testType, onExit }) => {
               onClick={handleNextModule}
             >
               Next Module <i className="fas fa-arrow-right"></i>
+            </button>
+          )}
+
+        {/* Add Finish Test button */}
+        {currentQuestion === currentModule.questions.length - 1 &&
+          isLastModule && (
+            <button
+              className="nav-button finish-test"
+              onClick={handleFinishTest}
+            >
+              Finish Test <i className="fas fa-check"></i>
             </button>
           )}
       </div>

@@ -337,18 +337,28 @@ export const api = {
 
   // Update an exam with user answers
   updateExam: async (examId, userProgressData) => {
-    console.log(
-      `Updating exam ${examId} with user progress:`,
-      userProgressData
-    );
+    // Simple logging of what we're sending
+    console.log(`Updating exam ${examId}:`, userProgressData);
+
+    // Check if is_finished flag is present
+    if (userProgressData.user_progress?.is_finished !== undefined) {
+      console.log(
+        `is_finished flag is set to: ${userProgressData.user_progress.is_finished}`
+      );
+    } else {
+      console.log("No is_finished flag found in userProgressData");
+    }
+
+    // Prepare the request payload
+    const requestPayload = {
+      exam_id: examId,
+      ...userProgressData,
+    };
 
     try {
       const response = await api.request("/exams/update", {
         method: "POST",
-        body: JSON.stringify({
-          exam_id: examId,
-          ...userProgressData,
-        }),
+        body: JSON.stringify(requestPayload),
       });
 
       if (!response.ok) {
@@ -359,7 +369,9 @@ export const api = {
         throw new Error(`Failed to update exam: ${response.status}`);
       }
 
-      return response.json();
+      const responseData = await response.json();
+      console.log("Server response to update exam:", responseData);
+      return responseData;
     } catch (error) {
       console.error("API request failed:", error);
       throw error;

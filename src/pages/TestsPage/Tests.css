@@ -525,11 +525,22 @@
 
 .in-progress-badge {
   display: inline-block;
-  background-color: var(--verbal-color);
+  background-color: #ff9d00;
   color: white;
   font-size: 12px;
-  padding: 2px 8px;
-  border-radius: 12px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 4px;
   margin-left: 8px;
-  font-weight: 400;
+}
+
+.finished-badge {
+  display: inline-block;
+  background-color: #4caf50;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
 }
