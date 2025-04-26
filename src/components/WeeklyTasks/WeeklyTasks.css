@@ -405,6 +405,7 @@
 
 /* Task section with fixed layout to prevent shifts */
 .task-section {
+  max-width: 273px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -426,7 +427,8 @@
 /* Row of task boxes */
 .task-boxes {
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
+  gap: 8px;
   width: 100%;
 }
 

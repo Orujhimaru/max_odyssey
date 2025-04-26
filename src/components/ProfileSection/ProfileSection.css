@@ -55,6 +55,10 @@
   padding: 6px;
 }
 
+[data-theme="dark"] .profile-image {
+  background-color: #5e5e5e;
+}
+
 .profile-image img {
   width: 110%;
   height: 120%;
