@@ -162,6 +162,24 @@
   position: relative;
 }
 
+.question-timer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-primary);
+  opacity: 0.8;
+  background-color: var(--bg-secondary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-left: 10px;
+}
+
+.question-timer i {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
 .mark-button {
   background: none;
   border: none;

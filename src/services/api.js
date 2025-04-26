@@ -349,6 +349,11 @@ export const api = {
       console.log("No is_finished flag found in userProgressData");
     }
 
+    // Check if question times are present
+    if (userProgressData.user_progress?.question_times) {
+      console.log("Question times data included in the update");
+    }
+
     // Prepare the request payload
     const requestPayload = {
       exam_id: examId,

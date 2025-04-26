@@ -33,6 +33,12 @@ const TestInterface = ({ testType, onExit }) => {
   const [navigatorOpen, setNavigatorOpen] = useState(false);
   const [isFinishing, setIsFinishing] = useState(false);
 
+  // Question timer state
+  const [questionTimers, setQuestionTimers] = useState({});
+  const timerRef = useRef(null);
+  const lastQuestionRef = useRef(null);
+  const timerStartTimeRef = useRef(null);
+
   // Debug ref to track state changes
   const debugRef = useRef({
     selectedAnswers: {},
@@ -47,12 +53,24 @@ const TestInterface = ({ testType, onExit }) => {
     debugRef.current.testTypeRef = testType;
   }, [testType, componentId]);
 
-  // Load saved answers from localStorage when component mounts
+  // Load saved answers and timers from localStorage when component mounts
   useEffect(() => {
     console.log(`${componentId}: Load saved answers effect running`);
 
     // Check if we have data in the user progress format
     const savedProgress = localStorage.getItem("testUserProgress");
+    const savedTimers = localStorage.getItem("testQuestionTimers");
+
+    if (savedTimers) {
+      try {
+        const parsedTimers = JSON.parse(savedTimers);
+        setQuestionTimers(parsedTimers);
+        console.log("Loaded question timers:", parsedTimers);
+      } catch (e) {
+        console.error("Error loading saved timers:", e);
+        setQuestionTimers({});
+      }
+    }
 
     if (savedProgress) {
       try {
@@ -123,6 +141,84 @@ const TestInterface = ({ testType, onExit }) => {
     debugRef.current.userAnswers = userAnswers;
     console.log("userAnswers updated:", userAnswers);
   }, [userAnswers]);
+
+  // Timer functionality for tracking time spent on questions
+  useEffect(() => {
+    // Start or pause timer based on question change
+    if (examData && !loading) {
+      // If we're switching questions, pause the timer for the previous question
+      if (
+        lastQuestionRef.current !== null &&
+        lastQuestionRef.current !== currentQuestion
+      ) {
+        pauseQuestionTimer(lastQuestionRef.current);
+      }
+
+      // Start timer for current question
+      startQuestionTimer(currentQuestion);
+
+      // Update lastQuestionRef
+      lastQuestionRef.current = currentQuestion;
+    }
+
+    return () => {
+      // Pause the timer for the current question when component unmounts
+      if (currentQuestion !== null) {
+        pauseQuestionTimer(currentQuestion);
+      }
+    };
+  }, [currentQuestion, examData, loading]);
+
+  // Start the timer for a specific question
+  const startQuestionTimer = (questionIndex) => {
+    // Pause any running timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
+    // Start a new timer for the current question
+    timerStartTimeRef.current = Date.now();
+
+    timerRef.current = setInterval(() => {
+      const elapsedTime = Date.now() - timerStartTimeRef.current;
+
+      setQuestionTimers((prevTimers) => {
+        // Get the current time for this question (or 0 if it's new)
+        const currentTime = prevTimers[questionIndex] || 0;
+        // Add the elapsed time since the timer started
+        const newTime = currentTime + 1000; // Add 1 second
+
+        // Create the updated timers object
+        const newTimers = {
+          ...prevTimers,
+          [questionIndex]: newTime,
+        };
+
+        // Save to localStorage
+        localStorage.setItem("testQuestionTimers", JSON.stringify(newTimers));
+
+        return newTimers;
+      });
+    }, 1000);
+  };
+
+  // Pause the timer for a specific question
+  const pauseQuestionTimer = (questionIndex) => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  // Format seconds to MM:SS
+  const formatTime = (timeInMs) => {
+    const totalSeconds = Math.floor(timeInMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
 
   // Fetch exam data when component mounts
   useEffect(() => {
@@ -337,7 +433,13 @@ const TestInterface = ({ testType, onExit }) => {
           questions: [],
         },
       },
+      question_times: {}, // Add timing information
     };
+
+    // Add timer data to userProgress
+    Object.entries(questionTimers).forEach(([questionIndex, timeInMs]) => {
+      userProgress.question_times[questionIndex] = timeInMs;
+    });
 
     // Move all answers to their correct module based on module_index
     Object.values(userAnswers).forEach((answer) => {
@@ -351,6 +453,7 @@ const TestInterface = ({ testType, onExit }) => {
         userProgress.modules[moduleKey].questions.push({
           question_id: question_index + 1, // Use 1-based question IDs
           answer: selected_option,
+          time_spent: questionTimers[question_index] || 0, // Add time spent
         });
       }
     });
@@ -414,6 +517,9 @@ const TestInterface = ({ testType, onExit }) => {
   // Handle exit confirmation
   const handleExitConfirm = async () => {
     try {
+      // Pause the current question timer
+      pauseQuestionTimer(currentQuestion);
+
       // First hide the exit dialog
       setShowExitDialog(false);
 
@@ -451,6 +557,7 @@ const TestInterface = ({ testType, onExit }) => {
         localStorage.removeItem("currentExamId");
         localStorage.removeItem("testUserProgress");
         localStorage.removeItem("testUserAnswers");
+        localStorage.removeItem("testQuestionTimers");
       }
 
       // Exit immediately without delay
@@ -506,6 +613,9 @@ const TestInterface = ({ testType, onExit }) => {
   // New function to handle module navigation
   const handleNextModule = () => {
     if (!examData) return;
+
+    // Pause the current question timer
+    pauseQuestionTimer(currentQuestion);
 
     console.log(
       "Navigating to next module. Current module:",
@@ -595,6 +705,9 @@ const TestInterface = ({ testType, onExit }) => {
   // Add new function to handle finishing the test
   const handleFinishTest = () => {
     console.log("handleFinishTest called - finishing the test");
+
+    // Pause the current question timer
+    pauseQuestionTimer(currentQuestion);
 
     // Set isFinishing state to true - this will be used in handleExitConfirm
     setIsFinishing(true);
@@ -820,6 +933,13 @@ const TestInterface = ({ testType, onExit }) => {
                 <span>{currentQuestion + 1}</span>
               </div>
               <div className="question-tools">
+                <div
+                  className="question-timer"
+                  title="Time spent on this question"
+                >
+                  <i className="far fa-clock"></i>{" "}
+                  {formatTime(questionTimers[currentQuestion] || 0)}
+                </div>
                 <button
                   className={`mark-button ${isMarked ? "marked" : ""}`}
                   onClick={toggleMarkQuestion}
