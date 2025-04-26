@@ -352,6 +352,34 @@ export const api = {
     // Check if question times are present
     if (userProgressData.user_progress?.question_times) {
       console.log("Question times data included in the update");
+      const timeEntries = Object.entries(
+        userProgressData.user_progress.question_times
+      );
+      console.log(`Found ${timeEntries.length} question time entries`);
+
+      // Log a summary of the times
+      if (timeEntries.length > 0) {
+        const totalTimeMs = timeEntries.reduce(
+          (total, [_, time]) => total + time,
+          0
+        );
+        const avgTimeMs = totalTimeMs / timeEntries.length;
+        console.log(
+          `Total time tracked: ${Math.floor(
+            totalTimeMs / 1000
+          )}s, Average per question: ${Math.floor(avgTimeMs / 1000)}s`
+        );
+      }
+    }
+
+    // Log modules data
+    if (userProgressData.user_progress?.modules) {
+      const modules = userProgressData.user_progress.modules;
+      const moduleSummary = Object.keys(modules).map((moduleKey) => {
+        const questionCount = modules[moduleKey].questions?.length || 0;
+        return `${moduleKey}: ${questionCount} questions`;
+      });
+      console.log("Modules data summary:", moduleSummary);
     }
 
     // Prepare the request payload
@@ -360,7 +388,12 @@ export const api = {
       ...userProgressData,
     };
 
+    // Detailed logging of the full request payload
+    console.log("Full request payload to server:");
+    console.log(JSON.stringify(requestPayload, null, 2));
+
     try {
+      console.log(`Making API request to /exams/update for exam ${examId}`);
       const response = await api.request("/exams/update", {
         method: "POST",
         body: JSON.stringify(requestPayload),

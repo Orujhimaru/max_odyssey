@@ -27,6 +27,7 @@ const TestInterface = ({ testType, onExit }) => {
   const [markedQuestions, setMarkedQuestions] = useState([]);
   const [crossedOptions, setCrossedOptions] = useState({});
   const [timeRemaining, setTimeRemaining] = useState("2:45:00");
+  const [moduleTimeSeconds, setModuleTimeSeconds] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showExitDialog, setShowExitDialog] = useState(false);
@@ -38,6 +39,10 @@ const TestInterface = ({ testType, onExit }) => {
   const timerRef = useRef(null);
   const lastQuestionRef = useRef(null);
   const timerStartTimeRef = useRef(null);
+
+  // Module timer ref
+  const moduleTimerRef = useRef(null);
+  const moduleTimerActiveRef = useRef(false);
 
   // Debug ref to track state changes
   const debugRef = useRef({
@@ -60,6 +65,23 @@ const TestInterface = ({ testType, onExit }) => {
     // Check if we have data in the user progress format
     const savedProgress = localStorage.getItem("testUserProgress");
     const savedTimers = localStorage.getItem("testQuestionTimers");
+    const savedModuleTime = localStorage.getItem("moduleTimeRemaining");
+
+    // Load saved module time if available
+    if (savedModuleTime) {
+      try {
+        const parsedModuleTime = JSON.parse(savedModuleTime);
+        console.log("Loaded module time:", parsedModuleTime);
+        if (parsedModuleTime.seconds > 0) {
+          setModuleTimeSeconds(parsedModuleTime.seconds);
+          const minutes = Math.floor(parsedModuleTime.seconds / 60);
+          const seconds = parsedModuleTime.seconds % 60;
+          setTimeRemaining(`${minutes}:${seconds.toString().padStart(2, "0")}`);
+        }
+      } catch (e) {
+        console.error("Error loading saved module time:", e);
+      }
+    }
 
     if (savedTimers) {
       try {
@@ -186,6 +208,96 @@ const TestInterface = ({ testType, onExit }) => {
     };
   }, [currentQuestion, examData, loading]);
 
+  // Module timer functionality
+  useEffect(() => {
+    // Only run the module timer when exam data is loaded and not in loading state
+    if (examData && !loading) {
+      // Initialize module timer if not set
+      if (moduleTimeSeconds === null) {
+        const moduleNumber = examData.current_module;
+        // Set time based on module number
+        const initialSeconds = moduleNumber <= 2 ? 32 * 60 : 35 * 60;
+        setModuleTimeSeconds(initialSeconds);
+
+        // Format for display
+        const minutes = Math.floor(initialSeconds / 60);
+        const seconds = initialSeconds % 60;
+        setTimeRemaining(`${minutes}:${seconds.toString().padStart(2, "0")}`);
+      }
+
+      // Start the module timer
+      startModuleTimer();
+
+      // Set timer as active
+      moduleTimerActiveRef.current = true;
+    }
+
+    return () => {
+      // Pause the module timer when component unmounts
+      pauseModuleTimer();
+      moduleTimerActiveRef.current = false;
+    };
+  }, [examData, loading]);
+
+  // Start the module timer
+  const startModuleTimer = () => {
+    // Clear any existing timer
+    if (moduleTimerRef.current) {
+      clearInterval(moduleTimerRef.current);
+    }
+
+    // Start countdown
+    moduleTimerRef.current = setInterval(() => {
+      setModuleTimeSeconds((prevTime) => {
+        if (prevTime <= 0) {
+          // Time's up, clear interval and move to next module
+          clearInterval(moduleTimerRef.current);
+          handleTimeExpired();
+          return 0;
+        }
+
+        const newTime = prevTime - 1;
+
+        // Update display format
+        const minutes = Math.floor(newTime / 60);
+        const seconds = newTime % 60;
+        setTimeRemaining(`${minutes}:${seconds.toString().padStart(2, "0")}`);
+
+        // Save current time to localStorage
+        localStorage.setItem(
+          "moduleTimeRemaining",
+          JSON.stringify({
+            moduleIndex: examData?.current_module,
+            seconds: newTime,
+          })
+        );
+
+        return newTime;
+      });
+    }, 1000);
+  };
+
+  // Pause the module timer
+  const pauseModuleTimer = () => {
+    if (moduleTimerRef.current) {
+      clearInterval(moduleTimerRef.current);
+      moduleTimerRef.current = null;
+    }
+  };
+
+  // Handle time expired - move to next module
+  const handleTimeExpired = () => {
+    console.log("Module time expired, moving to next module");
+    // Check if there's a next module
+    if (examData && examData.current_module < examData.exam_data.length) {
+      // Move to next module
+      handleNextModule();
+    } else {
+      // If this is the last module, finish the test
+      handleFinishTest();
+    }
+  };
+
   // Start the timer for a specific question
   const startQuestionTimer = (questionIndex) => {
     // Pause any running timer
@@ -277,14 +389,75 @@ const TestInterface = ({ testType, onExit }) => {
               examData.current_module = 1;
             }
 
-            // Set appropriate timer based on module number
-            const moduleNumber = examData.current_module;
-            if (moduleNumber <= 2) {
-              // 32 minutes for modules 1 and 2 (Reading and Writing)
-              setTimeRemaining("32:00");
-            } else {
-              // 35 minutes for modules 3 and 4 (Math)
-              setTimeRemaining("35:00");
+            // Check if the backend provided module time remaining
+            if (
+              examData.user_progress &&
+              examData.user_progress.module_time_remaining
+            ) {
+              console.log(
+                "Using module time remaining from backend:",
+                examData.user_progress.module_time_remaining
+              );
+              const timeInSeconds =
+                examData.user_progress.module_time_remaining;
+              setModuleTimeSeconds(timeInSeconds);
+
+              // Format for display
+              const minutes = Math.floor(timeInSeconds / 60);
+              const seconds = timeInSeconds % 60;
+              setTimeRemaining(
+                `${minutes}:${seconds.toString().padStart(2, "0")}`
+              );
+
+              // Save to localStorage
+              localStorage.setItem(
+                "moduleTimeRemaining",
+                JSON.stringify({
+                  moduleIndex: examData.current_module,
+                  seconds: timeInSeconds,
+                })
+              );
+            }
+            // Check for saved module time in localStorage
+            else {
+              const savedModuleTime = localStorage.getItem(
+                "moduleTimeRemaining"
+              );
+              if (savedModuleTime) {
+                try {
+                  const parsedModuleTime = JSON.parse(savedModuleTime);
+                  // Verify the saved module matches the current module
+                  if (
+                    parsedModuleTime.moduleIndex === examData.current_module
+                  ) {
+                    // Use the saved time
+                    setModuleTimeSeconds(parsedModuleTime.seconds);
+                    const minutes = Math.floor(parsedModuleTime.seconds / 60);
+                    const seconds = parsedModuleTime.seconds % 60;
+                    setTimeRemaining(
+                      `${minutes}:${seconds.toString().padStart(2, "0")}`
+                    );
+                  } else {
+                    // If module doesn't match, set new timer
+                    const moduleNumber = examData.current_module;
+                    const initialSeconds =
+                      moduleNumber <= 2 ? 32 * 60 : 35 * 60;
+                    setModuleTimeSeconds(initialSeconds);
+                    setTimeRemaining(moduleNumber <= 2 ? "32:00" : "35:00");
+                  }
+                } catch (e) {
+                  console.error("Error parsing saved module time:", e);
+                  // Set default time based on module
+                  const moduleNumber = examData.current_module;
+                  setTimeRemaining(moduleNumber <= 2 ? "32:00" : "35:00");
+                }
+              } else {
+                // No saved time, set appropriate timer based on module number
+                const moduleNumber = examData.current_module;
+                const initialSeconds = moduleNumber <= 2 ? 32 * 60 : 35 * 60;
+                setModuleTimeSeconds(initialSeconds);
+                setTimeRemaining(moduleNumber <= 2 ? "32:00" : "35:00");
+              }
             }
 
             // If lastQuestionIndex is provided, use it to set the current question
@@ -338,13 +511,12 @@ const TestInterface = ({ testType, onExit }) => {
 
           // Set appropriate timer based on module number
           const moduleNumber = examData.current_module;
-          if (moduleNumber <= 2) {
-            // 32 minutes for modules 1 and 2 (Reading and Writing)
-            setTimeRemaining("32:00");
-          } else {
-            // 35 minutes for modules 3 and 4 (Math)
-            setTimeRemaining("35:00");
-          }
+          const initialSeconds = moduleNumber <= 2 ? 32 * 60 : 35 * 60;
+          setModuleTimeSeconds(initialSeconds);
+          setTimeRemaining(moduleNumber <= 2 ? "32:00" : "35:00");
+
+          // Clear any previous module time
+          localStorage.removeItem("moduleTimeRemaining");
         }
 
         if (examData && examData.exam_data && examData.exam_data.length > 0) {
@@ -385,22 +557,6 @@ const TestInterface = ({ testType, onExit }) => {
       );
     };
   }, [testType, componentId]);
-
-  // Update timer when changing modules
-  useEffect(() => {
-    // Skip if there's no exam data yet
-    if (!examData) return;
-
-    // Set appropriate timer based on module number
-    const moduleNumber = examData.current_module;
-    if (moduleNumber <= 2) {
-      // 32 minutes for modules 1 and 2 (Reading and Writing)
-      setTimeRemaining("32:00");
-    } else {
-      // 35 minutes for modules 3 and 4 (Math)
-      setTimeRemaining("35:00");
-    }
-  }, [examData?.current_module]);
 
   // Add class to body when component mounts
   useEffect(() => {
@@ -451,6 +607,7 @@ const TestInterface = ({ testType, onExit }) => {
         },
       },
       question_times: {}, // Add timing information
+      module_time_remaining: moduleTimeSeconds || 0, // Add current module time remaining
     };
 
     // Add timer data to userProgress
@@ -537,6 +694,9 @@ const TestInterface = ({ testType, onExit }) => {
       // Pause the current question timer
       pauseQuestionTimer(currentQuestion);
 
+      // Pause the module timer
+      pauseModuleTimer();
+
       // First hide the exit dialog
       setShowExitDialog(false);
 
@@ -558,9 +718,23 @@ const TestInterface = ({ testType, onExit }) => {
         console.log(
           `Setting is_finished=${isFinishing} based on isFinishing state`
         );
+
+        // Create the full request payload
+        const requestPayload = {
+          exam_id: examId,
+          user_progress: userProgress,
+        };
+
+        // Log the complete request object
+        console.log("SENDING REQUEST TO SERVER:");
+        console.log(JSON.stringify(requestPayload, null, 2));
+        console.log("Question times data:", userProgress.question_times);
         console.log(
-          "Final user progress with is_finished:",
-          JSON.stringify(userProgress, null, 2)
+          "Module data summary:",
+          Object.keys(userProgress.modules).map((moduleKey) => {
+            const module = userProgress.modules[moduleKey];
+            return `${moduleKey}: ${module.questions.length} questions`;
+          })
         );
 
         // Send user answers to the server in the exact format the backend expects
@@ -575,6 +749,7 @@ const TestInterface = ({ testType, onExit }) => {
         localStorage.removeItem("testUserProgress");
         localStorage.removeItem("testUserAnswers");
         localStorage.removeItem("testQuestionTimers");
+        localStorage.removeItem("moduleTimeRemaining");
       }
 
       // Exit immediately without delay
@@ -634,6 +809,9 @@ const TestInterface = ({ testType, onExit }) => {
     // Pause the current question timer
     pauseQuestionTimer(currentQuestion);
 
+    // Pause the module timer
+    pauseModuleTimer();
+
     console.log(
       "Navigating to next module. Current module:",
       examData.current_module
@@ -655,13 +833,18 @@ const TestInterface = ({ testType, onExit }) => {
       setCurrentQuestion(0);
 
       // Set the appropriate timer based on the new module
-      if (newModuleNumber <= 2) {
-        // 32 minutes for modules 1 and 2 (Reading and Writing)
-        setTimeRemaining("32:00");
-      } else {
-        // 35 minutes for modules 3 and 4 (Math)
-        setTimeRemaining("35:00");
-      }
+      const initialSeconds = newModuleNumber <= 2 ? 32 * 60 : 35 * 60;
+      setModuleTimeSeconds(initialSeconds);
+      setTimeRemaining(newModuleNumber <= 2 ? "32:00" : "35:00");
+
+      // Clear and update saved module time
+      localStorage.setItem(
+        "moduleTimeRemaining",
+        JSON.stringify({
+          moduleIndex: newModuleNumber,
+          seconds: initialSeconds,
+        })
+      );
 
       console.log(
         "Current selected answers after module change:",

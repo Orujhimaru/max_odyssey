@@ -163,6 +163,21 @@ const Tests = () => {
           );
         }
 
+        // If there's module_time_remaining data, save it to localStorage
+        if (examData.user_progress.module_time_remaining !== undefined) {
+          console.log(
+            "Found module time remaining:",
+            examData.user_progress.module_time_remaining
+          );
+          localStorage.setItem(
+            "moduleTimeRemaining",
+            JSON.stringify({
+              moduleIndex: examData.current_module,
+              seconds: examData.user_progress.module_time_remaining,
+            })
+          );
+        }
+
         // Convert the user progress to the format needed for selectedAnswers in TestInterface
         const userAnswers = {};
         let lastQuestionIndex = 0;
