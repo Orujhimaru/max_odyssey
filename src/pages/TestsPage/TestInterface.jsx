@@ -80,6 +80,23 @@ const TestInterface = ({ testType, onExit }) => {
           const progress = parsedData.user_progress;
           console.log("Loading user progress:", progress);
 
+          // Load question times from user progress if available
+          if (
+            progress.question_times &&
+            Object.keys(progress.question_times).length > 0
+          ) {
+            console.log(
+              "Loading question times from user progress:",
+              progress.question_times
+            );
+            setQuestionTimers(progress.question_times);
+            // Save to localStorage for future use
+            localStorage.setItem(
+              "testQuestionTimers",
+              JSON.stringify(progress.question_times)
+            );
+          }
+
           // Rebuild userAnswers from the module data
           const answers = {};
           const reconstructedAnswers = {};

@@ -151,6 +151,18 @@ const Tests = () => {
           JSON.stringify({ user_progress: examData.user_progress })
         );
 
+        // If there's question_times data, save it to localStorage
+        if (examData.user_progress.question_times) {
+          console.log(
+            "Found question timing data:",
+            examData.user_progress.question_times
+          );
+          localStorage.setItem(
+            "testQuestionTimers",
+            JSON.stringify(examData.user_progress.question_times)
+          );
+        }
+
         // Convert the user progress to the format needed for selectedAnswers in TestInterface
         const userAnswers = {};
         let lastQuestionIndex = 0;
