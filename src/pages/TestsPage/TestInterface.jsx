@@ -96,6 +96,18 @@ const QuestionContent = memo(function QuestionContent({
   );
 });
 
+const QuestionSVG = React.memo(function QuestionSVG({ svg }) {
+  if (!svg || svg === "") return null;
+  return (
+    <div className="images-container">
+      <div
+        className="question-image question-image-with-svg"
+        dangerouslySetInnerHTML={{ __html: svg }}
+      />
+    </div>
+  );
+});
+
 const TestInterface = ({ testType, onExit }) => {
   // Create a ref to track component instance
   const componentIdRef = useRef(`TestInterface_${++mountCount}`);
@@ -1122,14 +1134,7 @@ const TestInterface = ({ testType, onExit }) => {
           <div className="question-area">
             <div>
               {/* Image section */}
-              {currentQ.svg_image && currentQ.svg_image !== "" && (
-                <div className="images-container">
-                  <div
-                    className="question-image question-image-with-svg"
-                    dangerouslySetInnerHTML={{ __html: currentQ.svg_image }}
-                  />
-                </div>
-              )}
+              <QuestionSVG svg={currentQ.svg_image} />
               {currentQ.html_table && currentQ.html_table !== "" && (
                 <div className="images-container">
                   <div
@@ -1297,14 +1302,7 @@ const TestInterface = ({ testType, onExit }) => {
         <div className="question-area">
           <div>
             {/* Image section */}
-            {currentQ.svg_image && currentQ.svg_image !== "" && (
-              <div className="images-container">
-                <div
-                  className="question-image question-image-with-svg"
-                  dangerouslySetInnerHTML={{ __html: currentQ.svg_image }}
-                />
-              </div>
-            )}
+            <QuestionSVG svg={currentQ.svg_image} />
             {currentQ.html_table && currentQ.html_table !== "" && (
               <div className="images-container">
                 <div
@@ -1325,7 +1323,7 @@ const TestInterface = ({ testType, onExit }) => {
                 <span>{currentQuestion + 1}</span>
               </div>
               <div className="question-tools">
-                <QuestionTimer ref={timerRef} questionIndex={currentQuestion} />
+                {/* <QuestionTimer ref={timerRef} questionIndex={currentQuestion} /> */}
                 <div
                   className={`mark-question ${
                     markedQuestions[currentQuestion] ? "marked" : ""

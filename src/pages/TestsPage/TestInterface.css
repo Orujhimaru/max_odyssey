@@ -160,6 +160,7 @@
   align-items: center;
   gap: 12px;
   position: relative;
+  margin-left: 14px;
 }
 
 .question-timer {
@@ -819,8 +820,8 @@ table tbody {
 }
 
 blockquote {
-  margin-top: 0px !important;
-  margin-block: 0px !important;
+  display: flex;
+  flex-direction: column;
 }
 
 u {
