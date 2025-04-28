@@ -713,10 +713,10 @@
   gap: 2px;
   margin-left: 20px;
 }
+
 .passage > div {
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
 .nav-button.next-module:hover {
@@ -813,4 +813,16 @@ table tbody {
   line-height: 1.6;
   white-space: pre-line;
   padding: 16px;
+}
+.passage p {
+  margin-bottom: 0px !important;
+}
+
+blockquote {
+  margin-top: 0px !important;
+  margin-block: 0px !important;
+}
+
+u {
+  text-underline-offset: 4px;
 }
