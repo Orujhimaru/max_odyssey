@@ -186,7 +186,6 @@ const TestInterface = ({ testType, onExit }) => {
               "Loading question times from user progress:",
               progress.question_times
             );
-            setQuestionTimers(progress.question_times);
             // Save to localStorage for future use
             localStorage.setItem(
               "testQuestionTimers",
@@ -194,7 +193,7 @@ const TestInterface = ({ testType, onExit }) => {
             );
           }
 
-          // Rebuild userAnswers from the module data
+          // Rebuild userAnswers and selectedAnswers from the module data
           const answers = {};
           const reconstructedAnswers = {};
 
@@ -211,16 +210,15 @@ const TestInterface = ({ testType, onExit }) => {
                   const questionId = question.question_id;
                   const answer = question.answer;
 
-                  // Convert to 0-based for internal use
-                  const questionIndex = questionId - 1;
-
-                  // Store the answer using the question index as key for UI
-                  answers[questionIndex] = answer;
+                  // Store the answer using the questionId as key for UI
+                  if (answer !== null && answer !== undefined) {
+                    answers[questionId] = answer;
+                  }
 
                   // Build the complete answer object for state
-                  reconstructedAnswers[questionIndex] = {
+                  reconstructedAnswers[questionId] = {
                     module_index: moduleIndex,
-                    question_index: questionIndex,
+                    question_index: questionId, // Not used for lookup, but keep for structure
                     selected_option: answer,
                   };
                 });
@@ -653,7 +651,6 @@ const TestInterface = ({ testType, onExit }) => {
 
   // Helper function to organize user progress data into modules
   const organizeUserProgress = (userAnswers) => {
-    // Create the structure exactly as requested - 4 empty modules
     const userProgress = {
       current_module: examData ? examData.current_module : 1,
       modules: {
@@ -662,30 +659,43 @@ const TestInterface = ({ testType, onExit }) => {
         module_3: { questions: [] },
         module_4: { questions: [] },
       },
-      question_times: {}, // Add timing information
-      module_time_remaining: moduleTimeSeconds || 0, // Add current module time remaining
+      question_times: {},
+      module_time_remaining: moduleTimeSeconds || 0,
     };
 
     // Read timer data from localStorage
     const timersFromStorage = JSON.parse(
       localStorage.getItem("testQuestionTimers") || "{}"
     );
-    Object.entries(timersFromStorage).forEach(([questionIndex, timeInMs]) => {
-      userProgress.question_times[questionIndex] = timeInMs;
+    Object.entries(timersFromStorage).forEach(([questionId, timeInMs]) => {
+      userProgress.question_times[questionId] = timeInMs;
     });
 
-    // Move all answers to their correct module based on module_index
-    Object.values(userAnswers).forEach((answer) => {
-      const { module_index, question_index, selected_option } = answer;
-      if (module_index >= 0 && module_index < 4) {
-        const moduleKey = `module_${module_index + 1}`;
-        userProgress.modules[moduleKey].questions.push({
-          question_id: question_index + 1, // Use 1-based question IDs
-          answer: selected_option,
-          time_spent: timersFromStorage[question_index] || 0, // Add time spent from localStorage
-        });
-      }
-    });
+    // For every question in the exam, include an entry in the questions array for its module
+    if (examData && examData.exam_data) {
+      examData.exam_data.forEach((module, moduleIdx) => {
+        const moduleKey = `module_${moduleIdx + 1}`;
+        if (module.questions && Array.isArray(module.questions)) {
+          module.questions.forEach((q) => {
+            const questionId = q.question_id;
+            let answer = null;
+            if (
+              userAnswers &&
+              userAnswers[questionId] &&
+              userAnswers[questionId].selected_option !== undefined &&
+              userAnswers[questionId].selected_option !== null
+            ) {
+              answer = userAnswers[questionId].selected_option;
+            }
+            userProgress.modules[moduleKey].questions.push({
+              question_id: questionId,
+              answer: answer === undefined ? null : answer,
+              time_spent: timersFromStorage[questionId] || 0,
+            });
+          });
+        }
+      });
+    }
 
     return userProgress;
   };
@@ -696,18 +706,16 @@ const TestInterface = ({ testType, onExit }) => {
     // Get current module index (0-based)
     const moduleIndex = examData.current_module - 1;
 
-    // Update local state for rendering
+    // Update local state for rendering (use questionId as key)
     setSelectedAnswers((prev) => ({
       ...prev,
-      [questionIndex]: optionId,
+      [questionId]: optionId,
     }));
 
-    // Update userAnswers with the new selection
+    // Update userAnswers with the new selection, keyed by question_id
     setUserAnswers((prev) => {
       const updated = { ...prev };
-
-      // Add or update the answer
-      updated[questionIndex] = {
+      updated[questionId] = {
         module_index: moduleIndex,
         question_index: questionIndex,
         selected_option: optionId,
@@ -739,6 +747,9 @@ const TestInterface = ({ testType, onExit }) => {
         JSON.stringify({ user_progress: userProgress })
       );
 
+      // Debug log to verify userAnswers mapping
+      console.log("[DEBUG] userAnswers before sending:", updated);
+
       return updated;
     });
   };
@@ -761,42 +772,30 @@ const TestInterface = ({ testType, onExit }) => {
       console.log("ExamID from localStorage:", examId);
 
       if (examId && examData) {
-        // Create user progress in the exact format the backend expects
+        // Build user_progress with latest answers and timers
         const userProgress = organizeUserProgress(userAnswers);
-
-        // Use the isFinishing state directly - this is the key fix
         userProgress.is_finished = isFinishing;
-
         console.log(
           `Setting is_finished=${isFinishing} based on isFinishing state`
         );
-
         // Create the full request payload
         const requestPayload = {
           exam_id: examId,
           user_progress: userProgress,
         };
-
         // Log the complete request object
         console.log("SENDING REQUEST TO SERVER:");
         console.log(JSON.stringify(requestPayload, null, 2));
-        console.log("Question times data:", userProgress.question_times);
-        console.log(
-          "Module data summary:",
-          Object.keys(userProgress.modules).map((moduleKey) => {
-            const module = userProgress.modules[moduleKey];
-            return `${moduleKey}: ${module.questions.length} questions`;
-          })
-        );
-
         // Send user answers to the server in the exact format the backend expects
-        const response = await api.updateExam(examId, {
-          user_progress: userProgress,
-        });
-
-        console.log("Server response:", response);
-
-        // Clear the localStorage items for this exam
+        try {
+          const response = await api.updateExam(examId, {
+            user_progress: userProgress,
+          });
+          console.log("Server response:", response);
+        } catch (err) {
+          console.error("Error sending user_progress to backend:", err);
+        }
+        // Now clear the localStorage items for this exam
         localStorage.removeItem("testQuestionTimers");
         localStorage.removeItem("testUserProgress");
         localStorage.removeItem("currentExamId");
@@ -805,7 +804,6 @@ const TestInterface = ({ testType, onExit }) => {
           "[Timer] testQuestionTimers removed from localStorage (exit)"
         );
       }
-
       // Exit immediately without delay
       onExit();
     } catch (error) {
@@ -977,6 +975,20 @@ const TestInterface = ({ testType, onExit }) => {
     document.body.style.overflow = "hidden";
   };
 
+  // Add this effect after currentModule is defined:
+  useEffect(() => {
+    if (!examData || !examData.exam_data) return;
+    const currentModule = examData.exam_data[examData.current_module - 1];
+    if (!currentModule || !currentModule.questions) return;
+    if (
+      currentQuestion < 0 ||
+      currentQuestion >= currentModule.questions.length
+    ) {
+      setCurrentQuestion(0);
+    }
+    // eslint-disable-next-line
+  }, [examData, currentQuestion]);
+
   if (loading) {
     return <LoadingScreen />;
   }
@@ -1077,9 +1089,140 @@ const TestInterface = ({ testType, onExit }) => {
   const currentQ = currentModule.questions[currentQuestion];
   const isMarked = markedQuestions.includes(currentQuestion);
 
-  // Add safety check for choices
-  if (!currentQ || !currentQ.choices || !Array.isArray(currentQ.choices)) {
-    return <div className="error">Invalid question data structure</div>;
+  // Handle questions without choices (e.g., free response)
+  if (!currentQ) {
+    return (
+      <div className="error">
+        Invalid question data structure (missing question object)
+      </div>
+    );
+  }
+  if (!currentQ.choices || !Array.isArray(currentQ.choices)) {
+    // Free response or non-multiple-choice question
+    return (
+      <div className="test-interface">
+        <div className="test-header">
+          <div className="test-info">
+            <h1>
+              {examData.current_module <= 2
+                ? `Section 1, Module ${examData.current_module}: Reading and Writing`
+                : `Section 2, Module ${examData.current_module}: Math`}
+            </h1>
+          </div>
+          <div className="timer">
+            <i className="far fa-clock"></i> {timeRemaining}
+          </div>
+          <div className="test-controls">
+            <button className="exit-button" onClick={() => handleExitClick()}>
+              <i className="fas fa-times"></i> Exit
+            </button>
+          </div>
+        </div>
+        <div className="test-content">
+          <div className="question-area">
+            <div>
+              {/* Image section */}
+              {currentQ.svg_image && currentQ.svg_image !== "" && (
+                <div className="images-container">
+                  <div
+                    className="question-image question-image-with-svg"
+                    dangerouslySetInnerHTML={{ __html: currentQ.svg_image }}
+                  />
+                </div>
+              )}
+              {currentQ.html_table && currentQ.html_table !== "" && (
+                <div className="images-container">
+                  <div
+                    className="question-image"
+                    dangerouslySetInnerHTML={{ __html: currentQ.html_table }}
+                  />
+                </div>
+              )}
+              {/* Passage section */}
+              <QuestionContent
+                passage={currentQ.passage}
+                formatMathExpression={formatMathExpression}
+              />
+            </div>
+            <div>
+              <div className="exam-question-container">
+                <div className="exam-question-number">
+                  <span>{currentQuestion + 1}</span>
+                </div>
+                <div className="question-tools">
+                  <QuestionTimer
+                    ref={timerRef}
+                    questionIndex={currentQuestion}
+                  />
+                  <div
+                    className={`mark-question ${
+                      markedQuestions[currentQuestion] ? "marked" : ""
+                    }`}
+                    onClick={toggleMarkQuestion}
+                    title="Mark this question for review"
+                  >
+                    <i className="far fa-bookmark"></i>
+                  </div>
+                  <div
+                    className={`cross-mode ${
+                      isCrossModeActive() ? "active" : ""
+                    }`}
+                    onClick={toggleCrossMode}
+                    title="Toggle cross-out mode"
+                  >
+                    <i className="fas fa-times"></i>
+                  </div>
+                </div>
+              </div>
+              <QuestionContent
+                question={currentQ.question}
+                formatMathExpression={formatMathExpression}
+              />
+              <div className="answer-options">
+                <div className="free-response-message">
+                  <em>
+                    This is a free response question. Please write your answer
+                    on paper or in the provided field (if available).
+                  </em>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="test-footer">
+          <button
+            className="nav-button previous"
+            onClick={handlePreviousQuestion}
+            disabled={currentQuestion === 0}
+          >
+            <i className="fas fa-chevron-left"></i> Previous
+          </button>
+          {currentQuestion < currentModule.questions.length - 1 && (
+            <button className="nav-button next" onClick={handleNextQuestion}>
+              Next <i className="fas fa-chevron-right"></i>
+            </button>
+          )}
+          {currentQuestion === currentModule.questions.length - 1 &&
+            !isLastModule && (
+              <button
+                className="nav-button next-module"
+                onClick={handleNextModule}
+              >
+                Next Module <i className="fas fa-arrow-right"></i>
+              </button>
+            )}
+          {currentQuestion === currentModule.questions.length - 1 &&
+            isLastModule && (
+              <button
+                className="nav-button finish-test"
+                onClick={handleFinishTest}
+              >
+                Finish Test <i className="fas fa-check"></i>
+              </button>
+            )}
+        </div>
+      </div>
+    );
   }
 
   // Transform choices into the format we need
@@ -1093,14 +1236,11 @@ const TestInterface = ({ testType, onExit }) => {
   });
 
   // Get the current question's info
-  const currentQuestionId = currentQ.id;
+  const currentQuestionId = currentQ.question_id;
   const moduleIndex = examData.current_module - 1;
 
-  // Just use the question index as the key for simplicity
-  const questionKey = currentQuestion;
-
-  // Get the current answer for this specific question using the key
-  const currentQuestionAnswer = selectedAnswers[questionKey] || null;
+  // Use questionId as the key for selectedAnswers
+  const currentQuestionAnswer = selectedAnswers[currentQuestionId] || null;
 
   return (
     <div className="test-interface">
@@ -1276,8 +1416,8 @@ const TestInterface = ({ testType, onExit }) => {
           </div>
           <div className="question-buttons">
             {currentModule.questions.map((q, index) => {
-              // Simply use the question index as key
-              const qKey = index;
+              // Use question_id as key
+              const qKey = q.question_id;
 
               // Check if this question has been answered
               const isAnswered = !!selectedAnswers[qKey];
