@@ -113,7 +113,7 @@ const TestInterface = ({ testType, onExit }) => {
   const componentIdRef = useRef(`TestInterface_${++mountCount}`);
   const componentId = componentIdRef.current;
 
-  console.log(`${componentId}: Component rendering with testType:`, testType);
+  // console.log(`${componentId}: Component rendering with testType:`, testType);
 
   const [examData, setExamData] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -874,9 +874,6 @@ const TestInterface = ({ testType, onExit }) => {
   const handleNextModule = () => {
     if (!examData) return;
 
-    // Pause the current question timer
-    pauseQuestionTimer(currentQuestion);
-
     // Pause the module timer
     pauseModuleTimer();
 
@@ -975,7 +972,7 @@ const TestInterface = ({ testType, onExit }) => {
     console.log("handleFinishTest called - finishing the test");
 
     // Pause the current question timer
-    pauseQuestionTimer(currentQuestion);
+    pauseModuleTimer();
 
     // Set isFinishing state to true - this will be used in handleExitConfirm
     setIsFinishing(true);
