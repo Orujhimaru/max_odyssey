@@ -565,6 +565,41 @@ const TestInterface = ({ testType, onExit }) => {
     };
   }, [testType, componentId]);
 
+  // After examData is loaded and validated, initialize all timers to 0 if not present
+  useEffect(() => {
+    if (examData && examData.exam_data) {
+      // Log the full examData object from backend
+      console.log("[BACKEND examData]", examData);
+      // Log all questions' topic and subtopic
+      examData.exam_data.forEach((module, mIdx) => {
+        if (module.questions && Array.isArray(module.questions)) {
+          module.questions.forEach((q, qIdx) => {
+            console.log(
+              `[Q] Module ${mIdx + 1} Q${qIdx + 1}: topic='${
+                q.question_topic
+              }', subtopic='${q.question_subtopic}'`
+            );
+          });
+        }
+      });
+      const allTimers = JSON.parse(
+        localStorage.getItem("testQuestionTimers") || "{}"
+      );
+      examData.exam_data.forEach((module) => {
+        if (module.questions && Array.isArray(module.questions)) {
+          module.questions.forEach((q, idx) => {
+            const globalIndex =
+              idx + (module.module_index ? module.module_index * 1000 : 0);
+            if (allTimers[globalIndex] === undefined) {
+              allTimers[globalIndex] = 0;
+            }
+          });
+        }
+      });
+      localStorage.setItem("testQuestionTimers", JSON.stringify(allTimers));
+    }
+  }, [examData]);
+
   // Add class to body when component mounts
   useEffect(() => {
     console.log(`${componentId}: Body class effect running`);
@@ -770,37 +805,41 @@ const TestInterface = ({ testType, onExit }) => {
     document.body.style.overflow = "";
   };
 
+  const timerRef = useRef();
+
   const handleNextQuestion = () => {
     if (!examData) return;
-
-    // Get the current module using array indexing
     const currentModule = examData.exam_data[examData.current_module - 1];
     if (!currentModule || !currentModule.questions) return;
-
     if (currentQuestion < currentModule.questions.length - 1) {
-      const nextQuestionIndex = currentQuestion + 1;
-      console.log(`Moving to next question: ${nextQuestionIndex}`);
-      setCurrentQuestion(nextQuestionIndex);
+      // Save timer value before changing question
+      const currentTime = timerRef.current?.getCurrentTime?.();
+      if (currentTime !== undefined) {
+        const savedTimers = JSON.parse(
+          localStorage.getItem("testQuestionTimers") || "{}"
+        );
+        savedTimers[currentQuestion] = currentTime * 1000;
+        localStorage.setItem("testQuestionTimers", JSON.stringify(savedTimers));
+      }
+      setCurrentQuestion(currentQuestion + 1);
     }
-
-    // Add logging to help with debugging
-    console.log(`Current selected answers:`, selectedAnswers);
   };
 
   const handlePreviousQuestion = () => {
     if (!examData) return;
-
-    // Access current module using array indexing
     const currentModule = examData.exam_data[examData.current_module - 1];
     if (!currentModule || !currentModule.questions) return;
-
     if (currentQuestion > 0) {
-      const prevQuestionIndex = currentQuestion - 1;
-      console.log(`Moving to previous question: ${prevQuestionIndex}`);
-      setCurrentQuestion(prevQuestionIndex);
-
-      // Add logging for debugging
-      console.log(`Current selected answers:`, selectedAnswers);
+      // Save timer value before changing question
+      const currentTime = timerRef.current?.getCurrentTime?.();
+      if (currentTime !== undefined) {
+        const savedTimers = JSON.parse(
+          localStorage.getItem("testQuestionTimers") || "{}"
+        );
+        savedTimers[currentQuestion] = currentTime * 1000;
+        localStorage.setItem("testQuestionTimers", JSON.stringify(savedTimers));
+      }
+      setCurrentQuestion(currentQuestion - 1);
     }
   };
 
@@ -920,15 +959,6 @@ const TestInterface = ({ testType, onExit }) => {
     // Prevent scrolling of the underlying content
     document.body.style.overflow = "hidden";
   };
-
-  // Use useCallback for handleQuestionTimeUpdate
-  const handleQuestionTimeUpdate = useCallback((questionIndex, timeSpent) => {
-    const savedTimers = JSON.parse(
-      localStorage.getItem("testQuestionTimers") || "{}"
-    );
-    savedTimers[questionIndex] = timeSpent;
-    localStorage.setItem("testQuestionTimers", JSON.stringify(savedTimers));
-  }, []);
 
   if (loading) {
     return <LoadingScreen />;
@@ -1138,10 +1168,7 @@ const TestInterface = ({ testType, onExit }) => {
                 <span>{currentQuestion + 1}</span>
               </div>
               <div className="question-tools">
-                <QuestionTimer
-                  questionIndex={currentQuestion}
-                  onTimeUpdate={handleQuestionTimeUpdate}
-                />
+                <QuestionTimer ref={timerRef} questionIndex={currentQuestion} />
                 <div
                   className={`mark-question ${
                     markedQuestions[currentQuestion] ? "marked" : ""
@@ -1247,6 +1274,17 @@ const TestInterface = ({ testType, onExit }) => {
                     isAnswered ? "answered" : ""
                   }`}
                   onClick={() => {
+                    const currentTime = timerRef.current?.getCurrentTime?.();
+                    if (currentTime !== undefined) {
+                      const savedTimers = JSON.parse(
+                        localStorage.getItem("testQuestionTimers") || "{}"
+                      );
+                      savedTimers[currentQuestion] = currentTime * 1000;
+                      localStorage.setItem(
+                        "testQuestionTimers",
+                        JSON.stringify(savedTimers)
+                      );
+                    }
                     setCurrentQuestion(index);
                     setNavigatorOpen(false);
                   }}

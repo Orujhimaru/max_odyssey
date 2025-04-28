@@ -1,55 +1,83 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import "./QuestionTimer.css";
 
-const QuestionTimer = ({ questionIndex, onTimeUpdate }) => {
-  // Initialize from localStorage if available
-  const getInitialTime = () => {
+const QuestionTimer = forwardRef(({ questionIndex }, ref) => {
+  // Helper to get the saved time for a question (in seconds)
+  const getSavedTime = (qIdx) => {
     const savedTimers = JSON.parse(
       localStorage.getItem("testQuestionTimers") || "{}"
     );
-    return savedTimers[questionIndex]
-      ? Math.floor(savedTimers[questionIndex] / 1000)
-      : 0;
+    return savedTimers[qIdx] ? Math.floor(savedTimers[qIdx] / 1000) : 0;
   };
 
-  const [timeSpent, setTimeSpent] = useState(getInitialTime());
+  const [timeSpent, setTimeSpent] = useState(() => {
+    const t = getSavedTime(questionIndex);
+    // console.log(`[Timer] INIT q${questionIndex}: ${t}s`);
+    return t;
+  });
   const intervalRef = useRef(null);
 
-  // Start timer on mount and when questionIndex changes
+  // Expose getCurrentTime to parent
+  useImperativeHandle(
+    ref,
+    () => ({
+      getCurrentTime: () => timeSpent,
+    }),
+    [timeSpent]
+  );
+
+  // On question change, set timer state to value in localStorage
   useEffect(() => {
-    // On question change, persist previous time
+    const initialTime = getSavedTime(questionIndex);
+    setTimeSpent(initialTime);
+    // console.log(`[Timer] INIT/CHANGE q${questionIndex}: ${initialTime}s`);
+
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-    // Reset timer to saved value or 0
-    setTimeSpent(getInitialTime());
-    // Start new timer
+
     intervalRef.current = setInterval(() => {
-      setTimeSpent((prev) => prev + 1);
+      setTimeSpent((prev) => {
+        const newTime = prev + 1;
+        // Save to localStorage in ms
+        const savedTimers = JSON.parse(
+          localStorage.getItem("testQuestionTimers") || "{}"
+        );
+        savedTimers[questionIndex] = newTime * 1000;
+        localStorage.setItem("testQuestionTimers", JSON.stringify(savedTimers));
+        // console.log(`[Timer] TICK q${questionIndex}: ${newTime}s (saved)`);
+        return newTime;
+      });
     }, 1000);
+
     return () => {
-      // On unmount or question change, persist time
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
-      if (onTimeUpdate) {
-        onTimeUpdate(questionIndex, timeSpent);
-      }
+      // On cleanup, always use the value from localStorage (most up-to-date)
+      const savedTimers = JSON.parse(
+        localStorage.getItem("testQuestionTimers") || "{}"
+      );
+      const localVal = savedTimers[questionIndex]
+        ? Math.floor(savedTimers[questionIndex] / 1000)
+        : 0;
+      savedTimers[questionIndex] = localVal * 1000;
+      localStorage.setItem("testQuestionTimers", JSON.stringify(savedTimers));
+      console
+        .log
+        // `[Timer] CLEANUP q${questionIndex}: ${localVal}s (saved from localStorage)`
+        ();
     };
     // eslint-disable-next-line
   }, [questionIndex]);
-
-  // Persist time on unmount
-  useEffect(() => {
-    return () => {
-      if (onTimeUpdate) {
-        onTimeUpdate(questionIndex, timeSpent);
-      }
-    };
-    // eslint-disable-next-line
-  }, []);
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -63,6 +91,6 @@ const QuestionTimer = ({ questionIndex, onTimeUpdate }) => {
       <span>{formatTime(timeSpent)}</span>
     </div>
   );
-};
+});
 
 export default QuestionTimer;
