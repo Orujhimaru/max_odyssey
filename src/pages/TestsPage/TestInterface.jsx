@@ -582,21 +582,33 @@ const TestInterface = ({ testType, onExit }) => {
           });
         }
       });
-      const allTimers = JSON.parse(
-        localStorage.getItem("testQuestionTimers") || "{}"
-      );
-      examData.exam_data.forEach((module) => {
-        if (module.questions && Array.isArray(module.questions)) {
-          module.questions.forEach((q, idx) => {
-            const globalIndex =
-              idx + (module.module_index ? module.module_index * 1000 : 0);
-            if (allTimers[globalIndex] === undefined) {
-              allTimers[globalIndex] = 0;
-            }
-          });
-        }
-      });
-      localStorage.setItem("testQuestionTimers", JSON.stringify(allTimers));
+      // If backend provides per-question timers, use them
+      if (examData.user_progress && examData.user_progress.question_times) {
+        localStorage.setItem(
+          "testQuestionTimers",
+          JSON.stringify(examData.user_progress.question_times)
+        );
+        console.log(
+          "[Timer] Initialized from backend question_times:",
+          examData.user_progress.question_times
+        );
+      } else {
+        const allTimers = JSON.parse(
+          localStorage.getItem("testQuestionTimers") || "{}"
+        );
+        examData.exam_data.forEach((module) => {
+          if (module.questions && Array.isArray(module.questions)) {
+            module.questions.forEach((q, idx) => {
+              const globalIndex =
+                idx + (module.module_index ? module.module_index * 1000 : 0);
+              if (allTimers[globalIndex] === undefined) {
+                allTimers[globalIndex] = 0;
+              }
+            });
+          }
+        });
+        localStorage.setItem("testQuestionTimers", JSON.stringify(allTimers));
+      }
     }
   }, [examData]);
 
@@ -619,6 +631,16 @@ const TestInterface = ({ testType, onExit }) => {
     };
   }, [componentId]);
 
+  // Add cleanup effect to always remove timer values on unmount
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem("testQuestionTimers");
+      console.log(
+        "[Timer] testQuestionTimers removed from localStorage (unmount)"
+      );
+    };
+  }, []);
+
   // Handle exit button click, with optional isFinishing parameter
   const handleExitClick = () => {
     // For regular exit, isFinishing should be false
@@ -635,36 +657,32 @@ const TestInterface = ({ testType, onExit }) => {
     const userProgress = {
       current_module: examData ? examData.current_module : 1,
       modules: {
-        module_1: {
-          questions: [],
-        },
-        module_2: {
-          questions: [],
-        },
-        module_3: {
-          questions: [],
-        },
-        module_4: {
-          questions: [],
-        },
+        module_1: { questions: [] },
+        module_2: { questions: [] },
+        module_3: { questions: [] },
+        module_4: { questions: [] },
       },
       question_times: {}, // Add timing information
       module_time_remaining: moduleTimeSeconds || 0, // Add current module time remaining
     };
 
+    // Read timer data from localStorage
+    const timersFromStorage = JSON.parse(
+      localStorage.getItem("testQuestionTimers") || "{}"
+    );
+    Object.entries(timersFromStorage).forEach(([questionIndex, timeInMs]) => {
+      userProgress.question_times[questionIndex] = timeInMs;
+    });
+
     // Move all answers to their correct module based on module_index
     Object.values(userAnswers).forEach((answer) => {
       const { module_index, question_index, selected_option } = answer;
-
-      // Make sure the module index is valid
       if (module_index >= 0 && module_index < 4) {
         const moduleKey = `module_${module_index + 1}`;
-
-        // Add the question to the appropriate module
         userProgress.modules[moduleKey].questions.push({
           question_id: question_index + 1, // Use 1-based question IDs
           answer: selected_option,
-          time_spent: questionTimers[question_index] || 0, // Add time spent
+          time_spent: timersFromStorage[question_index] || 0, // Add time spent from localStorage
         });
       }
     });
@@ -728,9 +746,6 @@ const TestInterface = ({ testType, onExit }) => {
   // Handle exit confirmation
   const handleExitConfirm = async () => {
     try {
-      // Pause the current question timer
-      pauseQuestionTimer(currentQuestion);
-
       // Pause the module timer
       pauseModuleTimer();
 
@@ -782,11 +797,13 @@ const TestInterface = ({ testType, onExit }) => {
         console.log("Server response:", response);
 
         // Clear the localStorage items for this exam
-        localStorage.removeItem("currentExamId");
-        localStorage.removeItem("testUserProgress");
-        localStorage.removeItem("testUserAnswers");
         localStorage.removeItem("testQuestionTimers");
+        localStorage.removeItem("testUserProgress");
+        localStorage.removeItem("currentExamId");
         localStorage.removeItem("moduleTimeRemaining");
+        console.log(
+          "[Timer] testQuestionTimers removed from localStorage (exit)"
+        );
       }
 
       // Exit immediately without delay
