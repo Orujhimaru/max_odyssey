@@ -707,6 +707,18 @@
   font-weight: 500;
 }
 
+.passage ul {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-left: 20px;
+}
+.passage > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .nav-button.next-module:hover {
   background-color: #3a5cb8;
 }
