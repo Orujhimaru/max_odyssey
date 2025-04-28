@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import "./TestInterface.css";
 import { api } from "../../services/api";
 import LoadingScreen from "./LoadingScreen";
@@ -7,11 +7,94 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { formatMathExpression } from "../../utils/mathUtils";
+import QuestionTimer from "../../components/QuestionTimer/QuestionTimer";
 
 // Debugging: Track component mount/unmount cycles and effect runs
 console.log("TestInterface.jsx module loaded");
 let mountCount = 0;
 let effectRunCount = 0;
+
+// Memoized QuestionContent component
+const QuestionContent = memo(function QuestionContent({
+  passage,
+  question,
+  formatMathExpression,
+}) {
+  return (
+    <>
+      {/* Passage section */}
+      {passage && (
+        <div className="passage">
+          <div dangerouslySetInnerHTML={{ __html: passage }} />
+        </div>
+      )}
+      <div className="question-text">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm, remarkMath]}
+          rehypePlugins={[rehypeKatex]}
+          components={{
+            p: ({ node, children, ...props }) => {
+              const childArray = React.Children.toArray(children);
+              const firstElement = childArray[0];
+              const firstIsKatex =
+                React.isValidElement(firstElement) &&
+                firstElement.props &&
+                firstElement.props.className &&
+                firstElement.props.className.includes("katex");
+              if (!firstIsKatex) {
+                return <p {...props}>{children}</p>;
+              }
+              const katexIndexes = [];
+              childArray.forEach((child, index) => {
+                if (
+                  React.isValidElement(child) &&
+                  child.props.className &&
+                  child.props.className.includes("katex")
+                ) {
+                  katexIndexes.push(index);
+                }
+              });
+              const hasConsecutiveKatex =
+                katexIndexes.length >= 2 &&
+                katexIndexes[1] === katexIndexes[0] + 1;
+              return (
+                <div {...props}>
+                  {React.Children.map(children, (child, index) => {
+                    if (
+                      React.isValidElement(child) &&
+                      child.props.className &&
+                      child.props.className.includes("katex")
+                    ) {
+                      if (index === katexIndexes[0]) {
+                        return React.cloneElement(child, {
+                          style: {
+                            display: "block",
+                            marginBottom: "10px",
+                          },
+                        });
+                      }
+                      if (index === katexIndexes[1] && hasConsecutiveKatex) {
+                        return React.cloneElement(child, {
+                          style: {
+                            display: "block",
+                            marginBottom: "10px",
+                          },
+                        });
+                      }
+                    }
+                    return child;
+                  })}
+                </div>
+              );
+            },
+          }}
+        >
+          {question && formatMathExpression(question)}
+        </ReactMarkdown>
+      </div>
+    </>
+  );
+});
 
 const TestInterface = ({ testType, onExit }) => {
   // Create a ref to track component instance
@@ -33,12 +116,6 @@ const TestInterface = ({ testType, onExit }) => {
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [navigatorOpen, setNavigatorOpen] = useState(false);
   const [isFinishing, setIsFinishing] = useState(false);
-
-  // Question timer state
-  const [questionTimers, setQuestionTimers] = useState({});
-  const timerRef = useRef(null);
-  const lastQuestionRef = useRef(null);
-  const timerStartTimeRef = useRef(null);
 
   // Module timer ref
   const moduleTimerRef = useRef(null);
@@ -86,11 +163,9 @@ const TestInterface = ({ testType, onExit }) => {
     if (savedTimers) {
       try {
         const parsedTimers = JSON.parse(savedTimers);
-        setQuestionTimers(parsedTimers);
         console.log("Loaded question timers:", parsedTimers);
       } catch (e) {
         console.error("Error loading saved timers:", e);
-        setQuestionTimers({});
       }
     }
 
@@ -181,33 +256,6 @@ const TestInterface = ({ testType, onExit }) => {
     console.log("userAnswers updated:", userAnswers);
   }, [userAnswers]);
 
-  // Timer functionality for tracking time spent on questions
-  useEffect(() => {
-    // Start or pause timer based on question change
-    if (examData && !loading) {
-      // If we're switching questions, pause the timer for the previous question
-      if (
-        lastQuestionRef.current !== null &&
-        lastQuestionRef.current !== currentQuestion
-      ) {
-        pauseQuestionTimer(lastQuestionRef.current);
-      }
-
-      // Start timer for current question
-      startQuestionTimer(currentQuestion);
-
-      // Update lastQuestionRef
-      lastQuestionRef.current = currentQuestion;
-    }
-
-    return () => {
-      // Pause the timer for the current question when component unmounts
-      if (currentQuestion !== null) {
-        pauseQuestionTimer(currentQuestion);
-      }
-    };
-  }, [currentQuestion, examData, loading]);
-
   // Module timer functionality
   useEffect(() => {
     // Only run the module timer when exam data is loaded and not in loading state
@@ -295,47 +343,6 @@ const TestInterface = ({ testType, onExit }) => {
     } else {
       // If this is the last module, finish the test
       handleFinishTest();
-    }
-  };
-
-  // Start the timer for a specific question
-  const startQuestionTimer = (questionIndex) => {
-    // Pause any running timer
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
-
-    // Start a new timer for the current question
-    timerStartTimeRef.current = Date.now();
-
-    timerRef.current = setInterval(() => {
-      const elapsedTime = Date.now() - timerStartTimeRef.current;
-
-      setQuestionTimers((prevTimers) => {
-        // Get the current time for this question (or 0 if it's new)
-        const currentTime = prevTimers[questionIndex] || 0;
-        // Add the elapsed time since the timer started
-        const newTime = currentTime + 1000; // Add 1 second
-
-        // Create the updated timers object
-        const newTimers = {
-          ...prevTimers,
-          [questionIndex]: newTime,
-        };
-
-        // Save to localStorage
-        localStorage.setItem("testQuestionTimers", JSON.stringify(newTimers));
-
-        return newTimers;
-      });
-    }, 1000);
-  };
-
-  // Pause the timer for a specific question
-  const pauseQuestionTimer = (questionIndex) => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
     }
   };
 
@@ -609,11 +616,6 @@ const TestInterface = ({ testType, onExit }) => {
       question_times: {}, // Add timing information
       module_time_remaining: moduleTimeSeconds || 0, // Add current module time remaining
     };
-
-    // Add timer data to userProgress
-    Object.entries(questionTimers).forEach(([questionIndex, timeInMs]) => {
-      userProgress.question_times[questionIndex] = timeInMs;
-    });
 
     // Move all answers to their correct module based on module_index
     Object.values(userAnswers).forEach((answer) => {
@@ -919,6 +921,15 @@ const TestInterface = ({ testType, onExit }) => {
     document.body.style.overflow = "hidden";
   };
 
+  // Use useCallback for handleQuestionTimeUpdate
+  const handleQuestionTimeUpdate = useCallback((questionIndex, timeSpent) => {
+    const savedTimers = JSON.parse(
+      localStorage.getItem("testQuestionTimers") || "{}"
+    );
+    savedTimers[questionIndex] = timeSpent;
+    localStorage.setItem("testQuestionTimers", JSON.stringify(savedTimers));
+  }, []);
+
   if (loading) {
     return <LoadingScreen />;
   }
@@ -1116,16 +1127,10 @@ const TestInterface = ({ testType, onExit }) => {
               </div>
             )}
             {/* Passage section */}
-            {currentQ.passage && (
-              <div className="passage">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm, remarkMath]}
-                  rehypePlugins={[rehypeKatex]}
-                >
-                  {currentQ.passage}
-                </ReactMarkdown>
-              </div>
-            )}
+            <QuestionContent
+              passage={currentQ.passage}
+              formatMathExpression={formatMathExpression}
+            />
           </div>
           <div>
             <div className="exam-question-container">
@@ -1133,120 +1138,34 @@ const TestInterface = ({ testType, onExit }) => {
                 <span>{currentQuestion + 1}</span>
               </div>
               <div className="question-tools">
+                <QuestionTimer
+                  questionIndex={currentQuestion}
+                  onTimeUpdate={handleQuestionTimeUpdate}
+                />
                 <div
-                  className="question-timer"
-                  title="Time spent on this question"
-                >
-                  <i className="far fa-clock"></i>{" "}
-                  {formatTime(questionTimers[currentQuestion] || 0)}
-                </div>
-                <button
-                  className={`mark-button ${isMarked ? "marked" : ""}`}
+                  className={`mark-question ${
+                    markedQuestions[currentQuestion] ? "marked" : ""
+                  }`}
                   onClick={toggleMarkQuestion}
-                  title="Mark for review"
+                  title="Mark this question for review"
                 >
-                  <i className={`${isMarked ? "fas" : "far"} fa-bookmark`}></i>
-                </button>
-                <button
-                  className={`cross-button ${
+                  <i className="far fa-bookmark"></i>
+                </div>
+                <div
+                  className={`cross-mode ${
                     isCrossModeActive() ? "active" : ""
                   }`}
                   onClick={toggleCrossMode}
                   title="Toggle cross-out mode"
                 >
-                  <span className="cross-text">Abc</span>
-                </button>
-                {isCrossModeActive() && (
-                  <div className="cross-mode-indicator">
-                    Click on options to cross them out
-                  </div>
-                )}
+                  <i className="fas fa-times"></i>
+                </div>
               </div>
             </div>
-            <div className="question-text">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm, remarkMath]}
-                rehypePlugins={[rehypeKatex]}
-                components={{
-                  // Custom paragraph component to handle KaTeX spans
-                  p: ({ node, children, ...props }) => {
-                    const childArray = React.Children.toArray(children);
-
-                    // Check if the first element is a KaTeX element
-                    const firstElement = childArray[0];
-                    const firstIsKatex =
-                      React.isValidElement(firstElement) &&
-                      firstElement.props &&
-                      firstElement.props.className &&
-                      firstElement.props.className.includes("katex");
-
-                    // If the first element is not KaTeX, don't apply display:block to any KaTeX elements
-                    if (!firstIsKatex) {
-                      return <p {...props}>{children}</p>;
-                    }
-
-                    // Find indexes of KaTeX elements
-                    const katexIndexes = [];
-                    childArray.forEach((child, index) => {
-                      if (
-                        React.isValidElement(child) &&
-                        child.props.className &&
-                        child.props.className.includes("katex")
-                      ) {
-                        katexIndexes.push(index);
-                      }
-                    });
-
-                    // Check if we have at least two KaTeX elements and if they're consecutive
-                    const hasConsecutiveKatex =
-                      katexIndexes.length >= 2 &&
-                      katexIndexes[1] === katexIndexes[0] + 1;
-
-                    // Apply styles only to first element, and to second if it's consecutive
-                    return (
-                      <div {...props}>
-                        {React.Children.map(children, (child, index) => {
-                          // Check if this is a KaTeX element
-                          if (
-                            React.isValidElement(child) &&
-                            child.props.className &&
-                            child.props.className.includes("katex")
-                          ) {
-                            // First element always gets block display
-                            if (index === katexIndexes[0]) {
-                              return React.cloneElement(child, {
-                                style: {
-                                  display: "block",
-                                  marginBottom: "10px",
-                                },
-                              });
-                            }
-
-                            // Second element gets block display only if consecutive to first
-                            if (
-                              index === katexIndexes[1] &&
-                              hasConsecutiveKatex
-                            ) {
-                              return React.cloneElement(child, {
-                                style: {
-                                  display: "block",
-                                  marginBottom: "10px",
-                                },
-                              });
-                            }
-                          }
-
-                          // Return all other elements unchanged
-                          return child;
-                        })}
-                      </div>
-                    );
-                  },
-                }}
-              >
-                {currentQ.question && formatMathExpression(currentQ.question)}
-              </ReactMarkdown>
-            </div>
+            <QuestionContent
+              question={currentQ.question}
+              formatMathExpression={formatMathExpression}
+            />
             <div className="answer-options">
               {options.map((option) => (
                 <div

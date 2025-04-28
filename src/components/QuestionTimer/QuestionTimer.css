@@ -1,0 +1,24 @@
+.question-timer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: var(--bg-secondary);
+  transition: all 0.2s ease;
+}
+
+.question-timer i {
+  font-size: 12px;
+}
+
+.question-timer span {
+  font-family: monospace;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .question-timer {
+  background-color: var(--bg-tertiary);
+}
