@@ -105,149 +105,47 @@ const getBoxShade = (val) => {
 };
 
 const LabPage = () => {
-  // Mock data for monthly calendar view
-  const monthsData = [
+  // Mock months data for the yearly view
+  const yearlyMonths = [
+    { name: "JAN", days: 31 },
+    { name: "FEB", days: 28 },
+    { name: "MAR", days: 31 },
+    { name: "APR", days: 30 },
+    { name: "MAY", days: 31 },
+    { name: "JUN", days: 30 },
+    { name: "JUL", days: 31 },
+    { name: "AUG", days: 31 },
+    { name: "SEP", days: 30 },
+    { name: "OCT", days: 31 },
+    { name: "NOV", days: 30 },
+    { name: "DEC", days: 31 },
+  ];
+
+  // Mock monthly activity data (5x5 grid for each month)
+  const monthlyData = [
     {
       name: "May 2024",
       weekdays: ["M", "T", "W", "T", "F"],
-      days: [
-        { day: 1, activity: 2 },
-        { day: 2, activity: 1 },
-        { day: 3, activity: 3 },
-        { day: 4, activity: 0 },
-        { day: 5, activity: 2 },
-        { day: 6, activity: 1 },
-        { day: 7, activity: 0 },
-        { day: 8, activity: 2 },
-        { day: 9, activity: 3 },
-        { day: 10, activity: 1 },
-        { day: 11, activity: 0 },
-        { day: 12, activity: 1 },
-        { day: 13, activity: 2 },
-        { day: 14, activity: 0 },
-        { day: 15, activity: 3 },
-        { day: 16, activity: 1 },
-        { day: 17, activity: 0 },
-        { day: 18, activity: 2 },
-        { day: 19, activity: 1 },
-        { day: 20, activity: 3 },
-        { day: 21, activity: 0 },
-        { day: 22, activity: 1 },
-        { day: 23, activity: 2 },
-        { day: 24, activity: 0 },
-        { day: 25, activity: 1 },
-      ],
+      days: Array(25)
+        .fill(0)
+        .map((_, i) => ({
+          day: i + 1,
+          activity: Math.floor(Math.random() * 4),
+        })),
     },
     {
       name: "June 2024",
       weekdays: ["M", "T", "W", "T", "F"],
-      days: [
-        { day: 1, activity: 1 },
-        { day: 2, activity: 2 },
-        { day: 3, activity: 0 },
-        { day: 4, activity: 3 },
-        { day: 5, activity: 1 },
-        { day: 6, activity: 0 },
-        { day: 7, activity: 2 },
-        { day: 8, activity: 1 },
-        { day: 9, activity: 3 },
-        { day: 10, activity: 0 },
-        { day: 11, activity: 1 },
-        { day: 12, activity: 2 },
-        { day: 13, activity: 0 },
-        { day: 14, activity: 1 },
-        { day: 15, activity: 0 },
-        { day: 16, activity: 3 },
-        { day: 17, activity: 2 },
-        { day: 18, activity: 1 },
-        { day: 19, activity: 0 },
-        { day: 20, activity: 1 },
-        { day: 21, activity: 3 },
-        { day: 22, activity: 2 },
-        { day: 23, activity: 0 },
-        { day: 24, activity: 1 },
-        { day: 25, activity: 2 },
-      ],
+      days: Array(25)
+        .fill(0)
+        .map((_, i) => ({
+          day: i + 1,
+          activity: Math.floor(Math.random() * 4),
+        })),
     },
   ];
 
-  // Mock data for year view
-  const yearData = [
-    {
-      month: "Jan",
-      activity: Array(15)
-        .fill(0)
-        .map(() => Math.floor(Math.random() * 4)),
-    },
-    {
-      month: "Feb",
-      activity: Array(15)
-        .fill(0)
-        .map(() => Math.floor(Math.random() * 4)),
-    },
-    {
-      month: "Mar",
-      activity: Array(15)
-        .fill(0)
-        .map(() => Math.floor(Math.random() * 4)),
-    },
-    {
-      month: "Apr",
-      activity: Array(15)
-        .fill(0)
-        .map(() => Math.floor(Math.random() * 4)),
-    },
-    {
-      month: "May",
-      activity: Array(15)
-        .fill(0)
-        .map(() => Math.floor(Math.random() * 4)),
-    },
-    {
-      month: "Jun",
-      activity: Array(15)
-        .fill(0)
-        .map(() => Math.floor(Math.random() * 4)),
-    },
-    {
-      month: "Jul",
-      activity: Array(15)
-        .fill(0)
-        .map(() => Math.floor(Math.random() * 4)),
-    },
-    {
-      month: "Aug",
-      activity: Array(15)
-        .fill(0)
-        .map(() => Math.floor(Math.random() * 4)),
-    },
-    {
-      month: "Sep",
-      activity: Array(15)
-        .fill(0)
-        .map(() => Math.floor(Math.random() * 4)),
-    },
-    {
-      month: "Oct",
-      activity: Array(15)
-        .fill(0)
-        .map(() => Math.floor(Math.random() * 4)),
-    },
-    {
-      month: "Nov",
-      activity: Array(15)
-        .fill(0)
-        .map(() => Math.floor(Math.random() * 4)),
-    },
-    {
-      month: "Dec",
-      activity: Array(15)
-        .fill(0)
-        .map(() => Math.floor(Math.random() * 4)),
-    },
-  ];
-
-  // Mock data for performance metrics
+  // Mock subtopic performance data
   const subtopicData = [
     {
       name: "Critical Reasoning",
@@ -283,6 +181,50 @@ const LabPage = () => {
     },
   ];
 
+  // Function to determine if a day in January should be active (green)
+  const isJanuaryActive = (row, col) => {
+    // First day in first 3 rows active
+    if (row < 3 && col === 0) return true;
+    // First 2 days in row 3 active
+    if (row === 2 && col === 1) return true;
+    // First 2 days in rows 5-6 active
+    if ((row === 4 || row === 5) && col < 2) return true;
+    return false;
+  };
+
+  // Render a single month for the yearly calendar
+  const renderMonthColumn = (month, monthIndex) => {
+    return (
+      <div className="month-column" key={month.name}>
+        <div className="month-label">{month.name}</div>
+        <div className="month-grid">
+          {/* Generate 7 rows of 5 squares each */}
+          {Array(7)
+            .fill(0)
+            .map((_, rowIndex) => (
+              <div className="month-row" key={`row-${rowIndex}`}>
+                {Array(5)
+                  .fill(0)
+                  .map((_, colIndex) => {
+                    const isActive =
+                      monthIndex === 0 && isJanuaryActive(rowIndex, colIndex);
+                    return (
+                      <div
+                        className={`activity-square ${
+                          isActive ? "active-day" : ""
+                        }`}
+                        key={`square-${rowIndex}-${colIndex}`}
+                      />
+                    );
+                  })}
+              </div>
+            ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Function to determine activity styles for the monthly calendar
   const getActivityStyle = (activity) => {
     if (activity === 0) return {};
     if (activity === 1) return { backgroundColor: "var(--activity-1)" };
@@ -302,16 +244,47 @@ const LabPage = () => {
       </header>
 
       <div className="lab-content">
+        {/* Yearly Activity Calendar Section */}
+        <div className="yearly-activity-section">
+          <div className="yearly-activity-header">
+            <h2 className="yearly-activity-title">Training Activity</h2>
+            <div className="year-dropdown">
+              <span>2025</span>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4 6L8 10L12 6"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div className="yearly-calendar-container">
+            {yearlyMonths.map((month, index) =>
+              renderMonthColumn(month, index)
+            )}
+          </div>
+        </div>
+
         <div className="lab-row">
           <div className="lab-card activity-card">
             <div className="lab-card-header">
               <div className="lab-card-icon">
                 <CalendarIcon />
               </div>
-              <h2>Activity Level</h2>
+              <h2>Monthly Activity</h2>
             </div>
             <div className="lab-calendar-grids">
-              {monthsData.map((month, index) => (
+              {monthlyData.map((month, index) => (
                 <div className="lab-calendar-month" key={index}>
                   <div className="lab-calendar-month-title">{month.name}</div>
                   <div className="lab-calendar-weekdays">
@@ -387,38 +360,6 @@ const LabPage = () => {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-
-        <div className="lab-card year-view-card">
-          <div className="lab-card-header">
-            <div className="lab-card-icon">
-              <ClockIcon />
-            </div>
-            <h2>Year Activity</h2>
-          </div>
-          <div className="year-view-container">
-            {yearData.map((month, monthIndex) => (
-              <div className="year-month" key={monthIndex}>
-                <div className="year-month-name">{month.month}</div>
-                <div className="year-month-grid">
-                  {[0, 1, 2].map((row) => (
-                    <div className="year-grid-row" key={row}>
-                      {[0, 1, 2, 3, 4].map((col) => {
-                        const index = row * 5 + col;
-                        return index < month.activity.length ? (
-                          <div
-                            className="year-grid-cell"
-                            key={col}
-                            style={getActivityStyle(month.activity[index])}
-                          ></div>
-                        ) : null;
-                      })}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>

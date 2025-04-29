@@ -1,13 +1,15 @@
 :root {
-  --activity-1: #8dd3c7;
-  --activity-2: #7fc8bd;
-  --activity-3: #5eb5a6;
+  --activity-1: #99d8c9;
+  --activity-2: #66c2a4;
+  --activity-3: #2ca25f;
+  --activity-day: #2ca25f;
 }
 
 [data-theme="dark"] {
   --activity-1: #245854;
   --activity-2: #2c736d;
   --activity-3: #36928a;
+  --activity-day: #2ca25f;
 }
 
 .lab-page-container {
@@ -628,4 +630,109 @@
   .day-number {
     color: #999;
   }
+}
+
+/* Yearly Activity Calendar */
+.yearly-activity-section {
+  background-color: var(--bg-primary);
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+}
+
+.yearly-activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.yearly-activity-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.year-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  border: 1px solid var(--border-color);
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.yearly-calendar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.month-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.month-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.month-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.month-row {
+  display: flex;
+  gap: 2px;
+}
+
+.activity-square {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  border: 1px solid var(--border-color);
+  background-color: transparent;
+}
+
+.activity-square.active-day {
+  background-color: var(--activity-day);
+  border-color: var(--activity-day);
+}
+
+/* Dark Mode Styles */
+[data-theme="dark"] .yearly-activity-section {
+  background-color: #1e1e1e;
+  border-color: #333;
+}
+
+[data-theme="dark"] .yearly-activity-title {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .year-dropdown {
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .month-label {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .activity-square {
+  border-color: #555;
 }
