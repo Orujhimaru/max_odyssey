@@ -271,7 +271,6 @@
   margin-bottom: 0;
   border: 1px solid #dddddd;
   /* height: fit-content; */
-  align-self: flex-end;
   max-width: 400px;
 }
 
