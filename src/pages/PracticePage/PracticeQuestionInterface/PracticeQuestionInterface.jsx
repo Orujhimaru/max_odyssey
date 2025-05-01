@@ -312,15 +312,23 @@ const PracticeQuestionInterface = ({
         <div className="question-area-interface">
           <div className="question-text-flex">
             {/* Image section */}
-            {question.svg_image !== "" && (
+            {question.svg_image && (
               <div className="images-container">
-                <div
-                  className="question-image"
-                  dangerouslySetInnerHTML={{ __html: question.svg_image }}
-                />
+                {question.svg_image.startsWith("data:image") ? (
+                  <img
+                    src={question.svg_image}
+                    alt="Question visual"
+                    className="question-image"
+                  />
+                ) : (
+                  <div
+                    className="question-image"
+                    dangerouslySetInnerHTML={{ __html: question.svg_image }}
+                  />
+                )}
               </div>
             )}
-            {question.html_table !== "" && (
+            {question.html_table && (
               <div className="images-container">
                 <div
                   className="question-image"
@@ -531,6 +539,12 @@ const PracticeQuestionInterface = ({
                     choice.slice(2).trim().startsWith("<table") ? (
                       <div
                         dangerouslySetInnerHTML={{ __html: choice.slice(2) }}
+                      />
+                    ) : choice.slice(2).trim().startsWith("data:image") ? (
+                      <img
+                        src={choice.slice(2).trim()}
+                        alt="Answer option visual"
+                        className="option-image"
                       />
                     ) : (
                       <ReactMarkdown

@@ -538,6 +538,12 @@ v bnm- .question-table caption {
   padding-block: 30px;
 }
 
+.question-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
 /* Only apply white background to images, not tables */
 .question-image:not(:has(table)) {
   background-color: white;
@@ -623,4 +629,11 @@ th {
 
 .option-text table th {
   background-color: var(--bg-secondary);
+}
+
+.option-image {
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0;
+  border-radius: 4px;
 }
