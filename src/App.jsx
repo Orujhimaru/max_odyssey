@@ -18,6 +18,7 @@ import TestReview from "./components/TestReview/TestReview";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import LabPage from "./pages/LabPage/LabPage";
+import LessonPage from "./pages/LessonPage/LessonPage";
 
 const App = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -118,6 +119,14 @@ const App = () => {
               element={
                 <ProtectedRoute>
                   <LabPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/course/:courseId/lesson/:lessonId"
+              element={
+                <ProtectedRoute>
+                  <LessonPage />
                 </ProtectedRoute>
               }
             />

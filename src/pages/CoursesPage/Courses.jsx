@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 // del
 import LockOverlay from "../../components/LockOverlay/LockOverlay";
 import "./Courses.css";
@@ -8,6 +9,7 @@ import examIcon from "../../assets/exam_icon.svg";
 import course1Bg from "../../assets/course1_bg.jpg";
 import mathBg from "../../assets/math_bg_2.png";
 
+// Updated course data with first lesson IDs for each course
 const courseData = [
   {
     id: 1,
@@ -16,6 +18,7 @@ const courseData = [
     iconColor: "#456bc4",
     background: course1Bg,
     lastUpdated: "2 days ago",
+    firstLessonId: 101, // ID of the first lesson for direct navigation
     progress: {
       current: 54,
       total: 66,
@@ -36,6 +39,7 @@ const courseData = [
     iconColor: "#4e4e4e",
     background: mathBg,
     lastUpdated: "5 days ago",
+    firstLessonId: 101, // ID of the first lesson for direct navigation
     progress: {
       current: 48,
       total: 60,
@@ -56,6 +60,7 @@ const courseData = [
     iconColor: "#0fb86b",
     background: course1Bg,
     lastUpdated: "1 week ago",
+    firstLessonId: 101, // ID of the first lesson for direct navigation
     progress: {
       current: 12,
       total: 30,
@@ -80,16 +85,42 @@ const formatTime = (seconds) => {
 };
 
 const Courses = () => {
+  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filter courses based on selected filter and search term
+  const filteredCourses = courseData.filter((course) => {
+    const matchesFilter =
+      selectedFilter === "all" ||
+      course.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = course.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
+  const handleFilterChange = (filter) => {
+    setSelectedFilter(filter);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
   return (
     <div className="courses-page">
+      <div className="courses-header">
+        <h1>Courses</h1>
+        <p>Master the SAT with our specialized courses</p>
+      </div>
+
       <div className="courses-container">
         <div className="courses-list">
-          {courseData.map((course) => (
+          {filteredCourses.map((course) => (
             <div key={course.id} className="full-course-card">
               <div
                 className="course-accent-image"
                 style={{ backgroundColor: course.iconColor }}
-                data-course-name={course.name}
               >
                 <div
                   className="accent-image"
@@ -143,12 +174,17 @@ const Courses = () => {
                     {/* <i className="fas fa-info-circle"></i> */}
                     {/* <i className="fas fa-sync-alt"></i> */}
                   </div>
-                  <button
-                    className="enter-course-btn"
-                    style={{ backgroundColor: "var(--verbal-color)" }}
+                  <Link
+                    to={`/course/${course.id}/lesson/${course.firstLessonId}`}
+                    className="enter-course-link"
                   >
-                    Enter Course
-                  </button>
+                    <button
+                      className="enter-course-btn"
+                      style={{ backgroundColor: "var(--verbal-color)" }}
+                    >
+                      Enter Course
+                    </button>
+                  </Link>
                 </div>
               </div>
               {/* delete this */}
