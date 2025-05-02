@@ -721,3 +721,28 @@
   visibility: visible !important;
   opacity: 1 !important;
 }
+
+.chapter-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  margin-right: 8px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.chapter-number,
+.lesson-number {
+  margin-right: 6px;
+  font-weight: 500;
+  color: var(--text-color);
+  flex-shrink: 0;
+}
+
+.chapter-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

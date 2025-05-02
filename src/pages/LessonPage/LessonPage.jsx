@@ -339,7 +339,7 @@ const LessonPage = () => {
             </button>
             <div className={chaptersExpanded ? "menu-open" : "menu-closed"}>
               <div className="absolute left-0 top-full mt-1 w-56">
-                {course?.chapters?.map((chapter) => (
+                {course?.chapters?.map((chapter, index) => (
                   <div className="chapter-menu-item" key={chapter.id}>
                     <a
                       href="#"
@@ -353,7 +353,9 @@ const LessonPage = () => {
                       data-discover="true"
                       className="flex"
                     >
-                      {chapter.title}
+                      <span className="chapter-dot"></span>
+                      <span className="chapter-number">{index + 1}.</span>
+                      <span className="chapter-title">{chapter.title}</span>
                     </a>
                   </div>
                 ))}
@@ -387,7 +389,7 @@ const LessonPage = () => {
             </button>
             <div className={lessonsExpanded ? "menu-open" : "menu-closed"}>
               <div className="absolute left-0 top-full mt-1 w-56">
-                {currentChapter?.lessons?.map((lesson) => (
+                {currentChapter?.lessons?.map((lesson, index) => (
                   <div
                     className={`lesson-menu-item ${
                       lesson.id === numLessonId ? "active" : ""
@@ -404,6 +406,7 @@ const LessonPage = () => {
                       className="flex items-center"
                     >
                       <span className="lesson-dot"></span>
+                      <span className="lesson-number">{index + 1}.</span>
                       <span className="flex-1 truncate">{lesson.title}</span>
                     </a>
                   </div>
