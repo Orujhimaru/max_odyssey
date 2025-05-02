@@ -31,7 +31,7 @@
 
 .chapter-dropdown-container,
 .lesson-dropdown-container {
-  position: relative;
+  position: relative !important;
   height: 100%;
   border-right: 1px solid var(--border-color);
 }
@@ -64,35 +64,64 @@
   transform: rotate(180deg);
 }
 
+.chapter-dropdown-menu,
 .lesson-dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 250px;
-  background-color: #1a1a1a;
-  border: 1px solid #2c2c2c;
-  border-top: none;
-  z-index: 150;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  max-height: 400px;
-  overflow-y: auto;
-  border-radius: 0 0 8px 8px;
-  padding: 8px 0;
+  position: absolute !important;
+  top: calc(100% - 1px) !important;
+  left: 0 !important;
+  width: 280px !important;
+  background-color: #1a1a1a !important;
+  border: 1px solid #2c2c2c !important;
+  z-index: 9999 !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8) !important;
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  border-radius: 0 0 8px 8px !important;
+  padding: 8px 0 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.chapter-menu-item {
+  border-bottom: none !important;
+  display: block !important;
+}
+
+.chapter-menu-item a {
+  display: flex !important;
+  padding: 12px 20px !important;
+  text-decoration: none !important;
+  color: #ffffff !important;
+  background-color: transparent !important;
+  transition: background-color 0.2s !important;
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.chapter-menu-item a:hover {
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .lesson-menu-item {
-  border-bottom: none;
-  position: relative;
+  border-bottom: none !important;
+  position: relative !important;
+  display: block !important;
 }
 
 .lesson-menu-item a {
-  display: flex;
-  padding: 12px 20px;
-  text-decoration: none;
-  color: #ffffff;
-  transition: background-color 0.2s;
-  font-size: 15px;
-  line-height: 1.4;
+  display: flex !important;
+  padding: 12px 20px !important;
+  text-decoration: none !important;
+  color: #ffffff !important;
+  background-color: transparent !important;
+  transition: background-color 0.2s !important;
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .lesson-menu-item a:hover {
@@ -105,18 +134,38 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background-color: #2c2c2c;
+  border: 2px solid #2c2c2c;
+  background-color: transparent;
   margin-right: 15px;
   flex-shrink: 0;
 }
 
 .lesson-menu-item.active a::before {
   background-color: #e6b93c;
+  border-color: #e6b93c;
   box-shadow: 0 0 8px rgba(230, 185, 60, 0.5);
 }
 
 .lesson-menu-item.completed a::before {
   background-color: #e6b93c;
+  border-color: #e6b93c;
+}
+
+/* For lessons that were done but are not the current one */
+.lesson-menu-item.completed:not(.active) a::before {
+  background-color: #5768a3; /* Blue color for completed lessons */
+  border-color: #5768a3;
+}
+
+/* This is for lessons that are not active or complete */
+.lesson-menu-item:not(.active):not(.completed) a::before {
+  background-color: transparent;
+  border: 2px solid #2c2c2c;
+}
+
+/* Special styling for in-progress lessons */
+.lesson-menu-item:not(.active):not(.completed) a:hover::before {
+  border-color: #4a4a4a;
 }
 
 .lesson-menu-item.active {
@@ -125,6 +174,9 @@
 
 .lesson-menu-title {
   flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Hide the old check icon */
@@ -190,41 +242,6 @@
 [data-theme="dark"] .lesson-nav-button:hover {
   background-color: #5b5b5b;
   color: #a6a6a6;
-}
-
-/* Chapter dropdown styles - kept separately to avoid conflicts */
-.chapter-dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 250px;
-  background-color: #1a1a1a;
-  border: 1px solid #2c2c2c;
-  border-top: none;
-  z-index: 150;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  max-height: 400px;
-  overflow-y: auto;
-  border-radius: 0 0 8px 8px;
-  padding: 8px 0;
-}
-
-.chapter-menu-item {
-  border-bottom: none;
-}
-
-.chapter-menu-item a {
-  display: flex;
-  padding: 12px 20px;
-  text-decoration: none;
-  color: #ffffff;
-  transition: background-color 0.2s;
-  font-size: 15px;
-  line-height: 1.4;
-}
-
-.chapter-menu-item a:hover {
-  background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* Existing CSS continues below */
@@ -435,6 +452,15 @@
   color: var(--primary-color);
 }
 
+.lesson-practice-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* margin-bottom: 24px; */
+  gap: 12px;
+  padding: 20px;
+}
+
 .markdown-content h3 {
   font-size: 20px;
   margin-top: 25px;
@@ -564,18 +590,17 @@
 .practice-content {
   flex-grow: 1;
   padding: 20px;
+  flex-direction: column;
 }
 
 .question-passage {
   background-color: var(--bg-light);
-  padding: 15px;
   border-radius: 6px;
-  margin-bottom: 20px;
 }
 
-.question-text {
+.lesson-question-text {
   font-weight: 600;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
 }
 
 /* Question Choices */
@@ -584,6 +609,8 @@
   flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
+  position: relative;
+  top: -12px;
 }
 
 .choice {
@@ -753,4 +780,16 @@
     border-left: none;
     border-top: 1px solid var(--border-color);
   }
+}
+
+.chapter-menu-items {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.flex {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }

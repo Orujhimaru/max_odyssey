@@ -263,15 +263,46 @@ const LessonPage = () => {
   };
 
   // Toggle dropdowns
-  const toggleChaptersExpanded = () => {
+  const toggleChaptersExpanded = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
     setChaptersExpanded(!chaptersExpanded);
     if (lessonsExpanded) setLessonsExpanded(false);
   };
 
-  const toggleLessonsExpanded = () => {
+  const toggleLessonsExpanded = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
     setLessonsExpanded(!lessonsExpanded);
     if (chaptersExpanded) setChaptersExpanded(false);
   };
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const dropdownContainers = document.querySelectorAll(
+      ".chapter-dropdown-container, .lesson-dropdown-container"
+    );
+
+    const handleClickOutside = (event) => {
+      let clickedInsideDropdown = false;
+
+      // Check if clicked element is inside any dropdown container
+      dropdownContainers.forEach((container) => {
+        if (container.contains(event.target)) {
+          clickedInsideDropdown = true;
+        }
+      });
+
+      // Only close dropdowns if clicked outside
+      if (!clickedInsideDropdown) {
+        setChaptersExpanded(false);
+        setLessonsExpanded(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const isCorrectAnswer = (choiceId) => {
     return isAnswerSubmitted && choiceId === question?.correctAnswer;
@@ -294,7 +325,10 @@ const LessonPage = () => {
       {/* Top Navigation Bar */}
       <div className="lesson-top-nav">
         <div className="nav-dropdowns">
-          <div className="chapter-dropdown-container">
+          <div
+            className="chapter-dropdown-container"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div
               className="chapter-dropdown-button"
               onClick={toggleChaptersExpanded}
@@ -321,21 +355,31 @@ const LessonPage = () => {
             </div>
 
             {chaptersExpanded && (
-              <div className="chapter-dropdown-menu">
-                {course?.chapters.map((chapter) => (
-                  <div key={chapter.id} className="chapter-menu-item">
-                    <Link
-                      to={`/course/${courseId}/lesson/${chapter.lessons[0].id}`}
-                    >
-                      {chapter.id}. {chapter.title}
-                    </Link>
-                  </div>
-                ))}
+              <div
+                className="chapter-dropdown-menu"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="chapter-menu-items">
+                  {course?.chapters.map((chapter) => (
+                    <div key={chapter.id} className="chapter-menu-item">
+                      <a
+                        href={`/course/${courseId}/lesson/${chapter.lessons[0].id}`}
+                        data-discover="true"
+                        className="flex"
+                      >
+                        {chapter.id}. {chapter.title}
+                      </a>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
 
-          <div className="lesson-dropdown-container">
+          <div
+            className="lesson-dropdown-container"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div
               className="lesson-dropdown-button"
               onClick={toggleLessonsExpanded}
@@ -362,21 +406,37 @@ const LessonPage = () => {
             </div>
 
             {lessonsExpanded && (
-              <div className="lesson-dropdown-menu">
-                {currentChapter?.lessons.map((lesson, index) => (
-                  <div
-                    key={lesson.id}
-                    className={`lesson-menu-item ${
-                      lesson.id === numLessonId ? "active" : ""
-                    } ${lesson.completed ? "completed" : ""}`}
-                  >
-                    <Link to={`/course/${courseId}/lesson/${lesson.id}`}>
-                      <span className="lesson-menu-title">
-                        {index + 1}: {lesson.title}
-                      </span>
-                    </Link>
-                  </div>
-                ))}
+              <div
+                className="lesson-dropdown-menu"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="chapter-menu-items">
+                  {currentChapter?.lessons.map((lesson, index) => {
+                    // Determine if this lesson is currently active
+                    const isActive = lesson.id === numLessonId;
+                    // Determine if this lesson has been completed
+                    const isCompleted = lesson.completed && !isActive;
+
+                    return (
+                      <div
+                        key={lesson.id}
+                        className={`chapter-menu-item ${
+                          isActive ? "active" : ""
+                        } ${isCompleted ? "completed" : ""}`}
+                      >
+                        <a
+                          href={`/course/${courseId}/lesson/${lesson.id}`}
+                          data-discover="true"
+                          className="flex"
+                        >
+                          <span className="lesson-menu-title">
+                            {index + 1}: {lesson.title}
+                          </span>
+                        </a>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
@@ -480,20 +540,19 @@ const LessonPage = () => {
         >
           {question ? (
             <>
-              <div className="practice-header">
+              <div className="lesson-practice-header">
                 <h3>Practice Question</h3>
                 <div className="question-info">
                   {question.topic && (
                     <span className="question-topic">{question.topic}</span>
                   )}
-                  <div className="question-difficulty">
-                    <div className="difficulty-indicator medium">
+                  {/* <div className="question-difficulty">
+                    <div className="difficulty-indicator-bars medium">
                       <div className="bar"></div>
                       <div className="bar"></div>
                       <div className="bar"></div>
                     </div>
-                    <span>Medium</span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -501,7 +560,7 @@ const LessonPage = () => {
                 {question.passage && (
                   <div className="question-passage">{question.passage}</div>
                 )}
-                <div className="question-text">{question.text}</div>
+                <div className="lesson-question-text">{question.text}</div>
 
                 <div className="question-choices">
                   {question.choices.map((choice) => (
