@@ -101,3 +101,36 @@ body.taking-test .navbar {
 .navbar {
   transition: left 0.3s ease;
 }
+
+/* Navbar container for proper hover behavior */
+.navbar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 9999;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(0);
+}
+
+/* Add sliding animation for navbar */
+.navbar {
+  transition: transform 0.3s ease-in-out !important;
+}
+
+/* When navbar is hidden, move it off-screen */
+.lesson-fullscreen .navbar:not(.visible) {
+  transform: translateX(-100%);
+}
+
+/* Fullscreen mode styles */
+.content-fullscreen {
+  width: 100vw !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  transition: margin-left 0.3s ease-in-out !important;
+}
+
+.lesson-fullscreen {
+  overflow: hidden;
+}

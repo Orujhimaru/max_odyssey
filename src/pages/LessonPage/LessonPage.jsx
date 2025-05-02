@@ -182,7 +182,7 @@ const mockQuestions = {
   },
 };
 
-const LessonPage = () => {
+const LessonPage = ({ onNavbarToggle }) => {
   const { courseId, lessonId } = useParams();
   const numCourseId = parseInt(courseId);
   const numLessonId = parseInt(lessonId);
@@ -304,12 +304,40 @@ const LessonPage = () => {
     );
   };
 
+  // Handle navbar toggle
+  const handleNavbarToggle = () => {
+    console.log("Toggle navbar triggered");
+    if (onNavbarToggle) {
+      onNavbarToggle();
+    }
+  };
+
+  // Force navbar to appear on component mount
+  useEffect(() => {
+    if (onNavbarToggle) {
+      // First hide it (in case it's showing)
+      onNavbarToggle();
+      // Then show it again after a delay to ensure it's visible initially
+      setTimeout(() => {
+        onNavbarToggle();
+      }, 100);
+    }
+  }, []);
+
   if (!course || !currentLesson || !currentChapter) {
     return <div className="lesson-not-found">Lesson not found</div>;
   }
 
   return (
     <div className="lesson-page">
+      {/* Navbar toggle area - shows navbar on hover */}
+      <div
+        className="navbar-toggle-area"
+        onMouseEnter={handleNavbarToggle}
+        onMouseOver={handleNavbarToggle}
+        onClick={handleNavbarToggle}
+      ></div>
+
       {/* Top Navigation Bar */}
       <div className="lesson-top-nav">
         <div className="nav-dropdowns">

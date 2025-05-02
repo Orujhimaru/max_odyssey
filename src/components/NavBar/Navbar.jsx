@@ -9,7 +9,7 @@ import Dashboard from "../../assets/dashboard1.svg";
 import Practice from "../../assets/practice1.svg";
 import Courses from "../../assets/courses1.svg";
 
-const Navbar = ({ isDarkMode, onThemeToggle }) => {
+const Navbar = ({ isDarkMode, onThemeToggle, className = "" }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,7 +20,7 @@ const Navbar = ({ isDarkMode, onThemeToggle }) => {
   };
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${className}`}>
       <div>
         <div className="logo-container">
           <Logo />
