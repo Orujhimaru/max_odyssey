@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import "./LessonPage.css";
 
@@ -227,6 +227,8 @@ const LessonPage = () => {
 
   const question = mockQuestions[numLessonId];
 
+  const navigate = useNavigate();
+
   // Handle resize drag
   const handleMouseDown = (e) => {
     e.preventDefault();
@@ -264,43 +266,29 @@ const LessonPage = () => {
 
   // Toggle dropdowns
   const toggleChaptersExpanded = (e) => {
-    e.stopPropagation(); // Prevent event bubbling
+    e.stopPropagation();
     setChaptersExpanded(!chaptersExpanded);
-    if (lessonsExpanded) setLessonsExpanded(false);
+    setLessonsExpanded(false);
   };
 
   const toggleLessonsExpanded = (e) => {
-    e.stopPropagation(); // Prevent event bubbling
+    e.stopPropagation();
+    setChaptersExpanded(false);
     setLessonsExpanded(!lessonsExpanded);
-    if (chaptersExpanded) setChaptersExpanded(false);
   };
 
   // Close dropdowns when clicking outside
   useEffect(() => {
-    const dropdownContainers = document.querySelectorAll(
-      ".chapter-dropdown-container, .lesson-dropdown-container"
-    );
-
-    const handleClickOutside = (event) => {
-      let clickedInsideDropdown = false;
-
-      // Check if clicked element is inside any dropdown container
-      dropdownContainers.forEach((container) => {
-        if (container.contains(event.target)) {
-          clickedInsideDropdown = true;
-        }
-      });
-
-      // Only close dropdowns if clicked outside
-      if (!clickedInsideDropdown) {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(".dropdown")) {
         setChaptersExpanded(false);
         setLessonsExpanded(false);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
@@ -325,120 +313,103 @@ const LessonPage = () => {
       {/* Top Navigation Bar */}
       <div className="lesson-top-nav">
         <div className="nav-dropdowns">
-          <div
-            className="chapter-dropdown-container"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              className="chapter-dropdown-button"
+          <div className="dropdown">
+            <button
               onClick={toggleChaptersExpanded}
+              aria-haspopup="true"
+              aria-expanded={chaptersExpanded}
             >
-              <span>
-                CH{currentChapter?.id}:{" "}
-                {currentChapter?.title.length > 15
-                  ? currentChapter?.title.substring(0, 15) + "..."
-                  : currentChapter?.title}
-              </span>
+              {currentChapter?.title || "Select Chapter"}
               <svg
-                className={`dropdown-arrow ${
-                  chaptersExpanded ? "expanded" : ""
-                }`}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
+                className="dropdown-arrow"
+                width="12"
+                height="6"
+                viewBox="0 0 12 6"
                 fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <path d="M6 9l6 6 6-6" />
+                <path
+                  d="M1 1L6 5L11 1"
+                  stroke="white"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
-            </div>
-
-            {chaptersExpanded && (
-              <div
-                className="chapter-dropdown-menu"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="chapter-menu-items">
-                  {course?.chapters.map((chapter) => (
-                    <div key={chapter.id} className="chapter-menu-item">
-                      <a
-                        href={`/course/${courseId}/lesson/${chapter.lessons[0].id}`}
-                        data-discover="true"
-                        className="flex"
-                      >
-                        {chapter.id}. {chapter.title}
-                      </a>
-                    </div>
-                  ))}
-                </div>
+            </button>
+            <div className={chaptersExpanded ? "menu-open" : "menu-closed"}>
+              <div className="absolute left-0 top-full mt-1 w-56">
+                {course?.chapters?.map((chapter) => (
+                  <div className="chapter-menu-item" key={chapter.id}>
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(
+                          `/course/${courseId}/lesson/${chapter.lessons[0].id}`
+                        );
+                        setChaptersExpanded(false);
+                      }}
+                      data-discover="true"
+                      className="flex"
+                    >
+                      {chapter.title}
+                    </a>
+                  </div>
+                ))}
               </div>
-            )}
+            </div>
           </div>
 
-          <div
-            className="lesson-dropdown-container"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              className="lesson-dropdown-button"
+          <div className="dropdown">
+            <button
               onClick={toggleLessonsExpanded}
+              aria-haspopup="true"
+              aria-expanded={lessonsExpanded}
             >
-              <span>
-                L{currentLesson?.id % 100}:{" "}
-                {currentLesson?.title.length > 15
-                  ? currentLesson?.title.substring(0, 15) + "..."
-                  : currentLesson?.title}
-              </span>
+              {currentLesson?.title || "Select Lesson"}
               <svg
-                className={`dropdown-arrow ${
-                  lessonsExpanded ? "expanded" : ""
-                }`}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
+                className="dropdown-arrow"
+                width="12"
+                height="6"
+                viewBox="0 0 12 6"
                 fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <path d="M6 9l6 6 6-6" />
+                <path
+                  d="M1 1L6 5L11 1"
+                  stroke="white"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
-            </div>
-
-            {lessonsExpanded && (
-              <div
-                className="lesson-dropdown-menu"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="chapter-menu-items">
-                  {currentChapter?.lessons.map((lesson, index) => {
-                    // Determine if this lesson is currently active
-                    const isActive = lesson.id === numLessonId;
-                    // Determine if this lesson has been completed
-                    const isCompleted = lesson.completed && !isActive;
-
-                    return (
-                      <div
-                        key={lesson.id}
-                        className={`chapter-menu-item ${
-                          isActive ? "active" : ""
-                        } ${isCompleted ? "completed" : ""}`}
-                      >
-                        <a
-                          href={`/course/${courseId}/lesson/${lesson.id}`}
-                          data-discover="true"
-                          className="flex"
-                        >
-                          <span className="lesson-menu-title">
-                            {index + 1}: {lesson.title}
-                          </span>
-                        </a>
-                      </div>
-                    );
-                  })}
-                </div>
+            </button>
+            <div className={lessonsExpanded ? "menu-open" : "menu-closed"}>
+              <div className="absolute left-0 top-full mt-1 w-56">
+                {currentChapter?.lessons?.map((lesson) => (
+                  <div
+                    className={`lesson-menu-item ${
+                      lesson.id === numLessonId ? "active" : ""
+                    } ${lesson.completed ? "completed" : ""}`}
+                    key={lesson.id}
+                  >
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/course/${courseId}/lesson/${lesson.id}`);
+                        setLessonsExpanded(false);
+                      }}
+                      className="flex items-center"
+                    >
+                      <span className="lesson-dot"></span>
+                      <span className="flex-1 truncate">{lesson.title}</span>
+                    </a>
+                  </div>
+                ))}
               </div>
-            )}
+            </div>
           </div>
         </div>
 
