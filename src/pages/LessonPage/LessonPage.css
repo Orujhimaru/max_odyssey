@@ -1,11 +1,240 @@
 /* LessonPage Layout */
+.lesson-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Top Navigation Bar */
+.lesson-top-nav {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 20px;
+  height: 60px;
+  position: relative;
+  z-index: 100;
+}
+
+.nav-dropdowns {
+  display: flex;
+  height: 42px;
+  margin-right: 15px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.chapter-dropdown-container,
+.lesson-dropdown-container {
+  position: relative;
+  height: 100%;
+  border-right: 1px solid var(--border-color);
+}
+
+.chapter-dropdown-button,
+.lesson-dropdown-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  height: 100%;
+  min-width: 180px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: background-color 0.2s;
+}
+
+.chapter-dropdown-button:hover,
+.lesson-dropdown-button:hover {
+  background-color: var(--bg-hover);
+}
+
+.dropdown-arrow {
+  margin-left: 10px;
+  transition: transform 0.2s;
+}
+
+.dropdown-arrow.expanded {
+  transform: rotate(180deg);
+}
+
+.lesson-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 250px;
+  background-color: #1a1a1a;
+  border: 1px solid #2c2c2c;
+  border-top: none;
+  z-index: 150;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 0 0 8px 8px;
+  padding: 8px 0;
+}
+
+.lesson-menu-item {
+  border-bottom: none;
+  position: relative;
+}
+
+.lesson-menu-item a {
+  display: flex;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #ffffff;
+  transition: background-color 0.2s;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.lesson-menu-item a:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.lesson-menu-item a::before {
+  content: "";
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #2c2c2c;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.lesson-menu-item.active a::before {
+  background-color: #e6b93c;
+  box-shadow: 0 0 8px rgba(230, 185, 60, 0.5);
+}
+
+.lesson-menu-item.completed a::before {
+  background-color: #e6b93c;
+}
+
+.lesson-menu-item.active {
+  background-color: rgba(230, 185, 60, 0.1);
+}
+
+.lesson-menu-title {
+  flex: 1;
+}
+
+/* Hide the old check icon */
+.lesson-menu-check {
+  display: none;
+}
+
+.nav-buttons {
+  display: flex;
+  padding-right: 0;
+}
+
+.lesson-nav-button {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin: 0 5px;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: background-color 0.2s;
+  background-color: var(--bg-secondary);
+}
+
+.lesson-nav-button:last-child {
+  margin-right: 0;
+}
+
+.lesson-nav-button:hover {
+  background-color: var(--bg-hover);
+}
+
+.lesson-nav-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Make the next button gold-colored like in the reference */
+.lesson-nav-button.next {
+  background-color: #e6b93c;
+  color: #333;
+}
+
+.lesson-nav-button.next:hover {
+  background-color: #d4a930;
+}
+
+/* Dark Theme Specific Overrides */
+[data-theme="dark"] .lesson-top-nav {
+  background-color: #1a1a1a;
+  border-bottom-color: #2c2c2c;
+}
+
+[data-theme="dark"] .chapter-dropdown-container,
+[data-theme="dark"] .lesson-dropdown-container {
+  border-right-color: #2c2c2c;
+}
+
+[data-theme="dark"] .chapter-dropdown-button:hover,
+[data-theme="dark"] .lesson-dropdown-button:hover,
+[data-theme="dark"] .lesson-nav-button:hover {
+  background-color: #5b5b5b;
+  color: #a6a6a6;
+}
+
+/* Chapter dropdown styles - kept separately to avoid conflicts */
+.chapter-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 250px;
+  background-color: #1a1a1a;
+  border: 1px solid #2c2c2c;
+  border-top: none;
+  z-index: 150;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 0 0 8px 8px;
+  padding: 8px 0;
+}
+
+.chapter-menu-item {
+  border-bottom: none;
+}
+
+.chapter-menu-item a {
+  display: flex;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #ffffff;
+  transition: background-color 0.2s;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.chapter-menu-item a:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Existing CSS continues below */
 .lesson-page-container {
   display: flex;
   height: calc(100vh - 60px);
   position: relative;
   overflow: hidden;
-  color: var(--text-color);
-  background-color: var(--bg-color);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
 }
 
 /* Content Panel - Left Side */
@@ -43,8 +272,9 @@
   gap: 10px;
 }
 
-.nav-button {
+.lesson-nav-button {
   display: flex;
+  height: 40px;
   align-items: center;
   gap: 5px;
   padding: 6px 12px;
@@ -58,15 +288,20 @@
   text-decoration: none;
 }
 
-.nav-button:hover {
+.lesson-nav-button:hover {
   background-color: var(--bg-hover);
 }
 
-.nav-button.prev-lesson i {
+.lesson-nav-button.prev-lesson i {
   margin-right: 5px;
 }
 
-.nav-button.next-lesson i {
+.lesson-nav-button.prev {
+  border: 1px solid var(--border-color);
+  color: #a6a6a6;
+}
+
+.lesson-nav-button.next-lesson i {
   margin-left: 5px;
 }
 
@@ -232,6 +467,11 @@
   padding-left: 15px;
   margin-left: 0;
   color: var(--text-muted);
+}
+
+.chapter-dropdown-button span,
+.lesson-dropdown-button span {
+  font-size: 14px;
 }
 
 /* Resize Handle */

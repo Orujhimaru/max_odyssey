@@ -329,10 +329,10 @@
 }
 
 .question-image {
-  max-width: 100%;
+  max-width: 80%;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
   padding: 15px;
 }
 
@@ -386,12 +386,12 @@
 }
 
 .question-image table th {
-  background-color: #f2f2f2;
+  /* background-color: #f2f2f2; */
   font-weight: bold;
 }
 
 .question-image table tr:nth-child(even) {
-  background-color: #f9f9f9;
+  /* background-color: #f9f9f9; */
 }
 
 /* KaTeX styling for the TestReview component */

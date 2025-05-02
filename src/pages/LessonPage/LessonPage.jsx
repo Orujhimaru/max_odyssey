@@ -193,6 +193,7 @@ const LessonPage = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
   const [chaptersExpanded, setChaptersExpanded] = useState(false);
+  const [lessonsExpanded, setLessonsExpanded] = useState(false);
 
   const course = coursesData[numCourseId];
 
@@ -249,21 +250,6 @@ const LessonPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-    } else {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isDragging]);
-
   const handleAnswerSelect = (choiceId) => {
     if (!isAnswerSubmitted) {
       setSelectedAnswer(choiceId);
@@ -276,8 +262,15 @@ const LessonPage = () => {
     }
   };
 
+  // Toggle dropdowns
   const toggleChaptersExpanded = () => {
     setChaptersExpanded(!chaptersExpanded);
+    if (lessonsExpanded) setLessonsExpanded(false);
+  };
+
+  const toggleLessonsExpanded = () => {
+    setLessonsExpanded(!lessonsExpanded);
+    if (chaptersExpanded) setChaptersExpanded(false);
   };
 
   const isCorrectAnswer = (choiceId) => {
@@ -297,95 +290,91 @@ const LessonPage = () => {
   }
 
   return (
-    <div
-      className="lesson-page-container"
-      ref={splitContainerRef}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-    >
-      {/* Left Panel - Course Content */}
-      <div
-        className="lesson-content-panel"
-        style={{ width: `${splitPosition}%` }}
-      >
-        <div className="lesson-navigation">
-          <div className="lesson-navigation-header">
-            <div className="lesson-title">{course.title}</div>
-            <div className="navigation-controls">
-              {prevLesson && (
-                <Link
-                  to={`/course/${numCourseId}/lesson/${prevLesson.id}`}
-                  className="nav-button prev-lesson"
-                >
-                  <i className="fas fa-chevron-left"></i>
-                  Previous
-                </Link>
-              )}
-              {nextLesson && (
-                <Link
-                  to={`/course/${numCourseId}/lesson/${nextLesson.id}`}
-                  className="nav-button next-lesson"
-                >
-                  Next
-                  <i className="fas fa-chevron-right"></i>
-                </Link>
-              )}
-            </div>
-          </div>
-
-          <div className="chapter-selector">
-            <div className="chapter-dropdown" onClick={toggleChaptersExpanded}>
-              <div className="current-chapter">
-                <span className="chapter-indicator">
-                  {currentChapter.title}
-                </span>
-                <span className="lesson-indicator">
-                  : {currentLesson.title}
-                </span>
-              </div>
-              <i
-                className={`fas fa-chevron-${chaptersExpanded ? "up" : "down"}`}
-              ></i>
+    <div className="lesson-page">
+      {/* Top Navigation Bar */}
+      <div className="lesson-top-nav">
+        <div className="nav-dropdowns">
+          <div className="chapter-dropdown-container">
+            <div
+              className="chapter-dropdown-button"
+              onClick={toggleChaptersExpanded}
+            >
+              <span>
+                CH{currentChapter?.id}:{" "}
+                {currentChapter?.title.length > 15
+                  ? currentChapter?.title.substring(0, 15) + "..."
+                  : currentChapter?.title}
+              </span>
+              <svg
+                className={`dropdown-arrow ${
+                  chaptersExpanded ? "expanded" : ""
+                }`}
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
             </div>
 
             {chaptersExpanded && (
-              <div className="chapters-dropdown-content">
-                {course.chapters.map((chapter) => (
-                  <div key={chapter.id} className="chapter-item">
-                    <div
-                      className={`chapter-header ${
-                        currentChapter.id === chapter.id ? "active" : ""
-                      }`}
+              <div className="chapter-dropdown-menu">
+                {course?.chapters.map((chapter) => (
+                  <div key={chapter.id} className="chapter-menu-item">
+                    <Link
+                      to={`/course/${courseId}/lesson/${chapter.lessons[0].id}`}
                     >
-                      {chapter.title}
-                    </div>
-                    <div className="lesson-list">
-                      {chapter.lessons.map((lesson) => (
-                        <Link
-                          key={lesson.id}
-                          to={`/course/${numCourseId}/lesson/${lesson.id}`}
-                          className={`lesson-item ${
-                            currentLesson.id === lesson.id ? "active" : ""
-                          } ${lesson.completed ? "completed" : ""}`}
-                          onClick={() => {
-                            setChaptersExpanded(false);
-                            setSelectedAnswer(null);
-                            setIsAnswerSubmitted(false);
-                          }}
-                        >
-                          <div className="lesson-info">
-                            <div className="lesson-status">
-                              {lesson.completed ? (
-                                <i className="fas fa-check-circle"></i>
-                              ) : (
-                                <i className="far fa-circle"></i>
-                              )}
-                            </div>
-                            <div className="lesson-title">{lesson.title}</div>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
+                      {chapter.id}. {chapter.title}
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="lesson-dropdown-container">
+            <div
+              className="lesson-dropdown-button"
+              onClick={toggleLessonsExpanded}
+            >
+              <span>
+                L{currentLesson?.id % 100}:{" "}
+                {currentLesson?.title.length > 15
+                  ? currentLesson?.title.substring(0, 15) + "..."
+                  : currentLesson?.title}
+              </span>
+              <svg
+                className={`dropdown-arrow ${
+                  lessonsExpanded ? "expanded" : ""
+                }`}
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </div>
+
+            {lessonsExpanded && (
+              <div className="lesson-dropdown-menu">
+                {currentChapter?.lessons.map((lesson, index) => (
+                  <div
+                    key={lesson.id}
+                    className={`lesson-menu-item ${
+                      lesson.id === numLessonId ? "active" : ""
+                    } ${lesson.completed ? "completed" : ""}`}
+                  >
+                    <Link to={`/course/${courseId}/lesson/${lesson.id}`}>
+                      <span className="lesson-menu-title">
+                        {index + 1}: {lesson.title}
+                      </span>
+                    </Link>
                   </div>
                 ))}
               </div>
@@ -393,105 +382,187 @@ const LessonPage = () => {
           </div>
         </div>
 
-        <div className="lesson-content">
-          <div className="markdown-content">
-            <ReactMarkdown>{mockLessonContent}</ReactMarkdown>
-          </div>
+        <div className="nav-buttons">
+          {prevLesson ? (
+            <Link
+              to={`/course/${courseId}/lesson/${prevLesson.id}`}
+              className="lesson-nav-button prev"
+              title={`Previous: ${prevLesson.title}`}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </Link>
+          ) : (
+            <div className="lesson-nav-button disabled prev">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </div>
+          )}
+
+          {nextLesson ? (
+            <Link
+              to={`/course/${courseId}/lesson/${nextLesson.id}`}
+              className="lesson-nav-button next"
+              title={`Next: ${nextLesson.title}`}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </Link>
+          ) : (
+            <div className="lesson-nav-button disabled next">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Resize Handler */}
-      <div className="resize-handle" onMouseDown={handleMouseDown}>
-        <div className="resize-handle-bar"></div>
-      </div>
-
-      {/* Right Panel - Practice Questions */}
       <div
-        className="practice-panel"
-        style={{ width: `${100 - splitPosition}%` }}
+        className="lesson-page-container"
+        ref={splitContainerRef}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
       >
-        {question ? (
-          <>
-            <div className="practice-header">
-              <h3>Practice Question</h3>
-              <div className="question-info">
-                <span className="question-topic">{currentChapter.title}</span>
-                <span className="question-difficulty">
-                  <div className="difficulty-indicator medium">
-                    <div className="bar"></div>
-                    <div className="bar"></div>
-                    <div className="bar"></div>
-                  </div>
-                  Medium
-                </span>
-              </div>
-            </div>
-
-            <div className="practice-content">
-              {question.passage && (
-                <div className="question-passage">
-                  <p>{question.passage}</p>
-                </div>
-              )}
-
-              <div className="question-text">
-                <p>{question.text}</p>
-              </div>
-
-              <div className="question-choices">
-                {question.choices.map((choice) => (
-                  <div
-                    key={choice.id}
-                    className={`choice ${
-                      selectedAnswer === choice.id ? "selected" : ""
-                    } ${isCorrectAnswer(choice.id) ? "correct" : ""} ${
-                      isIncorrectAnswer(choice.id) ? "incorrect" : ""
-                    }`}
-                    onClick={() => handleAnswerSelect(choice.id)}
-                  >
-                    <div className="choice-letter">
-                      {choice.id.toUpperCase()}
-                    </div>
-                    <div className="choice-text">{choice.text}</div>
-                  </div>
-                ))}
-              </div>
-
-              {isAnswerSubmitted ? (
-                <div className="answer-explanation">
-                  <h4>Explanation:</h4>
-                  <p>{question.explanation}</p>
-                  {nextLesson && (
-                    <Link
-                      to={`/course/${numCourseId}/lesson/${nextLesson.id}`}
-                      className="next-question-btn"
-                    >
-                      Next Lesson
-                    </Link>
-                  )}
-                </div>
-              ) : (
-                <div className="question-actions">
-                  <button
-                    className="submit-answer-btn"
-                    onClick={handleAnswerSubmit}
-                    disabled={!selectedAnswer}
-                  >
-                    Submit Answer
-                  </button>
-                </div>
-              )}
-            </div>
-          </>
-        ) : (
-          <div className="no-practice-content">
-            <div className="no-question-message">
-              <i className="fas fa-book-open"></i>
-              <h3>No practice questions</h3>
-              <p>This lesson doesn't have practice questions yet.</p>
+        {/* Left Panel - Course Content */}
+        <div
+          className="lesson-content-panel"
+          style={{ width: `${splitPosition}%` }}
+        >
+          <div className="lesson-content">
+            <div className="markdown-content">
+              <ReactMarkdown>{mockLessonContent}</ReactMarkdown>
             </div>
           </div>
-        )}
+        </div>
+
+        {/* Resize Handle */}
+        <div className="resize-handle" onMouseDown={handleMouseDown}>
+          <div className="resize-handle-bar"></div>
+        </div>
+
+        {/* Right Panel - Practice */}
+        <div
+          className="practice-panel"
+          style={{ width: `${100 - splitPosition}%` }}
+        >
+          {question ? (
+            <>
+              <div className="practice-header">
+                <h3>Practice Question</h3>
+                <div className="question-info">
+                  {question.topic && (
+                    <span className="question-topic">{question.topic}</span>
+                  )}
+                  <div className="question-difficulty">
+                    <div className="difficulty-indicator medium">
+                      <div className="bar"></div>
+                      <div className="bar"></div>
+                      <div className="bar"></div>
+                    </div>
+                    <span>Medium</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="practice-content">
+                {question.passage && (
+                  <div className="question-passage">{question.passage}</div>
+                )}
+                <div className="question-text">{question.text}</div>
+
+                <div className="question-choices">
+                  {question.choices.map((choice) => (
+                    <div
+                      key={choice.id}
+                      className={`choice ${
+                        selectedAnswer === choice.id ? "selected" : ""
+                      } ${isCorrectAnswer(choice.id) ? "correct" : ""} ${
+                        isIncorrectAnswer(choice.id) ? "incorrect" : ""
+                      }`}
+                      onClick={() => handleAnswerSelect(choice.id)}
+                    >
+                      <div className="choice-letter">
+                        {choice.id.toUpperCase()}
+                      </div>
+                      <div className="choice-text">{choice.text}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="question-actions">
+                  {!isAnswerSubmitted ? (
+                    <button
+                      className="submit-answer-btn"
+                      onClick={handleAnswerSubmit}
+                      disabled={!selectedAnswer}
+                    >
+                      Submit Answer
+                    </button>
+                  ) : (
+                    <div className="answer-explanation">
+                      <h4>
+                        {selectedAnswer === question.correctAnswer
+                          ? "Correct!"
+                          : "Incorrect"}
+                      </h4>
+                      <p>{question.explanation}</p>
+                      <button
+                        className="next-question-btn"
+                        onClick={() => {
+                          setSelectedAnswer(null);
+                          setIsAnswerSubmitted(false);
+                        }}
+                      >
+                        Next Question
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="no-practice-content">
+              <div className="no-question-message">
+                <i className="fas fa-book-open"></i>
+                <h3>No practice questions available</h3>
+                <p>Try another lesson or come back later</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
