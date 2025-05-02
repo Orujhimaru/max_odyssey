@@ -115,12 +115,22 @@ body.taking-test .navbar {
 
 /* Add sliding animation for navbar */
 .navbar {
-  transition: transform 0.3s ease-in-out !important;
+  transition: transform 0.5s ease-in-out !important;
 }
 
-/* When navbar is hidden, move it off-screen */
-.lesson-fullscreen .navbar:not(.visible) {
-  transform: translateX(-100%);
+/* Hide navbar by default on lesson page */
+.lesson-fullscreen .navbar {
+  transform: translateX(-110%);
+}
+
+/* Show navbar when visible class is added */
+.lesson-fullscreen .navbar.visible {
+  transform: translateX(0);
+}
+
+/* Content transitions smoothly with navbar */
+.content {
+  transition: margin-left 0.5s ease-in-out !important;
 }
 
 /* Fullscreen mode styles */
@@ -128,7 +138,6 @@ body.taking-test .navbar {
   width: 100vw !important;
   margin-left: 0 !important;
   padding-left: 0 !important;
-  transition: margin-left 0.3s ease-in-out !important;
 }
 
 .lesson-fullscreen {

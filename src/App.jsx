@@ -47,14 +47,19 @@ const AppContent = () => {
     location.pathname.includes("/course/") &&
     location.pathname.includes("/lesson/");
 
-  // Update navbar visibility based on route
+  // Update navbar visibility based on route - hide navbar with animation when entering lesson page
   useEffect(() => {
     if (isLessonPage) {
-      setIsNavbarVisible(false);
+      // Start with navbar visible briefly, then animate it away
+      setIsNavbarVisible(true);
+      // Add a short delay to ensure the animation is visible
+      setTimeout(() => {
+        setIsNavbarVisible(false);
+      }, 300);
     } else {
       setIsNavbarVisible(true);
     }
-  }, [location, isLessonPage]);
+  }, [location.pathname]); // React to path changes specifically
 
   useEffect(() => {
     // Update data-theme attribute and localStorage when theme changes
