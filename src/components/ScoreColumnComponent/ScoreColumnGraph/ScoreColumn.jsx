@@ -13,6 +13,7 @@ import ScoreBox from "../ScoreBox/ScoreBox";
 import "./ScoreColumn.css";
 import PredictedScore from "../PredictedScore/PredictedScore";
 import PerformanceInsights from "../../PerformanceInsights/PerformanceInsights";
+import barIcon from "../../../assets/bar_icon.svg";
 
 const data = [
   { date: "#1", verbal: 520, math: 500 },
@@ -145,7 +146,10 @@ export default function ScoreColumnGraph() {
 
   return (
     <>
-      <h2 className="scores-header-text">Score report 📈</h2>
+      <h2 className="scores-header-text">
+        Score report
+        <img src={barIcon} alt="Bar Icon" className="mini-score-icon" />
+      </h2>
       <div className="score-column-container">
         <div className="chart-container">
           <div className="performance-column">

@@ -241,6 +241,15 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   color: var(--text-primary);
   margin-bottom: 8px;
   font-weight: 500;
+  display: flex;
+  gap: 8px;
+}
+
+.mini-score-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  margin-bottom: -1px;
 }
 
 tspan {
