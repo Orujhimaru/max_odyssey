@@ -1,12 +1,18 @@
 import React from "react";
 import "./ContinueLearning.css";
+import learningIcon from "../../assets/learning.svg";
 
 const ContinueLearning = ({ courses }) => {
   return (
     <div className="continue-learning">
       <div className="continue-learning-header">
         <h2 className="continue-learning-header-h2">
-          Continue Learning<span>📖</span>
+          Continue Learning
+          <img
+            src={learningIcon}
+            alt="Learning Icon"
+            className="learning-icon"
+          />
         </h2>
         {/* <button className="view-all-button">View All</button> */}
       </div>

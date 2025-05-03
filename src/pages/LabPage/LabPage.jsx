@@ -122,17 +122,12 @@ const LabPage = () => {
     mastery: {},
   });
 
-  // Optional: Auto-expand first topic when tab changes
+  // Reset expanded topics when tab changes (keep all closed)
   useEffect(() => {
-    // Get first topic from active data
-    const activeTopicsData =
-      activeTab === "math" ? mathTopicsData : verbalTopicsData;
-    const firstTopic = Object.keys(activeTopicsData)[0];
-
-    // Reset expanded topics and expand first topic in both sections
+    // Reset all expanded topics to closed when tab changes
     setExpandedTopics({
-      timing: { [firstTopic]: true },
-      mastery: { [firstTopic]: true },
+      timing: {},
+      mastery: {},
     });
   }, [activeTab]);
 

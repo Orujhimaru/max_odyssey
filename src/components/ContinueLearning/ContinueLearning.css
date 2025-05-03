@@ -275,7 +275,9 @@
   gap: 8px;
 }
 
-.continue-learning-header h2 span {
-  font-size: 22px;
-  line-height: 1;
+.learning-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  margin-bottom: 2px;
 }
