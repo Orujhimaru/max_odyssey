@@ -215,6 +215,7 @@
   flex-wrap: wrap;
   gap: 12px;
   justify-content: center;
+  flex-direction: column;
 }
 
 .insight-card {

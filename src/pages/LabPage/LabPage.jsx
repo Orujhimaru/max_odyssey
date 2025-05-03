@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import "./LabPage.css";
 import { CalendarIcon, ChartIcon, ClockIcon } from "../../icons/Icons";
 
+// Import score SVGs
+import scoreA from "../../assets/scoreA.svg";
+import scoreB from "../../assets/scoreB.svg";
+import scoreC from "../../assets/scoreC.svg";
+import scoreD from "../../assets/scoreD.svg";
+import scoreF from "../../assets/scoreF.svg";
+
 // Mock data for 2 months (25 days each)
 const months = [
   { name: "May 2024", days: 25 },
@@ -107,6 +114,7 @@ const getBoxShade = (val) => {
 const LabPage = () => {
   const [selectedYear, setSelectedYear] = useState("2025");
   const [examDate, setExamDate] = useState(null);
+  const [activeTab, setActiveTab] = useState("math"); // 'math' or 'verbal'
 
   // Function to determine if a day in January should be active (green)
   const isJanuaryActive = (row, col) => {
@@ -183,58 +191,120 @@ const LabPage = () => {
     );
   };
 
-  // Function to determine activity styles for the monthly calendar
-  const getActivityStyle = (activity) => {
-    if (activity === 0) return {};
-    if (activity === 1) return { backgroundColor: "var(--activity-1)" };
-    if (activity === 2) return { backgroundColor: "var(--activity-2)" };
-    if (activity === 3) return { backgroundColor: "var(--activity-3)" };
+  // Function to get the score image based on percentage
+  const getScoreImage = (percentage) => {
+    if (percentage >= 90) return scoreA;
+    if (percentage >= 80) return scoreB;
+    if (percentage >= 70) return scoreC;
+    if (percentage >= 60) return scoreD;
+    return scoreF;
   };
 
-  // Mock months data for the yearly view
-  const yearlyMonths = [
-    { name: "JAN", days: 31 },
-    { name: "FEB", days: 28 },
-    { name: "MAR", days: 31 },
-    { name: "APR", days: 30 },
-    { name: "MAY", days: 31 },
-    { name: "JUN", days: 30 },
-    { name: "JUL", days: 31 },
-    { name: "AUG", days: 31 },
-    { name: "SEP", days: 30 },
-    { name: "OCT", days: 31 },
-    { name: "NOV", days: 30 },
-    { name: "DEC", days: 31 },
-  ];
+  // Function to get the score label based on percentage
+  const getScoreLabel = (percentage) => {
+    if (percentage >= 90) return "A+";
+    if (percentage >= 80) return "B-";
+    if (percentage >= 70) return "C";
+    if (percentage >= 60) return "D";
+    return "F";
+  };
 
-  // Mock monthly activity data (5x5 grid for each month)
-  const monthlyData = [
+  // Function to render performance bar like in dashboard
+  const renderPerformanceBar = (percentage) => {
+    // The bar represents 100% for simplicity
+    const fillPercentage = Math.min(100, percentage);
+
+    // Define target time (70% of the bar for this example)
+    const targetPercentage = 70;
+
+    // Calculate width of green and red parts
+    let greenWidth = 0;
+    let redWidth = 0;
+
+    if (fillPercentage <= targetPercentage) {
+      // All filled portion is within green zone
+      greenWidth = fillPercentage;
+      redWidth = 0;
+    } else {
+      // Fill extends into red zone
+      greenWidth = targetPercentage;
+      redWidth = fillPercentage - targetPercentage;
+    }
+
+    return (
+      <div className="performance-bar-container">
+        <div className="performance-bar">
+          {/* Background segments for visual separation */}
+          <div className="bar-segment"></div>
+          <div className="bar-segment"></div>
+          <div className="bar-segment"></div>
+          <div className="bar-segment"></div>
+
+          {/* Green fill (up to the target) */}
+          {greenWidth > 0 && (
+            <div
+              className="bar-fill green"
+              style={{
+                width: `${greenWidth}%`,
+                left: "0%",
+              }}
+            ></div>
+          )}
+
+          {/* Red fill (after the target) */}
+          {redWidth > 0 && (
+            <div
+              className="bar-fill red"
+              style={{
+                width: `${redWidth}%`,
+                left: `${targetPercentage}%`,
+              }}
+            ></div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  // Updated subtopic performance data with all topics from the list
+  const mathSubtopicData = [
     {
-      name: "May 2024",
-      weekdays: ["M", "T", "W", "T", "F"],
-      days: Array(25)
-        .fill(0)
-        .map((_, i) => ({
-          day: i + 1,
-          activity: Math.floor(Math.random() * 4),
-        })),
+      name: "Linear Equations",
+      timingPercentage: 82,
+      timingText: "2:15 avg",
+      masteryPercentage: 88,
+      masteryText: "88% (44/50)",
+      improvement: "+6%",
     },
     {
-      name: "June 2024",
-      weekdays: ["M", "T", "W", "T", "F"],
-      days: Array(25)
-        .fill(0)
-        .map((_, i) => ({
-          day: i + 1,
-          activity: Math.floor(Math.random() * 4),
-        })),
+      name: "Nonlinear Functions",
+      timingPercentage: 68,
+      timingText: "3:05 avg",
+      masteryPercentage: 76,
+      masteryText: "76% (38/50)",
+      improvement: "+4%",
+    },
+    {
+      name: "Probability",
+      timingPercentage: 92,
+      timingText: "1:48 avg",
+      masteryPercentage: 94,
+      masteryText: "94% (47/50)",
+      improvement: "+12%",
+    },
+    {
+      name: "Trigonometry",
+      timingPercentage: 58,
+      timingText: "3:35 avg",
+      masteryPercentage: 62,
+      masteryText: "62% (31/50)",
+      improvement: "-3%",
     },
   ];
 
-  // Mock subtopic performance data
-  const subtopicData = [
+  const verbalSubtopicData = [
     {
-      name: "Critical Reasoning",
+      name: "Words in Context",
       timingPercentage: 75,
       timingText: "2:33 avg",
       masteryPercentage: 82,
@@ -242,7 +312,7 @@ const LabPage = () => {
       improvement: "+8%",
     },
     {
-      name: "Reading Comprehension",
+      name: "Command of Evidence",
       timingPercentage: 65,
       timingText: "3:12 avg",
       masteryPercentage: 78,
@@ -250,7 +320,7 @@ const LabPage = () => {
       improvement: "+5%",
     },
     {
-      name: "Sentence Correction",
+      name: "Rhetorical Synthesis",
       timingPercentage: 88,
       timingText: "1:56 avg",
       masteryPercentage: 92,
@@ -258,7 +328,7 @@ const LabPage = () => {
       improvement: "+12%",
     },
     {
-      name: "Problem Solving",
+      name: "Form, Structure, and Sense",
       timingPercentage: 45,
       timingText: "3:45 avg",
       masteryPercentage: 60,
@@ -266,6 +336,59 @@ const LabPage = () => {
       improvement: "-3%",
     },
   ];
+
+  // Complete lists of topics and subtopics
+  const allMathTopics = {
+    Algebra: [
+      "Linear Equations (1)",
+      "Linear Functions",
+      "Linear Equations (2)",
+      "Systems of 2 in 2",
+      "Linear Inequalities",
+    ],
+    "Advanced Math": [
+      "Equivalent Expressions",
+      "Nonlinear Equations",
+      "Nonlinear Functions",
+    ],
+    "Problem-Solving and Data Analysis": [
+      "Ratios & Rates",
+      "Percentages",
+      "Measures of Spread",
+      "Models and Scatterplots",
+      "Probability",
+      "Sample Statistics",
+      "Studies and Experiments",
+    ],
+    "Geometry and Trigonometry": [
+      "Area & Volume",
+      "Angles & Triangles",
+      "Trigonometry",
+      "Circles",
+    ],
+  };
+
+  const allVerbalTopics = {
+    "Craft and Structure": [
+      "Cross-Text Connections",
+      "Text Structure and Purpose",
+      "Words in Context",
+    ],
+    "Expression of Ideas": ["Rhetorical Synthesis", "Transitions"],
+    "Information and Ideas": [
+      "Central Ideas and Details",
+      "Command of Evidence",
+      "Inferences",
+    ],
+    "Standard English Conventions": [
+      "Boundaries",
+      "Form, Structure, and Sense",
+    ],
+  };
+
+  // Get active subtopic data based on the selected tab
+  const activeSubtopicData =
+    activeTab === "math" ? mathSubtopicData : verbalSubtopicData;
 
   return (
     <div className="lab-page-container">
@@ -317,55 +440,39 @@ const LabPage = () => {
           </div>
         </div>
 
-        <div className="lab-row">
-          <div className="lab-card activity-card">
-            <div className="lab-card-header">
-              <div className="lab-card-icon">
-                <CalendarIcon />
-              </div>
-              <h2>Monthly Activity</h2>
-            </div>
-            <div className="lab-calendar-grids">
-              {monthlyData.map((month, index) => (
-                <div className="lab-calendar-month" key={index}>
-                  <div className="lab-calendar-month-title">{month.name}</div>
-                  <div className="lab-calendar-weekdays">
-                    {month.weekdays.map((day, dayIndex) => (
-                      <div className="lab-calendar-weekday" key={dayIndex}>
-                        {day}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="lab-calendar-grid">
-                    {month.days.map((day, dayIndex) => (
-                      <div
-                        className="lab-calendar-box"
-                        key={dayIndex}
-                        style={getActivityStyle(day.activity)}
-                      >
-                        {day.day}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+        {/* Tab selection for Math/Verbal */}
+        <div className="performance-tab-selector">
+          <div className="tab-pill">
+            <button
+              className={`tab-button ${activeTab === "math" ? "active" : ""}`}
+              onClick={() => setActiveTab("math")}
+            >
+              Math
+            </button>
+            <button
+              className={`tab-button ${activeTab === "verbal" ? "active" : ""}`}
+              onClick={() => setActiveTab("verbal")}
+            >
+              Verbal
+            </button>
           </div>
+        </div>
 
-          <div className="lab-card performance-card">
+        <div className="lab-row performance-row">
+          {/* Timing Performance Section */}
+          <div className="lab-card timing-card">
             <div className="lab-card-header">
               <div className="lab-card-icon">
-                <ChartIcon />
+                <ClockIcon />
               </div>
-              <h2>Subtopic Performance</h2>
+              <h2>Timing Performance</h2>
             </div>
             <div className="lab-subtopic-table">
               <div className="lab-subtopic-table-header">
                 <div>Subtopic</div>
                 <div>Time</div>
-                <div>Mastery</div>
               </div>
-              {subtopicData.map((subtopic, index) => (
+              {activeSubtopicData.map((subtopic, index) => (
                 <div className="lab-subtopic-row" key={index}>
                   <div className="lab-subtopic-name">
                     {subtopic.name}
@@ -380,23 +487,46 @@ const LabPage = () => {
                     </span>
                   </div>
                   <div className="lab-timing-cell">
-                    <div className="lab-timing-bar-bg">
-                      <div
-                        className="lab-timing-bar-fill"
-                        style={{ width: `${subtopic.timingPercentage}%` }}
-                      ></div>
+                    {renderPerformanceBar(subtopic.timingPercentage)}
+                    <div className="lab-timing-text-group">
+                      <div className="lab-timing-text">
+                        {subtopic.timingText}
+                      </div>
                     </div>
-                    <div className="lab-timing-text">{subtopic.timingText}</div>
                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Mastery Performance Section with Score Icons */}
+          <div className="lab-card mastery-card">
+            <div className="lab-card-header">
+              <div className="lab-card-icon">
+                <ChartIcon />
+              </div>
+              <h2>Mastery Performance</h2>
+            </div>
+            <div className="lab-subtopic-table">
+              <div className="lab-subtopic-table-header">
+                <div>Subtopic</div>
+                <div>Score</div>
+              </div>
+              {activeSubtopicData.map((subtopic, index) => (
+                <div className="lab-subtopic-row" key={index}>
+                  <div className="lab-subtopic-name">{subtopic.name}</div>
                   <div className="lab-mastery-cell">
-                    <div className="lab-mastery-bar-bg">
-                      <div
-                        className="lab-mastery-bar-fill"
-                        style={{ width: `${subtopic.masteryPercentage}%` }}
-                      ></div>
-                    </div>
-                    <div className="lab-mastery-text">
-                      {subtopic.masteryText}
+                    <div className="lab-score-container">
+                      <img
+                        src={getScoreImage(subtopic.masteryPercentage)}
+                        alt={`Score ${getScoreLabel(
+                          subtopic.masteryPercentage
+                        )}`}
+                        className="score-icon"
+                      />
+                      <div className="lab-mastery-text">
+                        {subtopic.masteryText}
+                      </div>
                     </div>
                   </div>
                 </div>
