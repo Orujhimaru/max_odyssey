@@ -467,7 +467,7 @@
   border-left: 1px solid var(--border-color);
 }
 
-.practice-header {
+/* .practice-header {
   padding: 20px;
   border-bottom: 1px solid var(--border-color);
 }
@@ -476,7 +476,7 @@
   font-size: 20px;
   margin: 0 0 10px 0;
   color: var(--primary-color);
-}
+} */
 
 .question-info {
   display: flex;

@@ -5,6 +5,7 @@
   padding: 24px;
   background-color: var(--bg-secondary);
   overflow-y: auto;
+  padding-top: 12px;
 }
 
 .tests-container {
@@ -14,6 +15,7 @@
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding-top: 12px;
 }
 
 .tests-header {
@@ -35,7 +37,7 @@
 }
 
 .tests-header h1 {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 500;
   color: var(--text-primary);
   line-height: 24px;
