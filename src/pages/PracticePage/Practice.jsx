@@ -10,13 +10,19 @@ import "./Practice.css";
 import PracticeQuestionInterface from "./PracticeQuestionInterface/PracticeQuestionInterface";
 import { api } from "../../services/api";
 import { useNavigate } from "react-router-dom";
+import practiceHandIcon from "../../assets/practice_hand.svg";
 
 // Create separate components for static parts
 const Header = React.memo(() => {
   return (
     <div className="practice-header">
       <h1>
-        Practice Arena <span>🦉</span>
+        Practice Arena
+        <img
+          src={practiceHandIcon}
+          alt="Practice Icon"
+          className="practice-icon"
+        />
       </h1>
     </div>
   );

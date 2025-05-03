@@ -1263,3 +1263,17 @@ button:focus-visible {
   opacity: 0.8;
   color: white;
 }
+
+.practice-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  margin-bottom: -1px;
+}
+
+/* For emojis - can be removed or kept for backward compatibility */
+/* .practice-header h1 span {
+  font-size: 24px;
+  line-height: 1;
+  margin-right: 2px;
+} */
