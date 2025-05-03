@@ -218,6 +218,10 @@
   flex-direction: column;
 }
 
+.insight-content.timerr {
+  margin: 0 auto;
+}
+
 .insight-card {
   background-color: var(--bg-secondary);
   display: flex;

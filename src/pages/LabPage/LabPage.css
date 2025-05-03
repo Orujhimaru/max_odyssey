@@ -865,21 +865,6 @@
   }
 }
 
-/* Performance bar styles from PerformanceInsights */
-.performance-bar-container {
-  width: 100%;
-  margin: 8px 0;
-}
-
-.performance-bar {
-  position: relative;
-  height: 12px;
-  border-radius: 3px;
-  overflow: hidden;
-  background-color: var(--bar-background); /* Dark gray for unfilled portions */
-  display: flex;
-}
-
 .bar-segment {
   flex: 1;
   height: 100%;
