@@ -758,7 +758,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 40px; /* Increase width to ensure it catches mouse movement */
+  width: 1px; /* Increase width to ensure it catches mouse movement */
   height: 100vh;
   z-index: 10000; /* Ensure it's above everything else */
   cursor: default;
