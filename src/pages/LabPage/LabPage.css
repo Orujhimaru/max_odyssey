@@ -635,10 +635,11 @@
 /* Yearly Activity Calendar */
 .yearly-activity-section {
   background-color: var(--bg-primary);
-  border-radius: 16px;
-  padding: 20px 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  width: 100%;
 }
 
 .yearly-activity-header {
@@ -649,75 +650,150 @@
 }
 
 .yearly-activity-title {
-  font-size: 1.2rem;
+  font-size: 24px;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
 }
 
+/* Year selector styles */
+.year-selector {
+  position: relative;
+}
+
 .year-dropdown {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.95rem;
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 6px;
   border: 1px solid var(--border-color);
-  padding: 6px 12px;
-  border-radius: 4px;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 30px;
+  position: relative;
 }
 
-.yearly-calendar-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 2px;
+.year-dropdown::after {
+  content: "▼";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: var(--text-secondary);
+  pointer-events: none;
 }
 
-.month-column {
-  flex: 1;
+/* Exam date selector styles */
+.exam-date-selector {
+  margin-bottom: 16px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 8px;
 }
 
+.exam-date-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.selected-exam-date {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.exam-x-sample {
+  color: #e53935;
+  font-weight: bold;
+}
+
+/* Calendar container */
+.yearly-calendar-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+/* Month column */
+.month-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 65px;
+  margin-bottom: 8px;
+}
+
+/* Month label */
 .month-label {
-  font-size: 0.9rem;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
+/* Month grid */
 .month-grid {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+  align-items: center;
 }
 
+/* Month row */
 .month-row {
   display: flex;
-  gap: 2px;
+  gap: 3px;
 }
 
+/* Activity square */
 .activity-square {
   width: 16px;
   height: 16px;
   border-radius: 2px;
+  background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  background-color: transparent;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Active day (green) */
 .activity-square.active-day {
-  background-color: var(--activity-day);
-  border-color: var(--activity-day);
+  background-color: #2ca25f;
+  border-color: #2ca25f;
 }
 
-/* Dark Mode Styles */
+/* Exam day styles */
+.activity-square.exam-day {
+  background-color: transparent;
+  border-color: #e53935;
+}
+
+.exam-x {
+  color: #e53935;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Dark mode overrides */
 [data-theme="dark"] .yearly-activity-section {
-  background-color: #1e1e1e;
-  border-color: #333;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
 }
 
 [data-theme="dark"] .yearly-activity-title {
@@ -725,8 +801,8 @@
 }
 
 [data-theme="dark"] .year-dropdown {
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
-  border-color: var(--border-color);
 }
 
 [data-theme="dark"] .month-label {
@@ -734,5 +810,18 @@
 }
 
 [data-theme="dark"] .activity-square {
-  border-color: #555;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .yearly-calendar-container {
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .month-column {
+    min-width: 60px;
+  }
 }

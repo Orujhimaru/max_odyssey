@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./LabPage.css";
 import { CalendarIcon, ChartIcon, ClockIcon } from "../../icons/Icons";
 
@@ -105,6 +105,92 @@ const getBoxShade = (val) => {
 };
 
 const LabPage = () => {
+  const [selectedYear, setSelectedYear] = useState("2025");
+  const [examDate, setExamDate] = useState(null);
+
+  // Function to determine if a day in January should be active (green)
+  const isJanuaryActive = (row, col) => {
+    // First day in first 3 rows active
+    if (row < 3 && col === 0) return true;
+    // First 2 days in row 3 active
+    if (row === 2 && col === 1) return true;
+    // First 2 days in rows 5-6 active
+    if ((row === 4 || row === 5) && col < 2) return true;
+    return false;
+  };
+
+  // Function to check if a day is the exam date
+  const isExamDate = (monthIndex, row, col) => {
+    if (!examDate) return false;
+    return (
+      examDate.month === monthIndex &&
+      examDate.row === row &&
+      examDate.col === col
+    );
+  };
+
+  // Handle exam date selection
+  const handleExamDateSelect = (monthIndex, row, col) => {
+    // If already selected, deselect
+    if (
+      examDate &&
+      examDate.month === monthIndex &&
+      examDate.row === row &&
+      examDate.col === col
+    ) {
+      setExamDate(null);
+    } else {
+      setExamDate({ month: monthIndex, row, col });
+    }
+  };
+
+  // Render a single month for the yearly calendar
+  const renderMonthColumn = (month, monthIndex) => {
+    return (
+      <div className="month-column" key={month}>
+        <div className="month-label">{month}</div>
+        <div className="month-grid">
+          {/* Generate 7 rows of 5 squares each */}
+          {Array(7)
+            .fill(0)
+            .map((_, rowIndex) => (
+              <div className="month-row" key={`row-${rowIndex}`}>
+                {Array(5)
+                  .fill(0)
+                  .map((_, colIndex) => {
+                    const isActive =
+                      monthIndex === 0 && isJanuaryActive(rowIndex, colIndex);
+                    const isExam = isExamDate(monthIndex, rowIndex, colIndex);
+
+                    return (
+                      <div
+                        className={`activity-square ${
+                          isActive ? "active-day" : ""
+                        } ${isExam ? "exam-day" : ""}`}
+                        key={`square-${rowIndex}-${colIndex}`}
+                        onClick={() =>
+                          handleExamDateSelect(monthIndex, rowIndex, colIndex)
+                        }
+                      >
+                        {isExam && <span className="exam-x">X</span>}
+                      </div>
+                    );
+                  })}
+              </div>
+            ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Function to determine activity styles for the monthly calendar
+  const getActivityStyle = (activity) => {
+    if (activity === 0) return {};
+    if (activity === 1) return { backgroundColor: "var(--activity-1)" };
+    if (activity === 2) return { backgroundColor: "var(--activity-2)" };
+    if (activity === 3) return { backgroundColor: "var(--activity-3)" };
+  };
+
   // Mock months data for the yearly view
   const yearlyMonths = [
     { name: "JAN", days: 31 },
@@ -181,57 +267,6 @@ const LabPage = () => {
     },
   ];
 
-  // Function to determine if a day in January should be active (green)
-  const isJanuaryActive = (row, col) => {
-    // First day in first 3 rows active
-    if (row < 3 && col === 0) return true;
-    // First 2 days in row 3 active
-    if (row === 2 && col === 1) return true;
-    // First 2 days in rows 5-6 active
-    if ((row === 4 || row === 5) && col < 2) return true;
-    return false;
-  };
-
-  // Render a single month for the yearly calendar
-  const renderMonthColumn = (month, monthIndex) => {
-    return (
-      <div className="month-column" key={month.name}>
-        <div className="month-label">{month.name}</div>
-        <div className="month-grid">
-          {/* Generate 7 rows of 5 squares each */}
-          {Array(7)
-            .fill(0)
-            .map((_, rowIndex) => (
-              <div className="month-row" key={`row-${rowIndex}`}>
-                {Array(5)
-                  .fill(0)
-                  .map((_, colIndex) => {
-                    const isActive =
-                      monthIndex === 0 && isJanuaryActive(rowIndex, colIndex);
-                    return (
-                      <div
-                        className={`activity-square ${
-                          isActive ? "active-day" : ""
-                        }`}
-                        key={`square-${rowIndex}-${colIndex}`}
-                      />
-                    );
-                  })}
-              </div>
-            ))}
-        </div>
-      </div>
-    );
-  };
-
-  // Function to determine activity styles for the monthly calendar
-  const getActivityStyle = (activity) => {
-    if (activity === 0) return {};
-    if (activity === 1) return { backgroundColor: "var(--activity-1)" };
-    if (activity === 2) return { backgroundColor: "var(--activity-2)" };
-    if (activity === 3) return { backgroundColor: "var(--activity-3)" };
-  };
-
   return (
     <div className="lab-page-container">
       <header className="lab-header">
@@ -248,30 +283,37 @@ const LabPage = () => {
         <div className="yearly-activity-section">
           <div className="yearly-activity-header">
             <h2 className="yearly-activity-title">Training Activity</h2>
-            <div className="year-dropdown">
-              <span>2025</span>
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+
+            {/* Year dropdown */}
+            <div className="year-selector">
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+                className="year-dropdown"
               >
-                <path
-                  d="M4 6L8 10L12 6"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+              </select>
             </div>
           </div>
 
-          <div className="yearly-calendar-container">
-            {yearlyMonths.map((month, index) =>
-              renderMonthColumn(month, index)
+          {/* Exam date selection UI */}
+          <div className="exam-date-selector">
+            <p className="exam-date-text">
+              Click on a day to mark your exam date with{" "}
+              <span className="exam-x-sample">X</span>
+            </p>
+            {examDate && (
+              <p className="selected-exam-date">
+                Selected exam date: {yearMonths[examDate.month]}{" "}
+                {examDate.row * 5 + examDate.col + 1}, {selectedYear}
+              </p>
             )}
+          </div>
+
+          <div className="yearly-calendar-container">
+            {yearMonths.map((month, index) => renderMonthColumn(month, index))}
           </div>
         </div>
 
