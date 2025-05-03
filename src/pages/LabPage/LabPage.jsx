@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./LabPage.css";
 import { CalendarIcon, ChartIcon, ClockIcon } from "../../icons/Icons";
+import labPageIcon from "../../assets/lab_page.svg";
 
 // Import score SVGs
 import scoreA from "../../assets/scoreA.svg";
@@ -116,6 +117,17 @@ const LabPage = () => {
   const [examDate, setExamDate] = useState(null);
   const [activeTab, setActiveTab] = useState("math"); // 'math' or 'verbal'
   const [expandedTopics, setExpandedTopics] = useState({});
+
+  // Optional: Auto-expand first topic when tab changes
+  useEffect(() => {
+    // Get first topic from active data
+    const activeTopicsData =
+      activeTab === "math" ? mathTopicsData : verbalTopicsData;
+    const firstTopic = Object.keys(activeTopicsData)[0];
+
+    // Reset expanded topics and expand first topic
+    setExpandedTopics({ [firstTopic]: true });
+  }, [activeTab]);
 
   // Function to toggle topic expansion
   const toggleTopic = (topic) => {
@@ -603,12 +615,132 @@ const LabPage = () => {
   const activeTopicsData =
     activeTab === "math" ? mathTopicsData : verbalTopicsData;
 
+  // Function to handle tab changes
+  const handleTabChange = (tab) => {
+    // Preserve expanded state structure but update for the new tab
+    setActiveTab(tab);
+  };
+
+  // Function to render topics for the active tab
+  const renderTopicsSection = (topicsData, sectionType) => {
+    return (
+      <div className="topics-container">
+        {Object.entries(topicsData).map(([topic, subtopics]) => {
+          // Calculate topic averages
+          const avgTimingPercentage =
+            calculateAverageTimingPercentage(subtopics);
+          const avgTimingText = calculateAverageTime(subtopics);
+          const avgImprovement = calculateAverageImprovement(subtopics);
+          const avgMastery = calculateAverageMastery(subtopics);
+
+          return (
+            <div key={topic} className="topic-section">
+              <div
+                className={`topic-header ${
+                  expandedTopics[topic] ? "expanded" : ""
+                }`}
+                onClick={() => toggleTopic(topic)}
+              >
+                <div className="topic-name-container">
+                  <h3 className="topic-name">{topic}</h3>
+                  <span
+                    className={`improvement ${
+                      avgImprovement.includes("+") ? "positive" : "negative"
+                    }`}
+                  >
+                    {avgImprovement}
+                  </span>
+                  <span
+                    className={`dropdown-indicator ${
+                      expandedTopics[topic] ? "expanded" : ""
+                    }`}
+                  >
+                    ▼
+                  </span>
+                </div>
+
+                {sectionType === "timing" ? (
+                  <div className="lab-timing-cell">
+                    {renderPerformanceBar(avgTimingPercentage)}
+                    <div className="lab-timing-text-group">
+                      <div className="lab-timing-text">{avgTimingText}</div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="lab-mastery-cell">
+                    <div className="lab-score-container">
+                      <img
+                        src={getScoreImage(avgMastery.percentage)}
+                        alt={`Score ${getScoreLabel(avgMastery.percentage)}`}
+                        className="score-icon"
+                      />
+                      <div className="lab-mastery-text">{avgMastery.text}</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="lab-subtopics">
+                <div className="lab-subtopic-table">
+                  {subtopics.map((subtopic, index) => (
+                    <div className="lab-subtopic-row" key={index}>
+                      <div className="lab-subtopic-name">
+                        {subtopic.name}
+                        {sectionType === "timing" && (
+                          <span
+                            className={`improvement ${
+                              subtopic.improvement.includes("+")
+                                ? "positive"
+                                : "negative"
+                            }`}
+                          >
+                            {subtopic.improvement}
+                          </span>
+                        )}
+                      </div>
+
+                      {sectionType === "timing" ? (
+                        <div className="lab-timing-cell">
+                          {renderPerformanceBar(subtopic.timingPercentage)}
+                          <div className="lab-timing-text-group">
+                            <div className="lab-timing-text">
+                              {subtopic.timingText}
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="lab-mastery-cell">
+                          <div className="lab-score-container">
+                            <img
+                              src={getScoreImage(subtopic.masteryPercentage)}
+                              alt={`Score ${getScoreLabel(
+                                subtopic.masteryPercentage
+                              )}`}
+                              className="score-icon"
+                            />
+                            <div className="lab-mastery-text">
+                              {subtopic.masteryText}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <div className="lab-page-container">
       <header className="lab-header">
         <div className="lab-title-area">
           <div className="lab-logo-container">
-            <span className="lab-logo">🧪</span>
+            <img src={labPageIcon} alt="Lab Icon" className="lab-icon" />
           </div>
           <h1 className="lab-title">Learning Lab</h1>
         </div>
@@ -658,13 +790,13 @@ const LabPage = () => {
           <div className="tab-pill">
             <button
               className={`tab-button ${activeTab === "math" ? "active" : ""}`}
-              onClick={() => setActiveTab("math")}
+              onClick={() => handleTabChange("math")}
             >
               Math
             </button>
             <button
               className={`tab-button ${activeTab === "verbal" ? "active" : ""}`}
-              onClick={() => setActiveTab("verbal")}
+              onClick={() => handleTabChange("verbal")}
             >
               Verbal
             </button>
@@ -681,81 +813,7 @@ const LabPage = () => {
               <h2>Timing Performance</h2>
             </div>
 
-            {/* Loop through each topic */}
-            {Object.entries(activeTopicsData).map(([topic, subtopics]) => {
-              // Calculate topic averages
-              const avgTimingPercentage =
-                calculateAverageTimingPercentage(subtopics);
-              const avgTimingText = calculateAverageTime(subtopics);
-              const avgImprovement = calculateAverageImprovement(subtopics);
-
-              return (
-                <div key={topic} className="topic-section">
-                  <div
-                    className={`topic-header ${
-                      expandedTopics[topic] ? "expanded" : ""
-                    }`}
-                    onClick={() => toggleTopic(topic)}
-                  >
-                    <div className="topic-name-container">
-                      <h3 className="topic-name">{topic}</h3>
-                      <span
-                        className={`dropdown-indicator ${
-                          expandedTopics[topic] ? "expanded" : ""
-                        }`}
-                      >
-                        ▼
-                      </span>
-                      <span
-                        className={`improvement ${
-                          avgImprovement.includes("+") ? "positive" : "negative"
-                        }`}
-                      >
-                        {avgImprovement}
-                      </span>
-                    </div>
-                    <div className="lab-timing-cell">
-                      {renderPerformanceBar(avgTimingPercentage)}
-                      <div className="lab-timing-text-group">
-                        <div className="lab-timing-text">{avgTimingText}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Subtopics (only visible when topic is expanded) */}
-                  {expandedTopics[topic] && (
-                    <div className="lab-subtopics">
-                      <div className="lab-subtopic-table">
-                        {subtopics.map((subtopic, index) => (
-                          <div className="lab-subtopic-row" key={index}>
-                            <div className="lab-subtopic-name">
-                              {subtopic.name}
-                              <span
-                                className={`improvement ${
-                                  subtopic.improvement.includes("+")
-                                    ? "positive"
-                                    : "negative"
-                                }`}
-                              >
-                                {subtopic.improvement}
-                              </span>
-                            </div>
-                            <div className="lab-timing-cell">
-                              {renderPerformanceBar(subtopic.timingPercentage)}
-                              <div className="lab-timing-text-group">
-                                <div className="lab-timing-text">
-                                  {subtopic.timingText}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {renderTopicsSection(activeTopicsData, "timing")}
           </div>
 
           {/* Mastery Performance Section with Score Icons */}
@@ -767,76 +825,7 @@ const LabPage = () => {
               <h2>Mastery Performance</h2>
             </div>
 
-            {/* Loop through each topic */}
-            {Object.entries(activeTopicsData).map(([topic, subtopics]) => {
-              // Calculate topic mastery average
-              const avgMastery = calculateAverageMastery(subtopics);
-
-              return (
-                <div key={topic} className="topic-section">
-                  <div
-                    className={`topic-header ${
-                      expandedTopics[topic] ? "expanded" : ""
-                    }`}
-                    onClick={() => toggleTopic(topic)}
-                  >
-                    <div className="topic-name-container">
-                      <h3 className="topic-name">{topic}</h3>
-                      <span
-                        className={`dropdown-indicator ${
-                          expandedTopics[topic] ? "expanded" : ""
-                        }`}
-                      >
-                        ▼
-                      </span>
-                    </div>
-                    <div className="lab-mastery-cell">
-                      <div className="lab-score-container">
-                        <img
-                          src={getScoreImage(avgMastery.percentage)}
-                          alt={`Score ${getScoreLabel(avgMastery.percentage)}`}
-                          className="score-icon"
-                        />
-                        <div className="lab-mastery-text">
-                          {avgMastery.text}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Subtopics (only visible when topic is expanded) */}
-                  {expandedTopics[topic] && (
-                    <div className="lab-subtopics">
-                      <div className="lab-subtopic-table">
-                        {subtopics.map((subtopic, index) => (
-                          <div className="lab-subtopic-row" key={index}>
-                            <div className="lab-subtopic-name">
-                              {subtopic.name}
-                            </div>
-                            <div className="lab-mastery-cell">
-                              <div className="lab-score-container">
-                                <img
-                                  src={getScoreImage(
-                                    subtopic.masteryPercentage
-                                  )}
-                                  alt={`Score ${getScoreLabel(
-                                    subtopic.masteryPercentage
-                                  )}`}
-                                  className="score-icon"
-                                />
-                                <div className="lab-mastery-text">
-                                  {subtopic.masteryText}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {renderTopicsSection(activeTopicsData, "mastery")}
           </div>
         </div>
       </div>

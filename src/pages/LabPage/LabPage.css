@@ -22,7 +22,7 @@
   gap: 16px;
 }
 
-.lab-logo-container {
+/* .lab-logo-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,7 +31,7 @@
   background: linear-gradient(135deg, var(--verbal-color) 0%, #a9d6ff 100%);
   border-radius: 50%;
   box-shadow: 0 2px 8px var(--box-shadow);
-}
+} */
 
 .lab-logo {
   font-size: 2rem;
@@ -249,8 +249,13 @@
   display: grid;
   grid-template-columns: 2.5fr 1.5fr;
   align-items: center;
-  padding: 12px 0;
+  padding: 12px 8px;
   border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.lab-subtopic-row:hover {
+  background-color: rgba(var(--bg-primary-rgb), 0.05);
 }
 
 .lab-subtopic-row:last-child {
@@ -942,31 +947,48 @@
 
 /* Topic section styles */
 .topic-section {
-  margin-bottom: 24px;
+  position: relative;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  background-color: var(--bg-primary);
+  overflow: hidden;
 }
 
 .topic-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background-color: var(--bg-secondary);
+  padding: 16px 20px;
+  background-color: var(--bg-primary);
   border-radius: 8px;
-  margin-bottom: 5px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
   position: relative;
+  border-bottom: 1px solid transparent;
+  z-index: 2;
 }
 
 .topic-header:hover {
   background-color: rgba(var(--bg-primary-rgb), 0.8);
 }
 
+.topic-header:active {
+  transform: translateY(0);
+}
+
 .topic-header.expanded {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-bottom: 1px solid var(--border-color);
-  margin-bottom: 0;
+  border-bottom-color: var(--border-color);
+}
+
+.topic-header .lab-timing-cell,
+.topic-header .lab-mastery-cell {
+  flex: 1;
+  max-width: 250px;
+}
+
+.topic-header .performance-bar-container {
+  width: 100%;
 }
 
 .topic-name-container {
@@ -974,6 +996,7 @@
   align-items: center;
   gap: 12px;
   flex: 2;
+  position: relative;
 }
 
 .topic-name {
@@ -981,85 +1004,171 @@
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
+  position: relative;
+  padding-left: 8px;
 }
 
+/* Add a subtle marker to indicate topic names */
+.topic-name::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  background-color: var(--verbal-color);
+  border-radius: 2px;
+  transition: height 0.2s ease;
+}
+
+.topic-header.expanded .topic-name::before {
+  height: 24px;
+}
+
+/* Improve dropdown indicator styling */
 .dropdown-indicator {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-primary);
   opacity: 0.6;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.25s ease;
+  display: inline-block;
+  margin-left: auto;
+  padding: 4px;
+  border-radius: 50%;
+  background-color: rgba(var(--bg-primary-rgb), 0.2);
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topic-header:hover .dropdown-indicator {
+  opacity: 0.8;
+  background-color: rgba(var(--bg-primary-rgb), 0.3);
 }
 
 .dropdown-indicator.expanded {
   transform: rotate(180deg);
+  opacity: 1;
 }
 
-/* Subtopics container */
+/* Subtopics container with smoother animation */
 .lab-subtopics {
   background-color: var(--bg-primary);
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  padding: 8px 16px 16px;
-  margin-bottom: 16px;
-  border-left: 1px solid var(--border-color);
-  border-right: 1px solid var(--border-color);
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.6s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.4s ease;
+  will-change: max-height;
+  padding: 0 20px;
+  opacity: 0;
+}
+
+.topic-header.expanded + .lab-subtopics {
+  max-height: 2000px; /* Larger value to accommodate more content */
+  opacity: 1;
+  transition: max-height 0.6s cubic-bezier(0.33, 1, 0.68, 1),
+    opacity 0.4s ease 0.1s;
+}
+
+/* Position dropdown indicator on the right in mobile layout */
+@media (max-width: 768px) {
+  .topic-name-container {
+    width: 100%;
+    position: relative;
+  }
+
+  .dropdown-indicator {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .dropdown-indicator.expanded {
+    transform: translateY(-50%) rotate(180deg);
+  }
+}
+
+/* Topic container for all topics */
+.topics-container {
+  background-color: var(--bg-primary);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  padding: 8px;
+  margin-bottom: 24px;
+}
+
+/* Subtopic table adjustments */
+.lab-subtopics .lab-subtopic-table {
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+  padding: 8px 0;
+  margin-top: 0;
+  border-top: none;
+}
+
+/* Topic row with more visual hierarchy */
+.lab-subtopic-row {
+  display: grid;
+  grid-template-columns: 2.5fr 1.5fr;
+  align-items: center;
+  padding: 14px 8px;
   border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  animation: fadeIn 0.3s ease;
+  transition: background-color 0.2s ease;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.lab-subtopic-row:hover {
+  background-color: rgba(var(--bg-primary-rgb), 0.05);
 }
 
-/* Performance bar styles for topics */
-.topic-header .performance-bar-container {
-  width: 170px;
-}
-
-.topic-header .lab-timing-cell {
-  flex: 1;
+.lab-subtopic-row:last-child {
+  border-bottom: none;
 }
 
 /* Dark mode adjustments */
-[data-theme="dark"] .topic-header {
-  background-color: rgba(45, 45, 45, 0.6);
+[data-theme="dark"] .topics-container {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
-[data-theme="dark"] .topic-header:hover {
-  background-color: rgba(45, 45, 45, 0.9);
+/* Update improvement tag display */
+.improvement {
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 3px 6px;
+  margin-left: 8px;
 }
 
-[data-theme="dark"] .lab-subtopics {
-  background-color: var(--bg-secondary);
+/* Make the topic section visually distinct */
+.topic-section + .topic-section {
+  margin-top: 12px;
+  border-top: 1px solid rgba(var(--border-color), 0.1);
 }
 
-/* Responsive adjustments */
+/* Center the header content on mobile */
 @media (max-width: 768px) {
   .topic-header {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+    align-items: stretch;
+    gap: 12px;
   }
 
   .topic-header .lab-timing-cell,
   .topic-header .lab-mastery-cell {
-    width: 100%;
+    max-width: 100%;
   }
 
   .topic-name-container {
     width: 100%;
-    justify-content: space-between;
   }
+}
 
-  .topic-header .performance-bar-container {
-    width: 100%;
-  }
+.lab-icon {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
 }
