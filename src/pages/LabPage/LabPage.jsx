@@ -116,7 +116,11 @@ const LabPage = () => {
   const [selectedYear, setSelectedYear] = useState("2025");
   const [examDate, setExamDate] = useState(null);
   const [activeTab, setActiveTab] = useState("math"); // 'math' or 'verbal'
-  const [expandedTopics, setExpandedTopics] = useState({});
+  // Track expanded topics separately for timing and mastery sections
+  const [expandedTopics, setExpandedTopics] = useState({
+    timing: {},
+    mastery: {},
+  });
 
   // Optional: Auto-expand first topic when tab changes
   useEffect(() => {
@@ -125,15 +129,21 @@ const LabPage = () => {
       activeTab === "math" ? mathTopicsData : verbalTopicsData;
     const firstTopic = Object.keys(activeTopicsData)[0];
 
-    // Reset expanded topics and expand first topic
-    setExpandedTopics({ [firstTopic]: true });
+    // Reset expanded topics and expand first topic in both sections
+    setExpandedTopics({
+      timing: { [firstTopic]: true },
+      mastery: { [firstTopic]: true },
+    });
   }, [activeTab]);
 
-  // Function to toggle topic expansion
-  const toggleTopic = (topic) => {
+  // Function to toggle topic expansion for a specific section
+  const toggleTopic = (topic, section) => {
     setExpandedTopics((prev) => ({
       ...prev,
-      [topic]: !prev[topic],
+      [section]: {
+        ...prev[section],
+        [topic]: !prev[section][topic],
+      },
     }));
   };
 
@@ -617,7 +627,6 @@ const LabPage = () => {
 
   // Function to handle tab changes
   const handleTabChange = (tab) => {
-    // Preserve expanded state structure but update for the new tab
     setActiveTab(tab);
   };
 
@@ -633,13 +642,14 @@ const LabPage = () => {
           const avgImprovement = calculateAverageImprovement(subtopics);
           const avgMastery = calculateAverageMastery(subtopics);
 
+          // Get expansion state for this section and topic
+          const isExpanded = expandedTopics[sectionType]?.[topic] || false;
+
           return (
             <div key={topic} className="topic-section">
               <div
-                className={`topic-header ${
-                  expandedTopics[topic] ? "expanded" : ""
-                }`}
-                onClick={() => toggleTopic(topic)}
+                className={`topic-header ${isExpanded ? "expanded" : ""}`}
+                onClick={() => toggleTopic(topic, sectionType)}
               >
                 <div className="topic-name-container">
                   <h3 className="topic-name">{topic}</h3>
@@ -652,7 +662,7 @@ const LabPage = () => {
                   </span>
                   <span
                     className={`dropdown-indicator ${
-                      expandedTopics[topic] ? "expanded" : ""
+                      isExpanded ? "expanded" : ""
                     }`}
                   >
                     ▼
