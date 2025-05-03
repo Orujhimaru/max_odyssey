@@ -115,6 +115,15 @@ const LabPage = () => {
   const [selectedYear, setSelectedYear] = useState("2025");
   const [examDate, setExamDate] = useState(null);
   const [activeTab, setActiveTab] = useState("math"); // 'math' or 'verbal'
+  const [expandedTopics, setExpandedTopics] = useState({});
+
+  // Function to toggle topic expansion
+  const toggleTopic = (topic) => {
+    setExpandedTopics((prev) => ({
+      ...prev,
+      [topic]: !prev[topic],
+    }));
+  };
 
   // Function to determine if a day in January should be active (green)
   const isJanuaryActive = (row, col) => {
@@ -158,7 +167,6 @@ const LabPage = () => {
       <div className="month-column" key={month}>
         <div className="month-label">{month}</div>
         <div className="month-grid">
-          {/* Generate 7 rows of 5 squares each */}
           {Array(7)
             .fill(0)
             .map((_, rowIndex) => (
@@ -207,6 +215,76 @@ const LabPage = () => {
     if (percentage >= 70) return "C";
     if (percentage >= 60) return "D";
     return "F";
+  };
+
+  // Function to calculate average time formatting
+  const calculateAverageTime = (subtopics) => {
+    // Calculate avg time in seconds for simplicity
+    let totalSeconds = 0;
+
+    subtopics.forEach((subtopic) => {
+      const timeParts = subtopic.timingText.split(":");
+      const minutes = parseInt(timeParts[0]);
+      const seconds = parseInt(timeParts[1]);
+      totalSeconds += minutes * 60 + seconds;
+    });
+
+    const avgSeconds = Math.round(totalSeconds / subtopics.length);
+    const avgMinutes = Math.floor(avgSeconds / 60);
+    const avgRemainingSeconds = avgSeconds % 60;
+
+    return `${avgMinutes}:${avgRemainingSeconds
+      .toString()
+      .padStart(2, "0")} avg`;
+  };
+
+  // Function to calculate average improvement (can be positive or negative)
+  const calculateAverageImprovement = (subtopics) => {
+    let totalImprovement = 0;
+
+    subtopics.forEach((subtopic) => {
+      // Extract the number from the improvement string (e.g., "+6%" -> 6, "-3%" -> -3)
+      const improvementValue = parseInt(subtopic.improvement);
+      totalImprovement += improvementValue;
+    });
+
+    const avgImprovement = Math.round(totalImprovement / subtopics.length);
+    return avgImprovement >= 0 ? `+${avgImprovement}%` : `${avgImprovement}%`;
+  };
+
+  // Function to calculate average mastery percentage
+  const calculateAverageMastery = (subtopics) => {
+    let totalMastery = 0;
+    let totalQuestions = 0;
+    let totalCorrect = 0;
+
+    subtopics.forEach((subtopic) => {
+      totalMastery += subtopic.masteryPercentage;
+
+      // Extract questions from text like "88% (44/50)"
+      const match = subtopic.masteryText.match(/(\d+)\/(\d+)/);
+      if (match) {
+        totalCorrect += parseInt(match[1]);
+        totalQuestions += parseInt(match[2]);
+      }
+    });
+
+    const avgMastery = Math.round(totalMastery / subtopics.length);
+    return {
+      percentage: avgMastery,
+      text: `${avgMastery}% (${totalCorrect}/${totalQuestions})`,
+    };
+  };
+
+  // Function to calculate average timing percentage
+  const calculateAverageTimingPercentage = (subtopics) => {
+    let totalPercentage = 0;
+
+    subtopics.forEach((subtopic) => {
+      totalPercentage += subtopic.timingPercentage;
+    });
+
+    return Math.round(totalPercentage / subtopics.length);
   };
 
   // Function to render performance bar like in dashboard
@@ -266,129 +344,264 @@ const LabPage = () => {
     );
   };
 
-  // Updated subtopic performance data with all topics from the list
-  const mathSubtopicData = [
-    {
-      name: "Linear Equations",
-      timingPercentage: 82,
-      timingText: "2:15 avg",
-      masteryPercentage: 88,
-      masteryText: "88% (44/50)",
-      improvement: "+6%",
-    },
-    {
-      name: "Nonlinear Functions",
-      timingPercentage: 68,
-      timingText: "3:05 avg",
-      masteryPercentage: 76,
-      masteryText: "76% (38/50)",
-      improvement: "+4%",
-    },
-    {
-      name: "Probability",
-      timingPercentage: 92,
-      timingText: "1:48 avg",
-      masteryPercentage: 94,
-      masteryText: "94% (47/50)",
-      improvement: "+12%",
-    },
-    {
-      name: "Trigonometry",
-      timingPercentage: 58,
-      timingText: "3:35 avg",
-      masteryPercentage: 62,
-      masteryText: "62% (31/50)",
-      improvement: "-3%",
-    },
-  ];
-
-  const verbalSubtopicData = [
-    {
-      name: "Words in Context",
-      timingPercentage: 75,
-      timingText: "2:33 avg",
-      masteryPercentage: 82,
-      masteryText: "82% (41/50)",
-      improvement: "+8%",
-    },
-    {
-      name: "Command of Evidence",
-      timingPercentage: 65,
-      timingText: "3:12 avg",
-      masteryPercentage: 78,
-      masteryText: "78% (39/50)",
-      improvement: "+5%",
-    },
-    {
-      name: "Rhetorical Synthesis",
-      timingPercentage: 88,
-      timingText: "1:56 avg",
-      masteryPercentage: 92,
-      masteryText: "92% (46/50)",
-      improvement: "+12%",
-    },
-    {
-      name: "Form, Structure, and Sense",
-      timingPercentage: 45,
-      timingText: "3:45 avg",
-      masteryPercentage: 60,
-      masteryText: "60% (30/50)",
-      improvement: "-3%",
-    },
-  ];
-
-  // Complete lists of topics and subtopics
-  const allMathTopics = {
+  // Complete lists of topics and subtopics with performance data
+  const mathTopicsData = {
     Algebra: [
-      "Linear Equations (1)",
-      "Linear Functions",
-      "Linear Equations (2)",
-      "Systems of 2 in 2",
-      "Linear Inequalities",
+      {
+        name: "Linear Equations (1)",
+        timingPercentage: 82,
+        timingText: "2:15 avg",
+        masteryPercentage: 88,
+        masteryText: "88% (44/50)",
+        improvement: "+6%",
+      },
+      {
+        name: "Linear Functions",
+        timingPercentage: 75,
+        timingText: "2:30 avg",
+        masteryPercentage: 84,
+        masteryText: "84% (42/50)",
+        improvement: "+5%",
+      },
+      {
+        name: "Linear Equations (2)",
+        timingPercentage: 80,
+        timingText: "2:20 avg",
+        masteryPercentage: 86,
+        masteryText: "86% (43/50)",
+        improvement: "+7%",
+      },
+      {
+        name: "Systems of 2 in 2",
+        timingPercentage: 65,
+        timingText: "2:45 avg",
+        masteryPercentage: 76,
+        masteryText: "76% (38/50)",
+        improvement: "+3%",
+      },
+      {
+        name: "Linear Inequalities",
+        timingPercentage: 70,
+        timingText: "2:35 avg",
+        masteryPercentage: 80,
+        masteryText: "80% (40/50)",
+        improvement: "+4%",
+      },
     ],
     "Advanced Math": [
-      "Equivalent Expressions",
-      "Nonlinear Equations",
-      "Nonlinear Functions",
+      {
+        name: "Equivalent Expressions",
+        timingPercentage: 60,
+        timingText: "3:00 avg",
+        masteryPercentage: 74,
+        masteryText: "74% (37/50)",
+        improvement: "+2%",
+      },
+      {
+        name: "Nonlinear Equations",
+        timingPercentage: 62,
+        timingText: "2:55 avg",
+        masteryPercentage: 72,
+        masteryText: "72% (36/50)",
+        improvement: "+3%",
+      },
+      {
+        name: "Nonlinear Functions",
+        timingPercentage: 68,
+        timingText: "3:05 avg",
+        masteryPercentage: 76,
+        masteryText: "76% (38/50)",
+        improvement: "+4%",
+      },
     ],
     "Problem-Solving and Data Analysis": [
-      "Ratios & Rates",
-      "Percentages",
-      "Measures of Spread",
-      "Models and Scatterplots",
-      "Probability",
-      "Sample Statistics",
-      "Studies and Experiments",
+      {
+        name: "Ratios & Rates",
+        timingPercentage: 85,
+        timingText: "2:00 avg",
+        masteryPercentage: 90,
+        masteryText: "90% (45/50)",
+        improvement: "+10%",
+      },
+      {
+        name: "Percentages",
+        timingPercentage: 88,
+        timingText: "1:58 avg",
+        masteryPercentage: 92,
+        masteryText: "92% (46/50)",
+        improvement: "+11%",
+      },
+      {
+        name: "Measures of Spread",
+        timingPercentage: 80,
+        timingText: "2:10 avg",
+        masteryPercentage: 86,
+        masteryText: "86% (43/50)",
+        improvement: "+8%",
+      },
+      {
+        name: "Models and Scatterplots",
+        timingPercentage: 75,
+        timingText: "2:25 avg",
+        masteryPercentage: 82,
+        masteryText: "82% (41/50)",
+        improvement: "+7%",
+      },
+      {
+        name: "Probability",
+        timingPercentage: 92,
+        timingText: "1:48 avg",
+        masteryPercentage: 94,
+        masteryText: "94% (47/50)",
+        improvement: "+12%",
+      },
+      {
+        name: "Sample Statistics",
+        timingPercentage: 78,
+        timingText: "2:20 avg",
+        masteryPercentage: 84,
+        masteryText: "84% (42/50)",
+        improvement: "+6%",
+      },
+      {
+        name: "Studies and Experiments",
+        timingPercentage: 70,
+        timingText: "2:40 avg",
+        masteryPercentage: 78,
+        masteryText: "78% (39/50)",
+        improvement: "+5%",
+      },
     ],
     "Geometry and Trigonometry": [
-      "Area & Volume",
-      "Angles & Triangles",
-      "Trigonometry",
-      "Circles",
+      {
+        name: "Area & Volume",
+        timingPercentage: 82,
+        timingText: "2:15 avg",
+        masteryPercentage: 88,
+        masteryText: "88% (44/50)",
+        improvement: "+9%",
+      },
+      {
+        name: "Angles & Triangles",
+        timingPercentage: 75,
+        timingText: "2:30 avg",
+        masteryPercentage: 80,
+        masteryText: "80% (40/50)",
+        improvement: "+6%",
+      },
+      {
+        name: "Trigonometry",
+        timingPercentage: 58,
+        timingText: "3:35 avg",
+        masteryPercentage: 62,
+        masteryText: "62% (31/50)",
+        improvement: "-3%",
+      },
+      {
+        name: "Circles",
+        timingPercentage: 65,
+        timingText: "3:10 avg",
+        masteryPercentage: 70,
+        masteryText: "70% (35/50)",
+        improvement: "+2%",
+      },
     ],
   };
 
-  const allVerbalTopics = {
+  const verbalTopicsData = {
     "Craft and Structure": [
-      "Cross-Text Connections",
-      "Text Structure and Purpose",
-      "Words in Context",
+      {
+        name: "Cross-Text Connections",
+        timingPercentage: 72,
+        timingText: "2:40 avg",
+        masteryPercentage: 78,
+        masteryText: "78% (39/50)",
+        improvement: "+6%",
+      },
+      {
+        name: "Text Structure and Purpose",
+        timingPercentage: 78,
+        timingText: "2:20 avg",
+        masteryPercentage: 84,
+        masteryText: "84% (42/50)",
+        improvement: "+7%",
+      },
+      {
+        name: "Words in Context",
+        timingPercentage: 75,
+        timingText: "2:33 avg",
+        masteryPercentage: 82,
+        masteryText: "82% (41/50)",
+        improvement: "+8%",
+      },
     ],
-    "Expression of Ideas": ["Rhetorical Synthesis", "Transitions"],
+    "Expression of Ideas": [
+      {
+        name: "Rhetorical Synthesis",
+        timingPercentage: 88,
+        timingText: "1:56 avg",
+        masteryPercentage: 92,
+        masteryText: "92% (46/50)",
+        improvement: "+12%",
+      },
+      {
+        name: "Transitions",
+        timingPercentage: 80,
+        timingText: "2:10 avg",
+        masteryPercentage: 86,
+        masteryText: "86% (43/50)",
+        improvement: "+9%",
+      },
+    ],
     "Information and Ideas": [
-      "Central Ideas and Details",
-      "Command of Evidence",
-      "Inferences",
+      {
+        name: "Central Ideas and Details",
+        timingPercentage: 76,
+        timingText: "2:25 avg",
+        masteryPercentage: 82,
+        masteryText: "82% (41/50)",
+        improvement: "+7%",
+      },
+      {
+        name: "Command of Evidence",
+        timingPercentage: 65,
+        timingText: "3:12 avg",
+        masteryPercentage: 78,
+        masteryText: "78% (39/50)",
+        improvement: "+5%",
+      },
+      {
+        name: "Inferences",
+        timingPercentage: 70,
+        timingText: "2:45 avg",
+        masteryPercentage: 76,
+        masteryText: "76% (38/50)",
+        improvement: "+4%",
+      },
     ],
     "Standard English Conventions": [
-      "Boundaries",
-      "Form, Structure, and Sense",
+      {
+        name: "Boundaries",
+        timingPercentage: 82,
+        timingText: "2:10 avg",
+        masteryPercentage: 88,
+        masteryText: "88% (44/50)",
+        improvement: "+10%",
+      },
+      {
+        name: "Form, Structure, and Sense",
+        timingPercentage: 45,
+        timingText: "3:45 avg",
+        masteryPercentage: 60,
+        masteryText: "60% (30/50)",
+        improvement: "-3%",
+      },
     ],
   };
 
-  // Get active subtopic data based on the selected tab
-  const activeSubtopicData =
-    activeTab === "math" ? mathSubtopicData : verbalSubtopicData;
+  // Get active topics data based on the selected tab
+  const activeTopicsData =
+    activeTab === "math" ? mathTopicsData : verbalTopicsData;
 
   return (
     <div className="lab-page-container">
@@ -467,36 +680,82 @@ const LabPage = () => {
               </div>
               <h2>Timing Performance</h2>
             </div>
-            <div className="lab-subtopic-table">
-              <div className="lab-subtopic-table-header">
-                <div>Subtopic</div>
-                <div>Time</div>
-              </div>
-              {activeSubtopicData.map((subtopic, index) => (
-                <div className="lab-subtopic-row" key={index}>
-                  <div className="lab-subtopic-name">
-                    {subtopic.name}
-                    <span
-                      className={`improvement ${
-                        subtopic.improvement.includes("+")
-                          ? "positive"
-                          : "negative"
-                      }`}
-                    >
-                      {subtopic.improvement}
-                    </span>
-                  </div>
-                  <div className="lab-timing-cell">
-                    {renderPerformanceBar(subtopic.timingPercentage)}
-                    <div className="lab-timing-text-group">
-                      <div className="lab-timing-text">
-                        {subtopic.timingText}
+
+            {/* Loop through each topic */}
+            {Object.entries(activeTopicsData).map(([topic, subtopics]) => {
+              // Calculate topic averages
+              const avgTimingPercentage =
+                calculateAverageTimingPercentage(subtopics);
+              const avgTimingText = calculateAverageTime(subtopics);
+              const avgImprovement = calculateAverageImprovement(subtopics);
+
+              return (
+                <div key={topic} className="topic-section">
+                  <div
+                    className={`topic-header ${
+                      expandedTopics[topic] ? "expanded" : ""
+                    }`}
+                    onClick={() => toggleTopic(topic)}
+                  >
+                    <div className="topic-name-container">
+                      <h3 className="topic-name">{topic}</h3>
+                      <span
+                        className={`dropdown-indicator ${
+                          expandedTopics[topic] ? "expanded" : ""
+                        }`}
+                      >
+                        ▼
+                      </span>
+                      <span
+                        className={`improvement ${
+                          avgImprovement.includes("+") ? "positive" : "negative"
+                        }`}
+                      >
+                        {avgImprovement}
+                      </span>
+                    </div>
+                    <div className="lab-timing-cell">
+                      {renderPerformanceBar(avgTimingPercentage)}
+                      <div className="lab-timing-text-group">
+                        <div className="lab-timing-text">{avgTimingText}</div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Subtopics (only visible when topic is expanded) */}
+                  {expandedTopics[topic] && (
+                    <div className="lab-subtopics">
+                      <div className="lab-subtopic-table">
+                        {subtopics.map((subtopic, index) => (
+                          <div className="lab-subtopic-row" key={index}>
+                            <div className="lab-subtopic-name">
+                              {subtopic.name}
+                              <span
+                                className={`improvement ${
+                                  subtopic.improvement.includes("+")
+                                    ? "positive"
+                                    : "negative"
+                                }`}
+                              >
+                                {subtopic.improvement}
+                              </span>
+                            </div>
+                            <div className="lab-timing-cell">
+                              {renderPerformanceBar(subtopic.timingPercentage)}
+                              <div className="lab-timing-text-group">
+                                <div className="lab-timing-text">
+                                  {subtopic.timingText}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
 
           {/* Mastery Performance Section with Score Icons */}
@@ -507,31 +766,77 @@ const LabPage = () => {
               </div>
               <h2>Mastery Performance</h2>
             </div>
-            <div className="lab-subtopic-table">
-              <div className="lab-subtopic-table-header">
-                <div>Subtopic</div>
-                <div>Score</div>
-              </div>
-              {activeSubtopicData.map((subtopic, index) => (
-                <div className="lab-subtopic-row" key={index}>
-                  <div className="lab-subtopic-name">{subtopic.name}</div>
-                  <div className="lab-mastery-cell">
-                    <div className="lab-score-container">
-                      <img
-                        src={getScoreImage(subtopic.masteryPercentage)}
-                        alt={`Score ${getScoreLabel(
-                          subtopic.masteryPercentage
-                        )}`}
-                        className="score-icon"
-                      />
-                      <div className="lab-mastery-text">
-                        {subtopic.masteryText}
+
+            {/* Loop through each topic */}
+            {Object.entries(activeTopicsData).map(([topic, subtopics]) => {
+              // Calculate topic mastery average
+              const avgMastery = calculateAverageMastery(subtopics);
+
+              return (
+                <div key={topic} className="topic-section">
+                  <div
+                    className={`topic-header ${
+                      expandedTopics[topic] ? "expanded" : ""
+                    }`}
+                    onClick={() => toggleTopic(topic)}
+                  >
+                    <div className="topic-name-container">
+                      <h3 className="topic-name">{topic}</h3>
+                      <span
+                        className={`dropdown-indicator ${
+                          expandedTopics[topic] ? "expanded" : ""
+                        }`}
+                      >
+                        ▼
+                      </span>
+                    </div>
+                    <div className="lab-mastery-cell">
+                      <div className="lab-score-container">
+                        <img
+                          src={getScoreImage(avgMastery.percentage)}
+                          alt={`Score ${getScoreLabel(avgMastery.percentage)}`}
+                          className="score-icon"
+                        />
+                        <div className="lab-mastery-text">
+                          {avgMastery.text}
+                        </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Subtopics (only visible when topic is expanded) */}
+                  {expandedTopics[topic] && (
+                    <div className="lab-subtopics">
+                      <div className="lab-subtopic-table">
+                        {subtopics.map((subtopic, index) => (
+                          <div className="lab-subtopic-row" key={index}>
+                            <div className="lab-subtopic-name">
+                              {subtopic.name}
+                            </div>
+                            <div className="lab-mastery-cell">
+                              <div className="lab-score-container">
+                                <img
+                                  src={getScoreImage(
+                                    subtopic.masteryPercentage
+                                  )}
+                                  alt={`Score ${getScoreLabel(
+                                    subtopic.masteryPercentage
+                                  )}`}
+                                  className="score-icon"
+                                />
+                                <div className="lab-mastery-text">
+                                  {subtopic.masteryText}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
         </div>
       </div>
