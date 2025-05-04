@@ -68,7 +68,7 @@
 .lab-card {
   background-color: var(--bg-primary);
   border-radius: 16px;
-  box-shadow: 0 2px 12px var(--box-shadow);
+  /* box-shadow: 0 2px 12px var(--box-shadow); */
   padding: 24px;
   flex: 1;
   min-width: 0;
@@ -131,7 +131,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); */
 }
 
 .lab-calendar-month-title {
@@ -183,7 +183,7 @@
 
 .lab-calendar-box:hover {
   transform: scale(1.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
   z-index: 2;
 }
 
@@ -411,7 +411,7 @@
 .lab-card {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); */
   padding: 1.5rem;
   height: 100%;
   border: 1px solid #f0f0f0;
@@ -581,7 +581,7 @@
   border-radius: 10px;
   padding: 24px;
   margin-bottom: 32px;
-  box-shadow: 0 2px 8px var(--box-shadow);
+  /* box-shadow: 0 2px 8px var(--box-shadow); */
   width: 100%;
   border: 1px solid var(--border-color);
 }
@@ -764,7 +764,7 @@
 .tab-button.active {
   background-color: var(--verbal-color);
   color: white;
-  box-shadow: 0 2px 4px var(--box-shadow);
+  /* box-shadow: 0 2px 4px var(--box-shadow); */
 }
 
 /* Performance row layout */
@@ -936,7 +936,7 @@
 .topic-section {
   position: relative;
   margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); */
   border-radius: 8px;
   background-color: var(--bg-primary);
   overflow: hidden;
@@ -1083,7 +1083,7 @@
 .topics-container {
   background-color: var(--bg-primary);
   border-radius: 10px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  /* box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); */
   overflow: hidden;
   padding: 8px;
   margin-bottom: 24px;
@@ -1118,7 +1118,7 @@
 
 /* Dark mode adjustments */
 [data-theme="dark"] .topics-container {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  /* box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); */
 }
 
 /* Update improvement tag display */
@@ -1167,8 +1167,9 @@
   border-radius: 16px;
   margin: 16px 0;
   overflow: hidden;
-  box-shadow: 0 2px 10px var(--box-shadow);
+  /* box-shadow: 0 2px 10px var(--box-shadow); */
   border: 1px solid var(--border-color);
+  max-width: 700px;
 }
 
 .quote-accent-line {
@@ -1183,11 +1184,20 @@
   align-items: center;
 }
 
+@font-face {
+  font-family: "Arcuata";
+  src: url("../../assets/ArcuataTrial-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+}
+
 .quote-author-icon {
   width: 120px;
   height: auto;
   object-fit: contain;
   margin-left: 24px;
+  padding: 12px;
+  padding-bottom: 0px;
 }
 
 .quote-text-container {
@@ -1201,12 +1211,15 @@
   color: var(--text-primary);
   margin: 0 0 16px 0;
   font-weight: 500;
+  font-family: "Arcuata";
+  max-width: 27ch;
 }
 
 .quote-author {
   font-size: 16px;
   color: var(--text-primary);
   opacity: 0.8;
+  font-family: "Arcuata";
 }
 
 @media (max-width: 768px) {
