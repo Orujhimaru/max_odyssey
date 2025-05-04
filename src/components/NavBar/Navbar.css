@@ -83,7 +83,7 @@
   /* bottom: -4px; */
   /* left: 5px; */
   width: 0px;
-  height: 3px;
+  height: 4px;
   left: 14px;
   bottom: 4px;
   background-color: #456bc4; /* Same blue as the AX logo */
@@ -93,8 +93,8 @@
 
 /* Collapse the blue line when navbar is not hovered */
 .navbar:not(:hover) .nav-item.active::after {
-  width: 20px; /* Width when collapsed, matching icon width + padding */
-  left: 14px;
+  width: 24px; /* Width when collapsed, matching icon width + padding */
+  left: 12px;
   bottom: 4px;
 }
 
