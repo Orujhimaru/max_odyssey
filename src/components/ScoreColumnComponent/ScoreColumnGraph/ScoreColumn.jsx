@@ -148,7 +148,7 @@ export default function ScoreColumnGraph() {
     <>
       <h2 className="scores-header-text">
         Score report
-        <img src={barIcon} alt="Bar Icon" className="mini-score-icon" />
+        {/* <img src={barIcon} alt="Bar Icon" className="mini-score-icon" /> */}
       </h2>
       <div className="score-column-container">
         <div className="chart-container">
