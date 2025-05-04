@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./LabPage.css";
 import { CalendarIcon, ChartIcon, ClockIcon } from "../../icons/Icons";
 import labPageIcon from "../../assets/lab_page.svg";
+import aristotleIcon from "../../assets/aristotle.svg";
 
 // Import score SVGs
 import scoreA from "../../assets/scoreA.svg";
@@ -787,6 +788,26 @@ const LabPage = () => {
 
           <div className="yearly-calendar-container">
             {yearMonths.map((month, index) => renderMonthColumn(month, index))}
+          </div>
+        </div>
+
+        {/* Aristotle Quote Section */}
+        <div className="quote-container">
+          <div className="quote-accent-line"></div>
+          <div className="quote-content">
+            <img
+              src={aristotleIcon}
+              alt="Aristotle"
+              className="quote-author-icon"
+            />
+            <div className="quote-text-container">
+              <p className="quote-text">
+                "Of all considerations, two bear the greatest weight: the
+                precision of one's timing and the righteousness of one's
+                judgment."
+              </p>
+              <span className="quote-author">-- Aristotle</span>
+            </div>
           </div>
         </div>
 
