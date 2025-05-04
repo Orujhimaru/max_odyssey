@@ -8,6 +8,7 @@ import TestsIcon from "../../assets/TestsIcon";
 import Dashboard from "../../assets/dashboard1.svg";
 import Practice from "../../assets/practice1.svg";
 import Courses from "../../assets/courses1.svg";
+import LabIcon from "../../assets/lab_icon.svg";
 
 const Navbar = ({ isDarkMode, onThemeToggle, className = "" }) => {
   const navigate = useNavigate();
@@ -66,6 +67,15 @@ const Navbar = ({ isDarkMode, onThemeToggle, className = "" }) => {
               />
             </div>
             <span className="nav-text">Practice</span>
+          </div>
+          <div
+            className={`nav-item ${isActive("/lab") ? "active" : ""}`}
+            onClick={() => handleNavigation("/lab")}
+          >
+            <div className="nav-icon-container">
+              <img src={LabIcon} alt="Learning Lab" className="nav-icon lab" />
+            </div>
+            <span className="nav-text">Lab</span>
           </div>
         </div>
       </div>
