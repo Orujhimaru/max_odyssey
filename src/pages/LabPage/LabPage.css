@@ -109,9 +109,9 @@
 .lab-card-header h2 {
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--verbal-color);
+  color: var(--text-primary);
   margin: 0;
-  text-align: center;
+
   width: 100%;
 }
 
