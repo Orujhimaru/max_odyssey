@@ -14,7 +14,7 @@ const TestsIcon = ({ isActive }) => {
           position: "relative",
           left: "3.2px",
           bottom: "2px",
-          scale: "1.3",
+          scale: "1.2",
         }}
       >
         <path
