@@ -206,6 +206,9 @@
 .nav-icon.lab {
   width: 22px;
 }
+.nav-icon.practice {
+  width: 25px;
+}
 
 .nav-item:nth-child(2) .nav-icon {
   /* Courses icon */
