@@ -12,7 +12,7 @@
   justify-content: flex-start;
   align-items: center;
   padding: 20px 32px;
-  background-color: var(--bg-primary);
+  /* background-color: var(--bg-primary); */
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -40,7 +40,7 @@
 .lab-title {
   font-size: 2.2rem;
   font-weight: 700;
-  color: var(--verbal-color);
+  color: var(--text-primary);
   letter-spacing: 0.5px;
   margin: 0;
 }
@@ -378,22 +378,6 @@
   max-width: 1200px;
   margin: 0 auto;
   font-family: "Inter", sans-serif;
-}
-
-.lab-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-}
-
-.lab-title {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: #333;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
 }
 
 .lab-title svg {
