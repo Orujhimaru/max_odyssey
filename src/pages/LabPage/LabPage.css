@@ -34,9 +34,10 @@
 } */
 .lab-logo-container {
   order: 1;
-  scale: 0.65;
+  scale: 0.6;
   position: relative;
-  top: -5px;
+  top: -3px;
+  left: -5px;
 }
 .lab-logo {
   font-size: 2rem;
@@ -386,16 +387,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
-}
-
-/* Card Styles */
-.lab-card {
-  background: white;
-  border-radius: 12px;
-  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); */
-  padding: 1.5rem;
-  height: 100%;
-  border: 1px solid #f0f0f0;
 }
 
 .lab-card-header {
@@ -925,16 +916,26 @@
 
 .topic-header {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   justify-content: space-between;
-  padding: 16px 20px;
+  padding: 0;
   background-color: var(--bg-primary);
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
   position: relative;
-  border-bottom: 1px solid transparent;
+  border: 1px solid var(--border-color);
   z-index: 2;
+  overflow: hidden;
+}
+
+.topic-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  width: 100%;
 }
 
 .topic-header:hover {
@@ -1013,7 +1014,7 @@
   justify-content: center;
 }
 
-.topic-header:hover .dropdown-indicator {
+.topic-header-content:hover .dropdown-indicator {
   opacity: 0.8;
   background-color: rgba(var(--bg-primary-rgb), 0.3);
 }
@@ -1030,15 +1031,17 @@
   max-height: 0;
   transition: max-height 0.6s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.4s ease;
   will-change: max-height;
-  padding: 0 20px;
+  padding: 0;
   opacity: 0;
+  width: 100%;
 }
 
-.topic-header.expanded + .lab-subtopics {
+.topic-header.expanded .lab-subtopics {
   max-height: 2000px; /* Larger value to accommodate more content */
   opacity: 1;
+  padding: 0 20px 16px;
   transition: max-height 0.6s cubic-bezier(0.33, 1, 0.68, 1),
-    opacity 0.4s ease 0.1s;
+    opacity 0.4s ease 0.1s, padding 0.3s ease;
 }
 
 /* Position dropdown indicator on the right in mobile layout */
