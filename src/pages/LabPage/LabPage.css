@@ -37,14 +37,6 @@
   font-size: 2rem;
 }
 
-.lab-title {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: 0.5px;
-  margin: 0;
-}
-
 .lab-content {
   flex: 1;
   padding: 24px 32px;

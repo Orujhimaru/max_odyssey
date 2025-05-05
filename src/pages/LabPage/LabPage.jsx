@@ -748,7 +748,9 @@ const LabPage = () => {
           <div className="lab-logo-container">
             <img src={labPageIcon} alt="Lab Icon" className="lab-icon" />
           </div>
-          <h1 className="lab-title">Learning Lab</h1>
+          <h1 className="lab-title continue-learning-header-h2">
+            Learning Lab
+          </h1>
         </div>
       </header>
 
