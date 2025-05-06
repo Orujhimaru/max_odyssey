@@ -251,7 +251,7 @@
 
 .lab-subtopic-row {
   display: grid;
-  grid-template-columns: 2.5fr 1.5fr;
+  /* grid-template-columns: 2.5fr 1.5fr; */
   align-items: center;
   padding: 12px 8px;
   border-bottom: 1px solid var(--border-color);
@@ -272,6 +272,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  width: fit-content;
 }
 
 .improvement {
@@ -318,7 +319,7 @@
   font-size: 0.9rem;
   color: var(--text-primary);
   white-space: nowrap;
-  min-width: 70px;
+  /* min-width: 70px; */
   text-align: end;
 }
 
@@ -917,7 +918,7 @@
 /* Updated timing cell styles */
 .lab-timing-cell {
   display: flex;
-  flex-direction: column;
+
   width: 100%;
 }
 
@@ -931,7 +932,7 @@
   font-size: 0.9rem;
   color: var(--text-primary);
   white-space: nowrap;
-  min-width: 70px;
+  /* min-width: 70px; */
   text-align: end;
   font-family: "DM Sans", sans-serif;
   font-weight: 600;
@@ -995,17 +996,30 @@
   flex: 1;
   max-width: 250px;
 }
-
+/* 
 .lab-topic-header .performance-bar-container {
   width: 100%;
+} */
+.lab-subtopic-table .performance-bar-container {
+  width: 80%;
 }
 
 .topic-name-container {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex: 2;
+  gap: 4px;
+  /* flex: 2; */
+  justify-content: space-between;
+  max-width: 220px;
+  width: 100%;
   position: relative;
+  margin-left: 8px;
+}
+
+.lab-subtopic-name {
+  justify-content: space-between;
+  max-width: 220px;
+  width: 100%;
 }
 
 .topic-name {
@@ -1014,7 +1028,7 @@
   color: var(--text-primary);
   margin: 0;
   position: relative;
-  padding-left: 8px;
+  /* padding-left: 8px; */
 }
 
 /* Add a subtle marker to indicate topic names */
@@ -1127,7 +1141,8 @@
   display: grid;
   grid-template-columns: 2.5fr 1.5fr;
   align-items: center;
-  padding: 14px 8px;
+  padding: 14px 0px;
+  margin-left: 8px;
   border-bottom: 1px solid var(--border-color);
   transition: background-color 0.2s ease;
 }

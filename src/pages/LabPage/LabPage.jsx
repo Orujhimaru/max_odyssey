@@ -298,9 +298,9 @@ const LabPage = () => {
     const avgMinutes = Math.floor(avgSeconds / 60);
     const avgRemainingSeconds = avgSeconds % 60;
 
-    return `${avgMinutes}:${avgRemainingSeconds
+    return `${avgMinutes.toString().padStart(2, "0")}:${avgRemainingSeconds
       .toString()
-      .padStart(2, "0")} avg`;
+      .padStart(2, "0")} `;
   };
 
   // Function to calculate average improvement (can be positive or negative)
@@ -415,7 +415,7 @@ const LabPage = () => {
       {
         name: "Linear Equations (1)",
         timingPercentage: 82,
-        timingText: "2:15 avg",
+        timingText: "02:15",
         masteryPercentage: 88,
         masteryText: "88% (44/50)",
         improvement: "+6%",
@@ -423,7 +423,7 @@ const LabPage = () => {
       {
         name: "Linear Functions",
         timingPercentage: 75,
-        timingText: "2:30 avg",
+        timingText: "02:30",
         masteryPercentage: 84,
         masteryText: "84% (42/50)",
         improvement: "+5%",
@@ -431,7 +431,7 @@ const LabPage = () => {
       {
         name: "Linear Equations (2)",
         timingPercentage: 80,
-        timingText: "2:20 avg",
+        timingText: "02:20",
         masteryPercentage: 86,
         masteryText: "86% (43/50)",
         improvement: "+7%",
@@ -439,7 +439,7 @@ const LabPage = () => {
       {
         name: "Systems of 2 in 2",
         timingPercentage: 65,
-        timingText: "2:45 avg",
+        timingText: "02:45",
         masteryPercentage: 76,
         masteryText: "76% (38/50)",
         improvement: "+3%",
@@ -447,7 +447,7 @@ const LabPage = () => {
       {
         name: "Linear Inequalities",
         timingPercentage: 70,
-        timingText: "2:35 avg",
+        timingText: "02:35",
         masteryPercentage: 80,
         masteryText: "80% (40/50)",
         improvement: "+4%",
@@ -457,7 +457,7 @@ const LabPage = () => {
       {
         name: "Equivalent Expressions",
         timingPercentage: 60,
-        timingText: "3:00 avg",
+        timingText: "03:00",
         masteryPercentage: 74,
         masteryText: "74% (37/50)",
         improvement: "+2%",
@@ -465,7 +465,7 @@ const LabPage = () => {
       {
         name: "Nonlinear Equations",
         timingPercentage: 62,
-        timingText: "2:55 avg",
+        timingText: "02:55",
         masteryPercentage: 72,
         masteryText: "72% (36/50)",
         improvement: "+3%",
@@ -473,7 +473,7 @@ const LabPage = () => {
       {
         name: "Nonlinear Functions",
         timingPercentage: 68,
-        timingText: "3:05 avg",
+        timingText: "03:05",
         masteryPercentage: 76,
         masteryText: "76% (38/50)",
         improvement: "+4%",
@@ -483,7 +483,7 @@ const LabPage = () => {
       {
         name: "Ratios & Rates",
         timingPercentage: 85,
-        timingText: "2:00 avg",
+        timingText: "02:00",
         masteryPercentage: 90,
         masteryText: "90% (45/50)",
         improvement: "+10%",
@@ -491,7 +491,7 @@ const LabPage = () => {
       {
         name: "Percentages",
         timingPercentage: 88,
-        timingText: "1:58 avg",
+        timingText: "01:58",
         masteryPercentage: 92,
         masteryText: "92% (46/50)",
         improvement: "+11%",
@@ -499,7 +499,7 @@ const LabPage = () => {
       {
         name: "Measures of Spread",
         timingPercentage: 80,
-        timingText: "2:10 avg",
+        timingText: "02:10",
         masteryPercentage: 86,
         masteryText: "86% (43/50)",
         improvement: "+8%",
@@ -507,7 +507,7 @@ const LabPage = () => {
       {
         name: "Models and Scatterplots",
         timingPercentage: 75,
-        timingText: "2:25 avg",
+        timingText: "02:25",
         masteryPercentage: 82,
         masteryText: "82% (41/50)",
         improvement: "+7%",
@@ -515,7 +515,7 @@ const LabPage = () => {
       {
         name: "Probability",
         timingPercentage: 92,
-        timingText: "1:48 avg",
+        timingText: "01:48",
         masteryPercentage: 94,
         masteryText: "94% (47/50)",
         improvement: "+12%",
@@ -523,7 +523,7 @@ const LabPage = () => {
       {
         name: "Sample Statistics",
         timingPercentage: 78,
-        timingText: "2:20 avg",
+        timingText: "02:20",
         masteryPercentage: 84,
         masteryText: "84% (42/50)",
         improvement: "+6%",
@@ -531,7 +531,7 @@ const LabPage = () => {
       {
         name: "Studies and Experiments",
         timingPercentage: 70,
-        timingText: "2:40 avg",
+        timingText: "02:40",
         masteryPercentage: 78,
         masteryText: "78% (39/50)",
         improvement: "+5%",
@@ -541,7 +541,7 @@ const LabPage = () => {
       {
         name: "Area & Volume",
         timingPercentage: 82,
-        timingText: "2:15 avg",
+        timingText: "02:15",
         masteryPercentage: 88,
         masteryText: "88% (44/50)",
         improvement: "+9%",
@@ -549,7 +549,7 @@ const LabPage = () => {
       {
         name: "Angles & Triangles",
         timingPercentage: 75,
-        timingText: "2:30 avg",
+        timingText: "02:30",
         masteryPercentage: 80,
         masteryText: "80% (40/50)",
         improvement: "+6%",
@@ -557,7 +557,7 @@ const LabPage = () => {
       {
         name: "Trigonometry",
         timingPercentage: 58,
-        timingText: "3:35 avg",
+        timingText: "03:35",
         masteryPercentage: 62,
         masteryText: "62% (31/50)",
         improvement: "-3%",
@@ -565,7 +565,7 @@ const LabPage = () => {
       {
         name: "Circles",
         timingPercentage: 65,
-        timingText: "3:10 avg",
+        timingText: "03:10",
         masteryPercentage: 70,
         masteryText: "70% (35/50)",
         improvement: "+2%",
@@ -578,7 +578,7 @@ const LabPage = () => {
       {
         name: "Cross-Text Connections",
         timingPercentage: 72,
-        timingText: "2:40 avg",
+        timingText: "02:40",
         masteryPercentage: 78,
         masteryText: "78% (39/50)",
         improvement: "+6%",
@@ -586,7 +586,7 @@ const LabPage = () => {
       {
         name: "Text Structure and Purpose",
         timingPercentage: 78,
-        timingText: "2:20 avg",
+        timingText: "02:20",
         masteryPercentage: 84,
         masteryText: "84% (42/50)",
         improvement: "+7%",
@@ -594,7 +594,7 @@ const LabPage = () => {
       {
         name: "Words in Context",
         timingPercentage: 75,
-        timingText: "2:33 avg",
+        timingText: "02:33",
         masteryPercentage: 82,
         masteryText: "82% (41/50)",
         improvement: "+8%",
@@ -604,7 +604,7 @@ const LabPage = () => {
       {
         name: "Rhetorical Synthesis",
         timingPercentage: 88,
-        timingText: "1:56 avg",
+        timingText: "01:56",
         masteryPercentage: 92,
         masteryText: "92% (46/50)",
         improvement: "+12%",
@@ -612,7 +612,7 @@ const LabPage = () => {
       {
         name: "Transitions",
         timingPercentage: 80,
-        timingText: "2:10 avg",
+        timingText: "02:10",
         masteryPercentage: 86,
         masteryText: "86% (43/50)",
         improvement: "+9%",
@@ -622,7 +622,7 @@ const LabPage = () => {
       {
         name: "Central Ideas and Details",
         timingPercentage: 76,
-        timingText: "2:25 avg",
+        timingText: "02:25",
         masteryPercentage: 82,
         masteryText: "82% (41/50)",
         improvement: "+7%",
@@ -630,7 +630,7 @@ const LabPage = () => {
       {
         name: "Command of Evidence",
         timingPercentage: 65,
-        timingText: "3:12 avg",
+        timingText: "03:12",
         masteryPercentage: 78,
         masteryText: "78% (39/50)",
         improvement: "+5%",
@@ -638,7 +638,7 @@ const LabPage = () => {
       {
         name: "Inferences",
         timingPercentage: 70,
-        timingText: "2:45 avg",
+        timingText: "02:45",
         masteryPercentage: 76,
         masteryText: "76% (38/50)",
         improvement: "+4%",
@@ -648,7 +648,7 @@ const LabPage = () => {
       {
         name: "Boundaries",
         timingPercentage: 82,
-        timingText: "2:10 avg",
+        timingText: "02:10",
         masteryPercentage: 88,
         masteryText: "88% (44/50)",
         improvement: "+10%",
@@ -656,7 +656,7 @@ const LabPage = () => {
       {
         name: "Form, Structure, and Sense",
         timingPercentage: 45,
-        timingText: "3:45 avg",
+        timingText: "03:45",
         masteryPercentage: 60,
         masteryText: "60% (30/50)",
         improvement: "-3%",
@@ -704,17 +704,17 @@ const LabPage = () => {
                     >
                       {avgImprovement}
                     </span>
-                    <span
-                      className={`dropdown-indicator ${
-                        isExpanded ? "expanded" : ""
-                      }`}
-                    >
-                      ▼
-                    </span>
                   </div>
 
                   {sectionType === "timing" ? (
                     <div className="lab-timing-cell">
+                      <span
+                        className={`dropdown-indicator ${
+                          isExpanded ? "expanded" : ""
+                        }`}
+                      >
+                        ▼
+                      </span>
                       {renderPerformanceBar(avgTimingPercentage)}
                       <div className="lab-timing-text-group">
                         <div className="lab-timing-text">{avgTimingText}</div>
@@ -722,6 +722,13 @@ const LabPage = () => {
                     </div>
                   ) : (
                     <div className="lab-mastery-cell">
+                      <span
+                        className={`dropdown-indicator ${
+                          isExpanded ? "expanded" : ""
+                        }`}
+                      >
+                        ▼
+                      </span>
                       <div className="lab-score-container">
                         <img
                           src={getScoreImage(avgMastery.percentage)}
