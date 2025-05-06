@@ -608,13 +608,47 @@
   margin-bottom: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
-.exam-date-text {
-  font-size: 14px;
+.exam-date-dropdown-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.exam-date-dropdown-container label {
+  font-size: 15px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.exam-date-dropdown {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 36px;
+  position: relative;
+  min-width: 280px;
+  max-width: 100%;
+}
+
+.exam-date-dropdown::after {
+  content: "▼";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
   color: var(--chart-text);
-  margin: 0;
+  pointer-events: none;
 }
 
 .selected-exam-date {
@@ -624,9 +658,28 @@
   margin: 0;
 }
 
+/* Exam day styles - updated to use blue fill instead of X */
+.activity-square.exam-day {
+  background-color: var(--verbal-color);
+  border-color: var(--verbal-color);
+}
+
+/* Remove the X styling as it's no longer needed */
+.exam-x,
 .exam-x-sample {
-  color: var(--decrease-color);
-  font-weight: bold;
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .exam-date-dropdown-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .exam-date-dropdown {
+    width: 100%;
+  }
 }
 
 /* Calendar container */
@@ -687,23 +740,6 @@
 .activity-square.active-day {
   background-color: var(--increase-color);
   border-color: var(--increase-color);
-}
-
-/* Exam day styles */
-.activity-square.exam-day {
-  background-color: transparent;
-  border-color: var(--decrease-color);
-}
-
-.exam-x {
-  color: var(--decrease-color);
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 1;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 /* Performance tab selector */
@@ -1225,5 +1261,106 @@
 
   .quote-text {
     font-size: 18px;
+  }
+}
+
+/* Confirmed Test Dates Section */
+.confirmed-test-dates-section {
+  background-color: var(--bg-primary);
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 32px;
+  width: 100%;
+  border: 1px solid var(--border-color);
+}
+
+.confirmed-dates-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 32px 0;
+}
+
+.test-dates-container {
+  display: flex;
+  gap: 32px;
+}
+
+.semester-column {
+  flex: 1;
+}
+
+.semester-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.semester-indicator {
+  height: 4px;
+  background-color: var(--verbal-color);
+  border-radius: 2px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.test-dates-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.test-date-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.test-date-item:hover {
+  transform: translateX(4px);
+}
+
+.test-date-item.selected .test-date-text {
+  color: var(--verbal-color);
+  font-weight: 600;
+}
+
+.test-date-checkmark {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--verbal-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.test-date-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .test-dates-container {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .confirmed-dates-title,
+  .semester-title {
+    font-size: 24px;
+  }
+
+  .test-date-text {
+    font-size: 16px;
   }
 }

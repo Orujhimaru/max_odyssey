@@ -37,6 +37,54 @@ const yearMonths = [
   "DEC",
 ];
 
+// Predefined test dates
+const testDates = [
+  {
+    label: "August 23, 2025",
+    month: 7,
+    day: 23,
+    year: "2025",
+    semester: "fall",
+  },
+  {
+    label: "September 13, 2025",
+    month: 8,
+    day: 13,
+    year: "2025",
+    semester: "fall",
+  },
+  {
+    label: "October 4, 2025",
+    month: 9,
+    day: 4,
+    year: "2025",
+    semester: "fall",
+  },
+  {
+    label: "November 8, 2025",
+    month: 10,
+    day: 8,
+    year: "2025",
+    semester: "fall",
+  },
+  {
+    label: "December 6, 2025",
+    month: 11,
+    day: 6,
+    year: "2025",
+    semester: "fall",
+  },
+  {
+    label: "March 14, 2026",
+    month: 2,
+    day: 14,
+    year: "2026",
+    semester: "spring",
+  },
+  { label: "May 2, 2026", month: 4, day: 2, year: "2026", semester: "spring" },
+  { label: "June 6, 2026", month: 5, day: 6, year: "2026", semester: "spring" },
+];
+
 // Generate year data (mostly empty with some activity in recent months)
 const generateYearData = () => {
   // Create empty grid (each month has 7 rows of 5-7 days)
@@ -115,13 +163,18 @@ const getBoxShade = (val) => {
 
 const LabPage = () => {
   const [selectedYear, setSelectedYear] = useState("2025");
-  const [examDate, setExamDate] = useState(null);
+  const [selectedExamDate, setSelectedExamDate] = useState("");
   const [activeTab, setActiveTab] = useState("math"); // 'math' or 'verbal'
   // Track expanded topics separately for timing and mastery sections
   const [expandedTopics, setExpandedTopics] = useState({
     timing: {},
     mastery: {},
   });
+
+  // Filter test dates based on selected year
+  const filteredTestDates = testDates.filter(
+    (date) => date.year === selectedYear
+  );
 
   // Reset expanded topics when tab changes (keep all closed)
   useEffect(() => {
@@ -131,6 +184,11 @@ const LabPage = () => {
       mastery: {},
     });
   }, [activeTab]);
+
+  // Reset selected exam date when year changes
+  useEffect(() => {
+    setSelectedExamDate("");
+  }, [selectedYear]);
 
   // Function to toggle topic expansion for a specific section
   const toggleTopic = (topic, section) => {
@@ -154,29 +212,23 @@ const LabPage = () => {
     return false;
   };
 
-  // Function to check if a day is the exam date
+  // Function to check if a day is the selected exam date
   const isExamDate = (monthIndex, row, col) => {
-    if (!examDate) return false;
-    return (
-      examDate.month === monthIndex &&
-      examDate.row === row &&
-      examDate.col === col
-    );
-  };
+    if (!selectedExamDate) return false;
 
-  // Handle exam date selection
-  const handleExamDateSelect = (monthIndex, row, col) => {
-    // If already selected, deselect
-    if (
-      examDate &&
-      examDate.month === monthIndex &&
-      examDate.row === row &&
-      examDate.col === col
-    ) {
-      setExamDate(null);
-    } else {
-      setExamDate({ month: monthIndex, row, col });
-    }
+    const examDate = testDates.find((date) => date.label === selectedExamDate);
+    if (!examDate) return false;
+
+    // For simplicity, we'll just check the month and use a simple mapping for row and col
+    // In a real implementation, you would need proper date calculations
+    if (examDate.month !== monthIndex) return false;
+
+    // Map day to row/column (simplified approach)
+    const day = examDate.day;
+    const mappedRow = Math.floor((day - 1) / 5);
+    const mappedCol = (day - 1) % 5;
+
+    return mappedRow === row && mappedCol === col;
   };
 
   // Render a single month for the yearly calendar
@@ -202,12 +254,7 @@ const LabPage = () => {
                           isActive ? "active-day" : ""
                         } ${isExam ? "exam-day" : ""}`}
                         key={`square-${rowIndex}-${colIndex}`}
-                        onClick={() =>
-                          handleExamDateSelect(monthIndex, rowIndex, colIndex)
-                        }
-                      >
-                        {isExam && <span className="exam-x">X</span>}
-                      </div>
+                      ></div>
                     );
                   })}
               </div>
@@ -773,28 +820,120 @@ const LabPage = () => {
                 className="year-dropdown"
               >
                 <option value="2025">2025</option>
+                <option value="2026">2026</option>
                 <option value="2024">2024</option>
-                <option value="2023">2023</option>
               </select>
             </div>
           </div>
 
           {/* Exam date selection UI */}
           <div className="exam-date-selector">
-            <p className="exam-date-text">
-              Click on a day to mark your exam date with{" "}
-              <span className="exam-x-sample">X</span>
-            </p>
-            {examDate && (
+            <div className="exam-date-dropdown-container">
+              <label htmlFor="exam-date-select">Select your exam date:</label>
+              <select
+                id="exam-date-select"
+                value={selectedExamDate}
+                onChange={(e) => setSelectedExamDate(e.target.value)}
+                className="exam-date-dropdown"
+              >
+                <option value="">Select a test date</option>
+                {selectedYear === "2025" && (
+                  <optgroup label="Fall 2025">
+                    {filteredTestDates
+                      .filter((date) => date.semester === "fall")
+                      .map((date) => (
+                        <option key={date.label} value={date.label}>
+                          {date.label}
+                        </option>
+                      ))}
+                  </optgroup>
+                )}
+                {selectedYear === "2026" && (
+                  <optgroup label="Spring 2026">
+                    {filteredTestDates
+                      .filter((date) => date.semester === "spring")
+                      .map((date) => (
+                        <option key={date.label} value={date.label}>
+                          {date.label}
+                        </option>
+                      ))}
+                  </optgroup>
+                )}
+              </select>
+            </div>
+            {selectedExamDate && (
               <p className="selected-exam-date">
-                Selected exam date: {yearMonths[examDate.month]}{" "}
-                {examDate.row * 5 + examDate.col + 1}, {selectedYear}
+                Selected exam date: {selectedExamDate}
               </p>
             )}
           </div>
 
           <div className="yearly-calendar-container">
             {yearMonths.map((month, index) => renderMonthColumn(month, index))}
+          </div>
+        </div>
+
+        {/* Confirmed Test Dates Section */}
+        <div className="confirmed-test-dates-section">
+          <h2 className="confirmed-dates-title">
+            Confirmed {selectedYear}–{parseInt(selectedYear) + 1} Test Dates
+          </h2>
+
+          <div className="test-dates-container">
+            <div className="semester-column">
+              <h3 className="semester-title">Fall {selectedYear}</h3>
+              <div className="semester-indicator"></div>
+              <ul className="test-dates-list">
+                {testDates
+                  .filter(
+                    (date) =>
+                      date.year === selectedYear && date.semester === "fall"
+                  )
+                  .map((date) => (
+                    <li
+                      key={date.label}
+                      className={`test-date-item ${
+                        selectedExamDate === date.label ? "selected" : ""
+                      }`}
+                      onClick={() => setSelectedExamDate(date.label)}
+                    >
+                      <span className="test-date-checkmark">✓</span>
+                      <span className="test-date-text">
+                        {date.label.split(",")[0]}
+                      </span>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+
+            <div className="semester-column">
+              <h3 className="semester-title">
+                Spring {parseInt(selectedYear) + 1}
+              </h3>
+              <div className="semester-indicator"></div>
+              <ul className="test-dates-list">
+                {testDates
+                  .filter(
+                    (date) =>
+                      date.year === (parseInt(selectedYear) + 1).toString() &&
+                      date.semester === "spring"
+                  )
+                  .map((date) => (
+                    <li
+                      key={date.label}
+                      className={`test-date-item ${
+                        selectedExamDate === date.label ? "selected" : ""
+                      }`}
+                      onClick={() => setSelectedExamDate(date.label)}
+                    >
+                      <span className="test-date-checkmark">✓</span>
+                      <span className="test-date-text">
+                        {date.label.split(",")[0]}
+                      </span>
+                    </li>
+                  ))}
+              </ul>
+            </div>
           </div>
         </div>
 
