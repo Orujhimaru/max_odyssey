@@ -874,68 +874,6 @@ const LabPage = () => {
         </div>
 
         {/* Confirmed Test Dates Section */}
-        <div className="confirmed-test-dates-section">
-          <h2 className="confirmed-dates-title">
-            Confirmed {selectedYear}–{parseInt(selectedYear) + 1} Test Dates
-          </h2>
-
-          <div className="test-dates-container">
-            <div className="semester-column">
-              <h3 className="semester-title">Fall {selectedYear}</h3>
-              <div className="semester-indicator"></div>
-              <ul className="test-dates-list">
-                {testDates
-                  .filter(
-                    (date) =>
-                      date.year === selectedYear && date.semester === "fall"
-                  )
-                  .map((date) => (
-                    <li
-                      key={date.label}
-                      className={`test-date-item ${
-                        selectedExamDate === date.label ? "selected" : ""
-                      }`}
-                      onClick={() => setSelectedExamDate(date.label)}
-                    >
-                      <span className="test-date-checkmark">✓</span>
-                      <span className="test-date-text">
-                        {date.label.split(",")[0]}
-                      </span>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-
-            <div className="semester-column">
-              <h3 className="semester-title">
-                Spring {parseInt(selectedYear) + 1}
-              </h3>
-              <div className="semester-indicator"></div>
-              <ul className="test-dates-list">
-                {testDates
-                  .filter(
-                    (date) =>
-                      date.year === (parseInt(selectedYear) + 1).toString() &&
-                      date.semester === "spring"
-                  )
-                  .map((date) => (
-                    <li
-                      key={date.label}
-                      className={`test-date-item ${
-                        selectedExamDate === date.label ? "selected" : ""
-                      }`}
-                      onClick={() => setSelectedExamDate(date.label)}
-                    >
-                      <span className="test-date-checkmark">✓</span>
-                      <span className="test-date-text">
-                        {date.label.split(",")[0]}
-                      </span>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          </div>
-        </div>
 
         {/* Aristotle Quote Section */}
         <div className="quote-container">
