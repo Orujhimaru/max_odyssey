@@ -75,7 +75,7 @@ const Navbar = ({ isDarkMode, onThemeToggle, className = "" }) => {
             <div className="nav-icon-container">
               <img src={LabIcon} alt="Learning Lab" className="nav-icon lab" />
             </div>
-            <span className="nav-text">Lab</span>
+            <span className="nav-text">Performance</span>
           </div>
         </div>
       </div>

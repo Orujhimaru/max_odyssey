@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
   font-family: "KaTeX_Main";
   src: url("/fonts/katex/KaTeX_Main-Regular.woff2") format("woff2"),
     url("/fonts/katex/KaTeX_Main-Regular.woff") format("woff"),
@@ -16,4 +16,4 @@
   font-style: italic;
 }
 
-/* Add other KaTeX fonts as needed */
+Add other KaTeX fonts as needed */

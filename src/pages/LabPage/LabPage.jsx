@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./LabPage.css";
-import { CalendarIcon, ChartIcon, ClockIcon } from "../../icons/Icons";
+import { CalendarIcon } from "../../icons/Icons";
 import labPageIcon from "../../assets/lab_page.svg";
 import aristotleIcon from "../../assets/aristotle.svg";
+import TimingIcon from "../../assets/TimingIcon";
+import PerformanceIcon from "../../assets/PerformanceIcon";
 
 // Import score SVGs
 import scoreA from "../../assets/scoreA.svg";
@@ -689,9 +691,9 @@ const LabPage = () => {
           const isExpanded = expandedTopics[sectionType]?.[topic] || false;
 
           return (
-            <div key={topic} className="topic-section">
+            <div key={topic} className="lab-topic-section">
               <div
-                className={`topic-header ${isExpanded ? "expanded" : ""}`}
+                className={`lab-topic-header ${isExpanded ? "expanded" : ""}`}
                 onClick={() => toggleTopic(topic, sectionType)}
               >
                 <div className="topic-header-content">
@@ -918,7 +920,7 @@ const LabPage = () => {
           <div className="lab-card timing-card">
             <div className="lab-card-header">
               <div className="lab-card-icon">
-                <ClockIcon />
+                <i className="fas fa-clock"></i>
               </div>
               <h2>Timing Performance</h2>
             </div>
@@ -930,7 +932,9 @@ const LabPage = () => {
           <div className="lab-card mastery-card">
             <div className="lab-card-header">
               <div className="lab-card-icon">
-                <ChartIcon />
+                <div className="insight-icon">
+                  <i className="fas fa-chart-line"></i>
+                </div>
               </div>
               <h2>Mastery Performance</h2>
             </div>
