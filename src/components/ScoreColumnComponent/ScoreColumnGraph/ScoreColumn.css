@@ -239,7 +239,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 .scores-header-text {
   font-size: 20px;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin-bottom: 7px;
   font-weight: 500;
   display: flex;
   gap: 8px;

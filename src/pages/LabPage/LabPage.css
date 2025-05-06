@@ -14,6 +14,7 @@
   padding: 12px 12px;
   /* background-color: var(--bg-primary); */
   border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0px;
 }
 
 .lab-title-area {
@@ -45,7 +46,7 @@
 
 .lab-content {
   flex: 1;
-  padding: 24px 12px;
+  padding: 0px 12px;
   display: flex;
   flex-direction: column;
   gap: 32px;
