@@ -3,8 +3,6 @@ import "./LabPage.css";
 import { CalendarIcon } from "../../icons/Icons";
 import labPageIcon from "../../assets/lab_page.svg";
 import aristotleIcon from "../../assets/aristotle.svg";
-import TimingIcon from "../../assets/TimingIcon";
-import PerformanceIcon from "../../assets/PerformanceIcon";
 
 // Import score SVGs
 import scoreA from "../../assets/scoreA.svg";
@@ -920,7 +918,9 @@ const LabPage = () => {
           <div className="lab-card timing-card">
             <div className="lab-card-header">
               <div className="lab-card-icon">
-                <i className="fas fa-clock"></i>
+                <div className="insight-icon">
+                  <i className="fas fa-clock"></i>
+                </div>
               </div>
               <h2>Timing Performance</h2>
             </div>
