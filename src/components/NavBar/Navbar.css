@@ -164,7 +164,7 @@
 }
 
 .theme-toggle {
-  margin: 0 auto;
+  /* margin: 0 auto; */
   background: none;
   border: none;
   color: white;
@@ -172,6 +172,8 @@
   padding: 8px;
   border-radius: 50%;
   transition: background-color 0.2s ease;
+  position: relative;
+  left: 9px;
 }
 
 .theme-toggle:hover {
@@ -189,7 +191,10 @@
 .navbar:hover .logo-container {
   width: 115px;
 }
-
+.navbar:hover .theme-toggle {
+  left: 0px;
+  transform: translateX(-5px);
+}
 .navbar:hover .logo-text-main {
   opacity: 1;
   transform: translateX(-2px);
