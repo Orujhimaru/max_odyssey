@@ -553,7 +553,6 @@
   background-color: var(--bg-primary);
   border-radius: 10px;
   padding: 24px;
-  margin-bottom: 32px;
   /* box-shadow: 0 2px 8px var(--box-shadow); */
   width: 100%;
   border: 1px solid var(--border-color);
@@ -747,7 +746,6 @@
 .performance-tab-selector {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
 }
 
 .tab-pill {
@@ -1186,7 +1184,6 @@
   display: flex;
   background-color: var(--bg-primary);
   border-radius: 16px;
-  margin: 16px 0;
   overflow: hidden;
   /* box-shadow: 0 2px 10px var(--box-shadow); */
   border: 1px solid var(--border-color);
@@ -1270,7 +1267,6 @@
   background-color: var(--bg-primary);
   border-radius: 10px;
   padding: 24px;
-  margin-bottom: 32px;
   width: 100%;
   border: 1px solid var(--border-color);
 }
