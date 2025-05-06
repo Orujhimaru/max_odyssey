@@ -267,7 +267,7 @@
 }
 
 .lab-subtopic-name {
-  font-weight: 600;
+  font-weight: 300;
   color: var(--text-primary);
   display: flex;
   align-items: center;
