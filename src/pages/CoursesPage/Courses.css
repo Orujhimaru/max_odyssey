@@ -105,7 +105,7 @@
 }
 
 .course-page-icon img {
-  filter: brightness(0) invert(1);
+  /* filter: brightness(0) invert(1); */
   width: 28px;
   height: 28px;
   object-fit: contain;

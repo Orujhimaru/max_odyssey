@@ -783,7 +783,7 @@
 /* Performance row layout */
 .performance-row {
   display: flex;
-  gap: 24px;
+  gap: 12px;
   width: 100%;
 }
 
