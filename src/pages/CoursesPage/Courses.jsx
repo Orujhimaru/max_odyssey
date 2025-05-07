@@ -118,7 +118,7 @@ const Courses = () => {
         <div className="courses-list">
           {filteredCourses.map((course) => (
             <div key={course.id} className="full-course-card">
-              <div
+              {/* <div
                 className="course-accent-image"
                 style={{ backgroundColor: course.iconColor }}
               >
@@ -126,7 +126,7 @@ const Courses = () => {
                   className="accent-image"
                   style={{ backgroundImage: `url(${course.background})` }}
                 />
-              </div>
+              </div> */}
               <div className="course-content">
                 <div className="course-title-section">
                   <div

@@ -98,12 +98,22 @@ const QuestionContent = memo(function QuestionContent({
 
 const QuestionSVG = React.memo(function QuestionSVG({ svg }) {
   if (!svg || svg === "") return null;
+
+  // Check if the svg string is actually a base64 encoded image
+  const isBase64Image = typeof svg === "string" && svg.startsWith("data:image");
+
   return (
     <div className="images-container">
-      <div
-        className="question-image question-image-with-svg"
-        dangerouslySetInnerHTML={{ __html: svg }}
-      />
+      {isBase64Image ? (
+        <div className="question-image">
+          <img src={svg} alt="Question visual" className="base64-image" />
+        </div>
+      ) : (
+        <div
+          className="question-image question-image-with-svg"
+          dangerouslySetInnerHTML={{ __html: svg }}
+        />
+      )}
     </div>
   );
 });

@@ -827,3 +827,12 @@ blockquote {
 u {
   text-underline-offset: 4px;
 }
+
+/* Add styles for base64 encoded images */
+.base64-image {
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  border-radius: 8px;
+}
