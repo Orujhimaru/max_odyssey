@@ -8,6 +8,7 @@
   border-radius: 4px;
   background-color: var(--bg-secondary);
   transition: all 0.2s ease;
+  display: none;
 }
 
 .question-timer i {

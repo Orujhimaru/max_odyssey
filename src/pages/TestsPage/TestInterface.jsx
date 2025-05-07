@@ -1330,7 +1330,7 @@ const TestInterface = ({ testType, onExit }) => {
                 <span>{currentQuestion + 1}</span>
               </div>
               <div className="question-tools">
-                {/* <QuestionTimer ref={timerRef} questionIndex={currentQuestion} /> */}
+                <QuestionTimer ref={timerRef} questionIndex={currentQuestion} />
                 <div
                   className={`mark-question ${
                     markedQuestions[currentQuestion] ? "marked" : ""

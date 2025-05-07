@@ -87,8 +87,8 @@ const QuestionTimer = forwardRef(({ questionIndex }, ref) => {
 
   return (
     <div className="question-timer" title="Time spent on this question">
-      <i className="far fa-clock"></i>
-      <span>{formatTime(timeSpent)}</span>
+      {/* <i className="far fa-clock"></i>
+      <span>{formatTime(timeSpent)}</span> */}
     </div>
   );
 });
