@@ -36,7 +36,7 @@ const courseData = [
     id: 2,
     name: "SAT Math",
     icon: mathIcon,
-    iconColor: "rgb(131 131 131)",
+    iconColor: "rgb(255 255 255)",
     background: mathBg,
     lastUpdated: "5 days ago",
     firstLessonId: 101, // ID of the first lesson for direct navigation
