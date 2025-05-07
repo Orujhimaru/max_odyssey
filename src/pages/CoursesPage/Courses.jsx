@@ -109,7 +109,7 @@ const Courses = () => {
 
   return (
     <div className="courses-page">
-      <div className="courses-header">
+      <div className="courses-header ">
         <h1>Courses</h1>
         <p>Master the SAT with our specialized courses</p>
       </div>
