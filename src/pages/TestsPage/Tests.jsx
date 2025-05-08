@@ -47,31 +47,30 @@ const Tests = () => {
         const results = await api.getUserExamResults();
         console.log(`${componentId}: Received exam results:`, results);
 
-        // Check if results is an array, if not, handle accordingly
+        let processedResults = [];
         if (Array.isArray(results)) {
-          setExamResults(results);
-          // Check if there's an ongoing test
-          const ongoingTest = results.some(
-            (test) => !test.verbal_score || !test.math_score
-          );
-          setHasOngoingTest(ongoingTest);
+          processedResults = results;
         } else if (results && Array.isArray(results.data)) {
-          // If the API returns { data: [...] } structure
-          setExamResults(results.data);
-          // Check if there's an ongoing test
-          const ongoingTest = results.data.some(
-            (test) => !test.verbal_score || !test.math_score
-          );
-          setHasOngoingTest(ongoingTest);
+          processedResults = results.data;
         } else {
-          // If it's not an array at all, set to empty array
           console.error(
             `${componentId}: API returned unexpected format:`,
             results
           );
-          setExamResults([]);
-          setHasOngoingTest(false);
         }
+        setExamResults(processedResults);
+
+        // Check if there's an ongoing test based on is_finished flag
+        const ongoingTest = processedResults.some(
+          (test) =>
+            test.user_progress && test.user_progress.is_finished === false
+        );
+        setHasOngoingTest(ongoingTest);
+        console.log(
+          `${componentId}: Has ongoing test (is_finished === false):`,
+          ongoingTest
+        );
+
         setError(null);
       } catch (err) {
         setError(err.message);
@@ -265,34 +264,30 @@ const Tests = () => {
 
   const exitTest = async () => {
     console.log(`${componentId}: Exiting test`);
-    // The TestInterface component already has its own confirmation dialog
-    // so we don't need to show another one here
     setTestInProgress(false);
     setActiveTest(null);
 
-    // Fetch the latest exam results to refresh the list
     try {
       setLoading(true);
       const results = await api.getUserExamResults();
-
+      let processedResults = [];
       if (Array.isArray(results)) {
-        setExamResults(results);
-        const ongoingTest = results.some(
-          (test) => !test.verbal_score || !test.math_score
-        );
-        setHasOngoingTest(ongoingTest);
+        processedResults = results;
       } else if (results && Array.isArray(results.data)) {
-        setExamResults(results.data);
-        const ongoingTest = results.data.some(
-          (test) => !test.verbal_score || !test.math_score
-        );
-        setHasOngoingTest(ongoingTest);
-      } else {
-        setExamResults([]);
-        setHasOngoingTest(false);
+        processedResults = results.data;
       }
+      setExamResults(processedResults);
+      // Re-check for ongoing test after exiting
+      const ongoingTest = processedResults.some(
+        (test) => test.user_progress && test.user_progress.is_finished === false
+      );
+      setHasOngoingTest(ongoingTest);
+      console.log(
+        `${componentId}: Has ongoing test after exit (is_finished === false):`,
+        ongoingTest
+      );
     } catch (error) {
-      console.error("Failed to fetch exam results:", error);
+      console.error("Failed to fetch exam results after exit:", error);
     } finally {
       setLoading(false);
     }
@@ -314,25 +309,24 @@ const Tests = () => {
     ) {
       try {
         await api.removeExamById(test.id);
-        // After successful deletion, refresh the exam results
         const results = await api.getUserExamResults();
-
+        let processedResults = [];
         if (Array.isArray(results)) {
-          setExamResults(results);
-          const ongoingTest = results.some(
-            (test) => !test.verbal_score || !test.math_score
-          );
-          setHasOngoingTest(ongoingTest);
+          processedResults = results;
         } else if (results && Array.isArray(results.data)) {
-          setExamResults(results.data);
-          const ongoingTest = results.data.some(
-            (test) => !test.verbal_score || !test.math_score
-          );
-          setHasOngoingTest(ongoingTest);
-        } else {
-          setExamResults([]);
-          setHasOngoingTest(false);
+          processedResults = results.data;
         }
+        setExamResults(processedResults);
+        // Re-check for ongoing test after deletion
+        const ongoingTest = processedResults.some(
+          (test) =>
+            test.user_progress && test.user_progress.is_finished === false
+        );
+        setHasOngoingTest(ongoingTest);
+        console.log(
+          `${componentId}: Has ongoing test after delete (is_finished === false):`,
+          ongoingTest
+        );
       } catch (error) {
         console.error("Failed to delete test:", error);
         alert(`Failed to delete test: ${error.message}`);
@@ -389,19 +383,25 @@ const Tests = () => {
               </div>
             ) : (
               examResults.map((test, index) => {
-                const isInProgress = !test.is_finished;
+                const isActuallyFinished =
+                  test.user_progress && test.user_progress.is_finished === true;
+                const isInProgress =
+                  test.user_progress &&
+                  test.user_progress.is_finished === false;
 
                 return (
                   <div
-                    className={`test-item ${isInProgress ? "in-progress" : ""}`}
+                    className={`test-item ${
+                      isInProgress ? "in-progress" : "finished"
+                    }`}
                     key={index}
                   >
                     <div className="test-name">
                       Practice Test #{test.id}
-                      {isInProgress && !isFinished && (
+                      {isInProgress && (
                         <span className="in-progress-badge">In Progress</span>
                       )}
-                      {!isInProgress && (
+                      {isActuallyFinished && (
                         <span className="finished-badge">Finished</span>
                       )}
                     </div>

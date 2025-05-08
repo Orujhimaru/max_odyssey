@@ -519,8 +519,12 @@
   z-index: 2000;
 }
 
-.test-item {
+.test-item.finished {
   border: 1px solid #6c6c6c;
+}
+
+[data-theme="light"] .test-item.finished {
+  border: 1px solid #c4c4c4;
 }
 
 .test-item.in-progress {

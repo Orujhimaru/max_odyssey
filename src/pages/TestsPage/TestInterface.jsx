@@ -592,14 +592,36 @@ const TestInterface = ({ testType, onExit }) => {
       console.log("[BACKEND examData]", examData);
       // Log all questions' topic and subtopic
       examData.exam_data.forEach((module, mIdx) => {
+        const difficultyCounts = { easy: 0, medium: 0, hard: 0, unknown: 0 };
         if (module.questions && Array.isArray(module.questions)) {
           module.questions.forEach((q, qIdx) => {
             console.log(
               `[Q] Module ${mIdx + 1} Q${qIdx + 1}: topic='${
                 q.question_topic
-              }', subtopic='${q.question_subtopic}'`
+              }', subtopic='${q.question_subtopic}', difficulty='${
+                q.difficulty_level
+              }'`
             );
+            // Count difficulties
+            const difficulty = q.difficulty_level?.toLowerCase();
+            if (difficulty === "easy") {
+              difficultyCounts.easy++;
+            } else if (difficulty === "medium") {
+              difficultyCounts.medium++;
+            } else if (difficulty === "hard") {
+              difficultyCounts.hard++;
+            } else {
+              difficultyCounts.unknown++;
+            }
           });
+          // Log difficulty counts for the module
+          console.log(
+            `[Module ${mIdx + 1} Difficulty Summary]: Easy: ${
+              difficultyCounts.easy
+            }, Medium: ${difficultyCounts.medium}, Hard: ${
+              difficultyCounts.hard
+            }, Unknown: ${difficultyCounts.unknown}`
+          );
         }
       });
       // If backend provides per-question timers, use them
