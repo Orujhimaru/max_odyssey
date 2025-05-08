@@ -389,9 +389,8 @@ const Tests = () => {
               </div>
             ) : (
               examResults.map((test, index) => {
-                const isInProgress = !test.verbal_score || !test.math_score;
-                const isFinished =
-                  test.user_progress && test.user_progress.is_finished;
+                const isInProgress = !test.is_finished;
+
                 return (
                   <div
                     className={`test-item ${isInProgress ? "in-progress" : ""}`}
@@ -402,7 +401,7 @@ const Tests = () => {
                       {isInProgress && !isFinished && (
                         <span className="in-progress-badge">In Progress</span>
                       )}
-                      {isFinished && (
+                      {!isInProgress && (
                         <span className="finished-badge">Finished</span>
                       )}
                     </div>
@@ -436,7 +435,7 @@ const Tests = () => {
                             <i className="fas fa-trash"></i>
                           </button>
                         </>
-                      ) : isFinished ? (
+                      ) : !isInProgress ? (
                         <>
                           <button
                             className="review-button"

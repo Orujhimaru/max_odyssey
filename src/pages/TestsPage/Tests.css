@@ -519,6 +519,10 @@
   z-index: 2000;
 }
 
+.test-item {
+  border: 1px solid #6c6c6c;
+}
+
 .test-item.in-progress {
   background: linear-gradient(90deg, var(--verbal-color) 50%, transparent 50%)
       top / 12px 1px repeat-x,
