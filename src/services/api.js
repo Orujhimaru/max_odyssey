@@ -382,21 +382,36 @@ export const api = {
       console.log("Modules data summary:", moduleSummary);
     }
 
-    // Prepare the request payload
-    const requestPayload = {
-      exam_id: examId,
-      ...userProgressData,
+    // Prepare the request payload according to backend expectations
+    const {
+      is_finished,
+      current_module,
+      modules,
+      question_times,
+      module_time_remaining,
+    } = userProgressData;
+
+    const finalPayload = {
+      exam_id: parseInt(examId, 10), // Ensure exam_id is an integer
+      is_finished: is_finished, // Top-level boolean
+      user_progress: {
+        // Nested object for progress details
+        current_module: current_module,
+        modules: modules,
+        question_times: question_times,
+        module_time_remaining: module_time_remaining,
+      },
     };
 
     // Detailed logging of the full request payload
-    console.log("Full request payload to server:");
-    console.log(JSON.stringify(requestPayload, null, 2));
+    console.log("Full request payload to server (corrected structure):");
+    console.log(JSON.stringify(finalPayload, null, 2));
 
     try {
       console.log(`Making API request to /exams/update for exam ${examId}`);
       const response = await api.request("/exams/update", {
         method: "POST",
-        body: JSON.stringify(requestPayload),
+        body: JSON.stringify(finalPayload),
       });
 
       if (!response.ok) {

@@ -408,11 +408,7 @@ const TestInterface = ({ testType, onExit }) => {
           const examData = testType.examData;
 
           // Validate the data
-          if (
-            examData &&
-            examData.exam_data &&
-            examData.exam_data.modules.length > 0
-          ) {
+          if (examData && examData.exam_data) {
             setExamData(examData);
 
             // Set the correct module and question
@@ -843,9 +839,7 @@ const TestInterface = ({ testType, onExit }) => {
         console.log(JSON.stringify(requestPayload, null, 2));
         // Send user answers to the server in the exact format the backend expects
         try {
-          const response = await api.updateExam(examId, {
-            user_progress: userProgress,
-          });
+          const response = await api.updateExam(examId, userProgress);
           console.log("Server response:", response);
         } catch (err) {
           console.error("Error sending user_progress to backend:", err);
