@@ -527,7 +527,7 @@
   border: 1px solid #c4c4c4;
 }
 
-.test-item.in-progress {
+.test-item.continuable {
   background: linear-gradient(90deg, var(--verbal-color) 50%, transparent 50%)
       top / 12px 1px repeat-x,
     linear-gradient(0deg, var(--verbal-color) 50%, transparent 50%) right / 1px

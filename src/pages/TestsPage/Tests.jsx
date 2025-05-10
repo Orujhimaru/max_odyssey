@@ -388,11 +388,72 @@ const Tests = () => {
                 const isInProgress =
                   test.user_progress &&
                   test.user_progress.is_finished === false;
+                const hasScores = test.verbal_score && test.math_score;
+
+                let actionButtons;
+
+                if (isInProgress) {
+                  actionButtons = (
+                    <>
+                      <button
+                        className="continue-button"
+                        onClick={() => continueTest(test)}
+                      >
+                        <i className="fas fa-play"></i> Continue
+                      </button>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDeleteTest(test)}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </>
+                  );
+                } else if (hasScores || isActuallyFinished) {
+                  actionButtons = (
+                    <>
+                      <button
+                        className="review-button"
+                        onClick={() => handleReviewClick(test)}
+                      >
+                        <i className="fas fa-eye"></i> Review
+                      </button>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDeleteTest(test)}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </>
+                  );
+                } else {
+                  // Default to Continue for tests that are not explicitly finished and have no scores
+                  actionButtons = (
+                    <>
+                      <button
+                        className="continue-button"
+                        onClick={() => continueTest(test)}
+                      >
+                        <i className="fas fa-play"></i> Continue
+                      </button>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDeleteTest(test)}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </>
+                  );
+                }
 
                 return (
                   <div
                     className={`test-item ${
-                      isInProgress ? "in-progress" : "finished"
+                      isInProgress
+                        ? "in-progress"
+                        : isActuallyFinished || hasScores
+                        ? "finished"
+                        : "continuable" // Added a 'continuable' class for potential styling
                     }`}
                     key={index}
                   >
@@ -401,9 +462,10 @@ const Tests = () => {
                       {isInProgress && (
                         <span className="in-progress-badge">In Progress</span>
                       )}
-                      {isActuallyFinished && (
+                      {(isActuallyFinished || (hasScores && !isInProgress)) && ( // Show finished if actually finished OR has scores (and not explicitly in progress)
                         <span className="finished-badge">Finished</span>
                       )}
+                      {/* You might want a specific badge for 'continuable' if is_finished is undefined/null and no scores */}
                     </div>
                     <div className="test-date">
                       {new Date(test.created_at.Time).toLocaleDateString()}
@@ -419,54 +481,7 @@ const Tests = () => {
                     <div className="test-math">
                       {test.math_score ? test.math_score.Int32 : "-"}
                     </div>
-                    <div className="test-actions">
-                      {test.verbal_score && test.math_score ? (
-                        <>
-                          <button
-                            className="review-button"
-                            onClick={() => handleReviewClick(test)}
-                          >
-                            <i className="fas fa-eye"></i> Review
-                          </button>
-                          <button
-                            className="delete-button"
-                            onClick={() => handleDeleteTest(test)}
-                          >
-                            <i className="fas fa-trash"></i>
-                          </button>
-                        </>
-                      ) : !isInProgress ? (
-                        <>
-                          <button
-                            className="review-button"
-                            onClick={() => handleReviewClick(test)}
-                          >
-                            <i className="fas fa-eye"></i> Review
-                          </button>
-                          <button
-                            className="delete-button"
-                            onClick={() => handleDeleteTest(test)}
-                          >
-                            <i className="fas fa-trash"></i>
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            className="continue-button"
-                            onClick={() => continueTest(test)}
-                          >
-                            <i className="fas fa-play"></i> Continue
-                          </button>
-                          <button
-                            className="delete-button"
-                            onClick={() => handleDeleteTest(test)}
-                          >
-                            <i className="fas fa-trash"></i>
-                          </button>
-                        </>
-                      )}
-                    </div>
+                    <div className="test-actions">{actionButtons}</div>
                   </div>
                 );
               })
