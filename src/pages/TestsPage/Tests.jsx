@@ -186,54 +186,70 @@ const Tests = () => {
         // Process each module's questions to find the last answered question
         Object.entries(examData.user_progress.modules).forEach(
           ([moduleKey, moduleData]) => {
-            // Get module index (0-based)
             const moduleIndex = parseInt(moduleKey.replace("module_", "")) - 1;
 
-            if (moduleData.questions && Array.isArray(moduleData.questions)) {
-              moduleData.questions.forEach((question, qArrIdx) => {
-                const questionId = question.question_id;
+            if (moduleIndex === currentModule - 1) {
+              // Only process the actual current module for lastQuestionIndex
+              if (moduleData.questions && Array.isArray(moduleData.questions)) {
+                let highestAnsweredIndexInModule = -1; // Initialize to -1 if no answers found
+                moduleData.questions.forEach((question, qArrIdx) => {
+                  // Populate userAnswers for potential local use or if needed by organizeUserProgress
+                  // Using questionId as key for userAnswers, assuming it's used for selectedAnswers lookup
+                  userAnswers[question.question_id] = {
+                    module_index: moduleIndex,
+                    question_index: qArrIdx,
+                    selected_option: question.answer,
+                  };
 
-                // Store the answer using the questionId as key for UI
-                userAnswers[questionId] = {
-                  module_index: moduleIndex,
-                  question_index: qArrIdx,
-                  selected_option: question.answer,
-                };
-
-                // Keep track of the last question answered in the current module
-                if (moduleIndex === currentModule - 1) {
-                  foundAnsweredQuestions = true;
-                  if (qArrIdx > lastQuestionIndex) {
-                    lastQuestionIndex = qArrIdx;
+                  if (
+                    question.answer !== null &&
+                    question.answer !== undefined
+                  ) {
+                    if (qArrIdx > highestAnsweredIndexInModule) {
+                      highestAnsweredIndexInModule = qArrIdx;
+                    }
                   }
+                });
+                // If answers were found in this module, update lastQuestionIndex
+                // Otherwise, it defaults to 0 (first question) if no answers in current module
+                if (highestAnsweredIndexInModule !== -1) {
+                  lastQuestionIndex = highestAnsweredIndexInModule;
                 }
-
-                // Also track the last module with any answers
-                if (moduleIndex > lastModuleIndex) {
-                  lastModuleIndex = moduleIndex;
-                }
-              });
+              }
+            } else {
+              // For other modules, just populate userAnswers if needed by other logic (e.g. organizeUserProgress)
+              if (moduleData.questions && Array.isArray(moduleData.questions)) {
+                moduleData.questions.forEach((question, qArrIdx) => {
+                  userAnswers[question.question_id] = {
+                    module_index: moduleIndex,
+                    question_index: qArrIdx,
+                    selected_option: question.answer,
+                  };
+                });
+              }
             }
+            // Removed tracking of lastModuleIndex as it wasn't directly used for setting currentQuestion
           }
         );
 
-        // If we didn't find any answered questions in the current module,
-        // we'll default to the first question (which is already 0)
+        // If after checking all modules, we didn't specifically find an answered question in the *current* module,
+        // lastQuestionIndex might still be its initial value (e.g., 0 or what was set before the loop).
+        // The logic above now specifically sets it if answered questions are found in the current module.
+        // If foundAnsweredQuestions is true but highestAnsweredIndexInModule remained -1 for the current module,
+        // it implies the current_module had no answers, so starting at 0 for that module is reasonable.
+
         console.log(
-          `Last question index identified: ${lastQuestionIndex} in module ${currentModule}`
+          `${componentId}: Last answered question index identified: ${lastQuestionIndex} in module ${currentModule}`
         );
 
-        // Save the converted user answers to localStorage
+        // Save the converted user answers to localStorage (might be useful for other purposes)
         localStorage.setItem("testUserAnswers", JSON.stringify(userAnswers));
 
-        // Set the active test with the retrieved data
-        // Include the last question position so we can jump directly to it
         setActiveTest({
           type: "continue",
           examData: examData,
           testId: test.id,
-          lastQuestionIndex: lastQuestionIndex,
-          lastModuleIndex: lastModuleIndex,
+          lastQuestionIndex: lastQuestionIndex, // This now accurately reflects the last answered question's index
         });
       } else {
         console.warn("No user progress data found or in unexpected format");
