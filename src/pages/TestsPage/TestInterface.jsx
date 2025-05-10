@@ -879,7 +879,8 @@ const TestInterface = ({ testType, onExit }) => {
 
   const handleNextQuestion = () => {
     if (!examData) return;
-    const currentModule = examData.exam_data[examData.current_module - 1];
+    const currentModule =
+      examData.exam_data.modules[examData.current_module - 1];
     if (!currentModule || !currentModule.questions) return;
     if (currentQuestion < currentModule.questions.length - 1) {
       // Save timer value before changing question
@@ -897,7 +898,8 @@ const TestInterface = ({ testType, onExit }) => {
 
   const handlePreviousQuestion = () => {
     if (!examData) return;
-    const currentModule = examData.exam_data[examData.current_module - 1];
+    const currentModule =
+      examData.exam_data.modules[examData.current_module - 1];
     if (!currentModule || !currentModule.questions) return;
     if (currentQuestion > 0) {
       // Save timer value before changing question
@@ -1054,7 +1056,7 @@ const TestInterface = ({ testType, onExit }) => {
   }
 
   // Find the current module based on current_module property (1-based index)
-  const currentModule = examData.exam_data[examData.current_module - 1];
+  const currentModule = examData.exam_data.modules[examData.current_module - 1];
 
   if (!currentModule) {
     return <div className="error">Current module not found</div>;
