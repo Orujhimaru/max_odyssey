@@ -1135,7 +1135,7 @@ const TestInterface = ({ testType, onExit }) => {
   }
 
   // If there are questions, continue with regular rendering
-  const currentQ = currentModule.questions[currentQuestion];
+  const currentQ = currentModule[currentQuestion];
   const isMarked = markedQuestions.includes(currentQuestion);
 
   // Handle questions without choices (e.g., free response)
