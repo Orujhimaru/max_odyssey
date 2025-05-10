@@ -190,25 +190,21 @@ const Tests = () => {
             const moduleIndex = parseInt(moduleKey.replace("module_", "")) - 1;
 
             if (moduleData.questions && Array.isArray(moduleData.questions)) {
-              moduleData.questions.forEach((question) => {
+              moduleData.questions.forEach((question, qArrIdx) => {
                 const questionId = question.question_id;
-                const questionIndex = questionId - 1; // Convert 1-based to 0-based
 
-                // Create a key for this answer
-                const storageKey = `${questionIndex}`;
-
-                // Store the answer
-                userAnswers[storageKey] = {
+                // Store the answer using the questionId as key for UI
+                userAnswers[questionId] = {
                   module_index: moduleIndex,
-                  question_index: questionIndex,
+                  question_index: qArrIdx,
                   selected_option: question.answer,
                 };
 
                 // Keep track of the last question answered in the current module
                 if (moduleIndex === currentModule - 1) {
                   foundAnsweredQuestions = true;
-                  if (questionIndex > lastQuestionIndex) {
-                    lastQuestionIndex = questionIndex;
+                  if (qArrIdx > lastQuestionIndex) {
+                    lastQuestionIndex = qArrIdx;
                   }
                 }
 
