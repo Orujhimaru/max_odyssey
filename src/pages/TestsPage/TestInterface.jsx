@@ -357,7 +357,10 @@ const TestInterface = ({ testType, onExit }) => {
   const handleTimeExpired = () => {
     console.log("Module time expired, moving to next module");
     // Check if there's a next module
-    if (examData && examData.current_module < examData.exam_data.length) {
+    if (
+      examData &&
+      examData.current_module < examData.exam_data.modules.length
+    ) {
       // Move to next module
       handleNextModule();
     } else {
@@ -405,7 +408,11 @@ const TestInterface = ({ testType, onExit }) => {
           const examData = testType.examData;
 
           // Validate the data
-          if (examData && examData.exam_data && examData.exam_data.length > 0) {
+          if (
+            examData &&
+            examData.exam_data &&
+            examData.exam_data.modules.length > 0
+          ) {
             setExamData(examData);
 
             // Set the correct module and question
@@ -520,7 +527,7 @@ const TestInterface = ({ testType, onExit }) => {
         if (examData && examData.exam_data) {
           console.log(
             `${componentId}: Module structure #${thisEffectRun}:`,
-            examData.exam_data.map(
+            examData.exam_data.modules.map(
               (m, index) =>
                 `Module ${index + 1}: ${m.module_type} (${
                   m.questions?.length || 0
@@ -546,7 +553,11 @@ const TestInterface = ({ testType, onExit }) => {
           localStorage.removeItem("moduleTimeRemaining");
         }
 
-        if (examData && examData.exam_data && examData.exam_data.length > 0) {
+        if (
+          examData &&
+          examData.exam_data &&
+          examData.exam_data.modules.length > 0
+        ) {
           console.log(`${componentId}: Setting exam data #${thisEffectRun}`);
           setExamData(examData);
           setCurrentQuestion(0); // Start with first question of first module
@@ -591,7 +602,7 @@ const TestInterface = ({ testType, onExit }) => {
       // Log the full examData object from backend
       console.log("[BACKEND examData]", examData);
       // Log all questions' topic and subtopic
-      examData.exam_data.forEach((module, mIdx) => {
+      examData.exam_data.modules.forEach((module, mIdx) => {
         const difficultyCounts = { easy: 0, medium: 0, hard: 0, unknown: 0 };
         if (module.questions && Array.isArray(module.questions)) {
           module.questions.forEach((q, qIdx) => {
@@ -638,7 +649,7 @@ const TestInterface = ({ testType, onExit }) => {
         const allTimers = JSON.parse(
           localStorage.getItem("testQuestionTimers") || "{}"
         );
-        examData.exam_data.forEach((module) => {
+        examData.exam_data.modules.forEach((module) => {
           if (module.questions && Array.isArray(module.questions)) {
             module.questions.forEach((q, idx) => {
               const globalIndex =
@@ -717,7 +728,7 @@ const TestInterface = ({ testType, onExit }) => {
 
     // For every question in the exam, include an entry in the questions array for its module
     if (examData && examData.exam_data) {
-      examData.exam_data.forEach((module, moduleIdx) => {
+      examData.exam_data.modules.forEach((module, moduleIdx) => {
         const moduleKey = `module_${moduleIdx + 1}`;
         if (module.questions && Array.isArray(module.questions)) {
           module.questions.forEach((q) => {
@@ -915,7 +926,7 @@ const TestInterface = ({ testType, onExit }) => {
     );
 
     // Check if there's a next module
-    if (examData.current_module < examData.exam_data.length) {
+    if (examData.current_module < examData.exam_data.modules.length) {
       // Increment the current module
       const newModuleNumber = examData.current_module + 1;
       console.log("Moving to module:", newModuleNumber);
@@ -1050,7 +1061,8 @@ const TestInterface = ({ testType, onExit }) => {
   }
 
   // Check if we're on the last module
-  const isLastModule = examData.current_module === examData.exam_data.length;
+  const isLastModule =
+    examData.current_module === examData.exam_data.modules.length;
 
   // Check if the current module has questions
   const hasQuestions =
