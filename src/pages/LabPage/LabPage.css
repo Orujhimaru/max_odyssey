@@ -733,24 +733,22 @@
 .activity-square {
   width: 14px;
   height: 14px;
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid #d6d6d6;
+  background-color: transparent;
+  border: none;
   position: relative;
-  cursor: pointer;
+  cursor: default;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* font-size: 12px; */
-  /* color: rgba(255, 255, 255, 0.7); */
+  font-size: 0;
+  color: transparent;
 }
 
-/* Placeholder cells - make them completely invisible and not interactive */
+/* Placeholder cells - ensure they are truly invisible and don't interfere */
 .activity-square.placeholder-cell {
-  background-color: transparent;
-  border-color: transparent;
-  cursor: default;
-  pointer-events: none; /* Prevent hover effects on placeholders */
+  background-color: transparent !important;
+  border-color: transparent !important;
+  pointer-events: none;
 }
 
 /* Active day (green) */
@@ -1421,4 +1419,27 @@
     10px,
     10px
   ); /* Final position if different from initial */
+}
+
+/* Styles for chain visualization */
+.chain-svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.chain-svg.rotated-180 {
+  transform: rotate(180deg);
+}
+
+/* Remove styles for .chain-line-svg, .line-extending-down, .line-extending-up */
+/* as TheLine SVG is no longer used for vertical connections */
+
+/* Ensure chain-cell still provides basic layout if needed */
+.chain-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }

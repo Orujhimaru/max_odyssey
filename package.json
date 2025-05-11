@@ -17,7 +17,8 @@
     "react-router-dom": "^7.1.5",
     "recharts": "^2.15.1",
     "remark-gfm": "^4.0.1",
-    "stats.js": "^0.17.0"
+    "stats.js": "^0.17.0",
+    "vite-plugin-svgr": "^4.3.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.8",

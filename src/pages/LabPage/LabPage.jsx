@@ -4,6 +4,12 @@ import { CalendarIcon } from "../../icons/Icons";
 import labPageIcon from "../../assets/lab_page.svg";
 import aristotleIcon from "../../assets/aristotle.svg";
 
+// Import SVG chain assets as React components
+import InitialChain from "../../assets/initial_chain.svg?react";
+import ConnectingChain from "../../assets/connecting_chain.svg?react";
+import TheLine from "../../assets/the_line.svg?react";
+import BrokenChain from "../../assets/broken_chain.svg?react";
+
 // Import score SVGs
 import scoreA from "../../assets/scoreA.svg";
 import scoreB from "../../assets/scoreB.svg";
@@ -148,7 +154,9 @@ const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
     "DEC",
   ];
   const calendarYear = {};
-  const CELLS_PER_MONTH_GRID = 35; // 5 columns * 7 rows as per user request
+  const ACTUAL_COLUMNS_IN_GRID = 5;
+  const CELLS_PER_COLUMN_IN_GRID = 7;
+  // const CELLS_PER_MONTH_GRID = ACTUAL_COLUMNS_IN_GRID * CELLS_PER_COLUMN_IN_GRID; // 35
 
   const dateFormatter = new Intl.DateTimeFormat("en-US", {
     weekday: "short",
@@ -170,7 +178,7 @@ const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
 
     // Add cells for actual days
     for (let day = 1; day <= numDays; day++) {
-      if (monthCells.length >= CELLS_PER_MONTH_GRID) break;
+      // if (monthCells.length >= CELLS_PER_MONTH_GRID) break; // Ensure we don't exceed grid size
 
       const dateObj = new Date(year, monthIndex, day);
       const formattedDate = dateFormatter.format(dateObj);
@@ -203,8 +211,102 @@ const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
       });
     }
 
-    while (monthCells.length < CELLS_PER_MONTH_GRID) {
+    while (
+      monthCells.length <
+      CELLS_PER_COLUMN_IN_GRID * ACTUAL_COLUMNS_IN_GRID
+    ) {
       monthCells.push({ type: "placeholder" });
+    }
+
+    // Second pass: Determine chainType based on vertical neighbors and display position
+    for (let i = 0; i < monthCells.length; i++) {
+      const currentCell = monthCells[i];
+      if (currentCell.type === "placeholder") {
+        currentCell.chainType = "placeholder_empty";
+        continue;
+      }
+
+      // Ensure isActive is set before chainType logic
+      currentCell.isActive = currentCell.activityLevel > 0;
+
+      const displayRow = Math.floor(i / ACTUAL_COLUMNS_IN_GRID);
+      const isTopDisplayRow = displayRow === 0;
+      const isBottomDisplayRow = displayRow === CELLS_PER_COLUMN_IN_GRID - 1;
+      const isActualFirstDayOfMonth = currentCell.dayOfMonth === 1;
+      const isActualLastDayOfMonth =
+        currentCell.dayOfMonth === daysInMonth(year, monthIndex);
+
+      if (currentCell.isActive) {
+        // Default to initial_stem_down, then check for rotation or override
+        currentCell.chainType = "initial_stem_down";
+
+        // Rotation check for initial_stem_down (end of a vertical segment)
+        const cellBelowIndex = i + ACTUAL_COLUMNS_IN_GRID;
+        let shouldRotateInitial = false;
+
+        if (cellBelowIndex >= monthCells.length) {
+          // End of grid
+          shouldRotateInitial = true;
+        } else {
+          const cellBelow = monthCells[cellBelowIndex];
+          const cellBelowDisplayRow = Math.floor(
+            cellBelowIndex / ACTUAL_COLUMNS_IN_GRID
+          );
+          const isCellBelowActualLastDay =
+            cellBelow.type !== "placeholder" &&
+            cellBelow.dayOfMonth === daysInMonth(year, monthIndex);
+
+          if (
+            cellBelow.type === "placeholder" ||
+            !cellBelow.isActive ||
+            ((cellBelowDisplayRow === 0 ||
+              cellBelowDisplayRow === CELLS_PER_COLUMN_IN_GRID - 1) &&
+              !isCellBelowActualLastDay &&
+              !isActualLastDayOfMonth &&
+              cellBelow.type !== "placeholder" &&
+              cellBelow.isActive) // Cell below IS a connecting_boundary and active
+          ) {
+            shouldRotateInitial = true;
+          } else if (
+            cellBelow.type !== "placeholder" &&
+            !cellBelow.isActive &&
+            isActualLastDayOfMonth
+          ) {
+            // If current is actual last day, and cell below is inactive (but part of grid), current should point up.
+            shouldRotateInitial = true;
+          }
+        }
+        if (shouldRotateInitial) {
+          currentCell.chainType = "initial_stem_up";
+        }
+
+        // Override for ConnectingChain at visual column boundaries (if not actual month start/end)
+        if (isTopDisplayRow && !isActualFirstDayOfMonth) {
+          currentCell.chainType = "connecting_boundary";
+        }
+        if (isBottomDisplayRow && !isActualLastDayOfMonth) {
+          currentCell.chainType = "connecting_boundary";
+        }
+
+        // Highest priority: Actual first/last days of the month override others
+        if (isActualFirstDayOfMonth) {
+          currentCell.chainType = "initial_stem_down";
+        }
+        if (isActualLastDayOfMonth) {
+          currentCell.chainType = "initial_stem_up";
+        }
+      } else {
+        // Inactive cell
+        currentCell.chainType = "empty";
+        const cellAboveIndex = i - ACTUAL_COLUMNS_IN_GRID;
+        if (
+          cellAboveIndex >= 0 &&
+          monthCells[cellAboveIndex].type !== "placeholder" &&
+          monthCells[cellAboveIndex].isActive
+        ) {
+          currentCell.chainType = "broken";
+        }
+      }
     }
 
     calendarYear[monthName] = monthCells;
@@ -231,18 +333,26 @@ const LabPage = () => {
   });
 
   // --- START USING NEW CALENDAR DATA ---
-  // Mock activity data - replace with actual data fetching and processing
-  const mockActivity = {
-    "2025-01-01": 1,
-    "2025-01-02": 2,
-    "2025-01-03": 3,
-    "2025-01-04": 4,
-    "2025-01-10": 2,
-    "2025-01-11": 1,
-    "2025-07-15": 3,
-    "2025-07-16": 4,
-    "2025-07-17": 1,
+  // Mock activity data - Fill the entire year 2025 with activity
+  const generateFullYearActivity = (year) => {
+    const activity = {};
+    const startDate = new Date(year, 0, 1); // January 1st
+    const endDate = new Date(year, 11, 31); // December 31st
+
+    for (
+      let d = new Date(startDate);
+      d <= endDate;
+      d.setDate(d.getDate() + 1)
+    ) {
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const dateStr = `${year}-${month}-${day}`;
+      activity[dateStr] = Math.floor(Math.random() * 4) + 1; // Random activity level 1-4
+    }
+    return activity;
   };
+
+  const mockActivity = generateFullYearActivity(2025);
 
   const [yearCalendarData, setYearCalendarData] = useState({});
 
@@ -374,27 +484,63 @@ const LabPage = () => {
               // Add a specific class for placeholders to style them as invisible
               return (
                 <div
-                  className="activity-square placeholder-cell"
+                  className="activity-square placeholder-cell chain-cell"
                   key={`placeholder-${monthName}-${index}`}
                 ></div>
               );
             }
             // It's a day cell
+            let ChainComponentToRender;
+            let svgClassName = "chain-svg"; // Default class for the SVG itself
+
+            switch (cell.chainType) {
+              case "initial_stem_down":
+                ChainComponentToRender = InitialChain;
+                break;
+              case "initial_stem_up":
+                ChainComponentToRender = InitialChain;
+                svgClassName += " rotated-180";
+                break;
+              case "connecting_boundary":
+                ChainComponentToRender = ConnectingChain;
+                // connecting_chain.svg is C-shaped, typically doesn't need rotation for top/bottom use
+                // unless it's designed to be rotated for one of those positions.
+                break;
+              case "broken":
+                ChainComponentToRender = BrokenChain;
+                break;
+              case "empty":
+              case "placeholder_empty": // Fallthrough for placeholders
+                ChainComponentToRender = null;
+                break;
+              default:
+                ChainComponentToRender = null; // Should not happen with current logic
+            }
+
             return (
               <div
-                className={`activity-square ${
+                className={`activity-square chain-cell ${
                   cell.isExam
-                    ? "exam-day"
-                    : cell.activityLevel > 0
-                    ? "active-day"
-                    : ""
+                    ? "exam-day-chain"
+                    : cell.chainType && cell.chainType.startsWith("initial")
+                    ? "active-chain"
+                    : cell.chainType === "connecting_link"
+                    ? "active-chain"
+                    : cell.chainType === "broken"
+                    ? "broken-chain-visual"
+                    : cell.chainType === "empty"
+                    ? "empty-chain-cell"
+                    : "inactive-day"
                 }`.trim()}
                 key={cell.dateString || `day-${monthName}-${index}`}
+                title={cell.tooltipText}
                 onMouseEnter={(e) => handleMouseEnterSquare(e, cell)}
                 onMouseLeave={handleMouseLeaveSquare}
                 onMouseMove={handleMouseMoveSquare}
               >
-                {/* Day numbers removed */}
+                {ChainComponentToRender && (
+                  <ChainComponentToRender className={svgClassName} />
+                )}
               </div>
             );
           })}
