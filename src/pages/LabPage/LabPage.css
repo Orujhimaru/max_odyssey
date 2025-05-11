@@ -413,7 +413,7 @@
 .month-calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  /* gap: 4px; */
 }
 
 .month-label {
@@ -718,9 +718,8 @@
 /* Month grid */
 .month-grid {
   display: grid;
-  grid-template-columns: repeat(5, 16px);
+  grid-template-columns: repeat(5, 19px);
   grid-template-rows: repeat(7, 16px);
-  gap: 4px;
 }
 
 /* Month row */
@@ -731,8 +730,8 @@
 
 /* Activity square */
 .activity-square {
-  width: 14px;
-  height: 14px;
+  width: 21px;
+  height: 21px;
   background-color: transparent;
   border: none;
   position: relative;
@@ -1421,6 +1420,12 @@
   ); /* Final position if different from initial */
 }
 
+.inactive-day {
+  width: 15px;
+  height: 15px;
+  left: 2.6px;
+}
+
 /* Styles for chain visualization */
 .chain-svg {
   width: 100%;
@@ -1430,7 +1435,7 @@
 }
 
 .chain-svg.rotated-180 {
-  transform: rotate(180deg);
+  /* transform: rotate(180deg); */
 }
 
 /* Remove styles for .chain-line-svg, .line-extending-down, .line-extending-up */
