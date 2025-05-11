@@ -1,24 +1,73 @@
-.navbar {
+.navbar-hover-area {
+  position: fixed;
+  left: 0;
+  top: 12px;
+  height: calc(100% - 24px);
+  padding-left: 6px; /* This creates the hoverable empty space */
   z-index: 999;
+  border-radius: 8px; /* Overall radius for the hover area */
+  /* Add transition for width of the navbar child if navbar-hover-area itself changes size, but width transition is on .navbar */
+}
+
+.navbar {
+  /* position: fixed; */ /* No longer fixed, positioned by parent */
+  position: relative; /* Positioned within navbar-hover-area */
+  z-index: 999; /* Kept, or could be lower if parent is 999 and handles all stacking */
   display: flex;
   flex-direction: column;
   align-items: baseline;
   justify-content: space-between;
-  position: fixed;
-  height: calc(100% - 24px);
-  width: 84px; /* Start collapsed */
+  /* height: calc(100% - 24px); */ /* Parent .navbar-hover-area has this height */
+  height: 100%; /* Fill the parent */
+  width: 84px; /* Start collapsed - this is the VISIBLE part */
   background-color: #1b1b1b; /* Dark background */
-  padding: 12px; /* Added horizontal padding */
-  left: 6px; /* Left margin */
-  top: 12px;
-  border-radius: 8px; /* Optional: rounded corners */
+  padding: 12px; /* Uniform padding for content inside the 84px bar */
+  /* left: 0; */ /* No longer needed, parent handles positioning from edge */
+  /* top: 12px; */ /* No longer needed */
+  border-radius: 8px; /* Rounded corners for the visible navbar part */
   transition: width 0.2s ease;
   overflow: hidden;
+  /* border-left: 6px solid transparent; */ /* Removed */
+  /* background-clip: padding-box; */ /* Removed */
 }
 
-.navbar:hover {
-  width: 150px;
+/* Hover effects are now triggered by hovering .navbar-hover-area */
+.navbar-hover-area:hover .navbar {
+  width: 155px;
 }
+
+.navbar-hover-area:hover .logo-container {
+  width: 115px;
+}
+
+.navbar-hover-area:hover .logo-text-main {
+  opacity: 1;
+  transform: translateX(-2px);
+}
+
+.navbar-hover-area:hover .nav-items {
+  right: 4px; /* Original hover style for nav-items alignment */
+  align-items: baseline; /* Revert to baseline when expanded if preferred for text alignment */
+}
+
+.navbar-hover-area:hover .nav-item {
+  justify-content: flex-start; /* Align left when expanded to show text */
+  transform: translateX(-7px);
+  padding-right: 26px; /* Give some space on the right when expanded */
+}
+
+.navbar-hover-area:hover .nav-text {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Remove old .navbar:hover direct styles that are now handled by .navbar-hover-area:hover */
+/* .navbar:hover { width: 155px; } */ /* Removed/Replaced */
+/* .navbar:hover .logo-container { width: 115px; } */ /* Removed/Replaced */
+/* .navbar:hover .logo-text-main { opacity: 1; transform: translateX(-2px); } */ /* Removed/Replaced */
+/* .navbar:hover .nav-items { right: 4px; align-items: baseline; } */ /* Removed/Replaced */
+/* .navbar:hover .nav-item { justify-content: flex-start; transform: translateX(-7px); padding-right: 26px; } */ /* Removed/Replaced */
+/* .navbar:hover .nav-text { opacity: 1; transform: translateX(0); } */ /* Removed/Replaced */
 
 .logo-container {
   margin-bottom: 36px;
@@ -57,7 +106,7 @@
   align-items: baseline;
   gap: 12px;
   position: relative;
-  right: -6px;
+  right: -6px; /* Changed from -6px to adjust for transparent left border */
 }
 
 .nav-item {
