@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 // del
-import LockOverlay from "../../components/LockOverlay/LockOverlay";
 import "./Courses.css";
 import verbalIcon from "../../assets/learning.svg"; // You'll need to create these icons
 import mathIcon from "../../assets/calc.svg";
-import examIcon from "../../assets/exam_icon.svg";
 import course1Bg from "../../assets/course1_bg.jpg";
 import mathBg from "../../assets/math_bg_2.png";
+import pencil from "../../assets/preparation_pencil.svg";
 
 // Updated course data with first lesson IDs for each course
 const courseData = [
@@ -56,9 +55,9 @@ const courseData = [
   {
     id: 3,
     name: "Exam Preparation",
-    icon: examIcon,
+    icon: pencil,
     iconColor: "#0fb86b",
-    background: course1Bg,
+    background: "rgb(255 222 126)",
     lastUpdated: "1 week ago",
     firstLessonId: 101, // ID of the first lesson for direct navigation
     progress: {
