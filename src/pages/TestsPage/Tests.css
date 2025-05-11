@@ -492,6 +492,12 @@
 /* Apply rotating border to IN-PROGRESS items */
 .test-item.in-progress {
   position: relative; /* Needed for z-indexing children if any absolute positioning is used by them */
+  content: "";
+  top: -1px;
+  left: -1px;
+  bottom: -1px;
+  right: -1px;
+  border-radius: 8px;
   border: none; /* Remove static border, animation will provide visual border */
   /* The base background-color from .test-item (var(--bg-secondary)) will show through transparent parts */
   background: linear-gradient(90deg, var(--verbal-color) 50%, transparent 50%)
