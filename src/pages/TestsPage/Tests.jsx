@@ -395,18 +395,29 @@ const Tests = () => {
               </div>
             ) : (
               examResults.map((test, index) => {
-                const isExplicitlyFinished =
-                  test.user_progress && test.user_progress.is_finished === true;
-                const isExplicitlyInProgress =
+                // Determine class and badge STRICTLY based on test.is_finished from the backend data
+                const isBackendFinished = test.is_finished === true;
+
+                let itemClass = `test-item ${
+                  isBackendFinished ? "finished" : "in-progress"
+                }`;
+                let statusBadge = isBackendFinished ? (
+                  <span className="finished-badge">Finished</span>
+                ) : (
+                  <span className="in-progress-badge">In Progress</span>
+                );
+                // If is_finished is null/undefined, it will default to 'in-progress' look and badge.
+                // If you prefer no badge for in-progress, set the false case to null.
+
+                // Now, determine action buttons based on a more nuanced logic
+                const isExplicitlyInProgressFromUserProgress =
                   test.user_progress &&
                   test.user_progress.is_finished === false;
                 const hasScores = test.verbal_score && test.math_score;
-
                 let actionButtons;
-                let itemClass = "test-item";
-                let statusBadge = null;
 
-                if (isExplicitlyFinished) {
+                if (isBackendFinished) {
+                  // If backend says it's finished, always Review
                   actionButtons = (
                     <>
                       <button
@@ -423,18 +434,15 @@ const Tests = () => {
                       </button>
                     </>
                   );
-                  itemClass += " finished";
-                  statusBadge = (
-                    <span className="finished-badge">Finished</span>
-                  );
-                } else if (isExplicitlyInProgress) {
+                } else if (isExplicitlyInProgressFromUserProgress) {
+                  // If user_progress says it's explicitly in progress
                   actionButtons = (
                     <>
                       <button
-                        className="review-button"
-                        onClick={() => handleReviewClick(test)}
+                        className="continue-button"
+                        onClick={() => continueTest(test)}
                       >
-                        <i className="fas fa-eye"></i> Review
+                        <i className="fas fa-play"></i> Continue
                       </button>
                       <button
                         className="delete-button"
@@ -443,12 +451,9 @@ const Tests = () => {
                         <i className="fas fa-trash"></i>
                       </button>
                     </>
-                  );
-                  itemClass += " finished";
-                  statusBadge = (
-                    <span className="finished-badge">Finished</span>
                   );
                 } else if (hasScores) {
+                  // If not finished by backend, not explicitly in progress via user_progress, but has scores
                   actionButtons = (
                     <>
                       <button
@@ -465,18 +470,17 @@ const Tests = () => {
                       </button>
                     </>
                   );
-                  itemClass += " finished";
-                  statusBadge = (
-                    <span className="finished-badge">Finished</span>
-                  );
+                  // Keep itemClass as in-progress if backend didn't say finished, even if showing Review due to scores
+                  // Or, if hasScores implies it should LOOK finished: itemClass = "test-item finished"; statusBadge = <span className="finished-badge">Finished</span>;
                 } else {
+                  // Default: Not finished by backend, not explicitly in progress via user_progress, no scores
                   actionButtons = (
                     <>
                       <button
-                        className="review-button"
-                        onClick={() => handleReviewClick(test)}
+                        className="continue-button"
+                        onClick={() => continueTest(test)}
                       >
-                        <i className="fas fa-eye"></i> Review
+                        <i className="fas fa-play"></i> Continue
                       </button>
                       <button
                         className="delete-button"
@@ -485,10 +489,6 @@ const Tests = () => {
                         <i className="fas fa-trash"></i>
                       </button>
                     </>
-                  );
-                  itemClass += " finished";
-                  statusBadge = (
-                    <span className="finished-badge">Finished</span>
                   );
                 }
 

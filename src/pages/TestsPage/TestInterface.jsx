@@ -693,6 +693,9 @@ const TestInterface = ({ testType, onExit }) => {
 
   // Handle exit button click, with optional isFinishing parameter
   const handleExitClick = () => {
+    console.log(
+      "[TestInterface] handleExitClick: Setting isFinishing to false"
+    );
     // For regular exit, isFinishing should be false
     setIsFinishing(false);
     setShowExitDialog(true);
@@ -808,6 +811,10 @@ const TestInterface = ({ testType, onExit }) => {
 
   // Handle exit confirmation
   const handleExitConfirm = async () => {
+    console.log(
+      "[TestInterface] handleExitConfirm: Current isFinishing state is:",
+      isFinishing
+    );
     try {
       // Pause the module timer
       pauseModuleTimer();
@@ -1009,6 +1016,9 @@ const TestInterface = ({ testType, onExit }) => {
 
   // Add new function to handle finishing the test
   const handleFinishTest = () => {
+    console.log(
+      "[TestInterface] handleFinishTest: Setting isFinishing to true"
+    );
     console.log("handleFinishTest called - finishing the test");
 
     // Pause the current question timer
