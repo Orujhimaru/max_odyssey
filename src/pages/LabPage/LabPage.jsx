@@ -37,6 +37,15 @@ const yearMonths = [
   "DEC",
 ];
 
+// --- START UTILITY FUNCTIONS ---
+const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
+
+const getFirstDayOfMonth = (year, month) => {
+  const day = new Date(year, month, 1).getDay();
+  return day === 0 ? 6 : day - 1; // Adjust so Monday is 0 and Sunday is 6
+};
+// --- END UTILITY FUNCTIONS ---
+
 // Predefined test dates
 const testDates = [
   {
@@ -86,7 +95,8 @@ const testDates = [
 ];
 
 // Generate year data (mostly empty with some activity in recent months)
-const generateYearData = () => {
+// THIS FUNCTION WILL BE REPLACED/HEAVILY MODIFIED
+const generateYearData_OLD = () => {
   // Create empty grid (each month has 7 rows of 5-7 days)
   const yearData = {};
 
@@ -119,47 +129,90 @@ const generateYearData = () => {
   return yearData;
 };
 
-const yearData = generateYearData();
+// const yearData_OLD = generateYearData_OLD(); // Keep old one for now if needed, or remove
 
-// Mock subtopic data with more realistic values
-const subtopicData = [
-  {
-    name: "Linear Equations",
-    avgTime: 38,
-    correct: 43,
-    total: 48,
-    improvement: 12,
-  },
-  {
-    name: "Grammar & Usage",
-    avgTime: 42,
-    correct: 67,
-    total: 70,
-    improvement: 8,
-  },
-  { name: "Functions", avgTime: 55, correct: 32, total: 40, improvement: -3 },
-  {
-    name: "Reading Comprehension",
-    avgTime: 33,
-    correct: 92,
-    total: 102,
-    improvement: 15,
-  },
-  { name: "Geometry", avgTime: 48, correct: 27, total: 45, improvement: 5 },
-];
-
-const getBoxShade = (val) => {
-  // 0 = empty/transparent, 1-5 = increasing intensity
-  const shades = [
-    "transparent",
-    "#a9d6ff",
-    "#7bbcff",
-    "#3996e6",
-    "#1565c0",
-    "#003c8f",
+// --- START NEW CALENDAR GENERATION LOGIC ---
+const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
+  const yearMonths = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC",
   ];
-  return shades[Math.min(val, shades.length - 1)];
+  const calendarYear = {};
+  const CELLS_PER_MONTH_GRID = 35; // 5 columns * 7 rows as per user request
+
+  const dateFormatter = new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+
+  yearMonths.forEach((monthName, monthIndex) => {
+    const numDays = daysInMonth(year, monthIndex);
+    const firstDay = getFirstDayOfMonth(year, monthIndex); // 0 for Monday, 6 for Sunday
+
+    const monthCells = [];
+
+    // Add placeholder cells for days before the 1st of the month
+    for (let i = 0; i < firstDay; i++) {
+      monthCells.push({ type: "placeholder" });
+    }
+
+    // Add cells for actual days
+    for (let day = 1; day <= numDays; day++) {
+      if (monthCells.length >= CELLS_PER_MONTH_GRID) break;
+
+      const dateObj = new Date(year, monthIndex, day);
+      const formattedDate = dateFormatter.format(dateObj);
+      const dateStr = `${year}-${String(monthIndex + 1).padStart(
+        2,
+        "0"
+      )}-${String(day).padStart(2, "0")}`;
+
+      const currentActivity = activityData[dateStr] || 0;
+      const isExam = examDates.some(
+        (ed) =>
+          ed.year === String(year) && ed.month === monthIndex && ed.day === day
+      );
+
+      let tooltipText = `No activity on ${formattedDate}`;
+      if (isExam) {
+        tooltipText = `Exam day on ${formattedDate}`;
+      } else if (currentActivity > 0) {
+        tooltipText = `Activity Level ${currentActivity} on ${formattedDate}`;
+      }
+
+      monthCells.push({
+        type: "day",
+        dayOfMonth: day,
+        dateString: dateStr,
+        formattedDate: formattedDate, // For tooltip
+        tooltipText: tooltipText, // Full tooltip text
+        activityLevel: currentActivity,
+        isExam: isExam,
+      });
+    }
+
+    while (monthCells.length < CELLS_PER_MONTH_GRID) {
+      monthCells.push({ type: "placeholder" });
+    }
+
+    calendarYear[monthName] = monthCells;
+  });
+
+  return calendarYear;
 };
+// --- END NEW CALENDAR GENERATION LOGIC ---
 
 const LabPage = () => {
   const [selectedYear, setSelectedYear] = useState("2025");
@@ -170,6 +223,47 @@ const LabPage = () => {
     timing: {},
     mastery: {},
   });
+
+  // --- START USING NEW CALENDAR DATA ---
+  // Mock activity data - replace with actual data fetching and processing
+  const mockActivity = {
+    "2025-01-01": 1,
+    "2025-01-02": 2,
+    "2025-01-03": 3,
+    "2025-01-04": 4,
+    "2025-01-10": 2,
+    "2025-01-11": 1,
+    "2025-07-15": 3,
+    "2025-07-16": 4,
+    "2025-07-17": 1,
+  };
+
+  const [yearCalendarData, setYearCalendarData] = useState({});
+
+  useEffect(() => {
+    // Ensure testDates are in a consistent format for comparison (month 0-indexed)
+    const formattedExamDates = testDates.map((td) => ({
+      ...td,
+      month: td.month,
+    })); // Assuming your testDates month is already 0-11 or 1-12
+    // If testDates.month is 1-12, use td.month -1
+
+    // If your predefined testDates have month 1-12:
+    const correctlyFormattedExamDates = testDates.map((td) => ({
+      ...td,
+      month: td.month - 1, // Adjust to 0-indexed for comparison with Date object months
+    }));
+
+    setYearCalendarData(
+      generateFullYearCalendar(
+        parseInt(selectedYear),
+        mockActivity,
+        correctlyFormattedExamDates
+      )
+    );
+  }, [selectedYear, selectedExamDate]); // Also re-gen if selectedExamDate changes, to update isExam flag
+
+  // --- END USING NEW CALENDAR DATA ---
 
   // Filter test dates based on selected year
   const filteredTestDates = testDates.filter(
@@ -231,38 +325,54 @@ const LabPage = () => {
     return mappedRow === row && mappedCol === col;
   };
 
-  // Render a single month for the yearly calendar
-  const renderMonthColumn = (month, monthIndex) => {
-    return (
-      <div className="month-column" key={month}>
-        <div className="month-label">{month}</div>
-        <div className="month-grid">
-          {Array(7)
-            .fill(0)
-            .map((_, rowIndex) => (
-              <div className="month-row" key={`row-${rowIndex}`}>
-                {Array(5)
-                  .fill(0)
-                  .map((_, colIndex) => {
-                    const isActive =
-                      monthIndex === 0 && isJanuaryActive(rowIndex, colIndex);
-                    const isExam = isExamDate(monthIndex, rowIndex, colIndex);
+  // --- START MODIFIED RENDERING LOGIC ---
+  // Function to render a single month for the yearly calendar
+  const renderMonthColumn = (monthName, monthCells) => {
+    if (!monthCells || monthCells.length === 0) {
+      return (
+        <div className="month-column" key={monthName}>
+          <div className="month-label">{monthName}</div>
+          <div className="month-grid"></div>
+        </div>
+      );
+    }
 
-                    return (
-                      <div
-                        className={`activity-square ${
-                          isActive ? "active-day" : ""
-                        } ${isExam ? "exam-day" : ""}`}
-                        key={`square-${rowIndex}-${colIndex}`}
-                      ></div>
-                    );
-                  })}
+    return (
+      <div className="month-column" key={monthName}>
+        <div className="month-label">{monthName}</div>
+        <div className="month-grid">
+          {monthCells.map((cell, index) => {
+            if (cell.type === "placeholder") {
+              // Add a specific class for placeholders to style them as invisible
+              return (
+                <div
+                  className="activity-square placeholder-cell"
+                  key={`placeholder-${monthName}-${index}`}
+                ></div>
+              );
+            }
+            // It's a day cell
+            return (
+              <div
+                className={`activity-square ${
+                  cell.isExam
+                    ? "exam-day"
+                    : cell.activityLevel > 0
+                    ? "active-day"
+                    : ""
+                }`.trim()}
+                key={cell.dateString || `day-${monthName}-${index}`}
+                title={cell.tooltipText} /* Use new tooltipText for hover */
+              >
+                {/* Day numbers removed */}
               </div>
-            ))}
+            );
+          })}
         </div>
       </div>
     );
   };
+  // --- END MODIFIED RENDERING LOGIC ---
 
   // Function to get the score image based on percentage
   const getScoreImage = (percentage) => {
@@ -876,7 +986,9 @@ const LabPage = () => {
           </div>
 
           <div className="yearly-calendar-container">
-            {yearMonths.map((month, index) => renderMonthColumn(month, index))}
+            {Object.entries(yearCalendarData).map(([monthName, monthCells]) =>
+              renderMonthColumn(monthName, monthCells)
+            )}
           </div>
         </div>
 
