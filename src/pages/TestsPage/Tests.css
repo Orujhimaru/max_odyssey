@@ -167,7 +167,7 @@
 
 .test-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); */
 }
 
 .test-item.incomplete {
@@ -520,25 +520,28 @@
 }
 
 .test-item.finished {
-  border: 1px solid #6c6c6c;
+  border: 1px solid #6c6c6c; /* Default dark theme gray border */
 }
 
 [data-theme="light"] .test-item.finished {
-  border: 1px solid #c4c4c4;
+  border: 1px solid #c4c4c4; /* Light theme gray border */
 }
 
+/* Remove rotating border from in-progress/continuable items by removing animation and complex background */
+.test-item.in-progress,
 .test-item.continuable {
-  background: linear-gradient(90deg, var(--verbal-color) 50%, transparent 50%)
-      top / 12px 1px repeat-x,
-    linear-gradient(0deg, var(--verbal-color) 50%, transparent 50%) right / 1px
-      12px repeat-y,
-    linear-gradient(90deg, var(--verbal-color) 50%, transparent 50%) bottom /
-      12px 1px repeat-x,
-    linear-gradient(0deg, var(--verbal-color) 50%, transparent 50%) left / 1px
-      12px repeat-y;
-  animation: borderMove 0.8s linear infinite;
+  /* Remove animation properties if they exist here */
+  animation: none;
+  /* Reset background to prevent dashed lines, or set to a simple background if needed */
+  background: var(
+    --bg-secondary
+  ); /* Or whatever the default item background should be without the effect */
+  /* Add a subtle left border to indicate they are active/continuable, if desired, otherwise remove border styling */
+  border: 1px solid #979797;
 }
 
+/* Ensure the @keyframes borderMove is removed or commented out if no longer used */
+/*
 @keyframes borderMove {
   0% {
     background-position: 0 top, right 0, 12px bottom, left 12px;
@@ -547,6 +550,7 @@
     background-position: 12px top, right 12px, 0 bottom, left 0;
   }
 }
+*/
 
 .in-progress-badge {
   background-color: var(--verbal-color);

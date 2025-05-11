@@ -395,33 +395,18 @@ const Tests = () => {
               </div>
             ) : (
               examResults.map((test, index) => {
-                const isActuallyFinished =
+                const isExplicitlyFinished =
                   test.user_progress && test.user_progress.is_finished === true;
-                const isInProgress =
+                const isExplicitlyInProgress =
                   test.user_progress &&
                   test.user_progress.is_finished === false;
                 const hasScores = test.verbal_score && test.math_score;
 
                 let actionButtons;
+                let itemClass = "test-item";
+                let statusBadge = null;
 
-                if (isInProgress) {
-                  actionButtons = (
-                    <>
-                      <button
-                        className="continue-button"
-                        onClick={() => continueTest(test)}
-                      >
-                        <i className="fas fa-play"></i> Continue
-                      </button>
-                      <button
-                        className="delete-button"
-                        onClick={() => handleDeleteTest(test)}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </>
-                  );
-                } else if (hasScores || isActuallyFinished) {
+                if (isExplicitlyFinished) {
                   actionButtons = (
                     <>
                       <button
@@ -438,15 +423,18 @@ const Tests = () => {
                       </button>
                     </>
                   );
-                } else {
-                  // Default to Continue for tests that are not explicitly finished and have no scores
+                  itemClass += " finished";
+                  statusBadge = (
+                    <span className="finished-badge">Finished</span>
+                  );
+                } else if (isExplicitlyInProgress) {
                   actionButtons = (
                     <>
                       <button
-                        className="continue-button"
-                        onClick={() => continueTest(test)}
+                        className="review-button"
+                        onClick={() => handleReviewClick(test)}
                       >
-                        <i className="fas fa-play"></i> Continue
+                        <i className="fas fa-eye"></i> Review
                       </button>
                       <button
                         className="delete-button"
@@ -456,34 +444,65 @@ const Tests = () => {
                       </button>
                     </>
                   );
+                  itemClass += " finished";
+                  statusBadge = (
+                    <span className="finished-badge">Finished</span>
+                  );
+                } else if (hasScores) {
+                  actionButtons = (
+                    <>
+                      <button
+                        className="review-button"
+                        onClick={() => handleReviewClick(test)}
+                      >
+                        <i className="fas fa-eye"></i> Review
+                      </button>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDeleteTest(test)}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </>
+                  );
+                  itemClass += " finished";
+                  statusBadge = (
+                    <span className="finished-badge">Finished</span>
+                  );
+                } else {
+                  actionButtons = (
+                    <>
+                      <button
+                        className="review-button"
+                        onClick={() => handleReviewClick(test)}
+                      >
+                        <i className="fas fa-eye"></i> Review
+                      </button>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDeleteTest(test)}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </>
+                  );
+                  itemClass += " finished";
+                  statusBadge = (
+                    <span className="finished-badge">Finished</span>
+                  );
                 }
 
                 return (
-                  <div
-                    className={`test-item ${
-                      isInProgress
-                        ? "in-progress"
-                        : isActuallyFinished || hasScores
-                        ? "finished"
-                        : "continuable" // Added a 'continuable' class for potential styling
-                    }`}
-                    key={index}
-                  >
+                  <div className={itemClass} key={index}>
                     <div className="test-name">
                       Practice Test #{test.id}
-                      {isInProgress && (
-                        <span className="in-progress-badge">In Progress</span>
-                      )}
-                      {(isActuallyFinished || (hasScores && !isInProgress)) && ( // Show finished if actually finished OR has scores (and not explicitly in progress)
-                        <span className="finished-badge">Finished</span>
-                      )}
-                      {/* You might want a specific badge for 'continuable' if is_finished is undefined/null and no scores */}
+                      {statusBadge}
                     </div>
                     <div className="test-date">
                       {new Date(test.created_at.Time).toLocaleDateString()}
                     </div>
                     <div className="test-score">
-                      {test.verbal_score && test.math_score
+                      {hasScores
                         ? test.verbal_score.Int32 + test.math_score.Int32
                         : "-"}
                     </div>
