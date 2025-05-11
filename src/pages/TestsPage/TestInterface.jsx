@@ -8,6 +8,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { formatMathExpression } from "../../utils/mathUtils";
 import QuestionTimer from "../../components/QuestionTimer/QuestionTimer";
+import ModuleTimerDisplay from "../../components/ModuleTimerDisplay/ModuleTimerDisplay";
 
 // Debugging: Track component mount/unmount cycles and effect runs
 console.log("TestInterface.jsx module loaded");
@@ -1097,7 +1098,8 @@ const TestInterface = ({ testType, onExit }) => {
             </h1>
           </div>
           <div className="timer">
-            <i className="far fa-clock"></i> {timeRemaining}
+            {/* <i className="far fa-clock"></i> {timeRemaining} */}
+            <ModuleTimerDisplay timeString={timeRemaining} />
           </div>
           <div className="test-controls">
             <button className="exit-button" onClick={() => handleExitClick()}>
@@ -1136,8 +1138,8 @@ const TestInterface = ({ testType, onExit }) => {
 
   // If there are questions, continue with regular rendering
   const currentQ = currentModule.questions[currentQuestion];
-  console.log("currentQ");
-  // console.log("currentQ1", currentQuestion);
+  // console.log("currentQ"); // Commented out due to frequent logging
+  // console.log("currentQ1", currentQuestion); // Commented out due to frequent logging
   const isMarked = markedQuestions.includes(currentQuestion);
 
   // Handle questions without choices (e.g., free response)
@@ -1161,7 +1163,8 @@ const TestInterface = ({ testType, onExit }) => {
             </h1>
           </div>
           <div className="timer">
-            <i className="far fa-clock"></i> {timeRemaining}
+            {/* <i className="far fa-clock"></i> {timeRemaining} */}
+            <ModuleTimerDisplay timeString={timeRemaining} />
           </div>
           <div className="test-controls">
             <button className="exit-button" onClick={() => handleExitClick()}>
@@ -1320,7 +1323,8 @@ const TestInterface = ({ testType, onExit }) => {
         </div>
 
         <div className="timer">
-          <i className="far fa-clock"></i> {timeRemaining}
+          {/* <i className="far fa-clock"></i> {timeRemaining} */}
+          <ModuleTimerDisplay timeString={timeRemaining} />
         </div>
 
         <div className="test-controls">
