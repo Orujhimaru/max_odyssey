@@ -718,8 +718,8 @@
 /* Month grid */
 .month-grid {
   display: grid;
-  grid-template-columns: repeat(5, 28px);
-  grid-template-rows: repeat(7, 28px);
+  grid-template-columns: repeat(5, 16px);
+  grid-template-rows: repeat(7, 16px);
   gap: 4px;
 }
 
@@ -731,11 +731,11 @@
 
 /* Activity square */
 .activity-square {
-  width: 28px;
-  height: 28px;
+  width: 14px;
+  height: 14px;
   border-radius: 4px;
   background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid #d6d6d6;
   position: relative;
   cursor: pointer;
   display: flex;
