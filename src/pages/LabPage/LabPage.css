@@ -1394,3 +1394,31 @@
     font-size: 16px;
   }
 }
+
+/* Styling for the custom tooltip */
+.lab-custom-tooltip {
+  position: fixed; /* Position relative to the viewport */
+  background-color: var(--bg-tertiary, #2a2a2e); /* Dark background */
+  color: var(--text-primary, #e0e0e0); /* Light text */
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  z-index: 10000; /* Ensure it's on top of other elements */
+  pointer-events: none; /* So the tooltip itself doesn't intercept mouse events */
+  white-space: nowrap; /* Prevent text wrapping */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+  opacity: 0; /* Start hidden */
+  transform: translate(10px, 10px); /* Slight offset for appearance */
+  transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out; /* Smooth transition */
+}
+
+/* Placeholder for future animation - could be tied to tooltip.visible in JS 
+   or a class added when visible for more complex transitions */
+.lab-custom-tooltip.visible {
+  opacity: 1;
+  transform: translate(
+    10px,
+    10px
+  ); /* Final position if different from initial */
+}

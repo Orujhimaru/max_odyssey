@@ -223,6 +223,12 @@ const LabPage = () => {
     timing: {},
     mastery: {},
   });
+  const [tooltip, setTooltip] = useState({
+    visible: false,
+    content: "",
+    x: 0,
+    y: 0,
+  });
 
   // --- START USING NEW CALENDAR DATA ---
   // Mock activity data - replace with actual data fetching and processing
@@ -326,6 +332,28 @@ const LabPage = () => {
   };
 
   // --- START MODIFIED RENDERING LOGIC ---
+
+  const handleMouseEnterSquare = (e, cellData) => {
+    if (cellData.type === "placeholder" || !cellData.tooltipText) return;
+    setTooltip({
+      visible: true,
+      content: cellData.tooltipText,
+      x: e.clientX,
+      y: e.clientY,
+    });
+  };
+
+  const handleMouseLeaveSquare = () => {
+    setTooltip((prev) => ({ ...prev, visible: false }));
+  };
+
+  const handleMouseMoveSquare = (e) => {
+    // Only update if tooltip is already visible to avoid unnecessary updates
+    if (tooltip.visible) {
+      setTooltip((prev) => ({ ...prev, x: e.clientX, y: e.clientY }));
+    }
+  };
+
   // Function to render a single month for the yearly calendar
   const renderMonthColumn = (monthName, monthCells) => {
     if (!monthCells || monthCells.length === 0) {
@@ -362,7 +390,9 @@ const LabPage = () => {
                     : ""
                 }`.trim()}
                 key={cell.dateString || `day-${monthName}-${index}`}
-                title={cell.tooltipText} /* Use new tooltipText for hover */
+                onMouseEnter={(e) => handleMouseEnterSquare(e, cell)}
+                onMouseLeave={handleMouseLeaveSquare}
+                onMouseMove={handleMouseMoveSquare}
               >
                 {/* Day numbers removed */}
               </div>
@@ -1062,6 +1092,14 @@ const LabPage = () => {
           </div>
         </div>
       </div>
+      {tooltip.visible && (
+        <div
+          className="lab-custom-tooltip"
+          style={{ top: tooltip.y + 10, left: tooltip.x + 10 }}
+        >
+          {tooltip.content}
+        </div>
+      )}
     </div>
   );
 };
