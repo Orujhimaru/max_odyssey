@@ -14,7 +14,7 @@ const courseData = [
     id: 1,
     name: "SAT Verbal",
     icon: verbalIcon,
-    iconColor: "#456bc4",
+    iconColor: "rgb(115 153 241)",
     background: course1Bg,
     lastUpdated: "2 days ago",
     firstLessonId: 101, // ID of the first lesson for direct navigation
@@ -57,7 +57,7 @@ const courseData = [
     name: "Exam Preparation",
     icon: pencil,
     iconColor: "#0fb86b",
-    background: "rgb(255 222 126)",
+    background: "rgb(247 220 152)",
     lastUpdated: "1 week ago",
     firstLessonId: 101, // ID of the first lesson for direct navigation
     progress: {
