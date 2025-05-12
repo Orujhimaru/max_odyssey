@@ -219,8 +219,8 @@ const PracticeQuestionInterface = ({
       console.error("Error saving user question states:", error);
     }
 
-    // Call the original onClose function
-    onClose();
+    // Call the original onClose function with refreshNeeded=true
+    onClose(true);
   };
 
   // Update the function to process the passage HTML

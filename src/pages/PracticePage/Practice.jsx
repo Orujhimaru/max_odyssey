@@ -201,15 +201,16 @@ const Practice = () => {
   const [solved, setHideSolved] = useState(false);
 
   const [filters, setFilters] = useState({
-    subject: 2, // Default to Math
-    difficulty: "",
+    question_text: "",
+    sort_dir: "desc",
+    subject: 1, // 1 = Math, 2 = Verbal
+    difficulty: "", // Empty string means all difficulties
     topic: "",
     subtopic: "",
-    sort_dir: "asc",
-    page: 1,
-    page_size: 20,
     solved: false,
-    incorrect: false,
+    refreshTimestamp: Date.now(), // Add this to force refresh when needed
+    is_wrong_answered: false,
+    page: 1,
   });
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -259,7 +260,7 @@ const Practice = () => {
   // Create debounced version
   const debouncedFetchQuestions = useDebounce(fetchQuestionsCallback, 500);
 
-  // Update the useEffect
+  // Add this effect for fetching questions
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -304,7 +305,15 @@ const Practice = () => {
     };
 
     fetchData();
-  }, [filters, showBookmarked, currentPage, pageSize, debouncedFetchQuestions]);
+  }, [
+    filters,
+    filters.refreshTimestamp,
+    showBookmarked,
+    currentPage,
+    pageSize,
+    debouncedFetchQuestions,
+    navigate,
+  ]);
 
   // Simplify the toggleBookmark function
   const toggleBookmark = async (questionId) => {
@@ -432,10 +441,22 @@ const Practice = () => {
     }
   };
 
-  // Update the close handler to reset the index
-  const handleCloseQuestion = () => {
+  // Update the close handler to reset the index and optionally refresh data
+  const handleCloseQuestion = (refreshNeeded = false) => {
     setSelectedQuestion(null);
     setCurrentQuestionIndex(0);
+
+    // If refresh is needed, force a data refresh by updating filters
+    if (refreshNeeded) {
+      console.log(
+        "Refreshing practice page data after question interface closed"
+      );
+      // Use a timestamp to force refetch even if other filters haven't changed
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        refreshTimestamp: Date.now(),
+      }));
+    }
   };
 
   // Then update the handleHideSolvedChange function to update filters
