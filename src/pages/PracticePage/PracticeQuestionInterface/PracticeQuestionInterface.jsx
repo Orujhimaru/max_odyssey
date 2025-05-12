@@ -42,57 +42,103 @@ const PracticeQuestionInterface = ({
   useEffect(() => {
     // Reset states when question changes
     setShowExplanation(false);
+    setSelectedAnswer(null);
+    setPreviouslyAnswered(false);
+    setPreviousAnswer(null);
+    setWasCorrect(false);
 
-    // Check if this question was previously answered
-    console.log("Question data:", question);
-    console.log("is_solved:", question.is_solved);
-    console.log("selected_option:", question.selected_option);
+    // First check if the question object from props has selected_option
+    if (
+      question.selected_option !== undefined &&
+      question.selected_option !== null
+    ) {
+      console.log(
+        "Found selected_option in question object:",
+        question.selected_option
+      );
+      const selectedOption = Number(question.selected_option);
+      const isCorrect = selectedOption === question.correct_answer_index;
 
-    if (question.is_solved) {
-      console.log("Question was previously solved, setting states accordingly");
       setPreviouslyAnswered(true);
-
-      // Convert selected_option from sql.NullInt32 to a regular number
-      const selectedOption = question.selected_option
-        ? Number(question.selected_option)
-        : null;
       setPreviousAnswer(selectedOption);
-      setWasCorrect(!question.incorrect);
+      setWasCorrect(!question.incorrect || isCorrect);
       setSelectedAnswer(selectedOption);
-      setShowExplanation(true); // Show explanation for previously solved questions
+      setShowExplanation(true);
 
-      // Update user question state
       setUserQuestionState({
-        ...userQuestionState,
         questionId: question.id,
         isBookmarked: question.is_bookmarked || false,
         isSolved: true,
-        isIncorrect: question.incorrect,
+        isIncorrect: question.incorrect || !isCorrect,
         selectedOption: selectedOption,
       });
-    } else {
-      // Reset all states for new questions
-      setPreviouslyAnswered(false);
-      setPreviousAnswer(null);
-      setWasCorrect(false);
-      setSelectedAnswer(null);
-
-      // Initialize user question state for new questions
-      setUserQuestionState({
-        questionId: question.id,
-        isBookmarked: question.is_bookmarked || false,
-        isSolved: false,
-        isIncorrect: false,
-        selectedOption: null,
-      });
     }
-  }, [
-    question.id,
-    question.is_solved,
-    question.selected_option,
-    question.incorrect,
-    question.is_bookmarked,
-  ]);
+    // If not in question object, check localStorage
+    else {
+      // Get user question states from localStorage
+      const userQuestionStates = JSON.parse(
+        localStorage.getItem("userQuestionStates") || "[]"
+      );
+
+      // Find if this question exists in localStorage
+      const existingState = userQuestionStates.find(
+        (q) => q.questionId === question.id
+      );
+
+      if (existingState && existingState.isSolved) {
+        console.log("Found question state in localStorage:", existingState);
+        const selectedOption = existingState.selectedOption;
+        const isCorrect = selectedOption === question.correct_answer_index;
+
+        setPreviouslyAnswered(true);
+        setPreviousAnswer(selectedOption);
+        setWasCorrect(!existingState.isIncorrect);
+        setSelectedAnswer(selectedOption);
+        setShowExplanation(true);
+
+        setUserQuestionState({
+          ...existingState,
+          questionId: question.id,
+        });
+      }
+      // If not found in localStorage, check if question.is_solved is true
+      else if (question.is_solved) {
+        console.log(
+          "Question marked as solved in props, setting states accordingly"
+        );
+        // This handles backward compatibility with the backend data
+        setPreviouslyAnswered(true);
+
+        // For backward compatibility with old data structure
+        const selectedOption =
+          question.selected_option !== undefined
+            ? Number(question.selected_option)
+            : null;
+
+        setPreviousAnswer(selectedOption);
+        setWasCorrect(!question.incorrect);
+        setSelectedAnswer(selectedOption);
+        setShowExplanation(true);
+
+        setUserQuestionState({
+          questionId: question.id,
+          isBookmarked: question.is_bookmarked || false,
+          isSolved: true,
+          isIncorrect: question.incorrect,
+          selectedOption: selectedOption,
+        });
+      } else {
+        // Initialize user question state for new questions
+        setUserQuestionState({
+          questionId: question.id,
+          isBookmarked: question.is_bookmarked || false,
+          isSolved: false,
+          isIncorrect: false,
+          selectedOption: null,
+        });
+      }
+    }
+  }, [question]);
 
   const handleAnswerSelect = (index) => {
     if (!previouslyAnswered) {
@@ -505,58 +551,75 @@ const PracticeQuestionInterface = ({
               </div>
             </div>
             <div className="answer-options">
-              {question.choices.map((choice, index) => (
-                <div
-                  key={index}
-                  className={`answer-option 
-                    ${selectedAnswer === index ? "selected" : ""} 
-                    ${
-                      showExplanation && index === question.correct_answer_index
-                        ? "correct"
-                        : ""
-                    } 
-                    ${
-                      showExplanation &&
-                      selectedAnswer === index &&
-                      index !== question.correct_answer_index
-                        ? "incorrect"
-                        : ""
+              {question.choices.map((choice, index) => {
+                // Determine if this option should be shown as correct or incorrect
+                const isCorrectOption = index === question.correct_answer_index;
+                const isSelectedOption =
+                  selectedAnswer === index ||
+                  (userQuestionState &&
+                    userQuestionState.selectedOption === index);
+                const showAsIncorrect =
+                  showExplanation && isSelectedOption && !isCorrectOption;
+
+                // For the letter label
+                const optionLetterClass =
+                  isCorrectOption && showExplanation
+                    ? "option-letter correct-letter"
+                    : showAsIncorrect
+                    ? "option-letter incorrect-letter"
+                    : "option-letter";
+
+                return (
+                  <div
+                    key={index}
+                    className={`answer-option 
+                      ${isSelectedOption ? "selected" : ""} 
+                      ${showExplanation && isCorrectOption ? "correct" : ""} 
+                      ${showAsIncorrect ? "incorrect" : ""}
+                      ${previouslyAnswered ? "disabled" : ""}
+                      ${isOptionCrossed(index) ? "crossed" : ""}
+                    `}
+                    onClick={() =>
+                      isCrossModeActive()
+                        ? toggleCrossOption(index)
+                        : !previouslyAnswered && handleAnswerSelect(index)
                     }
-                    ${previouslyAnswered ? "disabled" : ""}
-                    ${isOptionCrossed(index) ? "crossed" : ""}
-                  `}
-                  onClick={() =>
-                    isCrossModeActive()
-                      ? toggleCrossOption(index)
-                      : !previouslyAnswered && handleAnswerSelect(index)
-                  }
-                >
-                  <div className="option-letter">
-                    {String.fromCharCode(65 + index)}
-                  </div>
-                  <div className="option-text">
-                    {choice.slice(2).trim().startsWith("<figure") ||
-                    choice.slice(2).trim().startsWith("<table") ? (
-                      <div
-                        dangerouslySetInnerHTML={{ __html: choice.slice(2) }}
-                      />
-                    ) : choice.slice(2).trim().startsWith("data:image") ? (
-                      <img
-                        src={choice.slice(2).trim()}
-                        alt="Answer option visual"
-                        className="option-image"
-                      />
-                    ) : (
-                      <ReactMarkdown
-                        remarkPlugins={[remarkGfm, remarkMath]}
-                        rehypePlugins={[rehypeKatex]}
-                      >
-                        {choice.slice(2)}
-                      </ReactMarkdown>
+                  >
+                    <div className={optionLetterClass}>
+                      {String.fromCharCode(65 + index)}
+                    </div>
+                    <div className="option-text">
+                      {choice.slice(2).trim().startsWith("<figure") ||
+                      choice.slice(2).trim().startsWith("<table") ? (
+                        <div
+                          dangerouslySetInnerHTML={{ __html: choice.slice(2) }}
+                        />
+                      ) : choice.slice(2).trim().startsWith("data:image") ? (
+                        <img
+                          src={choice.slice(2).trim()}
+                          alt="Answer option visual"
+                          className="option-image"
+                        />
+                      ) : (
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm, remarkMath]}
+                          rehypePlugins={[rehypeKatex]}
+                        >
+                          {choice.slice(2)}
+                        </ReactMarkdown>
+                      )}
+                    </div>
+
+                    {/* Indicators for correct/incorrect answers */}
+                    {showExplanation && isCorrectOption && (
+                      <div className="correct-indicator">✓</div>
+                    )}
+                    {showAsIncorrect && (
+                      <div className="incorrect-indicator">✗</div>
                     )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             {!showExplanation && !previouslyAnswered && (
               <div className="submit-container">
@@ -570,10 +633,24 @@ const PracticeQuestionInterface = ({
               </div>
             )}
             {previouslyAnswered && (
-              <div className="previously-answered-message">
+              <div
+                className={`previously-answered-message ${
+                  wasCorrect ? "correct" : "incorrect"
+                }`}
+              >
                 <p>
                   You've already answered this question{" "}
-                  {wasCorrect ? "correctly" : "incorrectly"}.
+                  {!wasCorrect && (
+                    <>
+                      . The correct answer is{" "}
+                      <strong>
+                        {String.fromCharCode(
+                          65 + question.correct_answer_index
+                        )}
+                      </strong>
+                    </>
+                  )}
+                  .
                 </p>
               </div>
             )}

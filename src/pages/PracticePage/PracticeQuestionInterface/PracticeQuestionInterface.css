@@ -637,3 +637,31 @@ th {
   margin: 10px 0;
   border-radius: 4px;
 }
+
+/* Add styling for correct/incorrect letter indicators */
+.option-letter.correct-letter {
+  background-color: #4caf50;
+  color: white;
+}
+
+.option-letter.incorrect-letter {
+  background-color: #f44336;
+  color: white;
+}
+
+/* Add styling for correct/incorrect indicators */
+.correct-indicator {
+  color: #4caf50;
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: auto;
+  padding-right: 15px;
+}
+
+.incorrect-indicator {
+  color: #f44336;
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: auto;
+  padding-right: 15px;
+}
