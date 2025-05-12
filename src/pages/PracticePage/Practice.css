@@ -1278,3 +1278,29 @@ button:focus-visible {
   line-height: 1;
   margin-right: 2px;
 } */
+
+.solved-check {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  color: #4caf50;
+  margin-right: 12px;
+}
+
+/* Keep the existing question-number styling for reference */
+.question-number {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 40px;
+  height: 40px;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 16px;
+  margin-right: 12px;
+}

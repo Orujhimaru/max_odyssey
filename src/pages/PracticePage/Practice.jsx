@@ -73,67 +73,98 @@ const QuestionsSection = React.memo(
 
     return (
       <div className="practice-questions">
-        {questions.map((question, index) => (
-          <div
-            className="question-card"
-            key={question.id}
-            onClick={() => onQuestionClick(question)}
-          >
-            <div className="question-left">
-              <span className="question-number">#{index + 1}</span>
-              <div className="question-info-main">
-                <div className="question-header">
-                  <div className="question-type">
-                    <span
-                      className={`subject-badge ${
-                        question.subject_id === 1 ? "math" : "verbal"
-                      }`}
-                    >
-                      {question.subject_id === 1 ? "M" : "V"}
-                    </span>
+        {questions.map((question, index) => {
+          // Check if the question is correctly solved
+          const isCorrectlySolved = (() => {
+            // First check if the question has userState from our state management
+            if (
+              question.userState?.isSolved &&
+              !question.userState?.isIncorrect
+            ) {
+              return true;
+            }
+            // Then check if the backend says it's solved and not incorrect
+            if (question.is_solved && !question.incorrect) {
+              return true;
+            }
+            // Finally check localStorage
+            const userQuestionStates = JSON.parse(
+              localStorage.getItem("userQuestionStates") || "[]"
+            );
+            const existingState = userQuestionStates.find(
+              (q) => q.questionId === question.id
+            );
+            return existingState?.isSolved && !existingState?.isIncorrect;
+          })();
+
+          return (
+            <div
+              className="question-card"
+              key={question.id}
+              onClick={() => onQuestionClick(question)}
+            >
+              <div className="question-left">
+                {isCorrectlySolved ? (
+                  <span className="solved-check">
+                    <i className="fas fa-check-circle"></i>
+                  </span>
+                ) : (
+                  <span className="question-number">#{index + 1}</span>
+                )}
+                <div className="question-info-main">
+                  <div className="question-header">
+                    <div className="question-type">
+                      <span
+                        className={`subject-badge ${
+                          question.subject_id === 1 ? "math" : "verbal"
+                        }`}
+                      >
+                        {question.subject_id === 1 ? "M" : "V"}
+                      </span>
+                    </div>
+                    <div className="question-type">
+                      <span
+                        className={`difficulty-indicator-bars ${
+                          question.difficulty_level === 0
+                            ? "easy"
+                            : question.difficulty_level === 1
+                            ? "medium"
+                            : question.difficulty_level === 2
+                            ? "hard"
+                            : "medium"
+                        }`}
+                      >
+                        <span className="bar"></span>
+                        <span className="bar"></span>
+                        <span className="bar"></span>
+                      </span>
+                    </div>
                   </div>
-                  <div className="question-type">
-                    <span
-                      className={`difficulty-indicator-bars ${
-                        question.difficulty_level === 0
-                          ? "easy"
-                          : question.difficulty_level === 1
-                          ? "medium"
-                          : question.difficulty_level === 2
-                          ? "hard"
-                          : "medium"
-                      }`}
-                    >
-                      <span className="bar"></span>
-                      <span className="bar"></span>
-                      <span className="bar"></span>
-                    </span>
+                </div>
+              </div>
+              <div className="question-content-row">
+                <h3 className="question-title">{question.question_text}</h3>
+                <div className="question-meta">
+                  <div className="question-topics">
+                    {question.topic && (
+                      <span className="topic-tag" key={question.topic}>
+                        {question.topic}
+                      </span>
+                    )}
+                    {question.subtopic && (
+                      <span className="topic-tag" key={question.subtopic}>
+                        {question.subtopic}
+                      </span>
+                    )}
+                  </div>
+                  <div className="completion-rate">
+                    <span> {question.solve_rate}%</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="question-content-row">
-              <h3 className="question-title">{question.question_text}</h3>
-              <div className="question-meta">
-                <div className="question-topics">
-                  {question.topic && (
-                    <span className="topic-tag" key={question.topic}>
-                      {question.topic}
-                    </span>
-                  )}
-                  {question.subtopic && (
-                    <span className="topic-tag" key={question.subtopic}>
-                      {question.subtopic}
-                    </span>
-                  )}
-                </div>
-                <div className="completion-rate">
-                  <span> {question.solve_rate}%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   }
