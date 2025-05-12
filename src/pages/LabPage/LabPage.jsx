@@ -1,14 +1,8 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import "./LabPage.css";
 import { CalendarIcon } from "../../icons/Icons";
 import labPageIcon from "../../assets/lab_page.svg";
 import aristotleIcon from "../../assets/aristotle.svg";
-
-// Import SVG chain assets as React components
-import InitialChain from "../../assets/initial_chain.svg?react";
-import ConnectingChain from "../../assets/connecting_chain.svg?react";
-import TheLine from "../../assets/the_line.svg?react";
-import BrokenChain from "../../assets/broken_chain.svg?react";
 
 // Import score SVGs
 import scoreA from "../../assets/scoreA.svg";
@@ -42,34 +36,6 @@ const yearMonths = [
   "NOV",
   "DEC",
 ];
-
-// --- START UTILITY FUNCTIONS (Should be outside the component) ---
-const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
-const getFirstDayOfMonth = (year, month) => {
-  const day = new Date(year, month, 1).getDay();
-  return day === 0 ? 6 : day - 1;
-};
-
-// Define grid constants
-const ACTUAL_COLUMNS_IN_GRID = 5;
-const CELLS_PER_COLUMN_IN_GRID = 7;
-const CELLS_PER_MONTH_GRID = ACTUAL_COLUMNS_IN_GRID * CELLS_PER_COLUMN_IN_GRID;
-
-// Moved generateFullYearActivity outside the component
-const generateFullYearActivity = (year) => {
-  const activity = {};
-  const startDate = new Date(year, 0, 1);
-  const endDate = new Date(year, 11, 31);
-  for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    const dateStr = `${year}-${month}-${day}`;
-    activity[dateStr] = Math.floor(Math.random() * 4) + 1;
-  }
-  return activity;
-};
-
-// --- END UTILITY FUNCTIONS ---
 
 // Predefined test dates
 const testDates = [
@@ -118,271 +84,82 @@ const testDates = [
   { label: "May 2, 2026", month: 4, day: 2, year: "2026", semester: "spring" },
   { label: "June 6, 2026", month: 5, day: 6, year: "2026", semester: "spring" },
 ];
-const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
-  const months = [
-    "JAN",
-    "FEB",
-    "MAR",
-    "APR",
-    "MAY",
-    "JUN",
-    "JUL",
-    "AUG",
-    "SEP",
-    "OCT",
-    "NOV",
-    "DEC",
-  ];
 
-  const CELLS_PER_VISUAL_COLUMN = 7; // 7 cells per visual column
-  const CELLS_PER_MONTH_GRID = 35; // 5 columns × 7 rows
-
+// Generate year data (mostly empty with some activity in recent months)
+const generateYearData = () => {
+  // Create empty grid (each month has 7 rows of 5-7 days)
   const yearData = {};
 
-  // Process each month
-  months.forEach((monthName, monthIndex) => {
-    const daysInCurrentMonth = daysInMonth(year, monthIndex);
-    const monthCells = Array(CELLS_PER_MONTH_GRID)
-      .fill()
-      .map(() => ({
-        type: "placeholder",
-        chainType: "empty",
-      }));
+  yearMonths.forEach((month) => {
+    // Each month has 5-7 rows
+    const numRows = Math.floor(Math.random() * 2) + 5; // 5-6 rows
+    const numDays = Math.floor(Math.random() * 3) + 4; // 4-6 days per row
 
-    // Map days to cells in zigzag order
-    const zigzagOrder = [];
-    for (let col = 0; col < 5; col++) {
-      const isDownColumn = col % 2 === 0;
-      for (let row = 0; row < 7; row++) {
-        const displayRow = isDownColumn ? row : 6 - row;
-        const cellIndex = col * CELLS_PER_VISUAL_COLUMN + displayRow;
-        zigzagOrder.push(cellIndex);
-      }
-    }
-
-    // Fill cells with days in zigzag order
-    for (let day = 1; day <= daysInCurrentMonth; day++) {
-      const cellIndex = zigzagOrder[day - 1];
-      const dateString = `${year}-${String(monthIndex + 1).padStart(
-        2,
-        "0"
-      )}-${String(day).padStart(2, "0")}`;
-      const isActive = activityData[dateString] > 0;
-      const activityLevel = activityData[dateString] || 0;
-
-      const isExamDay = examDates.some(
-        (examDate) =>
-          examDate.year === year &&
-          examDate.month === monthIndex &&
-          examDate.day === day
+    yearData[month] = Array(numRows)
+      .fill(0)
+      .map(() =>
+        Array(numDays)
+          .fill(0)
+          .map(() => {
+            // Mostly empty (0), with some activity (1-3) in recent months
+            if (["MAY", "JUN", "JUL"].includes(month)) {
+              return Math.random() < 0.2 ? Math.ceil(Math.random() * 3) : 0;
+            }
+            if (["APR", "MAR"].includes(month)) {
+              return Math.random() < 0.1 ? Math.ceil(Math.random() * 2) : 0;
+            }
+            if (["JAN", "FEB"].includes(month)) {
+              return Math.random() < 0.07 ? Math.ceil(Math.random() * 2) : 0;
+            }
+            return Math.random() < 0.02 ? 1 : 0;
+          })
       );
-
-      monthCells[cellIndex] = {
-        type: "day",
-        dayOfMonth: day,
-        dateString: dateString,
-        isActive: isActive,
-        activityLevel: activityLevel,
-        chainType: "empty", // Initial placeholder
-        tooltipText: `${months[monthIndex]} ${day}, ${year}: ${
-          isActive ? `Activity level: ${activityLevel}` : "No activity"
-        }`,
-        isExamDay: isExamDay,
-      };
-    }
-
-    let prevActiveIndex = -1;
-    for (let i = 0; i < daysInCurrentMonth; i++) {
-      const cellIndex = zigzagOrder[i];
-      if (cellIndex === undefined || cellIndex >= monthCells.length) continue; // Safety check
-      const cell = monthCells[cellIndex];
-      if (cell.type !== "day") continue; // Skip placeholders potentially mixed in calculation
-
-      if (cell.isActive) {
-        const visualColumn = Math.floor(cellIndex / CELLS_PER_VISUAL_COLUMN);
-        const horizontalRow = cellIndex % CELLS_PER_VISUAL_COLUMN;
-        const isDownColumn = visualColumn % 2 === 0;
-
-        // Rule Exceptions: First and Last day of the month are InitialChain
-        if (cell.dayOfMonth === 1 || cell.dayOfMonth === daysInCurrentMonth) {
-          cell.chainType = isDownColumn
-            ? "initial_snake_down"
-            : "initial_snake_up";
-        }
-        // General Rule: Top (0) or Bottom (6) HORIZONTAL rows are ConnectingChain
-        else if (horizontalRow === 0 || horizontalRow === 6) {
-          cell.chainType = "connecting_turn_intra_month";
-        } else {
-          // Middle HORIZONTAL rows (1-5) are InitialChain
-          cell.chainType = isDownColumn
-            ? "initial_snake_down"
-            : "initial_snake_up";
-        }
-        prevActiveIndex = cellIndex; // Track last active cell index
-      } else {
-        // Broken chain logic (remains the same, based on zigzag path)
-        if (prevActiveIndex !== -1) {
-          const expectedPrevCellIndex = i > 0 ? zigzagOrder[i - 1] : -1;
-          if (prevActiveIndex === expectedPrevCellIndex) {
-            cell.chainType = "broken";
-          }
-        }
-        // prevActiveIndex is only updated by active cells
-      }
-    }
-
-    yearData[monthName] = monthCells;
   });
 
   return yearData;
 };
-// --- END CALENDAR GENERATION LOGIC ---
 
-// --- START NEW CONTINUOUS CALENDAR GENERATION LOGIC (SNAKE PATTERN) ---
-const generateContinuousYearData = (
-  year,
-  activityData = {},
-  examDates = []
-) => {
-  const allCells = [];
-  // ... (leading placeholder and day cell generation remains similar to previous continuous attempt)
-  // ... (ensure dateStr, monthIndex, dayOfMonth, activityLevel, isActive, isExam, tooltipText are set)
+const yearData = generateYearData();
 
-  // Iterate through all days of the year
-  // (This part is from a previous correct version of continuous data generation)
-  const yearMonths = [
-    "JAN",
-    "FEB",
-    "MAR",
-    "APR",
-    "MAY",
-    "JUN",
-    "JUL",
-    "AUG",
-    "SEP",
-    "OCT",
-    "NOV",
-    "DEC",
+// Mock subtopic data with more realistic values
+const subtopicData = [
+  {
+    name: "Linear Equations",
+    avgTime: 38,
+    correct: 43,
+    total: 48,
+    improvement: 12,
+  },
+  {
+    name: "Grammar & Usage",
+    avgTime: 42,
+    correct: 67,
+    total: 70,
+    improvement: 8,
+  },
+  { name: "Functions", avgTime: 55, correct: 32, total: 40, improvement: -3 },
+  {
+    name: "Reading Comprehension",
+    avgTime: 33,
+    correct: 92,
+    total: 102,
+    improvement: 15,
+  },
+  { name: "Geometry", avgTime: 48, correct: 27, total: 45, improvement: 5 },
+];
+
+const getBoxShade = (val) => {
+  // 0 = empty/transparent, 1-5 = increasing intensity
+  const shades = [
+    "transparent",
+    "#a9d6ff",
+    "#7bbcff",
+    "#3996e6",
+    "#1565c0",
+    "#003c8f",
   ];
-  const dateFormatter = new Intl.DateTimeFormat("en-US", {
-    weekday: "short",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-  const firstDateOfYear = new Date(year, 0, 1);
-  let dayOfWeekJan1 = firstDateOfYear.getDay();
-  const leadingPlaceholdersCount = dayOfWeekJan1 === 0 ? 6 : dayOfWeekJan1 - 1;
-  for (let i = 0; i < leadingPlaceholdersCount; i++) {
-    allCells.push({
-      type: "placeholder_leading_year",
-      chainType: "placeholder_empty",
-    });
-  }
-  for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
-    const numDaysInCurrentMonth = daysInMonth(year, monthIndex);
-    for (let day = 1; day <= numDaysInCurrentMonth; day++) {
-      const dateObj = new Date(year, monthIndex, day);
-      const formattedDate = dateFormatter.format(dateObj);
-      const dateStr = `${year}-${String(monthIndex + 1).padStart(
-        2,
-        "0"
-      )}-${String(day).padStart(2, "0")}`;
-      const currentActivity = activityData[dateStr] || 0;
-      const isExam = examDates.some(
-        (ed) =>
-          ed.year === String(year) && ed.month === monthIndex && ed.day === day
-      );
-      let tooltipText = `No activity on ${formattedDate}`;
-      if (isExam) tooltipText = `Exam day on ${formattedDate}`;
-      else if (currentActivity > 0)
-        tooltipText = `Activity Level ${currentActivity} on ${formattedDate}`;
-      allCells.push({
-        type: "day",
-        dateString: dateStr,
-        formattedDate: formattedDate,
-        tooltipText: tooltipText,
-        monthIndex: monthIndex,
-        monthName: yearMonths[monthIndex],
-        dayOfMonth: day,
-        activityLevel: currentActivity,
-        isExam: isExam,
-        isActive: currentActivity > 0,
-      });
-    }
-  }
-  while (allCells.length % CELLS_PER_VISUAL_COLUMN !== 0) {
-    allCells.push({
-      type: "placeholder_trailing_year",
-      chainType: "placeholder_empty",
-    });
-  }
-
-  // Apply SNAKE chain logic
-  for (let i = 0; i < allCells.length; i++) {
-    const currentCell = allCells[i];
-    if (currentCell.type !== "day") continue;
-
-    const visualColumnIndex = Math.floor(i / CELLS_PER_VISUAL_COLUMN);
-    const isDownColumn = visualColumnIndex % 2 === 0;
-    const rowInVisualColumn = i % CELLS_PER_VISUAL_COLUMN;
-
-    if (currentCell.isActive) {
-      // Default to InitialChain based on column direction
-      currentCell.chainType = isDownColumn
-        ? "initial_snake_down"
-        : "initial_snake_up";
-
-      // Check for Turns (ConnectingChains)
-      // Bottom turn: end of a "down" column, or start of an "up" column at the bottom
-      if (rowInVisualColumn === CELLS_PER_VISUAL_COLUMN - 1) {
-        // Bottom row of any visual column
-        currentCell.chainType = "connecting_turn";
-      }
-      // Top turn: end of an "up" column, or start of a "down" column at the top (excluding col 0 top)
-      else if (rowInVisualColumn === 0 && visualColumnIndex > 0) {
-        // Top row of any visual column (except the very first cell of all)
-        currentCell.chainType = "connecting_turn";
-      }
-      // The very first active cell of the entire year, if it is active, should be initial_snake_down.
-      // This is handled by the default if visualColumnIndex is 0 and rowInVisualColumn is 0.
-    } else {
-      // Inactive cell
-      currentCell.chainType = "empty";
-      let prevSnakePathCellIndex = -1;
-      if (isDownColumn) {
-        if (rowInVisualColumn > 0) prevSnakePathCellIndex = i - 1;
-        // Cell directly above in the same column
-        else if (visualColumnIndex > 0) {
-          // Top of a down column, check top of previous up column
-          prevSnakePathCellIndex = i - 1; // This is the connecting_turn from previous up column.
-        }
-      } else {
-        // Up Column
-        if (rowInVisualColumn < CELLS_PER_VISUAL_COLUMN - 1)
-          prevSnakePathCellIndex = i + 1; // Cell directly below
-        else if (visualColumnIndex > 0) {
-          // Bottom of an up column, check bottom of previous down column
-          prevSnakePathCellIndex = i - 1; // This is the connecting_turn from previous down column
-        }
-      }
-
-      if (
-        prevSnakePathCellIndex !== -1 &&
-        prevSnakePathCellIndex < allCells.length &&
-        allCells[prevSnakePathCellIndex].type === "day" &&
-        allCells[prevSnakePathCellIndex].isActive
-      ) {
-        currentCell.chainType = "broken";
-      }
-    }
-  }
-  return allCells;
+  return shades[Math.min(val, shades.length - 1)];
 };
-// --- END NEW CONTINUOUS CALENDAR GENERATION LOGIC (SNAKE PATTERN) ---
-
-// Define CELLS_PER_VISUAL_COLUMN at a scope accessible by renderMonthColumn
-const CELLS_PER_VISUAL_COLUMN = 7;
 
 const LabPage = () => {
   const [selectedYear, setSelectedYear] = useState("2025");
@@ -393,33 +170,6 @@ const LabPage = () => {
     timing: {},
     mastery: {},
   });
-  const [tooltip, setTooltip] = useState({
-    visible: false,
-    content: "",
-    x: 0,
-    y: 0,
-  });
-
-  const [yearCalendarData, setYearCalendarData] = useState({});
-
-  // Memoize mockActivity to prevent re-creation on every render unless selectedYear changes
-  const mockActivity = useMemo(() => {
-    return generateFullYearActivity(parseInt(selectedYear));
-  }, [selectedYear]);
-
-  useEffect(() => {
-    const correctlyFormattedExamDates = testDates.map((td) => ({
-      ...td,
-      month: td.month - 1,
-    }));
-    setYearCalendarData(
-      generateFullYearCalendar(
-        parseInt(selectedYear),
-        mockActivity,
-        correctlyFormattedExamDates
-      )
-    );
-  }, [selectedYear, mockActivity]); // Now mockActivity is a stable dependency
 
   // Filter test dates based on selected year
   const filteredTestDates = testDates.filter(
@@ -481,127 +231,38 @@ const LabPage = () => {
     return mappedRow === row && mappedCol === col;
   };
 
-  // --- START MODIFIED RENDERING LOGIC ---
-
-  const handleMouseEnterSquare = (e, cellData) => {
-    if (cellData.type === "placeholder" || !cellData.tooltipText) return;
-    setTooltip({
-      visible: true,
-      content: cellData.tooltipText,
-      x: e.clientX,
-      y: e.clientY,
-    });
-  };
-
-  const handleMouseLeaveSquare = () => {
-    setTooltip((prev) => ({ ...prev, visible: false }));
-  };
-
-  const handleMouseMoveSquare = (e) => {
-    if (tooltip.visible) {
-      setTooltip((prev) => ({ ...prev, x: e.clientX, y: e.clientY }));
-    }
-  };
-
-  // --- Rendering logic for each month - MODIFIED FOR 7 ROWS ---
-  const renderMonthColumn = (monthName, monthCells) => {
-    if (!monthCells || monthCells.length !== CELLS_PER_MONTH_GRID) {
-      return (
-        <div className="month-column error">
-          Error: Invalid data for {monthName}
-        </div>
-      );
-    }
-
-    const checkIsSelectedExamDate = (cell) => {
-      if (!selectedExamDate || cell.type !== "day") return false;
-      const examDateDetails = testDates.find(
-        (d) => d.label === selectedExamDate
-      );
-      if (!examDateDetails) return false;
-      return (
-        cell.dateString ===
-        `${examDateDetails.year}-${String(examDateDetails.month + 1).padStart(
-          2,
-          "0"
-        )}-${String(examDateDetails.day).padStart(2, "0")}`
-      );
-    };
-
+  // Render a single month for the yearly calendar
+  const renderMonthColumn = (month, monthIndex) => {
     return (
-      <div className="month-column" key={monthName}>
-        <div className="month-label">{monthName}</div>
-        {/* Render 7 distinct horizontal rows */}
-        {Array.from({ length: 7 }).map((_, rowIndex) => (
-          <div className="month-row" key={`row-${rowIndex}`}>
-            {/* Render 5 cells for the current row */}
-            {Array.from({ length: 5 }).map((_, colIndex) => {
-              // Calculate the index in the flat monthCells array
-              const cellIndex = colIndex * 7 + rowIndex;
-              const cell = monthCells[cellIndex];
+      <div className="month-column" key={month}>
+        <div className="month-label">{month}</div>
+        <div className="month-grid">
+          {Array(7)
+            .fill(0)
+            .map((_, rowIndex) => (
+              <div className="month-row" key={`row-${rowIndex}`}>
+                {Array(5)
+                  .fill(0)
+                  .map((_, colIndex) => {
+                    const isActive =
+                      monthIndex === 0 && isJanuaryActive(rowIndex, colIndex);
+                    const isExam = isExamDate(monthIndex, rowIndex, colIndex);
 
-              // Determine SVG and classes based on cell data (same logic as before)
-              let ChainComponentToRender;
-              let svgClassName = "chain-svg";
-              let squareClassName = "activity-square chain-cell";
-
-              if (!cell) {
-                // Handle potential undefined cell if array isn't perfect
-                squareClassName += " placeholder-cell";
-                ChainComponentToRender = null;
-              } else if (cell.type === "placeholder") {
-                squareClassName += " placeholder-cell";
-                ChainComponentToRender = null; // Explicitly no SVG for placeholders
-              } else if (cell.type === "day") {
-                if (checkIsSelectedExamDate(cell)) {
-                  squareClassName += " exam-day";
-                }
-                // Chain type logic based on the pre-calculated cell.chainType
-                switch (cell.chainType) {
-                  case "initial_snake_down":
-                    ChainComponentToRender = InitialChain;
-                    break;
-                  case "initial_snake_up":
-                    ChainComponentToRender = InitialChain;
-                    svgClassName += " rotated-180";
-                    break;
-                  case "connecting_turn_intra_month":
-                    ChainComponentToRender = ConnectingChain;
-                    break;
-                  case "broken":
-                    ChainComponentToRender = BrokenChain;
-                    break;
-                  case "empty":
-                  default:
-                    ChainComponentToRender = null;
-                }
-              } else {
-                // Should not happen, but handle unexpected cell types
-                squareClassName += " placeholder-cell";
-                ChainComponentToRender = null;
-              }
-
-              return (
-                <div
-                  className={squareClassName}
-                  key={`${monthName}-cell-${cellIndex}`}
-                  title={cell?.tooltipText || ""} // Use optional chaining for safety
-                  onMouseEnter={(e) => cell && handleMouseEnterSquare(e, cell)} // Pass cell if defined
-                  onMouseLeave={handleMouseLeaveSquare}
-                  onMouseMove={handleMouseMoveSquare}
-                >
-                  {ChainComponentToRender && (
-                    <ChainComponentToRender className={svgClassName} />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        ))}
+                    return (
+                      <div
+                        className={`activity-square ${
+                          isActive ? "active-day" : ""
+                        } ${isExam ? "exam-day" : ""}`}
+                        key={`square-${rowIndex}-${colIndex}`}
+                      ></div>
+                    );
+                  })}
+              </div>
+            ))}
+        </div>
       </div>
     );
   };
-  // --- END MODIFIED RENDERING LOGIC ---
 
   // Function to get the score image based on percentage
   const getScoreImage = (percentage) => {
@@ -1153,9 +814,12 @@ const LabPage = () => {
       </header>
 
       <div className="lab-content">
+        {/* Yearly Activity Calendar Section */}
         <div className="yearly-activity-section">
           <div className="yearly-activity-header">
             <h2 className="yearly-activity-title">Training Activity</h2>
+
+            {/* Year dropdown */}
             <div className="year-selector">
               <select
                 value={selectedYear}
@@ -1169,6 +833,7 @@ const LabPage = () => {
             </div>
           </div>
 
+          {/* Exam date selection UI */}
           <div className="exam-date-selector">
             <div className="exam-date-dropdown-container">
               <label htmlFor="exam-date-select">Select your exam date:</label>
@@ -1179,29 +844,28 @@ const LabPage = () => {
                 className="exam-date-dropdown"
               >
                 <option value="">Select a test date</option>
-                {/* Populate options based on selectedYear and testDates */}
-                {testDates
-                  .filter((date) => date.year === selectedYear)
-                  .reduce((acc, date) => {
-                    const groupLabel =
-                      date.semester === "fall"
-                        ? `Fall ${selectedYear}`
-                        : `Spring ${selectedYear}`;
-                    if (!acc.find((opt) => opt.label === groupLabel)) {
-                      acc.push({ label: groupLabel, isGroup: true });
-                    }
-                    acc.push(date);
-                    return acc;
-                  }, [])
-                  .map((item, index) =>
-                    item.isGroup ? (
-                      <optgroup key={item.label} label={item.label} />
-                    ) : (
-                      <option key={item.label} value={item.label}>
-                        {item.label}
-                      </option>
-                    )
-                  )}
+                {selectedYear === "2025" && (
+                  <optgroup label="Fall 2025">
+                    {filteredTestDates
+                      .filter((date) => date.semester === "fall")
+                      .map((date) => (
+                        <option key={date.label} value={date.label}>
+                          {date.label}
+                        </option>
+                      ))}
+                  </optgroup>
+                )}
+                {selectedYear === "2026" && (
+                  <optgroup label="Spring 2026">
+                    {filteredTestDates
+                      .filter((date) => date.semester === "spring")
+                      .map((date) => (
+                        <option key={date.label} value={date.label}>
+                          {date.label}
+                        </option>
+                      ))}
+                  </optgroup>
+                )}
               </select>
             </div>
             {selectedExamDate && (
@@ -1211,11 +875,8 @@ const LabPage = () => {
             )}
           </div>
 
-          {/* Main calendar rendering area - iterates over yearCalendarData */}
-          <div className="yearly-calendar-container month-based-layout">
-            {Object.entries(yearCalendarData).map(([monthName, monthCells]) =>
-              renderMonthColumn(monthName, monthCells)
-            )}
+          <div className="yearly-calendar-container">
+            {yearMonths.map((month, index) => renderMonthColumn(month, index))}
           </div>
         </div>
 
@@ -1289,14 +950,6 @@ const LabPage = () => {
           </div>
         </div>
       </div>
-      {tooltip.visible && (
-        <div
-          className="lab-custom-tooltip"
-          style={{ top: tooltip.y + 10, left: tooltip.x + 10 }}
-        >
-          {tooltip.content}
-        </div>
-      )}
     </div>
   );
 };
