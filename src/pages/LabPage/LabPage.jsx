@@ -118,45 +118,6 @@ const testDates = [
   { label: "May 2, 2026", month: 4, day: 2, year: "2026", semester: "spring" },
   { label: "June 6, 2026", month: 5, day: 6, year: "2026", semester: "spring" },
 ];
-
-// Generate year data (mostly empty with some activity in recent months)
-// THIS FUNCTION WILL BE REPLACED/HEAVILY MODIFIED
-const generateYearData_OLD = () => {
-  // Create empty grid (each month has 7 rows of 5-7 days)
-  const yearData = {};
-
-  yearMonths.forEach((month) => {
-    // Each month has 5-7 rows
-    const numRows = Math.floor(Math.random() * 2) + 5; // 5-6 rows
-    const numDays = Math.floor(Math.random() * 3) + 4; // 4-6 days per row
-
-    yearData[month] = Array(numRows)
-      .fill(0)
-      .map(() =>
-        Array(numDays)
-          .fill(0)
-          .map(() => {
-            // Mostly empty (0), with some activity (1-3) in recent months
-            if (["MAY", "JUN", "JUL"].includes(month)) {
-              return Math.random() < 0.2 ? Math.ceil(Math.random() * 3) : 0;
-            }
-            if (["APR", "MAR"].includes(month)) {
-              return Math.random() < 0.1 ? Math.ceil(Math.random() * 2) : 0;
-            }
-            if (["JAN", "FEB"].includes(month)) {
-              return Math.random() < 0.07 ? Math.ceil(Math.random() * 2) : 0;
-            }
-            return Math.random() < 0.02 ? 1 : 0;
-          })
-      );
-  });
-
-  return yearData;
-};
-
-// const yearData_OLD = generateYearData_OLD(); // Keep old one for now if needed, or remove
-
-// --- START CALENDAR GENERATION LOGIC (Per-Month 5x7 Grids with INTRA-MONTH SNAKE) ---
 const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
   const months = [
     "JAN",
@@ -188,50 +149,27 @@ const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
         chainType: "empty",
       }));
 
-    // Calculate cells for this month
+    // Map days to cells in zigzag order
+    const zigzagOrder = [];
+    for (let col = 0; col < 5; col++) {
+      const isDownColumn = col % 2 === 0;
+      for (let row = 0; row < 7; row++) {
+        const displayRow = isDownColumn ? row : 6 - row;
+        const cellIndex = col * CELLS_PER_VISUAL_COLUMN + displayRow;
+        zigzagOrder.push(cellIndex);
+      }
+    }
+
+    // Fill cells with days in zigzag order
     for (let day = 1; day <= daysInCurrentMonth; day++) {
-      const dateObj = new Date(year, monthIndex, day);
+      const cellIndex = zigzagOrder[day - 1];
       const dateString = `${year}-${String(monthIndex + 1).padStart(
         2,
         "0"
       )}-${String(day).padStart(2, "0")}`;
-
-      // Calculate the visual column (0-4) and row (0-6) in the 5×7 grid
-      // For simplicity: distribute days evenly across columns
-      const visualColumn = Math.floor((day - 1) / CELLS_PER_VISUAL_COLUMN);
-      const displayRow = (day - 1) % CELLS_PER_VISUAL_COLUMN;
-
-      // Calculate the index in the monthCells array
-      const cellIndex = visualColumn * CELLS_PER_VISUAL_COLUMN + displayRow;
-
-      // Check if this date is active in the activity data
       const isActive = activityData[dateString] > 0;
       const activityLevel = activityData[dateString] || 0;
 
-      // Determine the chain type - THIS IS THE KEY PART TO FIX
-      let chainType = "empty";
-
-      if (isActive) {
-        // SIMPLIFIED LOGIC: By default, all active cells are initial chains
-        chainType = "initial_snake_down";
-
-        // Check if this is a top row cell (row 0) in columns 1-4
-        const isTopRow = displayRow === 0;
-
-        // Check if this is a bottom row cell (row 6) in any column
-        const isBottomRow = displayRow === CELLS_PER_VISUAL_COLUMN - 1;
-
-        // Check if this is the very first cell of the first column
-        const isActualFirstCellOfGrid = day === 1;
-
-        // Apply connecting chain type for turns only
-        if (!isActualFirstCellOfGrid && (isTopRow || isBottomRow)) {
-          // This is a turn cell - either at the top of columns 1-4 or at the bottom of any column
-          chainType = "connecting_turn_intra_month";
-        }
-      }
-
-      // Check if this is a selected exam date
       const isExamDay = examDates.some(
         (examDate) =>
           examDate.year === year &&
@@ -245,7 +183,7 @@ const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
         dateString: dateString,
         isActive: isActive,
         activityLevel: activityLevel,
-        chainType: chainType,
+        chainType: "empty", // Initial placeholder
         tooltipText: `${months[monthIndex]} ${day}, ${year}: ${
           isActive ? `Activity level: ${activityLevel}` : "No activity"
         }`,
@@ -253,7 +191,46 @@ const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
       };
     }
 
-    // Store the cells for this month
+    let prevActiveIndex = -1;
+    for (let i = 0; i < daysInCurrentMonth; i++) {
+      const cellIndex = zigzagOrder[i];
+      if (cellIndex === undefined || cellIndex >= monthCells.length) continue; // Safety check
+      const cell = monthCells[cellIndex];
+      if (cell.type !== "day") continue; // Skip placeholders potentially mixed in calculation
+
+      if (cell.isActive) {
+        const visualColumn = Math.floor(cellIndex / CELLS_PER_VISUAL_COLUMN);
+        const horizontalRow = cellIndex % CELLS_PER_VISUAL_COLUMN;
+        const isDownColumn = visualColumn % 2 === 0;
+
+        // Rule Exceptions: First and Last day of the month are InitialChain
+        if (cell.dayOfMonth === 1 || cell.dayOfMonth === daysInCurrentMonth) {
+          cell.chainType = isDownColumn
+            ? "initial_snake_down"
+            : "initial_snake_up";
+        }
+        // General Rule: Top (0) or Bottom (6) HORIZONTAL rows are ConnectingChain
+        else if (horizontalRow === 0 || horizontalRow === 6) {
+          cell.chainType = "connecting_turn_intra_month";
+        } else {
+          // Middle HORIZONTAL rows (1-5) are InitialChain
+          cell.chainType = isDownColumn
+            ? "initial_snake_down"
+            : "initial_snake_up";
+        }
+        prevActiveIndex = cellIndex; // Track last active cell index
+      } else {
+        // Broken chain logic (remains the same, based on zigzag path)
+        if (prevActiveIndex !== -1) {
+          const expectedPrevCellIndex = i > 0 ? zigzagOrder[i - 1] : -1;
+          if (prevActiveIndex === expectedPrevCellIndex) {
+            cell.chainType = "broken";
+          }
+        }
+        // prevActiveIndex is only updated by active cells
+      }
+    }
+
     yearData[monthName] = monthCells;
   });
 
@@ -404,6 +381,9 @@ const generateContinuousYearData = (
 };
 // --- END NEW CONTINUOUS CALENDAR GENERATION LOGIC (SNAKE PATTERN) ---
 
+// Define CELLS_PER_VISUAL_COLUMN at a scope accessible by renderMonthColumn
+const CELLS_PER_VISUAL_COLUMN = 7;
+
 const LabPage = () => {
   const [selectedYear, setSelectedYear] = useState("2025");
   const [selectedExamDate, setSelectedExamDate] = useState("");
@@ -523,7 +503,7 @@ const LabPage = () => {
     }
   };
 
-  // --- Rendering logic for each month's 5x7 grid ---
+  // --- Rendering logic for each month - MODIFIED FOR 7 ROWS ---
   const renderMonthColumn = (monthName, monthCells) => {
     if (!monthCells || monthCells.length !== CELLS_PER_MONTH_GRID) {
       return (
@@ -551,58 +531,73 @@ const LabPage = () => {
     return (
       <div className="month-column" key={monthName}>
         <div className="month-label">{monthName}</div>
-        <div className="month-grid">
-          {monthCells.map((cell, index) => {
-            let ChainComponentToRender;
-            let svgClassName = "chain-svg";
-            let squareClassName = "activity-square chain-cell";
+        {/* Render 7 distinct horizontal rows */}
+        {Array.from({ length: 7 }).map((_, rowIndex) => (
+          <div className="month-row" key={`row-${rowIndex}`}>
+            {/* Render 5 cells for the current row */}
+            {Array.from({ length: 5 }).map((_, colIndex) => {
+              // Calculate the index in the flat monthCells array
+              const cellIndex = colIndex * 7 + rowIndex;
+              const cell = monthCells[cellIndex];
 
-            if (cell.type === "placeholder") {
-              squareClassName += " placeholder-cell";
-            } else if (cell.type === "day") {
-              if (checkIsSelectedExamDate(cell)) {
-                squareClassName += " exam-day";
+              // Determine SVG and classes based on cell data (same logic as before)
+              let ChainComponentToRender;
+              let svgClassName = "chain-svg";
+              let squareClassName = "activity-square chain-cell";
+
+              if (!cell) {
+                // Handle potential undefined cell if array isn't perfect
+                squareClassName += " placeholder-cell";
+                ChainComponentToRender = null;
+              } else if (cell.type === "placeholder") {
+                squareClassName += " placeholder-cell";
+                ChainComponentToRender = null; // Explicitly no SVG for placeholders
+              } else if (cell.type === "day") {
+                if (checkIsSelectedExamDate(cell)) {
+                  squareClassName += " exam-day";
+                }
+                // Chain type logic based on the pre-calculated cell.chainType
+                switch (cell.chainType) {
+                  case "initial_snake_down":
+                    ChainComponentToRender = InitialChain;
+                    break;
+                  case "initial_snake_up":
+                    ChainComponentToRender = InitialChain;
+                    svgClassName += " rotated-180";
+                    break;
+                  case "connecting_turn_intra_month":
+                    ChainComponentToRender = ConnectingChain;
+                    break;
+                  case "broken":
+                    ChainComponentToRender = BrokenChain;
+                    break;
+                  case "empty":
+                  default:
+                    ChainComponentToRender = null;
+                }
+              } else {
+                // Should not happen, but handle unexpected cell types
+                squareClassName += " placeholder-cell";
+                ChainComponentToRender = null;
               }
-            }
 
-            switch (cell.chainType) {
-              case "initial_snake_down":
-                ChainComponentToRender = InitialChain;
-                break;
-              case "initial_snake_up":
-                ChainComponentToRender = InitialChain;
-                svgClassName += " rotated-180";
-                break;
-              case "connecting_turn_intra_month":
-                ChainComponentToRender = ConnectingChain;
-                break;
-              case "broken":
-                ChainComponentToRender = BrokenChain;
-                break;
-              case "empty":
-              case "placeholder_empty":
-                ChainComponentToRender = null;
-                break;
-              default:
-                ChainComponentToRender = null;
-            }
-
-            return (
-              <div
-                className={squareClassName}
-                key={cell.dateString || `${monthName}-cell-${index}`}
-                title={cell.tooltipText}
-                onMouseEnter={(e) => handleMouseEnterSquare(e, cell)}
-                onMouseLeave={handleMouseLeaveSquare}
-                onMouseMove={handleMouseMoveSquare}
-              >
-                {ChainComponentToRender && (
-                  <ChainComponentToRender className={svgClassName} />
-                )}
-              </div>
-            );
-          })}
-        </div>
+              return (
+                <div
+                  className={squareClassName}
+                  key={`${monthName}-cell-${cellIndex}`}
+                  title={cell?.tooltipText || ""} // Use optional chaining for safety
+                  onMouseEnter={(e) => cell && handleMouseEnterSquare(e, cell)} // Pass cell if defined
+                  onMouseLeave={handleMouseLeaveSquare}
+                  onMouseMove={handleMouseMoveSquare}
+                >
+                  {ChainComponentToRender && (
+                    <ChainComponentToRender className={svgClassName} />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
     );
   };
