@@ -730,31 +730,27 @@
 
 /* Activity square */
 .activity-square {
-  width: 21px;
-  height: 21px;
+  width: 24px;
+  height: 24px;
+  box-sizing: border-box;
   background-color: transparent;
-  border: none;
   position: relative;
-  cursor: default;
+}
+
+.activity-square.chain-cell {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0;
-  color: transparent;
+  position: relative;
 }
 
-/* Placeholder cells - ensure they are truly invisible and don't interfere */
-.activity-square.placeholder-cell {
-  background-color: transparent !important;
-  border-color: transparent !important;
-  pointer-events: none;
+.chain-svg {
+  max-width: 100%;
+  max-height: 100%;
 }
 
-/* Active day (green) */
-.activity-square.active-day {
-  background-color: var(--increase-color);
-  border-color: var(--increase-color);
-  /* color: white; */
+.chain-svg.rotated-180 {
+  transform: rotate(180deg);
 }
 
 /* Performance tab selector */
@@ -1449,8 +1445,7 @@
   position: relative;
 }
 
-/* Temporary debug style for turn cells */
-.debug-turn-cell {
-  background-color: red !important;
-  border: 2px solid yellow !important;
+/* Remove the debug styles we added */
+.activity-square.debug-text-cell {
+  display: none;
 }

@@ -158,7 +158,7 @@ const generateYearData_OLD = () => {
 
 // --- START CALENDAR GENERATION LOGIC (Per-Month 5x7 Grids with INTRA-MONTH SNAKE) ---
 const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
-  const yearMonths = [
+  const months = [
     "JAN",
     "FEB",
     "MAR",
@@ -172,103 +172,92 @@ const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
     "NOV",
     "DEC",
   ];
-  const calendarYear = {};
 
-  const dateFormatter = new Intl.DateTimeFormat("en-US", {
-    weekday: "short",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+  const CELLS_PER_VISUAL_COLUMN = 7; // 7 cells per visual column
+  const CELLS_PER_MONTH_GRID = 35; // 5 columns × 7 rows
 
-  yearMonths.forEach((monthName, monthIndex) => {
-    const numDaysInCurrentMonth = daysInMonth(year, monthIndex);
-    const firstDayOffset = getFirstDayOfMonth(year, monthIndex);
-    const monthCells = [];
+  const yearData = {};
 
-    for (let k = 0; k < firstDayOffset; k++) {
-      monthCells.push({ type: "placeholder", chainType: "placeholder_empty" });
-    }
+  // Process each month
+  months.forEach((monthName, monthIndex) => {
+    const daysInCurrentMonth = daysInMonth(year, monthIndex);
+    const monthCells = Array(CELLS_PER_MONTH_GRID)
+      .fill()
+      .map(() => ({
+        type: "placeholder",
+        chainType: "empty",
+      }));
 
-    for (let day = 1; day <= numDaysInCurrentMonth; day++) {
-      if (monthCells.length >= CELLS_PER_MONTH_GRID) break;
+    // Calculate cells for this month
+    for (let day = 1; day <= daysInCurrentMonth; day++) {
       const dateObj = new Date(year, monthIndex, day);
-      const formattedDate = dateFormatter.format(dateObj);
-      const dateStr = `${year}-${String(monthIndex + 1).padStart(
+      const dateString = `${year}-${String(monthIndex + 1).padStart(
         2,
         "0"
       )}-${String(day).padStart(2, "0")}`;
-      const currentActivity = activityData[dateStr] || 0;
-      const isExam = examDates.some(
-        (ed) =>
-          ed.year === String(year) && ed.month === monthIndex && ed.day === day
-      );
-      let tooltipText = `No activity on ${formattedDate}`;
-      if (isExam) tooltipText = `Exam day on ${formattedDate}`;
-      else if (currentActivity > 0)
-        tooltipText = `Activity Level ${currentActivity} on ${formattedDate}`;
-      monthCells.push({
-        type: "day",
-        dateString: dateStr,
-        formattedDate: formattedDate,
-        tooltipText: tooltipText,
-        monthIndex: monthIndex,
-        monthName: monthName,
-        dayOfMonth: day,
-        activityLevel: currentActivity,
-        isExam: isExam,
-        isActive: currentActivity > 0,
-      });
-    }
-    while (monthCells.length < CELLS_PER_MONTH_GRID) {
-      monthCells.push({ type: "placeholder", chainType: "placeholder_empty" });
-    }
 
-    for (let i = 0; i < monthCells.length; i++) {
-      const currentCell = monthCells[i];
-      if (currentCell.type !== "day") continue;
+      // Calculate the visual column (0-4) and row (0-6) in the 5×7 grid
+      // For simplicity: distribute days evenly across columns
+      const visualColumn = Math.floor((day - 1) / CELLS_PER_VISUAL_COLUMN);
+      const displayRow = (day - 1) % CELLS_PER_VISUAL_COLUMN;
 
-      const visualColumnInMonth = Math.floor(i / CELLS_PER_COLUMN_IN_GRID);
-      const isDownColumn = visualColumnInMonth % 2 === 0;
-      const rowInVisualColumn = i % CELLS_PER_COLUMN_IN_GRID;
+      // Calculate the index in the monthCells array
+      const cellIndex = visualColumn * CELLS_PER_VISUAL_COLUMN + displayRow;
 
-      if (currentCell.isActive) {
-        const isTopRow = rowInVisualColumn === 0;
-        const isBottomRow = rowInVisualColumn === CELLS_PER_COLUMN_IN_GRID - 1;
-        const isActualFirstCellOfGrid = i === firstDayOffset;
+      // Check if this date is active in the activity data
+      const isActive = activityData[dateString] > 0;
+      const activityLevel = activityData[dateString] || 0;
 
-        if ((isTopRow && !isActualFirstCellOfGrid) || isBottomRow) {
-          currentCell.chainType = "connecting_turn_intra_month";
-        } else {
-          currentCell.chainType = isDownColumn
-            ? "initial_snake_down"
-            : "initial_snake_up";
-        }
-      } else {
-        currentCell.chainType = "empty";
-        let prevSnakePathCellIndex = -1;
-        if (isDownColumn) {
-          if (rowInVisualColumn > 0) prevSnakePathCellIndex = i - 1;
-          else if (visualColumnInMonth > 0) prevSnakePathCellIndex = i - 1;
-        } else {
-          if (rowInVisualColumn < CELLS_PER_COLUMN_IN_GRID - 1)
-            prevSnakePathCellIndex = i + 1;
-          else if (visualColumnInMonth > 0) prevSnakePathCellIndex = i - 1;
-        }
-        if (
-          prevSnakePathCellIndex !== -1 &&
-          prevSnakePathCellIndex >= 0 &&
-          prevSnakePathCellIndex < monthCells.length &&
-          monthCells[prevSnakePathCellIndex].type === "day" &&
-          monthCells[prevSnakePathCellIndex].isActive
-        ) {
-          currentCell.chainType = "broken";
+      // Determine the chain type - THIS IS THE KEY PART TO FIX
+      let chainType = "empty";
+
+      if (isActive) {
+        // SIMPLIFIED LOGIC: By default, all active cells are initial chains
+        chainType = "initial_snake_down";
+
+        // Check if this is a top row cell (row 0) in columns 1-4
+        const isTopRow = displayRow === 0;
+
+        // Check if this is a bottom row cell (row 6) in any column
+        const isBottomRow = displayRow === CELLS_PER_VISUAL_COLUMN - 1;
+
+        // Check if this is the very first cell of the first column
+        const isActualFirstCellOfGrid = day === 1;
+
+        // Apply connecting chain type for turns only
+        if (!isActualFirstCellOfGrid && (isTopRow || isBottomRow)) {
+          // This is a turn cell - either at the top of columns 1-4 or at the bottom of any column
+          chainType = "connecting_turn_intra_month";
         }
       }
+
+      // Check if this is a selected exam date
+      const isExamDay = examDates.some(
+        (examDate) =>
+          examDate.year === year &&
+          examDate.month === monthIndex &&
+          examDate.day === day
+      );
+
+      monthCells[cellIndex] = {
+        type: "day",
+        dayOfMonth: day,
+        dateString: dateString,
+        isActive: isActive,
+        activityLevel: activityLevel,
+        chainType: chainType,
+        tooltipText: `${months[monthIndex]} ${day}, ${year}: ${
+          isActive ? `Activity level: ${activityLevel}` : "No activity"
+        }`,
+        isExamDay: isExamDay,
+      };
     }
-    calendarYear[monthName] = monthCells;
+
+    // Store the cells for this month
+    yearData[monthName] = monthCells;
   });
-  return calendarYear;
+
+  return yearData;
 };
 // --- END CALENDAR GENERATION LOGIC ---
 
@@ -544,7 +533,6 @@ const LabPage = () => {
       );
     }
 
-    // Determine if the current cell is the selected exam date
     const checkIsSelectedExamDate = (cell) => {
       if (!selectedExamDate || cell.type !== "day") return false;
       const examDateDetails = testDates.find(
@@ -575,7 +563,6 @@ const LabPage = () => {
               if (checkIsSelectedExamDate(cell)) {
                 squareClassName += " exam-day";
               }
-              // Add other day-specific classes if needed, e.g., based on cell.isActive for non-chain visuals
             }
 
             switch (cell.chainType) {
@@ -588,13 +575,12 @@ const LabPage = () => {
                 break;
               case "connecting_turn_intra_month":
                 ChainComponentToRender = ConnectingChain;
-                // Potential rotation for ConnectingChain if its SVG requires it for different turn directions
                 break;
               case "broken":
                 ChainComponentToRender = BrokenChain;
                 break;
               case "empty":
-              case "placeholder_empty": // This ensures placeholders render nothing or specific placeholder style
+              case "placeholder_empty":
                 ChainComponentToRender = null;
                 break;
               default:
