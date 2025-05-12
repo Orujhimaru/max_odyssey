@@ -310,7 +310,7 @@ export default function RadarChart({
               {/* Update gradient definitions */}
               <defs>
                 <radialGradient
-                  id="scoreGradient"
+                  id="scoreGradientMath"
                   cx="50%"
                   cy="50%"
                   r="50%"
@@ -318,24 +318,14 @@ export default function RadarChart({
                   fy="50%"
                   spreadMethod="pad"
                 >
-                  <stop
-                    offset="0%"
-                    stopColor={gradientColors.start}
-                    stopOpacity="0.5"
-                  />
-                  <stop
-                    offset="50%"
-                    stopColor={gradientColors.middle}
-                    stopOpacity="0.4"
-                  />
-                  <stop
-                    offset="100%"
-                    stopColor={gradientColors.end}
-                    stopOpacity="0.3"
-                  />
+                  <stop offset="0%" stopColor="#456bc4" stopOpacity="0.7" />
+                  <stop offset="50%" stopColor="#7a96d4" stopOpacity="0.7" />
+                  <stop offset="100%" stopColor="#5c7fd0" stopOpacity="0.6" />
                 </radialGradient>
+
+                {/* NEW Gray Gradient for the first chart */}
                 <radialGradient
-                  id="scoreGradientDark"
+                  id="scoreGradientGray"
                   cx="50%"
                   cy="50%"
                   r="50%"
@@ -343,61 +333,49 @@ export default function RadarChart({
                   fy="50%"
                   spreadMethod="pad"
                 >
-                  <stop
-                    offset="0%"
-                    stopColor={gradientColors.start}
-                    stopOpacity="0.2"
-                  />
-                  <stop
-                    offset="50%"
-                    stopColor={gradientColors.middle}
-                    stopOpacity="0.3"
-                  />
-                  <stop
-                    offset="100%"
-                    stopColor={gradientColors.end}
-                    stopOpacity="0.2"
-                  />
+                  <stop offset="0%" stopColor="#7B7B7B" stopOpacity="0.6" />
+                  <stop offset="50%" stopColor="#7B7B7B" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="#585858" stopOpacity="0.6" />
                 </radialGradient>
               </defs>
 
-              {/* Background grid (lighter color) */}
+              {/* Background grid */}
               <g>{gridLevels}</g>
               <g>{radialLines}</g>
 
-              {/* Single polygon with gradient */}
+              {/* Single polygon with NEW gray gradient */}
               <polygon
                 key={`area-1-${animationKey}`}
                 points={scorePolygonPoints}
                 className="score-area"
-                fill="url(#scoreGradient)"
+                fill="url(#scoreGradientGray)" /* Use new gray gradient */
                 style={{
                   "--duration": `${getMaxDuration()}s`,
                   "--delay": `${getMaxDuration()}s`,
                 }}
               />
 
-              {/* Blend mode layer */}
+              {/* Blend mode layer (adjust if needed, keeping gray for now) */}
               <polygon
                 key={`blend-1-${animationKey}`}
                 points={scorePolygonPoints}
                 className="score-area"
-                fill="#0FB86B"
-                fillOpacity="0.6"
+                fill="#929292" /* Darker gray for blend */
+                fillOpacity="0.6" /* Adjusted opacity */
                 style={{
                   "--duration": `${getMaxDuration()}s`,
                   "--delay": `${getMaxDuration()}s`,
-                  mixBlendMode: "color-burn",
+                  mixBlendMode: "hue",
                 }}
               />
 
-              {/* First chart polygon stroke */}
+              {/* First chart polygon stroke - Bolder Dark Gray */}
               <polygon
                 key={`stroke-1-${animationKey}`}
                 points={scorePolygonPoints}
                 fill="none"
-                stroke={gradientColors.start}
-                strokeWidth="1"
+                stroke="#6C6C6C" /* Bolder, darker gray stroke */
+                strokeWidth="1.5" /* Slightly thicker stroke */
                 className="score-area"
                 style={{
                   "--duration": "0.3s",
@@ -417,7 +395,7 @@ export default function RadarChart({
                     cy={centerY}
                     r={2.5}
                     className="score-point"
-                    fill={gradientColors.start}
+                    fill="#777777" /* Dark gray fill for points */
                     style={{
                       "--target-x": p.x,
                       "--target-y": p.y,
