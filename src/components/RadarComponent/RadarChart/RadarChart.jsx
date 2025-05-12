@@ -365,7 +365,7 @@ export default function RadarChart({
                 style={{
                   "--duration": `${getMaxDuration()}s`,
                   "--delay": `${getMaxDuration()}s`,
-                  mixBlendMode: "hue",
+                  mixBlendMode: "saturation",
                 }}
               />
 
