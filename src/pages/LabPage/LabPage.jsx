@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./LabPage.css";
 import { CalendarIcon } from "../../icons/Icons";
 import labPageIcon from "../../assets/lab_page.svg";
@@ -43,18 +43,30 @@ const yearMonths = [
   "DEC",
 ];
 
-// Define grid constants accessible by generator and renderer
-const ACTUAL_COLUMNS_PER_MONTH_DISPLAY = 5; // How many cells wide each month *visually* appears for labeling
-const CELLS_PER_WEEK_COLUMN = 7; // Rows in the continuous display, typically 7 for days of week
-
-// --- START UTILITY FUNCTIONS ---
+// --- START UTILITY FUNCTIONS (Should be outside the component) ---
 const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
-
-// Function to get the day of the week for the first day of the month
-// 0 = Monday, 1 = Tuesday, ..., 6 = Sunday
 const getFirstDayOfMonth = (year, month) => {
-  const day = new Date(year, month, 1).getDay(); // Sunday is 0, Monday is 1, etc.
-  return day === 0 ? 6 : day - 1; // Adjust so Monday is 0 and Sunday is 6
+  const day = new Date(year, month, 1).getDay();
+  return day === 0 ? 6 : day - 1;
+};
+
+// Define grid constants
+const ACTUAL_COLUMNS_IN_GRID = 5;
+const CELLS_PER_COLUMN_IN_GRID = 7;
+const CELLS_PER_MONTH_GRID = ACTUAL_COLUMNS_IN_GRID * CELLS_PER_COLUMN_IN_GRID;
+
+// Moved generateFullYearActivity outside the component
+const generateFullYearActivity = (year) => {
+  const activity = {};
+  const startDate = new Date(year, 0, 1);
+  const endDate = new Date(year, 11, 31);
+  for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const dateStr = `${year}-${month}-${day}`;
+    activity[dateStr] = Math.floor(Math.random() * 4) + 1;
+  }
+  return activity;
 };
 
 // --- END UTILITY FUNCTIONS ---
@@ -144,7 +156,7 @@ const generateYearData_OLD = () => {
 
 // const yearData_OLD = generateYearData_OLD(); // Keep old one for now if needed, or remove
 
-// --- START CALENDAR GENERATION LOGIC (Per-Month 5x7 Grids) ---
+// --- START CALENDAR GENERATION LOGIC (Per-Month 5x7 Grids with INTRA-MONTH SNAKE) ---
 const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
   const yearMonths = [
     "JAN",
@@ -160,8 +172,7 @@ const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
     "NOV",
     "DEC",
   ];
-  const calendarYear = {}; // This will store each month's 35-cell grid
-  // ACTUAL_COLUMNS_PER_MONTH_DISPLAY, CELLS_PER_WEEK_COLUMN are now accessible from higher scope
+  const calendarYear = {};
 
   const dateFormatter = new Intl.DateTimeFormat("en-US", {
     weekday: "short",
@@ -172,51 +183,31 @@ const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
 
   yearMonths.forEach((monthName, monthIndex) => {
     const numDaysInCurrentMonth = daysInMonth(year, monthIndex);
-    const firstDayOffset = getFirstDayOfMonth(year, monthIndex); // 0 for Monday, ..., 6 for Sunday
-
+    const firstDayOffset = getFirstDayOfMonth(year, monthIndex);
     const monthCells = [];
 
-    // Add leading placeholder cells for the current month's grid
-    for (
-      let placeholderIndex = 0;
-      placeholderIndex < firstDayOffset;
-      placeholderIndex++
-    ) {
+    for (let k = 0; k < firstDayOffset; k++) {
       monthCells.push({ type: "placeholder", chainType: "placeholder_empty" });
     }
 
-    // Add actual day cells for the current month
     for (let day = 1; day <= numDaysInCurrentMonth; day++) {
-      if (
-        monthCells.length >=
-        CELLS_PER_WEEK_COLUMN * ACTUAL_COLUMNS_PER_MONTH_DISPLAY
-      )
-        break; // Safety break
-
+      if (monthCells.length >= CELLS_PER_MONTH_GRID) break;
       const dateObj = new Date(year, monthIndex, day);
       const formattedDate = dateFormatter.format(dateObj);
       const dateStr = `${year}-${String(monthIndex + 1).padStart(
         2,
         "0"
       )}-${String(day).padStart(2, "0")}`;
-
       const currentActivity = activityData[dateStr] || 0;
-      // Ensure examDates are 0-indexed for month if they aren't already
       const isExam = examDates.some(
         (ed) =>
-          ed.year === String(year) &&
-          ed.month === monthIndex && // Assuming ed.month is 0-11
-          ed.day === day
+          ed.year === String(year) && ed.month === monthIndex && ed.day === day
       );
-
       let tooltipText = `No activity on ${formattedDate}`;
-      if (isExam) {
-        tooltipText = `Exam day on ${formattedDate}`;
-      } else if (currentActivity > 0) {
+      if (isExam) tooltipText = `Exam day on ${formattedDate}`;
+      else if (currentActivity > 0)
         tooltipText = `Activity Level ${currentActivity} on ${formattedDate}`;
-      }
-
-      const currentDayCell = {
+      monthCells.push({
         type: "day",
         dateString: dateStr,
         formattedDate: formattedDate,
@@ -226,76 +217,73 @@ const generateFullYearCalendar = (year, activityData = {}, examDates = []) => {
         dayOfMonth: day,
         activityLevel: currentActivity,
         isExam: isExam,
-        // isActive and chainType will be determined next
-      };
-
-      // Determine isActive for the current cell being processed
-      currentDayCell.isActive = currentDayCell.activityLevel > 0;
-
-      // Add to monthCells before trying to determine chainType based on its position
-      monthCells.push(currentDayCell);
+        isActive: currentActivity > 0,
+      });
     }
-
-    // Add trailing placeholders to ensure the grid is full (35 cells)
-    while (
-      monthCells.length <
-      CELLS_PER_WEEK_COLUMN * ACTUAL_COLUMNS_PER_MONTH_DISPLAY
-    ) {
+    while (monthCells.length < CELLS_PER_MONTH_GRID) {
       monthCells.push({ type: "placeholder", chainType: "placeholder_empty" });
     }
 
-    // Now, iterate over the fully populated monthCells (including placeholders) to set chainType
     for (let i = 0; i < monthCells.length; i++) {
       const currentCell = monthCells[i];
+      if (currentCell.type !== "day") continue;
 
-      if (currentCell.type === "placeholder") {
-        // chainType is already set for placeholders
-        continue;
-      }
-
-      // isActive is already set on currentCell if it's a day type
-      const displayRow = Math.floor(i / ACTUAL_COLUMNS_PER_MONTH_DISPLAY);
+      const visualColumnInMonth = Math.floor(i / CELLS_PER_COLUMN_IN_GRID);
+      const isDownColumn = visualColumnInMonth % 2 === 0;
+      const rowInVisualColumn = i % CELLS_PER_COLUMN_IN_GRID;
 
       if (currentCell.isActive) {
-        if (displayRow === 0) {
-          // Topmost active cell of its display column (within the 5x7 grid)
-          currentCell.chainType = "connecting_top";
-        } else if (displayRow === CELLS_PER_WEEK_COLUMN - 1) {
-          // Bottommost active cell (row 6 for 7 rows)
-          currentCell.chainType = "connecting_bottom";
+        const isTopRow = rowInVisualColumn === 0;
+        const isBottomRow = rowInVisualColumn === CELLS_PER_COLUMN_IN_GRID - 1;
+        const isActualFirstCellOfGrid = i === firstDayOffset;
+
+        if ((isTopRow && !isActualFirstCellOfGrid) || isBottomRow) {
+          currentCell.chainType = "connecting_turn_intra_month";
         } else {
-          // Active cell between top and bottom
-          currentCell.chainType = "initial_vertical_segment";
+          currentCell.chainType = isDownColumn
+            ? "initial_snake_down"
+            : "initial_snake_up";
         }
       } else {
-        // Inactive cell
         currentCell.chainType = "empty";
-        // Check if the cell directly above (in the same 5x7 grid column) was active
-        const cellAboveIndex = i - ACTUAL_COLUMNS_PER_MONTH_DISPLAY;
+        let prevSnakePathCellIndex = -1;
+        if (isDownColumn) {
+          if (rowInVisualColumn > 0) prevSnakePathCellIndex = i - 1;
+          else if (visualColumnInMonth > 0) prevSnakePathCellIndex = i - 1;
+        } else {
+          if (rowInVisualColumn < CELLS_PER_COLUMN_IN_GRID - 1)
+            prevSnakePathCellIndex = i + 1;
+          else if (visualColumnInMonth > 0) prevSnakePathCellIndex = i - 1;
+        }
         if (
-          cellAboveIndex >= 0 &&
-          monthCells[cellAboveIndex].type === "day" &&
-          monthCells[cellAboveIndex].isActive
+          prevSnakePathCellIndex !== -1 &&
+          prevSnakePathCellIndex >= 0 &&
+          prevSnakePathCellIndex < monthCells.length &&
+          monthCells[prevSnakePathCellIndex].type === "day" &&
+          monthCells[prevSnakePathCellIndex].isActive
         ) {
           currentCell.chainType = "broken";
         }
       }
     }
-
     calendarYear[monthName] = monthCells;
   });
-
   return calendarYear;
 };
 // --- END CALENDAR GENERATION LOGIC ---
 
-// --- START CONTINUOUS YEAR CALENDAR GENERATION LOGIC ---
+// --- START NEW CONTINUOUS CALENDAR GENERATION LOGIC (SNAKE PATTERN) ---
 const generateContinuousYearData = (
   year,
   activityData = {},
   examDates = []
 ) => {
   const allCells = [];
+  // ... (leading placeholder and day cell generation remains similar to previous continuous attempt)
+  // ... (ensure dateStr, monthIndex, dayOfMonth, activityLevel, isActive, isExam, tooltipText are set)
+
+  // Iterate through all days of the year
+  // (This part is from a previous correct version of continuous data generation)
   const yearMonths = [
     "JAN",
     "FEB",
@@ -310,115 +298,114 @@ const generateContinuousYearData = (
     "NOV",
     "DEC",
   ];
-
   const dateFormatter = new Intl.DateTimeFormat("en-US", {
     weekday: "short",
     year: "numeric",
     month: "short",
     day: "numeric",
   });
-
-  const dayOfWeekJan1 = getFirstDayOfMonth(year, 0); // 0 for Monday, ..., 6 for Sunday
-
-  // Adjust so Monday is 0, Sunday is 6 for week column calculation
+  const firstDateOfYear = new Date(year, 0, 1);
+  let dayOfWeekJan1 = firstDateOfYear.getDay();
   const leadingPlaceholdersCount = dayOfWeekJan1 === 0 ? 6 : dayOfWeekJan1 - 1;
-
   for (let i = 0; i < leadingPlaceholdersCount; i++) {
     allCells.push({
       type: "placeholder_leading_year",
       chainType: "placeholder_empty",
-      // Add a unique key for React rendering later
-      key: `leading-placeholder-${i}`,
     });
   }
-
-  // Iterate through all days of the year
-  for (
-    let d = new Date(year, 0, 1);
-    d <= new Date(year, 11, 31);
-    d.setDate(d.getDate() + 1)
-  ) {
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    const dateStr = `${year}-${month}-${day}`;
-    const formattedDate = dateFormatter.format(d);
-
-    const currentActivity = activityData[dateStr] || 0;
-    // Ensure examDates are 0-indexed for month if they aren't already
-    const isExam = examDates.some(
-      (ed) =>
-        ed.year === String(year) &&
-        ed.month === d.getMonth() && // Assuming ed.month is 0-11
-        ed.day === d.getDate()
-    );
-
-    let tooltipText = `No activity on ${formattedDate}`;
-    if (isExam) {
-      tooltipText = `Exam day on ${formattedDate}`;
-    } else if (currentActivity > 0) {
-      tooltipText = `Activity Level ${currentActivity} on ${formattedDate}`;
+  for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
+    const numDaysInCurrentMonth = daysInMonth(year, monthIndex);
+    for (let day = 1; day <= numDaysInCurrentMonth; day++) {
+      const dateObj = new Date(year, monthIndex, day);
+      const formattedDate = dateFormatter.format(dateObj);
+      const dateStr = `${year}-${String(monthIndex + 1).padStart(
+        2,
+        "0"
+      )}-${String(day).padStart(2, "0")}`;
+      const currentActivity = activityData[dateStr] || 0;
+      const isExam = examDates.some(
+        (ed) =>
+          ed.year === String(year) && ed.month === monthIndex && ed.day === day
+      );
+      let tooltipText = `No activity on ${formattedDate}`;
+      if (isExam) tooltipText = `Exam day on ${formattedDate}`;
+      else if (currentActivity > 0)
+        tooltipText = `Activity Level ${currentActivity} on ${formattedDate}`;
+      allCells.push({
+        type: "day",
+        dateString: dateStr,
+        formattedDate: formattedDate,
+        tooltipText: tooltipText,
+        monthIndex: monthIndex,
+        monthName: yearMonths[monthIndex],
+        dayOfMonth: day,
+        activityLevel: currentActivity,
+        isExam: isExam,
+        isActive: currentActivity > 0,
+      });
     }
-
-    const currentDayCell = {
-      type: "day",
-      dateString: dateStr,
-      formattedDate: formattedDate,
-      tooltipText: tooltipText,
-      monthIndex: d.getMonth(),
-      monthName: yearMonths[d.getMonth()],
-      dayOfMonth: d.getDate(),
-      activityLevel: currentActivity,
-      isExam: isExam,
-      isActive: currentActivity > 0,
-      // Add a unique key for React rendering later
-      key: dateStr,
-    };
-
-    allCells.push(currentDayCell);
   }
-
-  // Add trailing placeholders to make the total number of cells a multiple of CELLS_PER_WEEK_COLUMN
-  while (allCells.length % CELLS_PER_WEEK_COLUMN !== 0) {
+  while (allCells.length % CELLS_PER_VISUAL_COLUMN !== 0) {
     allCells.push({
       type: "placeholder_trailing_year",
       chainType: "placeholder_empty",
-      // Add a unique key for React rendering later
-      key: `trailing-placeholder-${allCells.length}`,
     });
   }
 
-  // Apply chain logic to the flat allCells array
+  // Apply SNAKE chain logic
   for (let i = 0; i < allCells.length; i++) {
     const currentCell = allCells[i];
+    if (currentCell.type !== "day") continue;
 
-    if (currentCell.type !== "day") {
-      // chainType already set for placeholders during creation
-      continue;
-    }
-
-    // isActive is already set
-    const displayRowInYearGrid = i % CELLS_PER_WEEK_COLUMN; // 0 for top, 6 for bottom
+    const visualColumnIndex = Math.floor(i / CELLS_PER_VISUAL_COLUMN);
+    const isDownColumn = visualColumnIndex % 2 === 0;
+    const rowInVisualColumn = i % CELLS_PER_VISUAL_COLUMN;
 
     if (currentCell.isActive) {
-      if (displayRowInYearGrid === 0) {
-        // Topmost active cell of its 7-day display column
-        currentCell.chainType = "connecting_top";
-      } else if (displayRowInYearGrid === CELLS_PER_WEEK_COLUMN - 1) {
-        // Bottommost active cell (row 6)
-        currentCell.chainType = "connecting_bottom";
-      } else {
-        // Active cell between top and bottom (rows 1-5)
-        currentCell.chainType = "initial_vertical_segment";
+      // Default to InitialChain based on column direction
+      currentCell.chainType = isDownColumn
+        ? "initial_snake_down"
+        : "initial_snake_up";
+
+      // Check for Turns (ConnectingChains)
+      // Bottom turn: end of a "down" column, or start of an "up" column at the bottom
+      if (rowInVisualColumn === CELLS_PER_VISUAL_COLUMN - 1) {
+        // Bottom row of any visual column
+        currentCell.chainType = "connecting_turn";
       }
+      // Top turn: end of an "up" column, or start of a "down" column at the top (excluding col 0 top)
+      else if (rowInVisualColumn === 0 && visualColumnIndex > 0) {
+        // Top row of any visual column (except the very first cell of all)
+        currentCell.chainType = "connecting_turn";
+      }
+      // The very first active cell of the entire year, if it is active, should be initial_snake_down.
+      // This is handled by the default if visualColumnIndex is 0 and rowInVisualColumn is 0.
     } else {
-      // Inactive day cell
+      // Inactive cell
       currentCell.chainType = "empty";
-      // Check if the cell directly above (in the continuous 7-day column) was active
-      const cellAboveIndex = i - CELLS_PER_WEEK_COLUMN;
+      let prevSnakePathCellIndex = -1;
+      if (isDownColumn) {
+        if (rowInVisualColumn > 0) prevSnakePathCellIndex = i - 1;
+        // Cell directly above in the same column
+        else if (visualColumnIndex > 0) {
+          // Top of a down column, check top of previous up column
+          prevSnakePathCellIndex = i - 1; // This is the connecting_turn from previous up column.
+        }
+      } else {
+        // Up Column
+        if (rowInVisualColumn < CELLS_PER_VISUAL_COLUMN - 1)
+          prevSnakePathCellIndex = i + 1; // Cell directly below
+        else if (visualColumnIndex > 0) {
+          // Bottom of an up column, check bottom of previous down column
+          prevSnakePathCellIndex = i - 1; // This is the connecting_turn from previous down column
+        }
+      }
+
       if (
-        cellAboveIndex >= 0 &&
-        allCells[cellAboveIndex].type === "day" &&
-        allCells[cellAboveIndex].isActive
+        prevSnakePathCellIndex !== -1 &&
+        prevSnakePathCellIndex < allCells.length &&
+        allCells[prevSnakePathCellIndex].type === "day" &&
+        allCells[prevSnakePathCellIndex].isActive
       ) {
         currentCell.chainType = "broken";
       }
@@ -426,7 +413,7 @@ const generateContinuousYearData = (
   }
   return allCells;
 };
-// --- END CONTINUOUS YEAR CALENDAR GENERATION LOGIC ---
+// --- END NEW CONTINUOUS CALENDAR GENERATION LOGIC (SNAKE PATTERN) ---
 
 const LabPage = () => {
   const [selectedYear, setSelectedYear] = useState("2025");
@@ -444,47 +431,26 @@ const LabPage = () => {
     y: 0,
   });
 
-  // --- START USING PER-MONTH CALENDAR DATA ---
-  const generateFullYearActivity = (year) => {
-    const activity = {};
-    const startDate = new Date(year, 0, 1); // January 1st
-    const endDate = new Date(year, 11, 31); // December 31st
+  const [yearCalendarData, setYearCalendarData] = useState({});
 
-    for (
-      let d = new Date(startDate);
-      d <= endDate;
-      d.setDate(d.getDate() + 1)
-    ) {
-      const month = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      const dateStr = `${year}-${month}-${day}`;
-      activity[dateStr] = Math.floor(Math.random() * 4) + 1; // Random activity level 1-4
-    }
-    return activity;
-  };
-
-  const mockActivity = generateFullYearActivity(2025);
-
-  // State for the continuous year data
-  const [allYearCellsData, setAllYearCellsData] = useState([]);
+  // Memoize mockActivity to prevent re-creation on every render unless selectedYear changes
+  const mockActivity = useMemo(() => {
+    return generateFullYearActivity(parseInt(selectedYear));
+  }, [selectedYear]);
 
   useEffect(() => {
     const correctlyFormattedExamDates = testDates.map((td) => ({
       ...td,
-      month: td.month - 1, // Adjust to 0-indexed for Date object compatibility
+      month: td.month - 1,
     }));
-
-    setAllYearCellsData(
-      generateContinuousYearData(
-        // Use the continuous year data generator
+    setYearCalendarData(
+      generateFullYearCalendar(
         parseInt(selectedYear),
         mockActivity,
         correctlyFormattedExamDates
       )
     );
-  }, [selectedYear, selectedExamDate]);
-
-  // --- END USING PER-MONTH CALENDAR DATA ---
+  }, [selectedYear, mockActivity]); // Now mockActivity is a stable dependency
 
   // Filter test dates based on selected year
   const filteredTestDates = testDates.filter(
@@ -563,94 +529,82 @@ const LabPage = () => {
   };
 
   const handleMouseMoveSquare = (e) => {
-    // Only update if tooltip is already visible to avoid unnecessary updates
     if (tooltip.visible) {
       setTooltip((prev) => ({ ...prev, x: e.clientX, y: e.clientY }));
     }
   };
 
-  // --- NEW RENDERING LOGIC FOR CONTINUOUS YEAR VIEW (Placeholder) ---
-  const renderContinuousYearGrid = () => {
-    if (!allYearCellsData || allYearCellsData.length === 0) {
-      return <p>Loading calendar data...</p>;
+  // --- Rendering logic for each month's 5x7 grid ---
+  const renderMonthColumn = (monthName, monthCells) => {
+    if (!monthCells || monthCells.length !== CELLS_PER_MONTH_GRID) {
+      return (
+        <div className="month-column error">
+          Error: Invalid data for {monthName}
+        </div>
+      );
     }
 
-    // Group cells into columns for month label placement (approximate)
-    // This is a simplified approach for placing month labels.
-    // A more robust way would be to track month changes during cell iteration.
-    const cellsPerApproximateMonthColumn =
-      ACTUAL_COLUMNS_PER_MONTH_DISPLAY * CELLS_PER_WEEK_COLUMN;
-    let currentMonthForLabel = -1;
+    // Determine if the current cell is the selected exam date
+    const checkIsSelectedExamDate = (cell) => {
+      if (!selectedExamDate || cell.type !== "day") return false;
+      const examDateDetails = testDates.find(
+        (d) => d.label === selectedExamDate
+      );
+      if (!examDateDetails) return false;
+      return (
+        cell.dateString ===
+        `${examDateDetails.year}-${String(examDateDetails.month + 1).padStart(
+          2,
+          "0"
+        )}-${String(examDateDetails.day).padStart(2, "0")}`
+      );
+    };
 
     return (
-      <div className="continuous-year-grid-container">
-        {" "}
-        {/* New CSS class needed */}
-        {allYearCellsData.map((cell, index) => {
-          let monthLabel = null;
-          if (cell.type === "day" && cell.monthIndex !== currentMonthForLabel) {
-            // Check if this cell is at the start of a visual 5-cell wide block
-            // This is an approximation for label placement.
-            const visualColumnStartInContinuousGrid =
-              index %
-              (ACTUAL_COLUMNS_PER_MONTH_DISPLAY * CELLS_PER_WEEK_COLUMN);
-            if (visualColumnStartInContinuousGrid < CELLS_PER_WEEK_COLUMN) {
-              // If in the first "week" of a 5-wide block
-              if (
-                index % ACTUAL_COLUMNS_PER_MONTH_DISPLAY === 0 ||
-                index === 0 ||
-                (allYearCellsData[index - 1] &&
-                  allYearCellsData[index - 1].type ===
-                    "placeholder_leading_year")
-              ) {
-                currentMonthForLabel = cell.monthIndex;
-                monthLabel = (
-                  <div className="continuous-month-label">
-                    {yearMonths[currentMonthForLabel]}
-                  </div>
-                );
+      <div className="month-column" key={monthName}>
+        <div className="month-label">{monthName}</div>
+        <div className="month-grid">
+          {monthCells.map((cell, index) => {
+            let ChainComponentToRender;
+            let svgClassName = "chain-svg";
+            let squareClassName = "activity-square chain-cell";
+
+            if (cell.type === "placeholder") {
+              squareClassName += " placeholder-cell";
+            } else if (cell.type === "day") {
+              if (checkIsSelectedExamDate(cell)) {
+                squareClassName += " exam-day";
               }
+              // Add other day-specific classes if needed, e.g., based on cell.isActive for non-chain visuals
             }
-          }
 
-          let ChainComponentToRender;
-          let svgClassName = "chain-svg";
+            switch (cell.chainType) {
+              case "initial_snake_down":
+                ChainComponentToRender = InitialChain;
+                break;
+              case "initial_snake_up":
+                ChainComponentToRender = InitialChain;
+                svgClassName += " rotated-180";
+                break;
+              case "connecting_turn_intra_month":
+                ChainComponentToRender = ConnectingChain;
+                // Potential rotation for ConnectingChain if its SVG requires it for different turn directions
+                break;
+              case "broken":
+                ChainComponentToRender = BrokenChain;
+                break;
+              case "empty":
+              case "placeholder_empty": // This ensures placeholders render nothing or specific placeholder style
+                ChainComponentToRender = null;
+                break;
+              default:
+                ChainComponentToRender = null;
+            }
 
-          switch (cell.chainType) {
-            case "connecting_top":
-              ChainComponentToRender = ConnectingChain;
-              break;
-            case "connecting_bottom":
-              ChainComponentToRender = ConnectingChain;
-              break;
-            case "initial_vertical_segment":
-              ChainComponentToRender = InitialChain;
-              break;
-            case "broken":
-              ChainComponentToRender = BrokenChain;
-              break;
-            case "empty":
-            case "placeholder_empty":
-              ChainComponentToRender = null;
-              break;
-            default:
-              ChainComponentToRender = null;
-          }
-
-          return (
-            <React.Fragment key={cell.key || `cell-${index}`}>
-              {monthLabel}
+            return (
               <div
-                className={`activity-square chain-cell continuous-cell ${
-                  cell.type === "placeholder_leading_year" ||
-                  cell.type === "placeholder_trailing_year"
-                    ? "placeholder-cell"
-                    : cell.isExam
-                    ? "exam-day-chain"
-                    : cell.isActive
-                    ? "active-chain"
-                    : "inactive-day"
-                }`.trim()}
+                className={squareClassName}
+                key={cell.dateString || `${monthName}-cell-${index}`}
                 title={cell.tooltipText}
                 onMouseEnter={(e) => handleMouseEnterSquare(e, cell)}
                 onMouseLeave={handleMouseLeaveSquare}
@@ -660,13 +614,13 @@ const LabPage = () => {
                   <ChainComponentToRender className={svgClassName} />
                 )}
               </div>
-            </React.Fragment>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     );
   };
-  // --- END NEW RENDERING LOGIC ---
+  // --- END MODIFIED RENDERING LOGIC ---
 
   // Function to get the score image based on percentage
   const getScoreImage = (percentage) => {
@@ -1218,12 +1172,9 @@ const LabPage = () => {
       </header>
 
       <div className="lab-content">
-        {/* Yearly Activity Calendar Section */}
         <div className="yearly-activity-section">
           <div className="yearly-activity-header">
             <h2 className="yearly-activity-title">Training Activity</h2>
-
-            {/* Year dropdown */}
             <div className="year-selector">
               <select
                 value={selectedYear}
@@ -1237,7 +1188,6 @@ const LabPage = () => {
             </div>
           </div>
 
-          {/* Exam date selection UI */}
           <div className="exam-date-selector">
             <div className="exam-date-dropdown-container">
               <label htmlFor="exam-date-select">Select your exam date:</label>
@@ -1248,28 +1198,29 @@ const LabPage = () => {
                 className="exam-date-dropdown"
               >
                 <option value="">Select a test date</option>
-                {selectedYear === "2025" && (
-                  <optgroup label="Fall 2025">
-                    {filteredTestDates
-                      .filter((date) => date.semester === "fall")
-                      .map((date) => (
-                        <option key={date.label} value={date.label}>
-                          {date.label}
-                        </option>
-                      ))}
-                  </optgroup>
-                )}
-                {selectedYear === "2026" && (
-                  <optgroup label="Spring 2026">
-                    {filteredTestDates
-                      .filter((date) => date.semester === "spring")
-                      .map((date) => (
-                        <option key={date.label} value={date.label}>
-                          {date.label}
-                        </option>
-                      ))}
-                  </optgroup>
-                )}
+                {/* Populate options based on selectedYear and testDates */}
+                {testDates
+                  .filter((date) => date.year === selectedYear)
+                  .reduce((acc, date) => {
+                    const groupLabel =
+                      date.semester === "fall"
+                        ? `Fall ${selectedYear}`
+                        : `Spring ${selectedYear}`;
+                    if (!acc.find((opt) => opt.label === groupLabel)) {
+                      acc.push({ label: groupLabel, isGroup: true });
+                    }
+                    acc.push(date);
+                    return acc;
+                  }, [])
+                  .map((item, index) =>
+                    item.isGroup ? (
+                      <optgroup key={item.label} label={item.label} />
+                    ) : (
+                      <option key={item.label} value={item.label}>
+                        {item.label}
+                      </option>
+                    )
+                  )}
               </select>
             </div>
             {selectedExamDate && (
@@ -1279,9 +1230,11 @@ const LabPage = () => {
             )}
           </div>
 
-          <div className="yearly-calendar-container">
-            {/* Render the new continuous year grid */}
-            {renderContinuousYearGrid()}
+          {/* Main calendar rendering area - iterates over yearCalendarData */}
+          <div className="yearly-calendar-container month-based-layout">
+            {Object.entries(yearCalendarData).map(([monthName, monthCells]) =>
+              renderMonthColumn(monthName, monthCells)
+            )}
           </div>
         </div>
 
