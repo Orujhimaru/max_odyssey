@@ -282,8 +282,8 @@
   filter: drop-shadow(1px 1px 20px #898989);
 }
 
-[data-theme="dark"] .math-blend {
-  mix-blend-mode: color-burn; /* Dark mode override */
+[data-theme="dark"] .math-blend-special {
+  mix-blend-mode: multiply !important; /* Dark mode override */
   filter: none;
 }
 

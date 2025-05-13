@@ -359,13 +359,13 @@ export default function RadarChart({
               <polygon
                 key={`blend-1-${animationKey}`}
                 points={scorePolygonPoints}
-                className="score-area"
+                className="score-area math-blend-special"
                 fill="#929292" /* Darker gray for blend */
                 fillOpacity="0.6" /* Adjusted opacity */
                 style={{
                   "--duration": `${getMaxDuration()}s`,
                   "--delay": `${getMaxDuration()}s`,
-                  mixBlendMode: "saturation",
+                  mixBlendMode: "hue",
                 }}
               />
 
