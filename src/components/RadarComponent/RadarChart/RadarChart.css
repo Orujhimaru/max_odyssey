@@ -275,7 +275,7 @@
   width: 50%;
   flex-shrink: 0;
 }
-
+/* save urself */
 /* Add blend mode styles */
 .math-blend {
   mix-blend-mode: color-burn; /* Light mode default */
