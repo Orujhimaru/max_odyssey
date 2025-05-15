@@ -62,8 +62,7 @@ const Tests = () => {
 
         // Check if there's an ongoing test based on is_finished flag
         const ongoingTest = processedResults.some(
-          (test) =>
-            test.user_progress && test.user_progress.is_finished === false
+          (test) => test.is_finished === false
         );
         setHasOngoingTest(ongoingTest);
         console.log(

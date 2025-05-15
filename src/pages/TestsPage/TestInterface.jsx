@@ -9,6 +9,7 @@ import rehypeKatex from "rehype-katex";
 import { formatMathExpression } from "../../utils/mathUtils";
 import QuestionTimer from "../../components/QuestionTimer/QuestionTimer";
 import ModuleTimerDisplay from "../../components/ModuleTimerDisplay/ModuleTimerDisplay";
+import CheckYourWork from "./CheckYourWork";
 
 // Debugging: Track component mount/unmount cycles and effect runs
 console.log("TestInterface.jsx module loaded");
@@ -139,6 +140,7 @@ const TestInterface = ({ testType, onExit }) => {
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [navigatorOpen, setNavigatorOpen] = useState(false);
   const [isFinishing, setIsFinishing] = useState(false);
+  const [showingReview, setShowingReview] = useState(false);
 
   // Module timer ref
   const moduleTimerRef = useRef(null);
@@ -571,7 +573,7 @@ const TestInterface = ({ testType, onExit }) => {
         // Shorter delay for loading screen animation
         setTimeout(() => {
           setLoading(false);
-        }, 1200000);
+        }, 12000);
       } catch (err) {
         console.error(`${componentId}: Error details #${thisEffectRun}:`, err);
         setError("Error loading exam: " + err.message);
@@ -579,7 +581,7 @@ const TestInterface = ({ testType, onExit }) => {
         // Shorter delay even on error
         setTimeout(() => {
           setLoading(false);
-        }, 1200000);
+        }, 12000);
       }
     };
 
@@ -944,6 +946,9 @@ const TestInterface = ({ testType, onExit }) => {
       // Reset to the first question of the new module
       setCurrentQuestion(0);
 
+      // Close the review page if open
+      setShowingReview(false);
+
       // Set the appropriate timer based on the new module
       const initialSeconds = newModuleNumber <= 2 ? 32 * 60 : 35 * 60;
       setModuleTimeSeconds(initialSeconds);
@@ -957,6 +962,9 @@ const TestInterface = ({ testType, onExit }) => {
           seconds: initialSeconds,
         })
       );
+
+      // Restart the module timer for the new module
+      startModuleTimer();
 
       console.log(
         "Current selected answers after module change:",
@@ -1047,6 +1055,34 @@ const TestInterface = ({ testType, onExit }) => {
     }
     // eslint-disable-next-line
   }, [examData, currentQuestion]);
+
+  // New function to handle review button click
+  const handleReviewClick = () => {
+    // Pause the module timer
+    pauseModuleTimer();
+
+    // Save current question timer
+    const currentTime = timerRef.current?.getCurrentTime?.();
+    if (currentTime !== undefined) {
+      const savedTimers = JSON.parse(
+        localStorage.getItem("testQuestionTimers") || "{}"
+      );
+      savedTimers[currentQuestion] = currentTime * 1000;
+      localStorage.setItem("testQuestionTimers", JSON.stringify(savedTimers));
+    }
+
+    // Show the review page
+    setShowingReview(true);
+  };
+
+  // Function to handle going back from review to questions
+  const handleBackFromReview = (questionIndex = currentQuestion) => {
+    setCurrentQuestion(questionIndex);
+    setShowingReview(false);
+
+    // Restart the module timer
+    startModuleTimer();
+  };
 
   if (loading) {
     return <LoadingScreen />;
@@ -1299,6 +1335,29 @@ const TestInterface = ({ testType, onExit }) => {
   // Use questionId as the key for selectedAnswers
   const currentQuestionAnswer = selectedAnswers[currentQuestionId] || null;
 
+  // Add this after the loading and error checks
+  if (showingReview) {
+    // Get the title for the current module
+    const moduleTitle =
+      examData.current_module <= 2
+        ? `Section 1, Module ${examData.current_module}: Reading and Writing Questions`
+        : `Section 2, Module ${examData.current_module - 2}: Math ${
+            examData.current_module === 3 ? "No Calculator" : "Calculator"
+          } Questions`;
+
+    return (
+      <CheckYourWork
+        currentModule={currentModule}
+        selectedAnswers={selectedAnswers}
+        markedQuestions={markedQuestions}
+        onGoBack={handleBackFromReview}
+        onNextModule={handleNextModule}
+        isLastModule={isLastModule}
+        moduleTitle={moduleTitle}
+      />
+    );
+  }
+
   return (
     <div className="test-interface">
       {showExitDialog && (
@@ -1514,6 +1573,13 @@ const TestInterface = ({ testType, onExit }) => {
           <i className="fas fa-chevron-left"></i> Previous
         </button>
 
+        {/* Show Review button ONLY for the last question of each module */}
+        {currentQuestion === currentModule.questions.length - 1 && (
+          <button className="nav-button review" onClick={handleReviewClick}>
+            Review <i className="fas fa-search"></i>
+          </button>
+        )}
+
         {/* Show Next button if not at last question */}
         {currentQuestion < currentModule.questions.length - 1 && (
           <button className="nav-button next" onClick={handleNextQuestion}>
@@ -1521,18 +1587,7 @@ const TestInterface = ({ testType, onExit }) => {
           </button>
         )}
 
-        {/* Show Next Module button only if at the last question and not the last module */}
-        {currentQuestion === currentModule.questions.length - 1 &&
-          !isLastModule && (
-            <button
-              className="nav-button next-module"
-              onClick={handleNextModule}
-            >
-              Next Module <i className="fas fa-arrow-right"></i>
-            </button>
-          )}
-
-        {/* Add Finish Test button */}
+        {/* Add Finish Test button - only shown on the last question of the last module */}
         {currentQuestion === currentModule.questions.length - 1 &&
           isLastModule && (
             <button
