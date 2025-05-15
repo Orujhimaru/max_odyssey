@@ -927,7 +927,7 @@ u {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   width: 90%;
-  max-width: 600px;
+  max-width: 530px;
   padding: 20px;
 }
 
@@ -988,6 +988,7 @@ u {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   gap: 8px;
+  row-gap: 12px !important;
 }
 
 .question-button {
@@ -1006,9 +1007,9 @@ u {
 }
 
 .question-button.current {
-  background-color: var(--verbal-color);
-  color: white;
-  border-color: var(--verbal-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 2px solid var(--verbal-color);
 }
 
 .question-button.answered {
@@ -1021,5 +1022,10 @@ u {
 .question-button.marked {
   background-color: #ffb74d;
   border-color: #ff9800;
+  border: none;
   color: #fff;
+}
+
+.legend-item span {
+  font-size: 14px;
 }
