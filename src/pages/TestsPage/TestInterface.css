@@ -1029,3 +1029,23 @@ u {
 .legend-item span {
   font-size: 14px;
 }
+
+.mark-question {
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.mark-question:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.mark-question.marked i {
+  color: #ffd700;
+  font-weight: 900;
+}
+
+.mark-question.marked i:before {
+  content: "\f02e"; /* Solid bookmark icon */
+}

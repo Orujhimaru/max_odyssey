@@ -202,6 +202,35 @@ const TestInterface = ({ testType, onExit }) => {
           const progress = parsedData.user_progress;
           console.log("Loading user progress:", progress);
 
+          // Load marked questions from the questions array
+          const markedQuestionsIndices = [];
+          // Get current module index (0-based)
+          const currentModuleIdx = progress.current_module - 1;
+          const moduleKey = `module_${progress.current_module}`;
+
+          // Check if this module has questions with is_marked=true
+          if (
+            progress.modules[moduleKey] &&
+            progress.modules[moduleKey].questions
+          ) {
+            progress.modules[moduleKey].questions.forEach((q, idx) => {
+              if (q.is_marked) {
+                markedQuestionsIndices.push(idx);
+                console.log(
+                  `Question at index ${idx} with ID ${q.question_id} is marked`
+                );
+              }
+            });
+          }
+
+          console.log(
+            "Loaded marked questions indices:",
+            markedQuestionsIndices
+          );
+          if (markedQuestionsIndices.length > 0) {
+            setMarkedQuestions(markedQuestionsIndices);
+          }
+
           // Load question times from user progress if available
           if (
             progress.question_times &&
@@ -718,6 +747,7 @@ const TestInterface = ({ testType, onExit }) => {
       },
       question_times: {},
       module_time_remaining: moduleTimeSeconds || 0,
+      marked_questions: markedQuestions || [],
     };
 
     // Read timer data from localStorage
@@ -733,7 +763,7 @@ const TestInterface = ({ testType, onExit }) => {
       examData.exam_data.modules.forEach((module, moduleIdx) => {
         const moduleKey = `module_${moduleIdx + 1}`;
         if (module.questions && Array.isArray(module.questions)) {
-          module.questions.forEach((q) => {
+          module.questions.forEach((q, questionIdx) => {
             const questionId = q.question_id;
             let answer = null;
             if (
@@ -744,10 +774,24 @@ const TestInterface = ({ testType, onExit }) => {
             ) {
               answer = userAnswers[questionId].selected_option;
             }
+
+            // Check if this question is marked
+            const isMarked =
+              markedQuestions.includes(questionIdx) &&
+              moduleIdx === examData.current_module - 1;
+
+            // For debugging
+            if (isMarked) {
+              console.log(
+                `Question at index ${questionIdx} (ID: ${questionId}) is being marked as true`
+              );
+            }
+
             userProgress.modules[moduleKey].questions.push({
               question_id: questionId,
               answer: answer === undefined ? null : answer,
               time_spent: timersFromStorage[questionId] || 0,
+              is_marked: isMarked,
             });
           });
         }
@@ -977,11 +1021,58 @@ const TestInterface = ({ testType, onExit }) => {
   };
 
   const toggleMarkQuestion = () => {
+    console.log("toggleMarkQuestion called, current marked:", markedQuestions);
+    console.log("Current question index:", currentQuestion);
+
+    let updatedMarkedQuestions;
     if (markedQuestions.includes(currentQuestion)) {
-      setMarkedQuestions(markedQuestions.filter((q) => q !== currentQuestion));
+      updatedMarkedQuestions = markedQuestions.filter(
+        (q) => q !== currentQuestion
+      );
+      console.log("Removing question from marked:", currentQuestion);
     } else {
-      setMarkedQuestions([...markedQuestions, currentQuestion]);
+      updatedMarkedQuestions = [...markedQuestions, currentQuestion];
+      console.log("Adding question to marked:", currentQuestion);
     }
+
+    // Update state
+    setMarkedQuestions(updatedMarkedQuestions);
+
+    // Get the current question ID for direct update
+    const currentModule =
+      examData.exam_data.modules[examData.current_module - 1];
+    const currentQ = currentModule.questions[currentQuestion];
+    const questionId = currentQ.question_id;
+    console.log(
+      `Toggling mark for question ID: ${questionId} at index: ${currentQuestion}`
+    );
+
+    // Save progress to testUserProgress
+    setTimeout(() => {
+      const userProgress = organizeUserProgress(userAnswers);
+
+      // Force update is_marked status for the current question
+      const moduleKey = `module_${examData.current_module}`;
+      if (
+        userProgress.modules[moduleKey] &&
+        userProgress.modules[moduleKey].questions
+      ) {
+        userProgress.modules[moduleKey].questions.forEach((q, idx) => {
+          if (idx === currentQuestion) {
+            q.is_marked = updatedMarkedQuestions.includes(currentQuestion);
+            console.log(
+              `Updated question ${idx} (ID: ${q.question_id}) is_marked to: ${q.is_marked}`
+            );
+          }
+        });
+      }
+
+      localStorage.setItem(
+        "testUserProgress",
+        JSON.stringify({ user_progress: userProgress })
+      );
+      console.log("Bookmark status saved to testUserProgress");
+    }, 0);
   };
 
   const toggleCrossMode = () => {
@@ -1294,12 +1385,18 @@ const TestInterface = ({ testType, onExit }) => {
                   />
                   <div
                     className={`mark-question ${
-                      markedQuestions[currentQuestion] ? "marked" : ""
+                      markedQuestions.includes(currentQuestion) ? "marked" : ""
                     }`}
                     onClick={toggleMarkQuestion}
                     title="Mark this question for review"
                   >
-                    <i className="far fa-bookmark"></i>
+                    <i
+                      className={`${
+                        markedQuestions.includes(currentQuestion)
+                          ? "fas"
+                          : "far"
+                      } fa-bookmark`}
+                    ></i>
                   </div>
                   <div
                     className={`cross-mode ${
@@ -1478,12 +1575,16 @@ const TestInterface = ({ testType, onExit }) => {
                 <QuestionTimer ref={timerRef} questionIndex={currentQuestion} />
                 <div
                   className={`mark-question ${
-                    markedQuestions[currentQuestion] ? "marked" : ""
+                    markedQuestions.includes(currentQuestion) ? "marked" : ""
                   }`}
                   onClick={toggleMarkQuestion}
                   title="Mark this question for review"
                 >
-                  <i className="far fa-bookmark"></i>
+                  <i
+                    className={`${
+                      markedQuestions.includes(currentQuestion) ? "fas" : "far"
+                    } fa-bookmark`}
+                  ></i>
                 </div>
                 <div
                   className={`cross-mode ${
