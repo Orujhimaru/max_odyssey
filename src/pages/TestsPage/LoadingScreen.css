@@ -256,6 +256,14 @@
   z-index: 2; /* Above the warrior image */
 }
 
+/* Ship spinner */
+.ship-spinner {
+  margin-top: 30px;
+  width: 70px;
+  height: 70px;
+  z-index: 2; /* Above the warrior image */
+}
+
 /* Light/dark mode specific styles for spinner */
 .light-mode .spinner {
   border-top-color: #333;
@@ -269,6 +277,102 @@
   border-left-color: rgba(245, 245, 245, 0.2);
   border-right-color: rgba(245, 245, 245, 0.2);
   border-bottom-color: rgba(245, 245, 245, 0.2);
+}
+
+.ship-spinner svg {
+  position: relative;
+  width: 70px;
+  top: -65px;
+  left: 15px;
+}
+.oar-group {
+  transform-box: fill-box;
+}
+
+.oar-1 {
+  transform-origin: 90.5px 167.5px;
+  animation-delay: 0s;
+  animation: swing 1s ease-in-out infinite alternate;
+}
+.oar-2 {
+  transform-origin: 106.5px 167.5px;
+  animation-delay: 0.2s;
+  animation: swing 1s ease-in-out infinite alternate;
+}
+.oar-3 {
+  transform-origin: 122.5px 167.5px;
+  animation-delay: 0.4s;
+  animation: swing 1s ease-in-out infinite alternate;
+}
+.oar-4 {
+  transform-origin: 138.5px 167.5px;
+  animation-delay: 0.6s;
+  animation: swing 1s ease-in-out infinite alternate;
+}
+.oar-5 {
+  transform-origin: 154.5px 167.5px;
+  animation-delay: 0.8s;
+  animation: swing 1s ease-in-out infinite alternate;
+}
+.oar-6 {
+  transform-origin: 170.5px 167.5px;
+  animation-delay: 1s;
+  animation: swing 1s ease-in-out infinite alternate;
+}
+
+@keyframes swing {
+  0% {
+    transform: rotate(-15deg);
+  }
+  100% {
+    transform: rotate(15deg);
+  }
+}
+
+.center {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 53%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.circle {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  border: 2px solid #979797;
+  border-radius: 50%;
+  overflow: hidden;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  cursor: pointer;
+}
+.wave {
+  background-color: #3f68c5;
+  position: absolute;
+  top: 110%;
+  height: 200%;
+  width: 200%;
+  border-radius: 38%;
+  left: -50%;
+  transform: rotate(360deg);
+  transition: all 10s ease;
+  animation: wave 10s linear 1 forwards;
+}
+@keyframes wave {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    top: 0%;
+    transform: rotate(1200deg);
+  }
+}
+.circle .wave {
 }
 
 @keyframes spin {
