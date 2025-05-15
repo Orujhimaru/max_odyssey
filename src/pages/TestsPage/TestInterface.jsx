@@ -798,11 +798,12 @@ const TestInterface = ({ testType, onExit }) => {
         }
       }
 
-      // Save to localStorage
+      // Save to localStorage immediately after answer selection
       localStorage.setItem(
         "testUserProgress",
         JSON.stringify({ user_progress: userProgress })
       );
+      console.log("Answer saved to localStorage:", questionId, optionId);
 
       // Debug log to verify userAnswers mapping
       console.log("[DEBUG] userAnswers before sending:", updated);
@@ -1083,6 +1084,50 @@ const TestInterface = ({ testType, onExit }) => {
     // Restart the module timer
     startModuleTimer();
   };
+
+  // Add this function near the top of the component, after state declarations
+  const saveCurrentProgress = () => {
+    if (!examData) return;
+
+    // Build user_progress with latest answers and timers
+    const userProgress = organizeUserProgress(userAnswers);
+
+    // Don't overwrite is_finished if it's already set
+    const savedProgress = localStorage.getItem("testUserProgress");
+    if (savedProgress) {
+      try {
+        const parsedData = JSON.parse(savedProgress);
+        if (parsedData.user_progress && parsedData.user_progress.is_finished) {
+          userProgress.is_finished = parsedData.user_progress.is_finished;
+        }
+      } catch (e) {
+        console.error("Error reading saved progress:", e);
+      }
+    }
+
+    // Save the current user progress to localStorage
+    localStorage.setItem(
+      "testUserProgress",
+      JSON.stringify({ user_progress: userProgress })
+    );
+    console.log("Progress saved to localStorage");
+  };
+
+  // Add an event listener for beforeunload
+  useEffect(() => {
+    // Save progress before the page unloads (refresh or close)
+    const handleBeforeUnload = () => {
+      console.log("Page is about to unload - saving progress");
+      saveCurrentProgress();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [examData, userAnswers]);
 
   if (loading) {
     return <LoadingScreen />;
@@ -1411,7 +1456,11 @@ const TestInterface = ({ testType, onExit }) => {
       </div>
 
       <div className="test-content">
-        <div className="question-area">
+        <div
+          className={`question-area ${
+            examData.current_module > 2 ? "math-module" : ""
+          }`}
+        >
           <div>
             {/* Image section */}
             <QuestionSVG svg={currentQ.svg_image} />
@@ -1576,7 +1625,7 @@ const TestInterface = ({ testType, onExit }) => {
         {/* Show Review button ONLY for the last question of each module */}
         {currentQuestion === currentModule.questions.length - 1 && (
           <button className="nav-button review" onClick={handleReviewClick}>
-            Review <i className="fas fa-search"></i>
+            Review <i className="fas fa-eye"></i>
           </button>
         )}
 

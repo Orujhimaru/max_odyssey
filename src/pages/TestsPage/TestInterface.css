@@ -878,3 +878,22 @@ u {
   background-color: #138496;
   transform: translateY(-2px);
 }
+
+/* Center math questions (modules 3 and 4) */
+.test-interface .math-module .question-text {
+  text-align: center;
+}
+
+.test-interface .math-module .images-container {
+  display: flex;
+  justify-content: center;
+}
+
+.test-interface .math-module .question-image {
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.test-interface .math-module .katex-display {
+  text-align: center !important;
+}

@@ -87,9 +87,9 @@ const LoadingScreen = () => {
 
       {/* Ship loader */}
       <div className="ship-spinner">
-        <div class="circle-center">
-          <div class="circle">
-            <div class="wave"></div>
+        <div className="circle-center">
+          <div className="circle">
+            <div className="wave"></div>
             <svg
               width="228"
               height="227"
@@ -130,55 +130,55 @@ const LoadingScreen = () => {
                 fill="#DFDFDF"
               />
 
-              <g class="oar-group ">
+              <g className="oar-group ">
                 <circle cx="90.5" cy="167.5" r="4.5" fill="#040907" />
                 <path
-                  class="oar-1"
+                  className="oar-1"
                   d="M68.5 207.5L91.5 171C90.5 171 88.3 170.7 87.5 169.5L65 205.5L63 206L53 221.5C52 226.5 57.5 227 59.5 226L69 211L68.5 207.5Z"
                   fill="#040907"
                 />
               </g>
 
-              <g class="oar-group ">
+              <g className="oar-group ">
                 <circle cx="106.5" cy="167.5" r="4.5" fill="#040907" />
                 <path
-                  class="oar-2"
+                  className="oar-2"
                   d="M84.6204 207.5L107.62 171C106.62 171 104.42 170.7 103.62 169.5L81.1204 205.5L79.1204 206L69.1204 221.5C68.1204 226.5 73.6204 227 75.6204 226L85.1204 211L84.6204 207.5Z"
                   fill="#040907"
                 />
               </g>
 
-              <g class="oar-group ">
+              <g className="oar-group ">
                 <circle cx="122.5" cy="167.5" r="4.5" fill="#040907" />
                 <path
-                  class="oar-3"
+                  className="oar-3"
                   d="M100.741 207.5L123.741 171C122.741 171 120.541 170.7 119.741 169.5L97.2407 205.5L95.2407 206L85.2408 221.5C84.2408 226.5 89.7407 227 91.7408 226L101.241 211L100.741 207.5Z"
                   fill="#040907"
                 />
               </g>
 
-              <g class="oar-group ">
+              <g className="oar-group ">
                 <circle cx="138.5" cy="167.5" r="4.5" fill="#040907" />
                 <path
-                  class="oar-4"
+                  className="oar-4"
                   d="M116.861 207.5L139.861 171C138.861 171 136.661 170.7 135.861 169.5L113.361 205.5L111.361 206L101.361 221.5C100.361 226.5 105.861 227 107.861 226L117.361 211L116.861 207.5Z"
                   fill="#040907"
                 />
               </g>
 
-              <g class="oar-group ">
+              <g className="oar-group ">
                 <circle cx="154.5" cy="167.5" r="4.5" fill="#040907" />
                 <path
-                  class="oar-5"
+                  className="oar-5"
                   d="M132.981 207.5L155.981 171C154.981 171 152.781 170.7 151.981 169.5L129.481 205.5L127.481 206L117.481 221.5C116.481 226.5 121.981 227 123.981 226L133.481 211L132.981 207.5Z"
                   fill="#040907"
                 />
               </g>
 
-              <g class="oar-group ">
+              <g className="oar-group ">
                 <circle cx="170.5" cy="167.5" r="4.5" fill="#040907" />
                 <path
-                  class="oar-6"
+                  className="oar-6"
                   d="M149.102 207.5L172.102 171C171.102 171 168.902 170.7 168.102 169.5L145.602 205.5L143.602 206L133.602 221.5C132.602 226.5 138.102 227 140.102 226L149.602 211L149.102 207.5Z"
                   fill="#040907"
                 />
