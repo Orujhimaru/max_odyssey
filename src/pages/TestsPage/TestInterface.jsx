@@ -571,7 +571,7 @@ const TestInterface = ({ testType, onExit }) => {
         // Shorter delay for loading screen animation
         setTimeout(() => {
           setLoading(false);
-        }, 12000);
+        }, 1200000);
       } catch (err) {
         console.error(`${componentId}: Error details #${thisEffectRun}:`, err);
         setError("Error loading exam: " + err.message);
@@ -579,7 +579,7 @@ const TestInterface = ({ testType, onExit }) => {
         // Shorter delay even on error
         setTimeout(() => {
           setLoading(false);
-        }, 12000);
+        }, 1200000);
       }
     };
 
