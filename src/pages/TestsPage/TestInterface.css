@@ -1016,7 +1016,7 @@ u {
   background-color: var(--verbal-color);
   color: white;
   border-color: var(--verbal-color);
-  opacity: 0.8;
+  /* opacity: 0.8; */
 }
 
 .question-button.marked {
