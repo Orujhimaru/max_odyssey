@@ -1425,8 +1425,6 @@ const TestInterface = ({ testType, onExit }) => {
         </div>
       )}
 
-      {/* Navigator overlay */}
-
       <div className="test-header">
         <div className="test-info">
           <h1>
@@ -1442,13 +1440,6 @@ const TestInterface = ({ testType, onExit }) => {
         </div>
 
         <div className="test-controls">
-          <button
-            className="navigator-toggle-button"
-            onClick={() => setNavigatorOpen(!navigatorOpen)}
-            title={navigatorOpen ? "Close navigator" : "Open navigator"}
-          >
-            <i className="fas fa-list-ol"></i>
-          </button>
           <button className="exit-button" onClick={() => handleExitClick()}>
             <i className="fas fa-times"></i> Exit
           </button>
@@ -1544,36 +1535,84 @@ const TestInterface = ({ testType, onExit }) => {
             </div>
           </div>
         </div>
+      </div>
 
-        <div
-          className={`sliding-question-navigator ${
-            navigatorOpen ? "open" : "closed"
-          }`}
+      <div className="test-footer">
+        <button
+          className="question-counter"
+          onClick={() => setNavigatorOpen(!navigatorOpen)}
         >
-          <div className="navigator-header">
+          Question {currentQuestion + 1} of {currentModule.questions.length}
+          <i
+            className={`review-dropdown fas fa-chevron-${
+              navigatorOpen ? "up" : "down"
+            }`}
+          ></i>
+        </button>
+
+        <div className="right-buttons">
+          <button
+            className="nav-button previous"
+            onClick={handlePreviousQuestion}
+            disabled={currentQuestion === 0}
+          >
+            <i className="fas fa-chevron-left"></i> Previous
+          </button>
+
+          {/* Show Review button ONLY for the last question of each module */}
+          {currentQuestion === currentModule.questions.length - 1 && (
+            <button className="nav-button review" onClick={handleReviewClick}>
+              Review <i className="fas fa-eye"></i>
+            </button>
+          )}
+
+          {/* Show Next button if not at last question */}
+          {currentQuestion < currentModule.questions.length - 1 && (
+            <button className="nav-button next" onClick={handleNextQuestion}>
+              Next <i className="fas fa-chevron-right"></i>
+            </button>
+          )}
+
+          {/* Add Finish Test button - only shown on the last question of the last module */}
+          {currentQuestion === currentModule.questions.length - 1 &&
+            isLastModule && (
+              <button
+                className="nav-button finish-test"
+                onClick={handleFinishTest}
+              >
+                Finish Test <i className="fas fa-check"></i>
+              </button>
+            )}
+        </div>
+      </div>
+
+      {/* Question Navigator Popup */}
+      {navigatorOpen && (
+        <div className="question-navigator-popup">
+          <div className="question-navigator-header">
             <h3>Question Navigator</h3>
             <button
-              className="close-navigator"
+              className="close-navigator-popup"
               onClick={() => setNavigatorOpen(false)}
             >
               <i className="fas fa-times"></i>
             </button>
-            <div className="navigator-legend">
-              <div className="legend-item">
-                <div className="legend-marker answered"></div>
-                <span>Answered</span>
-              </div>
-              <div className="legend-item">
-                <div className="legend-marker unanswered"></div>
-                <span>Unanswered</span>
-              </div>
-              <div className="legend-item">
-                <div className="legend-marker marked"></div>
-                <span>Marked</span>
-              </div>
+          </div>
+          <div className="question-navigator-legend">
+            <div className="legend-item">
+              <div className="legend-marker answered"></div>
+              <span>Answered</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-marker unanswered"></div>
+              <span>Unanswered</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-marker marked"></div>
+              <span>Marked</span>
             </div>
           </div>
-          <div className="question-buttons">
+          <div className="question-grid">
             {currentModule.questions.map((q, index) => {
               // Use question_id as key
               const qKey = q.question_id;
@@ -1611,42 +1650,7 @@ const TestInterface = ({ testType, onExit }) => {
             })}
           </div>
         </div>
-      </div>
-
-      <div className="test-footer">
-        <button
-          className="nav-button previous"
-          onClick={handlePreviousQuestion}
-          disabled={currentQuestion === 0}
-        >
-          <i className="fas fa-chevron-left"></i> Previous
-        </button>
-
-        {/* Show Review button ONLY for the last question of each module */}
-        {currentQuestion === currentModule.questions.length - 1 && (
-          <button className="nav-button review" onClick={handleReviewClick}>
-            Review <i className="fas fa-eye"></i>
-          </button>
-        )}
-
-        {/* Show Next button if not at last question */}
-        {currentQuestion < currentModule.questions.length - 1 && (
-          <button className="nav-button next" onClick={handleNextQuestion}>
-            Next <i className="fas fa-chevron-right"></i>
-          </button>
-        )}
-
-        {/* Add Finish Test button - only shown on the last question of the last module */}
-        {currentQuestion === currentModule.questions.length - 1 &&
-          isLastModule && (
-            <button
-              className="nav-button finish-test"
-              onClick={handleFinishTest}
-            >
-              Finish Test <i className="fas fa-check"></i>
-            </button>
-          )}
-      </div>
+      )}
     </div>
   );
 };
