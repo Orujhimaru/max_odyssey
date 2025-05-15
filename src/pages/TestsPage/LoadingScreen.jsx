@@ -87,7 +87,7 @@ const LoadingScreen = () => {
 
       {/* Ship loader */}
       <div className="ship-spinner">
-        <div class="center">
+        <div class="circle-center">
           <div class="circle">
             <div class="wave"></div>
             <svg
