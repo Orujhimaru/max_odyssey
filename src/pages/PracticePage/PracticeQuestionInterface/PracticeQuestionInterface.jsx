@@ -304,7 +304,7 @@ const PracticeQuestionInterface = ({
       <div className="practice-question-header">
         <div className="question-info">
           <div className="header-left">
-            <span className="question-number">#{question.id}</span>
+            <span className="practice-question-number">#{question.id}</span>
           </div>
           <div className="question-meta">
             <div className="difficulty-indicator-interface">
