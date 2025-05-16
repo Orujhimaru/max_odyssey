@@ -169,6 +169,21 @@ const TestInterface = ({ testType, onExit }) => {
     const savedTimers = localStorage.getItem("testQuestionTimers");
     const savedModuleTime = localStorage.getItem("moduleTimeRemaining");
 
+    // Check for directly saved answers (backup approach)
+    const directAnswers = localStorage.getItem("testDirectAnswers");
+    const directMarkedQuestions = localStorage.getItem(
+      "testDirectMarkedQuestions"
+    );
+
+    // Log what was found
+    console.log("Found in localStorage:", {
+      hasUserProgress: !!savedProgress,
+      hasTimers: !!savedTimers,
+      hasModuleTime: !!savedModuleTime,
+      hasDirectAnswers: !!directAnswers,
+      hasDirectMarkedQuestions: !!directMarkedQuestions,
+    });
+
     // Load saved module time if available
     if (savedModuleTime) {
       try {
@@ -291,9 +306,55 @@ const TestInterface = ({ testType, onExit }) => {
       }
     }
 
-    // If no saved progress was found, or there was an error, start with empty state
-    setSelectedAnswers({});
-    setUserAnswers({});
+    // If no saved progress was found or there was an error, check for direct answers
+    if (directAnswers) {
+      try {
+        console.log("Found directly saved answers, attempting to load");
+        const parsedAnswers = JSON.parse(directAnswers);
+        if (parsedAnswers && Object.keys(parsedAnswers).length > 0) {
+          // Load the direct answers into the state
+          setSelectedAnswers(parsedAnswers);
+
+          // Reconstruct userAnswers format
+          const reconstructed = {};
+          Object.entries(parsedAnswers).forEach(([questionId, answer]) => {
+            reconstructed[questionId] = {
+              module_index: 0, // Will get updated once exam loads
+              question_index: questionId,
+              selected_option: answer,
+            };
+          });
+          setUserAnswers(reconstructed);
+          console.log("Successfully loaded answers from direct backup");
+        }
+      } catch (e) {
+        console.error("Error loading direct answers:", e);
+      }
+    }
+
+    // Check for directly saved marked questions
+    if (directMarkedQuestions) {
+      try {
+        console.log(
+          "Found directly saved marked questions, attempting to load"
+        );
+        const parsedMarked = JSON.parse(directMarkedQuestions);
+        if (parsedMarked && Array.isArray(parsedMarked)) {
+          setMarkedQuestions(parsedMarked);
+          console.log(
+            "Successfully loaded marked questions from direct backup"
+          );
+        }
+      } catch (e) {
+        console.error("Error loading direct marked questions:", e);
+      }
+    }
+
+    // If we reach here, start with empty state
+    if (!directAnswers) {
+      setSelectedAnswers({});
+      setUserAnswers({});
+    }
   }, [componentId]);
 
   // Update debug ref when selectedAnswers changes
@@ -714,13 +775,27 @@ const TestInterface = ({ testType, onExit }) => {
 
   // Add cleanup effect to always remove timer values on unmount
   useEffect(() => {
+    // Flag to determine if we're in a continuation flow
+    const isContinuingTest = testType?.type === "continue";
+    console.log(
+      `[TestInterface] Cleanup effect created, isContinuingTest=${isContinuingTest}`
+    );
+
     return () => {
-      localStorage.removeItem("testQuestionTimers");
-      console.log(
-        "[Timer] testQuestionTimers removed from localStorage (unmount)"
-      );
+      // Only remove localStorage data if we're NOT continuing a test
+      // This prevents data loss during the transition when clicking "Continue"
+      if (!isContinuingTest) {
+        localStorage.removeItem("testQuestionTimers");
+        console.log(
+          "[Timer] testQuestionTimers removed from localStorage (unmount) - not in continue flow"
+        );
+      } else {
+        console.log(
+          "[Timer] Preserving localStorage during unmount because we're in continue flow"
+        );
+      }
     };
-  }, []);
+  }, [testType?.type]);
 
   // Handle exit button click, with optional isFinishing parameter
   const handleExitClick = () => {
@@ -899,14 +974,20 @@ const TestInterface = ({ testType, onExit }) => {
         } catch (err) {
           console.error("Error sending user_progress to backend:", err);
         }
-        // Now clear the localStorage items for this exam
-        localStorage.removeItem("testQuestionTimers");
-        localStorage.removeItem("testUserProgress");
-        localStorage.removeItem("currentExamId");
-        localStorage.removeItem("moduleTimeRemaining");
-        console.log(
-          "[Timer] testQuestionTimers removed from localStorage (exit)"
-        );
+
+        // Only clear localStorage if we're actually exiting the test by user choice
+        // This is a deliberate exit (not a component transition)
+        if (true) {
+          // Always true for clarity - this is a real exit
+          console.log("[Timer] Clearing localStorage items on actual exit");
+          localStorage.removeItem("testQuestionTimers");
+          localStorage.removeItem("testUserProgress");
+          localStorage.removeItem("currentExamId");
+          localStorage.removeItem("moduleTimeRemaining");
+          console.log(
+            "[Timer] testQuestionTimers removed from localStorage (exit)"
+          );
+        }
       }
       // Exit immediately without delay
       onExit();
@@ -1207,9 +1288,45 @@ const TestInterface = ({ testType, onExit }) => {
   // Add an event listener for beforeunload
   useEffect(() => {
     // Save progress before the page unloads (refresh or close)
-    const handleBeforeUnload = () => {
-      console.log("Page is about to unload - saving progress");
-      saveCurrentProgress();
+    const handleBeforeUnload = (event) => {
+      // This must execute synchronously to guarantee the data is saved
+      // before the page navigates away
+
+      console.log("Page is about to unload - saving progress synchronously");
+
+      // Use a more direct approach to save critical data synchronously
+      if (examData) {
+        try {
+          // 1. Build user_progress with latest answers and timers
+          const userProgress = organizeUserProgress(userAnswers);
+
+          // 2. Save it directly to localStorage
+          localStorage.setItem(
+            "testUserProgress",
+            JSON.stringify({ user_progress: userProgress })
+          );
+
+          // 3. Additionally, save the answers directly as a backup
+          localStorage.setItem(
+            "testDirectAnswers",
+            JSON.stringify(selectedAnswers)
+          );
+
+          // 4. Save marked questions directly as a backup
+          localStorage.setItem(
+            "testDirectMarkedQuestions",
+            JSON.stringify(markedQuestions)
+          );
+
+          console.log("Progress saved synchronously before unload");
+
+          // Standard behavior to show a confirmation dialog (in some browsers)
+          event.preventDefault();
+          event.returnValue = "Changes you made may not be saved.";
+        } catch (e) {
+          console.error("Error during beforeunload save:", e);
+        }
+      }
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -1218,7 +1335,7 @@ const TestInterface = ({ testType, onExit }) => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [examData, userAnswers]);
+  }, [examData, userAnswers, selectedAnswers, markedQuestions]);
 
   if (loading) {
     return <LoadingScreen />;
