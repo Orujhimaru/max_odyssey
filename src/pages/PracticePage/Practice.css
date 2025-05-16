@@ -417,9 +417,15 @@
   margin-bottom: 12px;
 }
 
+.bluebook-toggle-container {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
 .filter-row {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
 }
 
@@ -997,7 +1003,6 @@ button:focus-visible {
   background: transparent;
   border: none;
   color: var(--text-primary);
-  opacity: 0.8;
   transition: all 0.2s ease;
   background-color: var(--verbal-color);
   color: white;
@@ -1308,4 +1313,21 @@ button:focus-visible {
   color: var(--text-primary);
   font-size: 16px;
   margin-right: 12px;
+}
+.bluebook-toggle {
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  padding-block: 10px;
+  color: var(--text-primary);
+  opacity: 1;
+}
+
+[data-theme="dark"] .bluebook-toggle {
+  background-color: #1d1d1d;
+  border: 2px solid #1a1a1a;
+}
+
+.bluebook-toggle.active {
+  background-color: var(--verbal-color);
+  color: white;
 }

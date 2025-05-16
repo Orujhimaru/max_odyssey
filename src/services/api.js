@@ -132,6 +132,7 @@ export const api = {
     // Prepare query parameters
     const queryParams = new URLSearchParams();
     console.log("Filters", filters);
+    console.log("queryParams", queryParams);
     // Add required subject parameter
     if (filters.subject) {
       queryParams.append("subject", filters.subject);
@@ -151,6 +152,10 @@ export const api = {
 
     if (filters.subtopic) {
       queryParams.append("subtopic", filters.subtopic);
+    }
+
+    if (filters.is_bluebook) {
+      queryParams.append("is_bluebook", filters.is_bluebook);
     }
 
     if (filters.sort_dir) {

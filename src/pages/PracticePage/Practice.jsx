@@ -230,6 +230,7 @@ const Practice = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [solved, setHideSolved] = useState(false);
+  const [bluebookActive, setBluebookActive] = useState(false);
 
   const [filters, setFilters] = useState({
     question_text: "",
@@ -241,6 +242,7 @@ const Practice = () => {
     solved: false,
     refreshTimestamp: Date.now(), // Add this to force refresh when needed
     is_wrong_answered: false,
+    is_bluebook: 0, // Add is_bluebook filter with default value 0
     page: 1,
   });
 
@@ -562,6 +564,19 @@ const Practice = () => {
     setCurrentPage(1);
   }, [filters]);
 
+  // Handle bluebook toggle
+  const handleBluebookToggle = () => {
+    const newState = !bluebookActive;
+    setBluebookActive(newState);
+
+    // Update filters with is_bluebook value (1 for true, 0 for false)
+    setFilters((prev) => ({
+      ...prev,
+      is_bluebook: newState ? 1 : 0,
+      page: 1, // Reset to first page when changing filters
+    }));
+  };
+
   return (
     <div>
       {selectedQuestion ? (
@@ -599,6 +614,8 @@ const Practice = () => {
             showBookmarked={showBookmarked}
             handleHideSolvedChange={handleSolvedChange}
             hideSolved={solved}
+            handleBluebookToggle={handleBluebookToggle}
+            bluebookActive={bluebookActive}
           />
 
           <QuestionsHeader onSolveRateSort={handleSolveRateSort} />
@@ -651,6 +668,8 @@ const FilterControls = React.memo(
     handleSolvedChange,
     incorrect,
     handleIncorrectChange,
+    handleBluebookToggle,
+    bluebookActive,
   }) => {
     // Add state for dropdown visibility
     const [showTopicFilter, setShowTopicFilter] = useState(false);
@@ -838,37 +857,50 @@ const FilterControls = React.memo(
         <div
           className={`filter-row ${showBookmarked ? "disabled-filters" : ""}`}
         >
-          <div className="subject-toggle-container">
+          <div className="bluebook-toggle-container">
             <button
-              className={`subject-toggle ${
-                filters.subject === 1 ? "active verbal" : ""
+              className={`subject-toggle bluebook-toggle ${
+                bluebookActive ? "active" : ""
               }`}
-              onClick={() => {
-                onSubjectToggle(1);
-                setFilters((prev) => ({
-                  ...prev,
-                  topic: "",
-                  subtopic: "",
-                }));
-              }}
+              onClick={handleBluebookToggle}
+              title="Bluebook questions"
             >
-              V
+              B
             </button>
-            <button
-              className={`math subject-toggle ${
-                filters.subject === 2 ? "active math" : ""
-              }`}
-              onClick={() => {
-                onSubjectToggle(2);
-                setFilters((prev) => ({
-                  ...prev,
-                  topic: "",
-                  subtopic: "",
-                }));
-              }}
-            >
-              M
-            </button>
+            <div className="subject-toggle-container">
+              {/* Bluebook toggle button */}
+
+              <button
+                className={`subject-toggle ${
+                  filters.subject === 1 ? "active verbal" : ""
+                }`}
+                onClick={() => {
+                  onSubjectToggle(1);
+                  setFilters((prev) => ({
+                    ...prev,
+                    topic: "",
+                    subtopic: "",
+                  }));
+                }}
+              >
+                V
+              </button>
+              <button
+                className={`math subject-toggle ${
+                  filters.subject === 2 ? "active math" : ""
+                }`}
+                onClick={() => {
+                  onSubjectToggle(2);
+                  setFilters((prev) => ({
+                    ...prev,
+                    topic: "",
+                    subtopic: "",
+                  }));
+                }}
+              >
+                M
+              </button>
+            </div>
           </div>
 
           <div className="filter-dropdown">
