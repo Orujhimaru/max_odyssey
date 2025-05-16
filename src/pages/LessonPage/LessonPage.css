@@ -185,7 +185,7 @@
 
 /* Dark Theme Specific Overrides */
 [data-theme="dark"] .lesson-top-nav {
-  background-color: #1a1a1a;
+  background-color: #1c1d1f;
   border-bottom-color: #2c2c2c;
 }
 
@@ -201,7 +201,7 @@
   position: relative;
   overflow: hidden;
   color: var(--text-primary);
-  background-color: var(--bg-primary);
+  background-color: #1e2126;
 }
 
 /* Content Panel - Left Side */
