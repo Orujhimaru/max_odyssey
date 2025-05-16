@@ -506,12 +506,19 @@
 }
 
 .filter-dropdown-button {
+  display: flex;
   background-color: var(--chart-grid);
   color: var(--text-primary);
-  width: 130px;
+  width: 140px;
   font-weight: 400;
   white-space: nowrap;
+  gap: 2px;
+  align-items: center;
   /* display: flex; */
+}
+.fa-chevron-up {
+  margin-top: 1px;
+  margin-left: 6px;
 }
 
 .filter-dropdown {
@@ -824,24 +831,22 @@
   margin-left: 6px;
   margin-right: 2px;
 }
-.difficulty-indicator {
+.practice-difficulty-indicator {
   display: inline-block;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  margin-left: 6px;
-  margin-right: 2px;
-  margin-bottom: 2px;
+  margin-left: 4px;
 }
-.difficulty-indicator.easy {
+.practice-difficulty-indicator.easy {
   background-color: #4caf50;
 }
 
-.difficulty-indicator.medium {
+.practice-difficulty-indicator.medium {
   background-color: #ff9800;
 }
 
-.difficulty-indicator.hard {
+.practice-difficulty-indicator.hard {
   background-color: #f44336;
 }
 

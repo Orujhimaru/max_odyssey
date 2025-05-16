@@ -874,9 +874,15 @@ const FilterControls = React.memo(
           <div className="filter-dropdown">
             <button
               className="filter-dropdown-button"
-              onClick={() =>
-                !showBookmarked && setShowTopicFilter(!showTopicFilter)
-              }
+              onClick={() => {
+                if (!showBookmarked) {
+                  setShowTopicFilter(!showTopicFilter);
+                  // Close the difficulty dropdown if it's open
+                  if (showDifficultyFilter) {
+                    setShowDifficultyFilter(false);
+                  }
+                }
+              }}
               disabled={showBookmarked}
             >
               Topics {selectedTopics.length > 0 && `(${selectedTopics.length})`}
@@ -937,16 +943,21 @@ const FilterControls = React.memo(
           <div className="filter-dropdown">
             <button
               className="filter-dropdown-button"
-              onClick={() =>
-                !showBookmarked &&
-                setShowDifficultyFilter(!showDifficultyFilter)
-              }
+              onClick={() => {
+                if (!showBookmarked) {
+                  setShowDifficultyFilter(!showDifficultyFilter);
+                  // Close the topic dropdown if it's open
+                  if (showTopicFilter) {
+                    setShowTopicFilter(false);
+                  }
+                }
+              }}
               disabled={showBookmarked}
             >
               Difficulty
               {activeDifficulty !== null && (
                 <span
-                  className={`difficulty-indicator ${
+                  className={`practice-difficulty-indicator ${
                     activeDifficulty === 0
                       ? "easy"
                       : activeDifficulty === 1
