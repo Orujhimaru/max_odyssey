@@ -60,14 +60,19 @@ const Tests = () => {
         }
         setExamResults(processedResults);
 
-        // Check if there's an ongoing test based on is_finished flag
+        // Check if there's an ongoing test based on is_finished flag in both possible locations
         const ongoingTest = processedResults.some(
-          (test) => test.is_finished === false
+          (test) =>
+            // Check direct is_finished property
+            test.is_finished === false ||
+            // Check nested user_progress.is_finished property (for backward compatibility)
+            (test.user_progress && test.user_progress.is_finished === false)
         );
+
         setHasOngoingTest(ongoingTest);
         console.log(
-          `${componentId}: Has ongoing test (is_finished === false):`,
-          ongoingTest
+          `${componentId}: Has ongoing test: ${ongoingTest}`,
+          processedResults
         );
 
         setError(null);
@@ -288,14 +293,20 @@ const Tests = () => {
         processedResults = results.data;
       }
       setExamResults(processedResults);
-      // Re-check for ongoing test after exiting
+
+      // Check for ongoing tests in both possible locations
       const ongoingTest = processedResults.some(
-        (test) => test.user_progress && test.user_progress.is_finished === false
+        (test) =>
+          // Check direct is_finished property
+          test.is_finished === false ||
+          // Check nested user_progress.is_finished property (for backward compatibility)
+          (test.user_progress && test.user_progress.is_finished === false)
       );
+
       setHasOngoingTest(ongoingTest);
       console.log(
-        `${componentId}: Has ongoing test after exit (is_finished === false):`,
-        ongoingTest
+        `${componentId}: Has ongoing test after exit: ${ongoingTest}`,
+        processedResults
       );
     } catch (error) {
       console.error("Failed to fetch exam results after exit:", error);
@@ -328,15 +339,20 @@ const Tests = () => {
           processedResults = results.data;
         }
         setExamResults(processedResults);
-        // Re-check for ongoing test after deletion
+
+        // Re-check for ongoing test after deletion using both property paths
         const ongoingTest = processedResults.some(
           (test) =>
-            test.user_progress && test.user_progress.is_finished === false
+            // Check direct is_finished property
+            test.is_finished === false ||
+            // Check nested user_progress.is_finished property (for backward compatibility)
+            (test.user_progress && test.user_progress.is_finished === false)
         );
+
         setHasOngoingTest(ongoingTest);
         console.log(
-          `${componentId}: Has ongoing test after delete (is_finished === false):`,
-          ongoingTest
+          `${componentId}: Has ongoing test after delete: ${ongoingTest}`,
+          processedResults
         );
       } catch (error) {
         console.error("Failed to delete test:", error);
@@ -525,7 +541,11 @@ const Tests = () => {
             <i className="fas fa-plus"></i> Take a New Test
             {hasOngoingTest && (
               <span className="tooltip">
-                Complete or delete your ongoing test first
+                You already have a test in progress
+                <br />
+                <span className="tooltip-text">
+                  Complete or delete it first.
+                </span>
               </span>
             )}
           </button>

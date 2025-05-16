@@ -4,8 +4,15 @@
   position: relative;
   padding: 24px;
   background-color: var(--bg-secondary);
-  overflow-y: auto;
+  /* overflow-y: auto; */
   padding-top: 12px;
+}
+
+.new-test-button .tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 1000;
 }
 
 .tests-container {
@@ -284,7 +291,7 @@
   width: 90%;
   max-width: 700px;
   max-height: 90vh;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
 }
 
