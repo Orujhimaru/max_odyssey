@@ -858,15 +858,24 @@ const FilterControls = React.memo(
           className={`filter-row ${showBookmarked ? "disabled-filters" : ""}`}
         >
           <div className="bluebook-toggle-container">
-            <button
-              className={`subject-toggle bluebook-toggle ${
-                bluebookActive ? "active" : ""
-              }`}
-              onClick={handleBluebookToggle}
-              title="Bluebook questions"
-            >
-              B
-            </button>
+            <div className="bluebook-button-wrapper">
+              <button
+                className={`subject-toggle bluebook-toggle ${
+                  bluebookActive ? "active" : ""
+                }`}
+                onClick={handleBluebookToggle}
+                title="Bluebook questions"
+              >
+                B
+              </button>
+              <div className="bluebook-tooltip">
+                <div className="tooltip-content">
+                  Bluebook questions are official CollegeBoard questions used in
+                  official practice exams. It's advised not to practice them
+                  before completing official exams.
+                </div>
+              </div>
+            </div>
             <div className="subject-toggle-container">
               {/* Bluebook toggle button */}
 

@@ -949,7 +949,7 @@
   justify-content: space-between;
 }
 
-button {
+/* button {
   cursor: pointer;
   outline: none;
 }
@@ -964,7 +964,7 @@ button:focus:not(:focus-visible) {
 
 button:focus-visible {
   outline: none;
-}
+} */
 
 /* Bookmark button styling in question card */
 .bookmark-button {
@@ -1315,19 +1315,68 @@ button:focus-visible {
   margin-right: 12px;
 }
 .bluebook-toggle {
-  border: 2px solid var(--border-color);
+  border: 4px solid #ffffff;
   background-color: var(--bg-secondary);
-  padding-block: 10px;
+  padding-block: 8px;
   color: var(--text-primary);
   opacity: 1;
+  border-radius: 10px;
+  outline: 1px solid #e5e7eb;
 }
 
 [data-theme="dark"] .bluebook-toggle {
   background-color: #1d1d1d;
-  border: 2px solid #1a1a1a;
+  border: 4px solid #1a1a1a;
 }
 
 .bluebook-toggle.active {
-  background-color: var(--verbal-color);
+  background-color: var(--verbal-color) !important;
   color: white;
+}
+
+/* Bluebook tooltip styling */
+.bluebook-button-wrapper {
+  position: relative;
+  display: inline-block;
+  /* margin-right: 10px; */
+}
+
+.bluebook-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 125px;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  width: 250px;
+  text-align: center;
+  margin-top: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+  white-space: normal;
+}
+
+.bluebook-tooltip::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 25px;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent rgba(0, 0, 0, 0.8) transparent;
+}
+
+.bluebook-button-wrapper:hover .bluebook-tooltip {
+  opacity: 1;
+}
+
+.tooltip-content {
+  line-height: 1.4;
+  font-weight: normal;
 }
