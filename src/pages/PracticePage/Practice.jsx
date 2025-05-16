@@ -217,7 +217,31 @@ const useDebounce = (callback, delay) => {
   return debouncedFn;
 };
 
+// Add a hook to protect against rapid filter changes
+const useFilterProtection = () => {
+  const [isFilterChanging, setIsFilterChanging] = useState(false);
+
+  const protectFilterAction = useCallback(
+    (action) => {
+      if (isFilterChanging) return;
+
+      setIsFilterChanging(true);
+      action();
+
+      setTimeout(() => {
+        setIsFilterChanging(false);
+      }, 500); // 0.5 second cooldown
+    },
+    [isFilterChanging]
+  );
+
+  return { protectFilterAction, isFilterChanging };
+};
+
 const Practice = () => {
+  // Add filter protection
+  const { protectFilterAction, isFilterChanging } = useFilterProtection();
+
   const [activeFilter, setActiveFilter] = useState(null); // null, 'solved', or 'incorrect'
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [showTopicFilter, setShowTopicFilter] = useState(false);
@@ -268,11 +292,13 @@ const Practice = () => {
   // };
 
   const handleDifficultyChange = (difficultyLevel) => {
-    setFilters((prev) => ({
-      ...prev,
-      difficulty: difficultyLevel,
-      page: 1, // Reset to first page when changing filters
-    }));
+    protectFilterAction(() => {
+      setFilters((prev) => ({
+        ...prev,
+        difficulty: difficultyLevel,
+        page: 1, // Reset to first page when changing filters
+      }));
+    });
   };
 
   const handlePageChange = (newPage) => {
@@ -408,12 +434,14 @@ const Practice = () => {
 
   // Your existing difficulty button handler
   const handleDifficultyClick = (level) => {
-    // If clicking the already active difficulty, set to null (All)
-    if (activeDifficulty === level) {
-      setActiveDifficulty(null);
-    } else {
-      setActiveDifficulty(level);
-    }
+    protectFilterAction(() => {
+      // If clicking the already active difficulty, set to null (All)
+      if (activeDifficulty === level) {
+        setActiveDifficulty(null);
+      } else {
+        setActiveDifficulty(level);
+      }
+    });
   };
 
   // Add an effect to update filters when the switch changes
@@ -428,22 +456,28 @@ const Practice = () => {
 
   // Your existing switch handler
   const handleSubjectSwitch = () => {
-    setActiveFilter((prev) => (prev === "math" ? "verbal" : "math"));
+    protectFilterAction(() => {
+      setActiveFilter((prev) => (prev === "math" ? "verbal" : "math"));
+    });
   };
 
   // Add a handler for the solve rate sort button
   const handleSolveRateSort = useCallback(() => {
-    setFilters((prev) => ({
-      ...prev,
-      sort_dir: prev.sort_dir === "asc" ? "desc" : "asc",
-      page: 1,
-    }));
-  }, []);
+    protectFilterAction(() => {
+      setFilters((prev) => ({
+        ...prev,
+        sort_dir: prev.sort_dir === "asc" ? "desc" : "asc",
+        page: 1,
+      }));
+    });
+  }, [protectFilterAction]);
 
   // Add a handler for the bookmark toggle
   const handleBookmarkToggle = useCallback(() => {
-    setShowBookmarked((prev) => !prev);
-  }, []);
+    protectFilterAction(() => {
+      setShowBookmarked((prev) => !prev);
+    });
+  }, [protectFilterAction]);
 
   // Add a state to track the current question index
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -566,15 +600,17 @@ const Practice = () => {
 
   // Handle bluebook toggle
   const handleBluebookToggle = () => {
-    const newState = !bluebookActive;
-    setBluebookActive(newState);
+    protectFilterAction(() => {
+      const newState = !bluebookActive;
+      setBluebookActive(newState);
 
-    // Update filters with is_bluebook value (1 for true, 0 for false)
-    setFilters((prev) => ({
-      ...prev,
-      is_bluebook: newState ? 1 : 0,
-      page: 1, // Reset to first page when changing filters
-    }));
+      // Update filters with is_bluebook value (1 for true, 0 for false)
+      setFilters((prev) => ({
+        ...prev,
+        is_bluebook: newState ? 1 : 0,
+        page: 1, // Reset to first page when changing filters
+      }));
+    });
   };
 
   return (
@@ -616,6 +652,7 @@ const Practice = () => {
             hideSolved={solved}
             handleBluebookToggle={handleBluebookToggle}
             bluebookActive={bluebookActive}
+            isFilterChanging={isFilterChanging}
           />
 
           <QuestionsHeader onSolveRateSort={handleSolveRateSort} />
@@ -670,6 +707,7 @@ const FilterControls = React.memo(
     handleIncorrectChange,
     handleBluebookToggle,
     bluebookActive,
+    isFilterChanging,
   }) => {
     // Add state for dropdown visibility
     const [showTopicFilter, setShowTopicFilter] = useState(false);
@@ -855,16 +893,19 @@ const FilterControls = React.memo(
     return (
       <div className="practice-filters">
         <div
-          className={`filter-row ${showBookmarked ? "disabled-filters" : ""}`}
+          className={`filter-row ${showBookmarked ? "disabled-filters" : ""} ${
+            isFilterChanging ? "filter-changing" : ""
+          }`}
         >
           <div className="bluebook-toggle-container">
             <div className="bluebook-button-wrapper">
               <button
                 className={`subject-toggle bluebook-toggle ${
                   bluebookActive ? "active" : ""
-                }`}
+                } ${isFilterChanging ? "filter-changing" : ""}`}
                 onClick={handleBluebookToggle}
                 title="Bluebook questions"
+                disabled={isFilterChanging}
               >
                 B
               </button>
