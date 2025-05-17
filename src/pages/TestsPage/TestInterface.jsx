@@ -829,6 +829,14 @@ const TestInterface = ({ testType, onExit }) => {
     const timersFromStorage = JSON.parse(
       localStorage.getItem("testQuestionTimers") || "{}"
     );
+
+    // Log the timers data we're working with
+    console.log(
+      "[organizeUserProgress] Timers from storage:",
+      timersFromStorage
+    );
+
+    // Populate the question_times in user_progress
     Object.entries(timersFromStorage).forEach(([questionId, timeInMs]) => {
       userProgress.question_times[questionId] = timeInMs;
     });
@@ -855,23 +863,35 @@ const TestInterface = ({ testType, onExit }) => {
               markedQuestions.includes(questionIdx) &&
               moduleIdx === examData.current_module - 1;
 
-            // For debugging
-            if (isMarked) {
+            // Get time spent directly from timersFromStorage using question ID
+            // Ensure we get a proper millisecond value or default to 0
+            const timeSpent = parseInt(timersFromStorage[questionId]) || 0;
+
+            // For debugging time tracking
+            if (timeSpent > 0) {
               console.log(
-                `Question at index ${questionIdx} (ID: ${questionId}) is being marked as true`
+                `Question ID ${questionId} has time_spent: ${timeSpent}ms (${Math.round(
+                  timeSpent / 1000
+                )}s)`
               );
             }
 
             userProgress.modules[moduleKey].questions.push({
               question_id: questionId,
               answer: answer === undefined ? null : answer,
-              time_spent: timersFromStorage[questionId] || 0,
+              time_spent: timeSpent,
               is_marked: isMarked,
             });
           });
         }
       });
     }
+
+    // Log the full progress object for debugging
+    console.log(
+      "[organizeUserProgress] Final user_progress:",
+      JSON.stringify(userProgress, null, 2)
+    );
 
     return userProgress;
   };
@@ -1011,37 +1031,74 @@ const TestInterface = ({ testType, onExit }) => {
     if (!examData) return;
     const currentModule =
       examData.exam_data.modules[examData.current_module - 1];
-    if (!currentModule || !currentModule.questions) return;
-    if (currentQuestion < currentModule.questions.length - 1) {
-      // Save timer value before changing question
-      const currentTime = timerRef.current?.getCurrentTime?.();
+
+    // Save current question time before moving to the next question
+    const currentQuestionId =
+      currentModule?.questions[currentQuestion]?.question_id;
+    if (currentQuestionId && timerRef.current) {
+      const currentTime = timerRef.current.getCurrentTime();
       if (currentTime !== undefined) {
         const savedTimers = JSON.parse(
           localStorage.getItem("testQuestionTimers") || "{}"
         );
-        savedTimers[currentQuestion] = currentTime * 1000;
+        savedTimers[currentQuestionId] = currentTime * 1000;
         localStorage.setItem("testQuestionTimers", JSON.stringify(savedTimers));
+        console.log(
+          `Saved time for question ${currentQuestionId}: ${currentTime}s (${
+            currentTime * 1000
+          }ms)`
+        );
       }
-      setCurrentQuestion(currentQuestion + 1);
+    }
+
+    if (
+      currentModule.questions &&
+      currentModule.questions.length > 0 &&
+      currentQuestion < currentModule.questions.length - 1
+    ) {
+      setCurrentQuestion((prev) => prev + 1);
+      if (navigatorOpen) {
+        setNavigatorOpen(false);
+      }
+    } else if (
+      examData.current_module < examData.exam_data.modules.length &&
+      currentModule.questions &&
+      currentQuestion === currentModule.questions.length - 1
+    ) {
+      // Auto-move to next module if at the end of current module
+      handleNextModule();
     }
   };
 
   const handlePreviousQuestion = () => {
     if (!examData) return;
+
+    // Save current question time before moving to the previous question
     const currentModule =
       examData.exam_data.modules[examData.current_module - 1];
-    if (!currentModule || !currentModule.questions) return;
-    if (currentQuestion > 0) {
-      // Save timer value before changing question
-      const currentTime = timerRef.current?.getCurrentTime?.();
+    const currentQuestionId =
+      currentModule?.questions[currentQuestion]?.question_id;
+    if (currentQuestionId && timerRef.current) {
+      const currentTime = timerRef.current.getCurrentTime();
       if (currentTime !== undefined) {
         const savedTimers = JSON.parse(
           localStorage.getItem("testQuestionTimers") || "{}"
         );
-        savedTimers[currentQuestion] = currentTime * 1000;
+        savedTimers[currentQuestionId] = currentTime * 1000;
         localStorage.setItem("testQuestionTimers", JSON.stringify(savedTimers));
+        console.log(
+          `Saved time for question ${currentQuestionId}: ${currentTime}s (${
+            currentTime * 1000
+          }ms)`
+        );
       }
-      setCurrentQuestion(currentQuestion - 1);
+    }
+
+    if (currentQuestion > 0) {
+      setCurrentQuestion((prev) => prev - 1);
+      if (navigatorOpen) {
+        setNavigatorOpen(false);
+      }
     }
   };
 
@@ -1102,58 +1159,56 @@ const TestInterface = ({ testType, onExit }) => {
   };
 
   const toggleMarkQuestion = () => {
-    console.log("toggleMarkQuestion called, current marked:", markedQuestions);
-    console.log("Current question index:", currentQuestion);
+    if (!examData) return;
 
-    let updatedMarkedQuestions;
-    if (markedQuestions.includes(currentQuestion)) {
-      updatedMarkedQuestions = markedQuestions.filter(
-        (q) => q !== currentQuestion
-      );
-      console.log("Removing question from marked:", currentQuestion);
-    } else {
-      updatedMarkedQuestions = [...markedQuestions, currentQuestion];
-      console.log("Adding question to marked:", currentQuestion);
-    }
-
-    // Update state
-    setMarkedQuestions(updatedMarkedQuestions);
-
-    // Get the current question ID for direct update
+    // Save current question time
     const currentModule =
       examData.exam_data.modules[examData.current_module - 1];
-    const currentQ = currentModule.questions[currentQuestion];
-    const questionId = currentQ.question_id;
-    console.log(
-      `Toggling mark for question ID: ${questionId} at index: ${currentQuestion}`
-    );
+    const currentQuestionId =
+      currentModule?.questions[currentQuestion]?.question_id;
 
-    // Save progress to testUserProgress
-    setTimeout(() => {
-      const userProgress = organizeUserProgress(userAnswers);
-
-      // Force update is_marked status for the current question
-      const moduleKey = `module_${examData.current_module}`;
-      if (
-        userProgress.modules[moduleKey] &&
-        userProgress.modules[moduleKey].questions
-      ) {
-        userProgress.modules[moduleKey].questions.forEach((q, idx) => {
-          if (idx === currentQuestion) {
-            q.is_marked = updatedMarkedQuestions.includes(currentQuestion);
-            console.log(
-              `Updated question ${idx} (ID: ${q.question_id}) is_marked to: ${q.is_marked}`
-            );
-          }
-        });
+    if (currentQuestionId && timerRef.current) {
+      const currentTime = timerRef.current.getCurrentTime();
+      if (currentTime !== undefined) {
+        const savedTimers = JSON.parse(
+          localStorage.getItem("testQuestionTimers") || "{}"
+        );
+        savedTimers[currentQuestionId] = currentTime * 1000;
+        localStorage.setItem("testQuestionTimers", JSON.stringify(savedTimers));
+        console.log(
+          `Saved time for question ${currentQuestionId}: ${currentTime}s (${
+            currentTime * 1000
+          }ms)`
+        );
       }
+    }
 
-      localStorage.setItem(
-        "testUserProgress",
-        JSON.stringify({ user_progress: userProgress })
+    // Toggle marking for the current question
+    setMarkedQuestions((prev) => {
+      // Check if the question is already marked
+      const isMarked = prev.includes(currentQuestion);
+      // Create new array either adding or removing the current question
+      const newMarked = isMarked
+        ? prev.filter((idx) => idx !== currentQuestion)
+        : [...prev, currentQuestion];
+
+      // Get question_id for the current question
+      const currentQuestionId =
+        examData.exam_data.modules[examData.current_module - 1].questions[
+          currentQuestion
+        ].question_id;
+
+      console.log(
+        `Toggling mark for question ${currentQuestion} (ID: ${currentQuestionId}): ${
+          isMarked ? "unmarking" : "marking"
+        }`
       );
-      console.log("Bookmark status saved to testUserProgress");
-    }, 0);
+
+      // Save progress immediately
+      saveCurrentProgress();
+
+      return newMarked;
+    });
   };
 
   const toggleCrossMode = () => {
@@ -1204,6 +1259,45 @@ const TestInterface = ({ testType, onExit }) => {
 
     // Pause the current question timer
     pauseModuleTimer();
+
+    // Save the current question's timing data
+    if (examData) {
+      try {
+        const currentModule =
+          examData.exam_data.modules[examData.current_module - 1];
+        const currentQuestionId =
+          currentModule?.questions[currentQuestion]?.question_id;
+
+        if (currentQuestionId && timerRef.current) {
+          const currentTime = timerRef.current.getCurrentTime();
+          if (currentTime !== undefined) {
+            const savedTimers = JSON.parse(
+              localStorage.getItem("testQuestionTimers") || "{}"
+            );
+            savedTimers[currentQuestionId] = currentTime * 1000;
+            localStorage.setItem(
+              "testQuestionTimers",
+              JSON.stringify(savedTimers)
+            );
+            console.log(
+              `[Finish] Saved final time for question ${currentQuestionId}: ${currentTime}s`
+            );
+          }
+        }
+
+        // Final save of all progress
+        const userProgress = organizeUserProgress(userAnswers);
+        userProgress.is_finished = true;
+
+        localStorage.setItem(
+          "testUserProgress",
+          JSON.stringify({ user_progress: userProgress })
+        );
+        console.log("[Finish] Saved final user progress with is_finished=true");
+      } catch (e) {
+        console.error("Error saving final timing data:", e);
+      }
+    }
 
     // Set isFinishing state to true - this will be used in handleExitConfirm
     setIsFinishing(true);
@@ -1297,22 +1391,46 @@ const TestInterface = ({ testType, onExit }) => {
       // Use a more direct approach to save critical data synchronously
       if (examData) {
         try {
-          // 1. Build user_progress with latest answers and timers
+          // 1. First ensure question timers are up-to-date
+          const timersFromStorage = JSON.parse(
+            localStorage.getItem("testQuestionTimers") || "{}"
+          );
+
+          // Update the current question's timer one last time
+          if (currentQuestion !== undefined) {
+            const currentQuestionId =
+              examData.exam_data.modules[examData.current_module - 1]
+                ?.questions[currentQuestion]?.question_id;
+            if (currentQuestionId && timerRef.current) {
+              const currentTime = timerRef.current.getCurrentTime();
+              if (currentTime !== undefined) {
+                timersFromStorage[currentQuestionId] = currentTime * 1000;
+              }
+            }
+          }
+
+          // Save updated timers back to localStorage
+          localStorage.setItem(
+            "testQuestionTimers",
+            JSON.stringify(timersFromStorage)
+          );
+
+          // 2. Build user_progress with latest answers and timers
           const userProgress = organizeUserProgress(userAnswers);
 
-          // 2. Save it directly to localStorage
+          // 3. Save it directly to localStorage
           localStorage.setItem(
             "testUserProgress",
             JSON.stringify({ user_progress: userProgress })
           );
 
-          // 3. Additionally, save the answers directly as a backup
+          // 4. Additionally, save the answers directly as a backup
           localStorage.setItem(
             "testDirectAnswers",
             JSON.stringify(selectedAnswers)
           );
 
-          // 4. Save marked questions directly as a backup
+          // 5. Save marked questions directly as a backup
           localStorage.setItem(
             "testDirectMarkedQuestions",
             JSON.stringify(markedQuestions)
@@ -1335,7 +1453,13 @@ const TestInterface = ({ testType, onExit }) => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [examData, userAnswers, selectedAnswers, markedQuestions]);
+  }, [
+    examData,
+    userAnswers,
+    selectedAnswers,
+    markedQuestions,
+    currentQuestion,
+  ]);
 
   if (loading) {
     return <LoadingScreen />;

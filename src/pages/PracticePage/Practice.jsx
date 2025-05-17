@@ -747,6 +747,7 @@ const FilterControls = React.memo(
 
     // Define verbal topics with their subtopics
     const verbalTopics = {
+      princeton: [""],
       "Craft and Structure": [
         "Cross-Text Connections",
         "Text Structure and Purpose",
