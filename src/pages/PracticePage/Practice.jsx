@@ -285,10 +285,9 @@ const Practice = () => {
     difficulty: "", // Empty string means all difficulties
     topic: "",
     subtopic: "",
-    solved: false,
     hide_solved: false, // Renamed to match API expectation
+    incorrect: false, // Add incorrect filter
     refreshTimestamp: Date.now(), // Add this to force refresh when needed
-    is_wrong_answered: false,
     is_bluebook: 0, // Add is_bluebook filter with default value 0
     page: 1,
   });
@@ -367,6 +366,7 @@ const Practice = () => {
           queryFilters.is_bookmarked = 1;
         }
 
+        console.log("Fetching questions with filters:", queryFilters);
         const data = await debouncedFetchQuestions(queryFilters);
 
         setQuestions(data.questions || []);
@@ -388,10 +388,9 @@ const Practice = () => {
     fetchData();
   }, [
     filters,
-    filters.refreshTimestamp,
-    showBookmarked,
     currentPage,
     pageSize,
+    showBookmarked,
     debouncedFetchQuestions,
     navigate,
   ]);
@@ -675,7 +674,7 @@ const Practice = () => {
         setFilters((prev) => ({
           ...prev,
           hide_solved: true,
-          solved: false, // Turn off "Incorrect" filter if it's active
+          incorrect: false, // Turn off "Incorrect" filter if it's active
           page: 1,
         }));
       }
@@ -685,31 +684,49 @@ const Practice = () => {
   // Update handleFilterToggle to make it mutually exclusive with hideSolved
   const handleFilterToggle = (filter) => {
     protectFilterAction(() => {
+      console.log(
+        "Filter toggle clicked:",
+        filter,
+        "Current activeFilter:",
+        activeFilter
+      );
+
       // If clicking the active filter, deactivate it
       if (activeFilter === filter) {
+        console.log("Deactivating filter:", filter);
         setActiveFilter(null);
-        setFilters((prev) => ({
-          ...prev,
-          solved: false,
-          incorrect: false,
-          page: 1,
-        }));
+        setFilters((prev) => {
+          const newFilters = {
+            ...prev,
+            incorrect: false,
+            page: 1,
+          };
+          console.log("New filters after deactivation:", newFilters);
+          return newFilters;
+        });
       } else {
         // Activate the clicked filter, deactivate the other
+        console.log("Activating filter:", filter);
         setActiveFilter(filter);
 
         // If activating "Incorrect", turn off "Hide Solved"
         if (filter === "incorrect" && hideSolved) {
+          console.log(
+            "Turning off hide_solved because incorrect is being activated"
+          );
           setHideSolved(false);
         }
 
-        setFilters((prev) => ({
-          ...prev,
-          solved: filter === "solved",
-          incorrect: filter === "incorrect",
-          hide_solved: filter === "incorrect" ? false : prev.hide_solved, // Turn off hideSolved if incorrect is activated
-          page: 1,
-        }));
+        setFilters((prev) => {
+          const newFilters = {
+            ...prev,
+            incorrect: filter === "incorrect",
+            hide_solved: filter === "incorrect" ? false : prev.hide_solved, // Turn off hideSolved if incorrect is activated
+            page: 1,
+          };
+          console.log("New filters after activation:", newFilters);
+          return newFilters;
+        });
       }
     });
   };
@@ -751,8 +768,8 @@ const Practice = () => {
             showBookmarked={showBookmarked}
             hideSolved={hideSolved}
             handleHideSolvedChange={handleSolvedChange}
-            incorrect={showWrongAnswered}
-            handleIncorrectChange={() => setShowWrongAnswered(true)}
+            incorrect={filters.incorrect}
+            handleIncorrectChange={() => handleFilterToggle("incorrect")}
             handleBluebookToggle={handleBluebookToggle}
             bluebookActive={bluebookActive}
             isFilterChanging={isFilterChanging}

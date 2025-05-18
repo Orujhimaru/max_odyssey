@@ -148,6 +148,11 @@ export const api = {
       queryParams.append("is_bookmarked", filters.is_bookmarked);
     }
 
+    // Add incorrect parameter if present
+    if (filters.incorrect !== undefined) {
+      queryParams.append("incorrect", filters.incorrect);
+    }
+
     if (filters.sort_dir) {
       queryParams.append("sort_dir", filters.sort_dir);
     }
