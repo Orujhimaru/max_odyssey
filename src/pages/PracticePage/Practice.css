@@ -69,6 +69,8 @@
 }
 
 .filter-toggle {
+  white-space: nowrap;
+  width: 100%;
   font-weight: 400;
   display: flex;
   align-items: center;
@@ -475,7 +477,7 @@
 }
 
 .filter-toggle.active {
-  background-color: var(--verbal-color);
+  background-color: #4c6db9;
   color: white;
   border-color: var(--verbal-color);
 }
@@ -1259,15 +1261,23 @@ button:focus-visible {
   border-color: #ff5555;
 }
 
+.filter-row.down div {
+  flex: 1;
+}
+
+.filter-row.down {
+  max-width: 420px;
+}
+
 /* Add styles for the Hide Solved button */
-.filter-toggle.active[data-filter="hide-solved"] {
+/* .filter-toggle.active[data-filter="hide-solved"] {
   background-color: #5e72e4;
   border-color: #5e72e4;
 }
 
 .filter-toggle.active[data-filter="hide-solved"] i {
   color: white;
-}
+} */
 
 .topic-header {
   font-size: 14px;

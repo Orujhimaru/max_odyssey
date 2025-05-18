@@ -1157,6 +1157,8 @@ const FilterControls = React.memo(
               <i className="fas fa-times-circle"></i>
               Incorrect
             </button>
+          </div>
+          <div className="filter-toggles">
             <button
               className={`filter-toggle ${hideSolvedActive ? "active" : ""}`}
               onClick={handleHideSolvedToggle}
