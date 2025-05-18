@@ -69,6 +69,7 @@
 }
 
 .filter-toggle {
+  font-weight: 400;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -426,7 +427,7 @@
 .practice-filters {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 12px;
 }
 
@@ -1256,6 +1257,16 @@ button:focus-visible {
 .filter-toggle.active[data-filter="incorrect"] {
   background-color: #ff5555;
   border-color: #ff5555;
+}
+
+/* Add styles for the Hide Solved button */
+.filter-toggle.active[data-filter="hide-solved"] {
+  background-color: #5e72e4;
+  border-color: #5e72e4;
+}
+
+.filter-toggle.active[data-filter="hide-solved"] i {
+  color: white;
 }
 
 .topic-header {

@@ -253,7 +253,7 @@ const Practice = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [solved, setHideSolved] = useState(false);
+  const [hideSolved, setHideSolved] = useState(false);
   const [bluebookActive, setBluebookActive] = useState(false);
 
   const [filters, setFilters] = useState({
@@ -264,6 +264,7 @@ const Practice = () => {
     topic: "",
     subtopic: "",
     solved: false,
+    hide_solved: false, // Renamed to match API expectation
     refreshTimestamp: Date.now(), // Add this to force refresh when needed
     is_wrong_answered: false,
     is_bluebook: 0, // Add is_bluebook filter with default value 0
@@ -526,12 +527,13 @@ const Practice = () => {
     }
   };
 
-  // Then update the handleHideSolvedChange function to update filters
+  // Update handleSolvedChange to use the hideSolvedToggle function instead
   const handleSolvedChange = () => {
-    setHideSolved(!hideSolved);
+    const newHideSolvedState = !hideSolved;
+    setHideSolved(newHideSolvedState);
     setFilters((prev) => ({
       ...prev,
-      solved: !hideSolved,
+      hide_solved: newHideSolvedState,
       page: 1,
     }));
   };
@@ -613,6 +615,19 @@ const Practice = () => {
     });
   };
 
+  // Add handler for hide solved toggle
+  const handleHideSolvedToggle = () => {
+    protectFilterAction(() => {
+      const newHideSolvedState = !hideSolved;
+      setHideSolved(newHideSolvedState);
+      setFilters((prev) => ({
+        ...prev,
+        hide_solved: newHideSolvedState,
+        page: 1, // Reset to first page when changing filters
+      }));
+    });
+  };
+
   return (
     <div>
       {selectedQuestion ? (
@@ -648,11 +663,15 @@ const Practice = () => {
             onSolveRateSort={handleSolveRateSort}
             onBookmarkToggle={handleBookmarkToggle}
             showBookmarked={showBookmarked}
+            hideSolved={hideSolved}
             handleHideSolvedChange={handleSolvedChange}
-            hideSolved={solved}
+            incorrect={showWrongAnswered}
+            handleIncorrectChange={() => setShowWrongAnswered(true)}
             handleBluebookToggle={handleBluebookToggle}
             bluebookActive={bluebookActive}
             isFilterChanging={isFilterChanging}
+            hideSolvedActive={hideSolved}
+            handleHideSolvedToggle={handleHideSolvedToggle}
           />
 
           <QuestionsHeader onSolveRateSort={handleSolveRateSort} />
@@ -701,13 +720,15 @@ const FilterControls = React.memo(
     onSolveRateSort,
     onBookmarkToggle,
     showBookmarked,
-    solved,
-    handleSolvedChange,
+    hideSolved,
+    handleHideSolvedChange,
     incorrect,
     handleIncorrectChange,
     handleBluebookToggle,
     bluebookActive,
     isFilterChanging,
+    hideSolvedActive,
+    handleHideSolvedToggle,
   }) => {
     // Add state for dropdown visibility
     const [showTopicFilter, setShowTopicFilter] = useState(false);
@@ -1135,6 +1156,14 @@ const FilterControls = React.memo(
             >
               <i className="fas fa-times-circle"></i>
               Incorrect
+            </button>
+            <button
+              className={`filter-toggle ${hideSolvedActive ? "active" : ""}`}
+              onClick={handleHideSolvedToggle}
+              data-filter="hide-solved"
+            >
+              <i className="fas fa-eye-slash"></i>
+              Hide Solved
             </button>
           </div>
         </div>

@@ -158,6 +158,10 @@ export const api = {
       queryParams.append("is_bluebook", filters.is_bluebook);
     }
 
+    if (filters.hide_solved) {
+      queryParams.append("hide_solved", filters.hide_solved);
+    }
+
     if (filters.sort_dir) {
       queryParams.append("sort_dir", filters.sort_dir);
     }
