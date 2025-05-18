@@ -74,11 +74,24 @@
   gap: 8px;
   padding: 8px 16px;
   border-radius: 8px;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--chart-grid);
+  background-color: #454545;
+  border: 1px solid #575757;
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+.filter-dropdown-button {
+  background-color: #454545 !important;
+  border: 1px solid #575757;
+}
+[data-theme="light"] .filter-dropdown-button {
+  background-color: #ffffff !important;
+  border-color: #e4e1e1;
+}
+[data-theme="light"] .filter-toggle {
+  background-color: #ffffff;
+  border-color: #e4e1e1;
 }
 
 .filter-toggle i {
@@ -413,7 +426,7 @@
 .practice-filters {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   margin-bottom: 12px;
 }
 
