@@ -77,25 +77,37 @@ const QuestionsSection = React.memo(
           // Check if the question is correctly solved
           const isCorrectlySolved = (() => {
             // First check if the question has userState from our state management
-            if (
-              question.userState?.isSolved &&
-              !question.userState?.isIncorrect
-            ) {
+            if (question.userState?.isSolved) {
               return true;
             }
-            // Then check if the backend says it's solved and not incorrect
-            if (question.is_solved && !question.incorrect) {
+
+            // Check if the question is marked as solved by the backend
+            // Only check if is_solved is true, regardless of incorrect property
+            if (question.is_solved === true) {
               return true;
             }
-            // Finally check localStorage
-            const userQuestionStates = JSON.parse(
-              localStorage.getItem("userQuestionStates") || "[]"
-            );
-            const existingState = userQuestionStates.find(
-              (q) => q.questionId === question.id
-            );
-            return existingState?.isSolved && !existingState?.isIncorrect;
+
+            // Finally check localStorage for user progress
+            try {
+              const userQuestionStates = JSON.parse(
+                localStorage.getItem("userQuestionStates") || "[]"
+              );
+              const existingState = userQuestionStates.find(
+                (q) => q.questionId === question.id
+              );
+              return existingState?.isSolved === true;
+            } catch (e) {
+              console.error("Error parsing userQuestionStates:", e);
+              return false;
+            }
           })();
+
+          console.log(`Question ${question.id} solved status:`, {
+            id: question.id,
+            is_solved: question.is_solved,
+            incorrect: question.incorrect,
+            isCorrectlySolved: isCorrectlySolved,
+          });
 
           return (
             <div
@@ -105,8 +117,18 @@ const QuestionsSection = React.memo(
             >
               <div className="question-left">
                 {isCorrectlySolved ? (
-                  <span className="solved-check">
-                    <i className="fas fa-check-circle"></i>
+                  <span
+                    className={`solved-check ${
+                      question.incorrect === true ? "incorrect" : "correct"
+                    }`}
+                  >
+                    <i
+                      className={`fas ${
+                        question.incorrect === true
+                          ? "fa-times-circle"
+                          : "fa-check-circle"
+                      }`}
+                    ></i>
                   </span>
                 ) : (
                   <span className="question-number">#{index + 1}</span>
@@ -486,6 +508,10 @@ const Practice = () => {
           is_bookmarked: 1,
           page: 1,
         }));
+
+        // Reset Incorrect and Hide Solved when enabling Bookmarks
+        setActiveFilter(null);
+        setHideSolved(false);
       } else {
         setFilters((prev) => ({
           ...prev,
@@ -634,13 +660,57 @@ const Practice = () => {
   // Add handler for hide solved toggle
   const handleHideSolvedToggle = () => {
     protectFilterAction(() => {
-      const newHideSolvedState = !hideSolved;
-      setHideSolved(newHideSolvedState);
-      setFilters((prev) => ({
-        ...prev,
-        hide_solved: newHideSolvedState,
-        page: 1, // Reset to first page when changing filters
-      }));
+      // If already active, turn it off
+      if (hideSolved) {
+        setHideSolved(false);
+        setFilters((prev) => ({
+          ...prev,
+          hide_solved: false,
+          page: 1,
+        }));
+      } else {
+        // Turn it on and turn off "Incorrect" filter if it's active
+        setHideSolved(true);
+        setActiveFilter(null); // Turn off "Incorrect" filter if it's active
+        setFilters((prev) => ({
+          ...prev,
+          hide_solved: true,
+          solved: false, // Turn off "Incorrect" filter if it's active
+          page: 1,
+        }));
+      }
+    });
+  };
+
+  // Update handleFilterToggle to make it mutually exclusive with hideSolved
+  const handleFilterToggle = (filter) => {
+    protectFilterAction(() => {
+      // If clicking the active filter, deactivate it
+      if (activeFilter === filter) {
+        setActiveFilter(null);
+        setFilters((prev) => ({
+          ...prev,
+          solved: false,
+          incorrect: false,
+          page: 1,
+        }));
+      } else {
+        // Activate the clicked filter, deactivate the other
+        setActiveFilter(filter);
+
+        // If activating "Incorrect", turn off "Hide Solved"
+        if (filter === "incorrect" && hideSolved) {
+          setHideSolved(false);
+        }
+
+        setFilters((prev) => ({
+          ...prev,
+          solved: filter === "solved",
+          incorrect: filter === "incorrect",
+          hide_solved: filter === "incorrect" ? false : prev.hide_solved, // Turn off hideSolved if incorrect is activated
+          page: 1,
+        }));
+      }
     });
   };
 
@@ -688,6 +758,7 @@ const Practice = () => {
             isFilterChanging={isFilterChanging}
             hideSolvedActive={hideSolved}
             handleHideSolvedToggle={handleHideSolvedToggle}
+            handleFilterToggle={handleFilterToggle}
           />
 
           <QuestionsHeader onSolveRateSort={handleSolveRateSort} />
@@ -745,6 +816,7 @@ const FilterControls = React.memo(
     isFilterChanging,
     hideSolvedActive,
     handleHideSolvedToggle,
+    handleFilterToggle,
   }) => {
     // Add state for dropdown visibility
     const [showTopicFilter, setShowTopicFilter] = useState(false);
@@ -784,15 +856,13 @@ const FilterControls = React.memo(
 
     // Define verbal topics with their subtopics
     const verbalTopics = {
-      princeton: [""],
       "Craft and Structure": [
-        "Cross-Text Connections",
-        "Text Structure and Purpose",
         "Words in Context",
+        "Text Structure and Purpose",
+        "Cross-Text Connections",
       ],
-      "Expression of Ideas": ["Rhetorical Synthesis", "Transitions"],
       "Information and Ideas": [
-        "Central Ideas and Details",
+        "Central Idea and Details",
         "Command of Evidence",
         "Inferences",
       ],
@@ -800,37 +870,29 @@ const FilterControls = React.memo(
         "Boundaries",
         "Form, Structure, and Sense",
       ],
+      "Expression of Ideas": ["Rhetorical Synthesis", "Transitions"],
     };
 
+    // Define a toggleTopic function to handle topic and subtopic selection
     const toggleTopic = (topic, subtopic = null) => {
       let newSelectedTopics = [];
-      let selectedMainTopic = null;
+      let selectedMainTopic = "";
 
+      // Check if the topic or subtopic already exists in selectedTopics
       if (subtopic) {
-        // If clicking a subtopic
-        // Find which main topic this subtopic belongs to
-        const topicsToSearch =
-          filters.subject === 1 ? mathTopics : verbalTopics;
-        for (const [mainTopic, subtopics] of Object.entries(topicsToSearch)) {
-          if (subtopics.includes(subtopic)) {
-            selectedMainTopic = mainTopic;
-            break;
-          }
-        }
+        // If a subtopic was provided, toggle just that subtopic
+        const topicKey = `${topic}:${subtopic}`;
 
-        if (!selectedMainTopic) {
-          console.error(`Subtopic "${subtopic}" not found in any topic`);
-          return;
-        }
+        // Check if this specific subtopic is already selected
+        const isSelected = selectedTopics.includes(topicKey);
 
-        const topicKey = `${selectedMainTopic}:${subtopic}`;
-
-        // If this subtopic is already selected, deselect it
-        if (selectedTopics.includes(topicKey)) {
-          newSelectedTopics = [];
+        if (isSelected) {
+          // If already selected, remove it
+          newSelectedTopics = selectedTopics.filter((t) => t !== topicKey);
         } else {
-          // Otherwise, select only this subtopic
-          newSelectedTopics = [topicKey];
+          // If not selected, add it
+          newSelectedTopics = [...selectedTopics, topicKey];
+          selectedMainTopic = topic;
         }
       } else {
         // If clicking a main topic
@@ -903,28 +965,6 @@ const FilterControls = React.memo(
         onSolveRateSort();
       } else {
         console.error("onSolveRateSort function is not available");
-      }
-    };
-
-    const handleFilterToggle = (filter) => {
-      // If clicking the active filter, deactivate it
-      if (activeFilter === filter) {
-        setActiveFilter(null);
-        setFilters((prev) => ({
-          ...prev,
-          solved: false,
-          incorrect: false,
-          page: 1,
-        }));
-      } else {
-        // Activate the clicked filter, deactivate the other
-        setActiveFilter(filter);
-        setFilters((prev) => ({
-          ...prev,
-          solved: filter === "solved",
-          incorrect: filter === "incorrect",
-          page: 1,
-        }));
       }
     };
 
@@ -1151,34 +1191,24 @@ const FilterControls = React.memo(
             >
               <i className="fas fa-bookmark"></i> Bookmarked
             </button>
-          </div>{" "}
+          </div>
           <div className="filter-toggles">
-            {/* <button
-              className={`filter-toggle ${
-                activeFilter === "solved" ? "active" : ""
-              }`}
-              onClick={() => handleFilterToggle("solved")}
-              data-filter="solved"
-            >
-              <i className="fas fa-check-circle"></i>
-              Show solved
-            </button> */}
             <button
               className={`filter-toggle ${
                 activeFilter === "incorrect" ? "active" : ""
               }`}
               onClick={() => handleFilterToggle("incorrect")}
               data-filter="incorrect"
+              disabled={showBookmarked || isFilterChanging}
             >
               <i className="fas fa-times-circle"></i>
               Incorrect
             </button>
-          </div>
-          <div className="filter-toggles">
             <button
               className={`filter-toggle ${hideSolvedActive ? "active" : ""}`}
               onClick={handleHideSolvedToggle}
               data-filter="hide-solved"
+              disabled={showBookmarked || isFilterChanging}
             >
               <i className="fas fa-eye-slash"></i>
               Hide Solved

@@ -1330,8 +1330,15 @@ button:focus-visible {
   width: 40px;
   height: 40px;
   font-size: 20px;
-  color: #4caf50;
   margin-right: 4px;
+}
+
+.solved-check.correct {
+  color: #4caf50; /* Green color for correct answers */
+}
+
+.solved-check.incorrect {
+  color: #f44336; /* Red color for incorrect answers */
 }
 
 /* Keep the existing question-number styling for reference */
@@ -1415,4 +1422,24 @@ button:focus-visible {
 .tooltip-content {
   line-height: 1.4;
   font-weight: normal;
+}
+
+.filter-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.filter-toggle:disabled:hover {
+  transform: none;
+  background-color: #454545;
+  border-color: #575757;
+}
+
+[data-theme="light"] .filter-toggle:disabled:hover {
+  background-color: #ffffff;
+  border-color: #e4e1e1;
+}
+
+.filter-row.down div {
+  flex: 1;
 }
