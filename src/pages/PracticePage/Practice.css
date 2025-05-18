@@ -732,7 +732,7 @@
 }
 
 .header-number {
-  width: 50px;
+  width: 45px;
 }
 
 .header-type {
@@ -1297,7 +1297,7 @@ button:focus-visible {
   height: 40px;
   font-size: 20px;
   color: #4caf50;
-  margin-right: 12px;
+  margin-right: 4px;
 }
 
 /* Keep the existing question-number styling for reference */
@@ -1312,7 +1312,7 @@ button:focus-visible {
   font-weight: 500;
   color: var(--text-primary);
   font-size: 16px;
-  margin-right: 12px;
+  margin-right: 4px;
 }
 .bluebook-toggle {
   border: 4px solid #ffffff;
