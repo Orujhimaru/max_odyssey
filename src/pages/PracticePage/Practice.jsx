@@ -333,20 +333,19 @@ const Practice = () => {
         setLoading(true);
         setError(null);
 
-        let data;
+        // Always use filtered questions API with appropriate filters
+        const queryFilters = {
+          ...filters,
+          page: currentPage,
+          page_size: pageSize,
+        };
+
+        // Add is_bookmarked filter when showBookmarked is true
         if (showBookmarked) {
-          data = await api.getBookmarkedQuestions(
-            filters.sort_dir,
-            currentPage,
-            pageSize
-          );
-        } else {
-          data = await debouncedFetchQuestions({
-            ...filters,
-            page: currentPage,
-            page_size: pageSize,
-          });
+          queryFilters.is_bookmarked = 1;
         }
+
+        const data = await debouncedFetchQuestions(queryFilters);
 
         setQuestions(data.questions || []);
 
@@ -476,9 +475,26 @@ const Practice = () => {
   // Add a handler for the bookmark toggle
   const handleBookmarkToggle = useCallback(() => {
     protectFilterAction(() => {
-      setShowBookmarked((prev) => !prev);
+      const newBookmarkedState = !showBookmarked;
+      setShowBookmarked(newBookmarkedState);
+
+      // When toggling bookmark filter, we should reset other filters
+      // since we're switching to a different view
+      if (newBookmarkedState) {
+        setFilters((prev) => ({
+          ...prev,
+          is_bookmarked: 1,
+          page: 1,
+        }));
+      } else {
+        setFilters((prev) => ({
+          ...prev,
+          is_bookmarked: 0,
+          page: 1,
+        }));
+      }
     });
-  }, [protectFilterAction]);
+  }, [protectFilterAction, showBookmarked]);
 
   // Add a state to track the current question index
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);

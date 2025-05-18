@@ -74,36 +74,17 @@ export const api = {
   },
 
   // Get bookmarked questions
-  getBookmarkedQuestions: async (sortDir = "asc", page = 1, pageSize = 20) => {
-    // Build query parameters properly
-    const queryParams = new URLSearchParams();
-
-    // Add sort direction parameter
-    queryParams.append("sort_dir", sortDir);
-
-    // Add pagination parameters
-    queryParams.append("page", page);
-    queryParams.append("page_size", pageSize);
-
-    // Create the URL with query parameters
-    const url = `/bookmarks?${queryParams.toString()}`;
-    console.log("Making bookmarked questions request to:", url);
-
-    // Make the request using the existing request method
-    const response = await api.request(url);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(
-        `Failed to fetch bookmarked questions: ${response.status} - ${errorText}`
-      );
-      throw new Error(
-        `Failed to fetch bookmarked questions: ${response.status}`
-      );
-    }
-
-    return response.json();
-  },
+  // getBookmarkedQuestions: async (sortDir = "asc", page = 1, pageSize = 20) => {
+  //   // Use getFilteredQuestions with is_bookmarked flag
+  //   console.log("Using getFilteredQuestions with is_bookmarked flag");
+  //   return api.getFilteredQuestions({
+  //     sort_dir: sortDir,
+  //     page: page,
+  //     page_size: pageSize,
+  //     is_bookmarked: 1,
+  //     subject: 1, // Default to subject 1 since it's required
+  //   });
+  // },
 
   // Toggle bookmark
   toggleBookmark: async (questionId) => {
@@ -160,6 +141,11 @@ export const api = {
 
     if (filters.hide_solved) {
       queryParams.append("hide_solved", filters.hide_solved);
+    }
+
+    // Add is_bookmarked parameter if present
+    if (filters.is_bookmarked) {
+      queryParams.append("is_bookmarked", filters.is_bookmarked);
     }
 
     if (filters.sort_dir) {
