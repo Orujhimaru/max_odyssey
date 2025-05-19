@@ -7,7 +7,7 @@ const Logo = () => {
         src={Max}
         alt="Logo"
         style={{
-          width: "52px",
+          width: "50px",
         }}
       />
     </div>
