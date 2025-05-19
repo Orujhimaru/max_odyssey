@@ -431,6 +431,14 @@
   flex-direction: column;
   gap: 10px;
   margin-bottom: 12px;
+  width: fit-content;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #efefef;
+}
+
+[data-theme="dark"] .practice-filters {
+  background-color: #202020;
 }
 
 .bluebook-toggle-container {

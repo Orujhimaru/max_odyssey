@@ -1199,7 +1199,6 @@ const FilterControls = React.memo(
             )}
           </div>
         </div>
-
         <div className="filter-row down">
           <div className="filter-toggles">
             <button
