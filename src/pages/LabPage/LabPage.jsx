@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
   Area,
+  AreaChart,
 } from "recharts";
 
 // Import score SVGs
@@ -246,8 +247,7 @@ const TimingLineGraph = () => (
   <div
     style={{
       width: "100%",
-      maxWidth: 1200,
-      margin: "32px auto",
+      margin: "32px 0",
       background: "#23272f",
       borderRadius: 18,
       padding: 32,
@@ -259,8 +259,8 @@ const TimingLineGraph = () => (
       Timing Across Verbal Questions
     </h2>
     <div style={{ background: "#f7f7fa", borderRadius: 12, padding: 16 }}>
-      <ResponsiveContainer width="100%" height={300} minWidth={1000}>
-        <LineChart
+      <ResponsiveContainer width="100%" height={300}>
+        <AreaChart
           data={chartData}
           margin={{ left: 40, right: 20, top: 20, bottom: 20 }}
         >
@@ -281,23 +281,23 @@ const TimingLineGraph = () => (
             dataKey="seconds"
             stroke={false}
             fill="#23272f"
-            fillOpacity={0.7}
+            fillOpacity={0.18}
             baseValue={0}
           />
           <Line
             type="monotone"
             dataKey="seconds"
-            stroke="#456bc4"
-            strokeWidth={3}
+            stroke="#3fa7ff"
+            strokeWidth={2}
             dot={<InvisibleDot />}
             activeDot={{
               r: 8,
               fill: "#fff",
-              stroke: "#456bc4",
+              stroke: "#3fa7ff",
               strokeWidth: 3,
             }}
           />
-        </LineChart>
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   </div>

@@ -20,15 +20,15 @@
   overflow: hidden;
 }
 
-.recharts-cartesian-axis-ticks {
+.score-column-container .recharts-cartesian-axis-ticks {
   margin-top: 5px;
 }
 
-.recharts-cartesian-grid-horizontal line:last-of-type {
+.score-column-container .recharts-cartesian-grid-horizontal line:last-of-type {
   stroke-width: 2px;
 }
 
-.recharts-cartesian-grid-horizontal line {
+.score-column-container .recharts-cartesian-grid-horizontal line {
   stroke: var(--chart-grid);
 }
 
@@ -67,7 +67,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   background-color: transparent;
 }
 
-.recharts-layer.recharts-bar {
+.score-column-container .recharts-layer.recharts-bar {
   cursor: pointer;
 }
 
@@ -117,7 +117,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   height: 100%;
 }
 
-.recharts-responsive-container {
+.score-column-container.recharts-responsive-container {
   position: relative;
   /* top: 24px; */
   /* margin-top: auto; */
@@ -324,7 +324,7 @@ tspan {
   .chart-container {
     flex-direction: column;
   }
-  .recharts-responsive-container {
+  .score-column-container .recharts-responsive-container {
     position: relative;
     width: 110% !important; /* Extend container width */
     transform: translateX(-50px);
