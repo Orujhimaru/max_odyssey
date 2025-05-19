@@ -3,6 +3,15 @@ import "./LabPage.css";
 import { CalendarIcon } from "../../icons/Icons";
 import labPageIcon from "../../assets/lab_page.svg";
 import aristotleIcon from "../../assets/aristotle.svg";
+import {
+  LineChart,
+  Line,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  Area,
+} from "recharts";
 
 // Import score SVGs
 import scoreA from "../../assets/scoreA.svg";
@@ -160,6 +169,139 @@ const getBoxShade = (val) => {
   ];
   return shades[Math.min(val, shades.length - 1)];
 };
+
+// Verbal subtopics in order
+const verbalSubtopics = [
+  "Words in Context (Easy)",
+  "Words in Context (Medium)",
+  "Words in Context (Medium)",
+  "Words in Context (Hard)",
+  "Text Structure and Purpose (Easy)",
+  "Text Structure and Purpose (Medium)",
+  "Cross-Text Connections (Medium)",
+  "Central Ideas and Details (Easy)",
+  "Central Ideas and Details (Medium)",
+  "Command of Evidence (Textual) (Easy)",
+  "Command of Evidence (Textual) (Medium)",
+  "Command of Evidence (Quantitative) (Medium)",
+  "Command of Evidence (Quantitative) (Hard)",
+  "Inferences (Medium)",
+  "Boundaries (Easy)",
+  "Boundaries (Medium)",
+  "Boundaries (Hard)",
+  "Form, Structure, and Sense (Easy)",
+  "Form, Structure, and Sense (Medium)",
+  "Form, Structure, and Sense (Hard)",
+  "Transitions (Easy)",
+  "Transitions (Medium)",
+  "Transitions (Hard)",
+  "Rhetorical Synthesis (Easy)",
+  "Rhetorical Synthesis (Medium)",
+  "Rhetorical Synthesis (Medium)",
+  "Rhetorical Synthesis (Hard)",
+];
+
+// Placeholder timing data (in seconds)
+const timingData = [
+  42, 55, 38, 70, 25, 60, 80, 35, 50, 45, 90, 100, 110, 30, 20, 40, 60, 70, 80,
+  90, 25, 35, 45, 55, 65, 75, 85,
+];
+
+const chartData = timingData.map((seconds, idx) => ({
+  question: idx + 1,
+  subtopic: verbalSubtopics[idx],
+  seconds,
+}));
+
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const { question, subtopic, seconds } = payload[0].payload;
+    return (
+      <div
+        className="custom-tooltip"
+        style={{
+          background: "#fff",
+          border: "1px solid #ccc",
+          padding: 10,
+          borderRadius: 8,
+        }}
+      >
+        <div>
+          <strong>Q{question}</strong>
+        </div>
+        <div>{subtopic}</div>
+        <div>
+          <b>{seconds} seconds</b>
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
+// Custom dot: invisible by default
+const InvisibleDot = (props) => null;
+
+const TimingLineGraph = () => (
+  <div
+    style={{
+      width: "100%",
+      maxWidth: 1200,
+      margin: "32px auto",
+      background: "#23272f",
+      borderRadius: 18,
+      padding: 32,
+      boxShadow: "0 2px 16px rgba(0,0,0,0.08)",
+      overflowX: "auto",
+    }}
+  >
+    <h2 style={{ textAlign: "left", marginBottom: 12, color: "#fff" }}>
+      Timing Across Verbal Questions
+    </h2>
+    <div style={{ background: "#f7f7fa", borderRadius: 12, padding: 16 }}>
+      <ResponsiveContainer width="100%" height={300} minWidth={1000}>
+        <LineChart
+          data={chartData}
+          margin={{ left: 40, right: 20, top: 20, bottom: 20 }}
+        >
+          <CartesianGrid stroke="#e0e0e0" horizontal={true} vertical={false} />
+          <YAxis
+            domain={[0, 120]}
+            ticks={[10, 30, 60, 120]}
+            tickFormatter={(s) => {
+              if (s === 60) return "1m";
+              if (s === 120) return "2m";
+              return `${s}s`;
+            }}
+            width={60}
+          />
+          <Tooltip content={<CustomTooltip />} />
+          <Area
+            type="monotone"
+            dataKey="seconds"
+            stroke={false}
+            fill="#23272f"
+            fillOpacity={0.7}
+            baseValue={0}
+          />
+          <Line
+            type="monotone"
+            dataKey="seconds"
+            stroke="#456bc4"
+            strokeWidth={3}
+            dot={<InvisibleDot />}
+            activeDot={{
+              r: 8,
+              fill: "#fff",
+              stroke: "#456bc4",
+              strokeWidth: 3,
+            }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
+);
 
 const LabPage = () => {
   const [selectedYear, setSelectedYear] = useState("2025");
@@ -814,72 +956,6 @@ const LabPage = () => {
       </header>
 
       <div className="lab-content">
-        {/* Yearly Activity Calendar Section */}
-        <div className="yearly-activity-section">
-          <div className="yearly-activity-header">
-            <h2 className="yearly-activity-title">Training Activity</h2>
-
-            {/* Year dropdown */}
-            <div className="year-selector">
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(e.target.value)}
-                className="year-dropdown"
-              >
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="2024">2024</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Exam date selection UI */}
-          <div className="exam-date-selector">
-            <div className="exam-date-dropdown-container">
-              <label htmlFor="exam-date-select">Select your exam date:</label>
-              <select
-                id="exam-date-select"
-                value={selectedExamDate}
-                onChange={(e) => setSelectedExamDate(e.target.value)}
-                className="exam-date-dropdown"
-              >
-                <option value="">Select a test date</option>
-                {selectedYear === "2025" && (
-                  <optgroup label="Fall 2025">
-                    {filteredTestDates
-                      .filter((date) => date.semester === "fall")
-                      .map((date) => (
-                        <option key={date.label} value={date.label}>
-                          {date.label}
-                        </option>
-                      ))}
-                  </optgroup>
-                )}
-                {selectedYear === "2026" && (
-                  <optgroup label="Spring 2026">
-                    {filteredTestDates
-                      .filter((date) => date.semester === "spring")
-                      .map((date) => (
-                        <option key={date.label} value={date.label}>
-                          {date.label}
-                        </option>
-                      ))}
-                  </optgroup>
-                )}
-              </select>
-            </div>
-            {selectedExamDate && (
-              <p className="selected-exam-date">
-                Selected exam date: {selectedExamDate}
-              </p>
-            )}
-          </div>
-
-          <div className="yearly-calendar-container">
-            {yearMonths.map((month, index) => renderMonthColumn(month, index))}
-          </div>
-        </div>
-
         {/* Confirmed Test Dates Section */}
 
         {/* Aristotle Quote Section */}
@@ -901,6 +977,7 @@ const LabPage = () => {
             </div>
           </div>
         </div>
+        <TimingLineGraph />
 
         {/* Tab selection for Math/Verbal */}
         <div className="performance-tab-selector">
