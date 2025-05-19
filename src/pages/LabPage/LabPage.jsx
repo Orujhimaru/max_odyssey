@@ -252,53 +252,101 @@ const TimingLineGraph = () => (
       borderRadius: 18,
       padding: 32,
       boxShadow: "0 2px 16px rgba(0,0,0,0.08)",
-      overflowX: "auto",
+      position: "relative",
+      height: 320,
     }}
   >
     <h2 style={{ textAlign: "left", marginBottom: 12, color: "#fff" }}>
       Timing Across Verbal Questions
     </h2>
-    <div style={{ background: "#f7f7fa", borderRadius: 12, padding: 16 }}>
-      <ResponsiveContainer width="100%" height={300}>
-        <AreaChart
-          data={chartData}
-          margin={{ left: 40, right: 20, top: 20, bottom: 20 }}
-        >
-          <CartesianGrid stroke="#e0e0e0" horizontal={true} vertical={false} />
-          <YAxis
-            domain={[0, 120]}
-            ticks={[10, 30, 60, 120]}
-            tickFormatter={(s) => {
-              if (s === 60) return "1m";
-              if (s === 120) return "2m";
-              return `${s}s`;
-            }}
-            width={60}
-          />
-          <Tooltip content={<CustomTooltip />} />
-          <Area
-            type="monotone"
-            dataKey="seconds"
-            stroke={false}
-            fill="#23272f"
-            fillOpacity={0.18}
-            baseValue={0}
-          />
-          <Line
-            type="monotone"
-            dataKey="seconds"
-            stroke="#3fa7ff"
-            strokeWidth={2}
-            dot={<InvisibleDot />}
-            activeDot={{
-              r: 8,
-              fill: "#fff",
-              stroke: "#3fa7ff",
-              strokeWidth: 3,
-            }}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
+    <div
+      style={{
+        background: "#f7f7fa",
+        borderRadius: 12,
+        padding: 16,
+        position: "relative",
+        width: "100%",
+        height: 300,
+      }}
+    >
+      {/* Area background */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+          zIndex: 1,
+        }}
+      >
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={chartData}
+            margin={{ left: 40, right: 20, top: 20, bottom: 20 }}
+          >
+            <CartesianGrid
+              stroke="#e0e0e0"
+              horizontal={true}
+              vertical={false}
+            />
+            <YAxis
+              domain={[0, 120]}
+              ticks={[10, 30, 60, 120]}
+              tickFormatter={(s) => {
+                if (s === 60) return "01:00";
+                if (s === 120) return "02:00";
+                return `${s}`;
+              }}
+              width={60}
+            />
+            <Area
+              type="monotone"
+              dataKey="seconds"
+              stroke={false}
+              fill="#23272f"
+              fillOpacity={0.18}
+              baseValue={0}
+              isAnimationActive={false}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+      {/* Foreground line and tooltip */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: 2,
+        }}
+      >
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={chartData}
+            margin={{ left: 100, right: 20, top: 20, bottom: 20 }}
+          >
+            <Line
+              type="monotone"
+              dataKey="seconds"
+              stroke="#787A7C"
+              strokeWidth={2}
+              dot={<InvisibleDot />}
+              activeDot={{
+                r: 4,
+                fill: "#fff",
+                stroke: "#787A7C",
+                strokeWidth: 1,
+              }}
+              isAnimationActive={false}
+            />
+            <Tooltip content={<CustomTooltip />} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   </div>
 );
