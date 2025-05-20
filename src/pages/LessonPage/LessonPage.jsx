@@ -325,6 +325,24 @@ const LessonPage = ({ onNavbarToggle }) => {
     }
   }, []);
 
+  // Add edge detection effect
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (e.clientX <= 20) {
+        // If mouse is within 20px of left edge
+        if (onNavbarToggle) {
+          console.log("Mouse near edge detected, showing navbar");
+          onNavbarToggle(true); // Pass true to explicitly show navbar
+        }
+      }
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [onNavbarToggle]);
+
   if (!course || !currentLesson || !currentChapter) {
     return <div className="lesson-not-found">Lesson not found</div>;
   }
@@ -335,8 +353,9 @@ const LessonPage = ({ onNavbarToggle }) => {
       <div
         className="navbar-toggle-area"
         onMouseEnter={handleNavbarToggle}
-        onMouseOver={handleNavbarToggle}
+        onMouseMove={handleNavbarToggle}
         onClick={handleNavbarToggle}
+        aria-label="Show navigation sidebar"
       ></div>
 
       {/* Top Navigation Bar */}
@@ -451,7 +470,7 @@ const LessonPage = ({ onNavbarToggle }) => {
                           lesson.id === numLessonId ? "active" : ""
                         }`}
                       ></span>
-                      <span className="lesson-number">L{lesson.id % 100}:</span>
+                      <span className="lesson-number">{lesson.id % 100}:</span>
                       <span className="lesson-title">{lesson.title}</span>
                     </a>
                   </div>
