@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import "./LessonPage.css";
+import StreakIndicator from "../../components/StreakIndicator/StreakIndicator";
 
 // Mock lesson content
 const mockLessonContent = `
@@ -443,6 +444,9 @@ const LessonPage = ({ onNavbarToggle }) => {
             </div>
           </div>
         </div>
+
+        {/* Streak Indicator */}
+        <StreakIndicator streak={26} progress={0.7} />
 
         <div className="nav-buttons">
           {prevLesson ? (

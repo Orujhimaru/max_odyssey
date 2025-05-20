@@ -1,0 +1,32 @@
+.streak-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.streak-icon-img {
+  width: 36px;
+}
+
+.streak-number {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  min-width: 40px;
+}
+
+.streak-progress-container {
+  height: 12px;
+  width: 110px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.streak-progress-fill {
+  height: 100%;
+  background-color: #5d87ff;
+  border-radius: 10px;
+  transition: width 0.3s ease-in-out;
+}
