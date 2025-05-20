@@ -1459,3 +1459,133 @@
 .activity-square.debug-text-cell {
   display: none;
 }
+
+/* Pace Speedometer Card Styles */
+.pace-card {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px auto;
+  gap: 24px;
+}
+
+/* Left side styles */
+.pace-card-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.pace-info {
+  margin-bottom: 12px;
+}
+
+.pace-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #3b82f6;
+  margin-bottom: 16px;
+}
+
+.pace-status {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.pace-status.excellent {
+  color: #4ade80;
+}
+
+.pace-status.okay {
+  color: #3b82f6;
+}
+
+.pace-status.slow {
+  color: #ef4444;
+}
+
+.pace-message {
+  font-size: 16px;
+  color: var(--text-primary);
+  opacity: 0.8;
+  margin: 0;
+}
+
+/* Right side styles */
+.pace-card-right {
+  flex: 1;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.time-info-container {
+  flex: 1;
+}
+
+.time-info-card {
+  background: var(--bg-secondary);
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.time-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.time-label {
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.time-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.speedometer-container {
+  width: 150px;
+  height: 150px;
+}
+
+.remaining-time {
+  text-align: center;
+  margin-top: 8px;
+  color: #3b82f6;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pace-card {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .pace-status {
+    font-size: 36px;
+  }
+
+  .pace-card-right {
+    flex-direction: column-reverse;
+  }
+
+  .speedometer-container {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+  }
+}

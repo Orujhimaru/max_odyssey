@@ -21,6 +21,9 @@ import scoreC from "../../assets/scoreC.svg";
 import scoreD from "../../assets/scoreD.svg";
 import scoreF from "../../assets/scoreF.svg";
 
+// Import SpeedometerIcon
+import SpeedometerIcon from "../../components/SpeedometerIcon/SpeedometerIcon";
+
 // Mock data for 2 months (25 days each)
 const months = [
   { name: "May 2024", days: 25 },
@@ -558,6 +561,70 @@ const CalendarHeatmap = () => {
           />
         ))}
         <span>More</span>
+      </div>
+    </div>
+  );
+};
+
+// Add a new PaceCard component
+const PaceCard = () => {
+  // Sample data - in real app this would come from props or context
+  const userAvgTime = "01:04"; // User's average time per question
+  const targetTime = "01:31"; // Target time per question
+  const paceRatio = 1.2; // Ratio above 1.0 means slower than target
+
+  // Determine pace status based on ratio
+  const getPaceStatus = (ratio) => {
+    if (ratio <= 0.7) return "excellent"; // Green
+    if (ratio <= 1.0) return "okay"; // Blue
+    return "slow"; // Red
+  };
+
+  const paceStatusClass = getPaceStatus(paceRatio);
+  const paceText = {
+    excellent: "Excellent",
+    okay: "Okay",
+    slow: "Slow",
+  }[paceStatusClass];
+
+  return (
+    <div className="pace-card">
+      {/* Left side - times */}
+      <div className="pace-card-left">
+        <div className="pace-info">
+          <h3 className="pace-title">Pace</h3>
+          <div className={`pace-status ${paceStatusClass}`}>{paceText}</div>
+          <p className="pace-message">
+            You've struggled with some questions, but practice makes you
+            perfect!
+          </p>
+        </div>
+      </div>
+
+      {/* Right side - speedometer and time info */}
+      <div className="pace-card-right">
+        <div className="time-info-container">
+          <div className="time-info-card">
+            <div className="time-info-row">
+              <div>
+                <span className="time-label">Test Time</span>
+              </div>
+              <span className="time-value">{targetTime}</span>
+            </div>
+
+            <div className="time-info-row">
+              <div>
+                <span className="time-label">Your Time</span>
+              </div>
+              <span className="time-value">{userAvgTime}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="speedometer-container">
+          <SpeedometerIcon ratio={paceRatio} />
+          <div className="remaining-time">03:06 remaining</div>
+        </div>
       </div>
     </div>
   );
@@ -1237,6 +1304,10 @@ const LabPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Add the PaceCard below the quote and above the heatmap */}
+        <PaceCard />
+
         <CalendarHeatmap />
         <TimingLineGraph />
 
