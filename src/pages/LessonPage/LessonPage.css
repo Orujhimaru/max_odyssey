@@ -458,7 +458,6 @@
   width: 8px;
   background-color: var(--border-color);
   cursor: col-resize;
-  display: flex;
   justify-content: center;
   align-items: center;
   transition: background-color 0.2s ease;
