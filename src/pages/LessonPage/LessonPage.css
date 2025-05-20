@@ -49,6 +49,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dropdown-arrow {
@@ -90,6 +93,11 @@
 .lesson-menu-item {
   border-bottom: 1px solid #2c2c2c;
   width: 100% !important;
+  display: flex;
+}
+.chapter-menu-item .flex {
+  display: flex;
+  align-items: center;
 }
 
 .chapter-menu-item:last-child,
@@ -112,9 +120,10 @@
 }
 
 /* Lesson dots */
-.lesson-dot {
-  width: 18px;
-  height: 18px;
+.lesson-dot,
+.chapter-dot {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background-color: transparent;
   border: 2px solid #666;
@@ -122,13 +131,15 @@
   flex-shrink: 0;
 }
 
-.lesson-menu-item.active .lesson-dot {
+.lesson-menu-item.active .lesson-dot,
+.chapter-menu-item.active .chapter-dot {
   background-color: #e6b93c;
   border-color: #e6b93c;
   box-shadow: 0 0 8px rgba(230, 185, 60, 0.5);
 }
 
-.lesson-menu-item.completed .lesson-dot {
+.lesson-menu-item.completed .lesson-dot,
+.chapter-menu-item.completed .chapter-dot {
   background-color: #5768a3;
   border-color: #5768a3;
 }
@@ -228,9 +239,13 @@
 }
 
 .lesson-title {
-  font-size: 18px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--primary-color);
+  /* color: var(--verbal-color); */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
 }
 
 .navigation-controls {
@@ -290,16 +305,18 @@
   transition: transform 0.2s ease;
 }
 
-.chapters-dropdown-content {
+.chapters-dropdown-content,
+.lessons-dropdown-content {
   position: absolute;
+  top: 110%;
   width: 100%;
-  background-color: var(--card-bg);
+  background-color: #1a1a1a;
   border: 1px solid var(--border-color);
-  border-top: none;
   z-index: 20;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-height: 400px;
   overflow-y: auto;
+  border-radius: 4px;
 }
 
 .chapter-item {

@@ -348,7 +348,9 @@ const LessonPage = ({ onNavbarToggle }) => {
               aria-haspopup="true"
               aria-expanded={chaptersExpanded}
             >
-              {currentChapter?.title || "Select Chapter"}
+              {currentChapter
+                ? `CH${currentChapter.id}: ${currentChapter.title}`
+                : "Select Chapter"}
               <svg
                 className="dropdown-arrow"
                 width="12"
@@ -367,9 +369,14 @@ const LessonPage = ({ onNavbarToggle }) => {
               </svg>
             </button>
             <div className={chaptersExpanded ? "menu-open" : "menu-closed"}>
-              <div className="absolute left-0 top-full mt-1 w-56">
+              <div className="dropdown-content chapters-dropdown-content">
                 {course?.chapters?.map((chapter, index) => (
-                  <div className="chapter-menu-item" key={chapter.id}>
+                  <div
+                    className={`chapter-menu-item ${
+                      chapter.id === currentChapter?.id ? "active" : ""
+                    }`}
+                    key={chapter.id}
+                  >
                     <a
                       href="#"
                       onClick={(e) => {
@@ -379,11 +386,14 @@ const LessonPage = ({ onNavbarToggle }) => {
                         );
                         setChaptersExpanded(false);
                       }}
-                      data-discover="true"
                       className="flex"
                     >
-                      <span className="chapter-dot"></span>
-                      <span className="chapter-number">{index + 1}.</span>
+                      <span
+                        className={`chapter-dot ${
+                          chapter.id === currentChapter?.id ? "active" : ""
+                        }`}
+                      ></span>
+                      {/* <span className="chapter-number">CH{chapter.id}:</span> */}
                       <span className="chapter-title">{chapter.title}</span>
                     </a>
                   </div>
@@ -398,7 +408,9 @@ const LessonPage = ({ onNavbarToggle }) => {
               aria-haspopup="true"
               aria-expanded={lessonsExpanded}
             >
-              {currentLesson?.title || "Select Lesson"}
+              {currentLesson
+                ? `L${currentLesson.id % 100}: ${currentLesson.title}`
+                : "Select Lesson"}
               <svg
                 className="dropdown-arrow"
                 width="12"
@@ -417,7 +429,7 @@ const LessonPage = ({ onNavbarToggle }) => {
               </svg>
             </button>
             <div className={lessonsExpanded ? "menu-open" : "menu-closed"}>
-              <div className="absolute left-0 top-full mt-1 w-56">
+              <div className="dropdown-content lessons-dropdown-content">
                 {currentChapter?.lessons?.map((lesson, index) => (
                   <div
                     className={`lesson-menu-item ${
@@ -434,9 +446,13 @@ const LessonPage = ({ onNavbarToggle }) => {
                       }}
                       className="flex items-center"
                     >
-                      <span className="lesson-dot"></span>
-                      <span className="lesson-number">{index + 1}.</span>
-                      <span className="flex-1 truncate">{lesson.title}</span>
+                      <span
+                        className={`lesson-dot ${
+                          lesson.id === numLessonId ? "active" : ""
+                        }`}
+                      ></span>
+                      <span className="lesson-number">L{lesson.id % 100}:</span>
+                      <span className="lesson-title">{lesson.title}</span>
                     </a>
                   </div>
                 ))}
