@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080";
+const API_URL = "http://18.157.86.218:8080";
 
 export const api = {
   // Get the token from localStorage

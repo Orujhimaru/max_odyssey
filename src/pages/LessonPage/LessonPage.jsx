@@ -313,17 +313,23 @@ const LessonPage = ({ onNavbarToggle }) => {
     }
   };
 
-  // Force navbar to appear on component mount
+  // Force navbar to be hidden when entering lesson page
   useEffect(() => {
     if (onNavbarToggle) {
-      // First hide it (in case it's showing)
-      onNavbarToggle();
-      // Then show it again after a delay to ensure it's visible initially
-      setTimeout(() => {
-        onNavbarToggle();
-      }, 100);
+      // Use course-specific key to track navbar state
+      const storageKey = `navbar-hidden-course-${courseId}`;
+      const navbarShouldBeHidden = localStorage.getItem(storageKey);
+
+      if (!navbarShouldBeHidden) {
+        // First time user enters this course, mark navbar as hidden
+        localStorage.setItem(storageKey, "true");
+      }
+
+      // Hide the navbar (pass false to explicitly hide)
+      console.log(`Hiding navbar for course ${courseId}`);
+      onNavbarToggle(false);
     }
-  }, []);
+  }, [courseId]);
 
   // Add edge detection effect
   useEffect(() => {
