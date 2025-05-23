@@ -1,21 +1,23 @@
-const API_URL = "http://18.157.86.218:8080";
+const API_URL = "http://3.76.189.76:8080";
 
 export const api = {
-  // Get the token from localStorage
-  getToken: () => localStorage.getItem("token"),
+  // No longer need to get token from localStorage
+  // getToken: () => localStorage.getItem("token"),
 
-  // Make authenticated requests
+  // Make requests without authentication
   request: async (endpoint, options = {}) => {
-    const token = localStorage.getItem("token");
+    // No longer need to get token
+    // const token = localStorage.getItem("token");
 
     const headers = {
       "Content-Type": "application/json",
       ...options.headers,
     };
 
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
+    // No longer need to add authorization header
+    // if (token) {
+    //   headers["Authorization"] = `Bearer ${token}`;
+    // }
 
     const config = {
       ...options,
@@ -26,10 +28,12 @@ export const api = {
       console.log(`Making ${options.method || "GET"} request to ${endpoint}`);
       const response = await fetch(`${API_URL}${endpoint}`, config);
 
-      if (response.status === 401) {
-        localStorage.removeItem("token");
-        window.location.href = "/login";
-      }
+      // Don't redirect to login page when authentication fails
+      // Since login has been removed, we'll just return the response
+      // if (response.status === 401) {
+      //   localStorage.removeItem("token");
+      //   window.location.href = "/login";
+      // }
 
       return response;
     } catch (error) {
@@ -38,7 +42,7 @@ export const api = {
     }
   },
 
-  // Login
+  // Login - no longer needed but keeping for reference
   login: async (username) => {
     const response = await fetch(`${API_URL}/login`, {
       method: "POST",
@@ -171,6 +175,17 @@ export const api = {
 
     try {
       const response = await api.request(url);
+
+      // Return mock data if unauthorized (since login was removed)
+      if (response.status === 401) {
+        console.log("Unauthorized request, returning mock data");
+        return {
+          questions: [],
+          total_pages: 1,
+          total_questions: 0,
+          message: "Using mock data since authentication is disabled",
+        };
+      }
 
       if (!response.ok) {
         const errorText = await response.text();

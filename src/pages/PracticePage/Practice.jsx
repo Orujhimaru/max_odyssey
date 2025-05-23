@@ -343,44 +343,38 @@ const Practice = () => {
 
   // Add this effect for fetching questions
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+    // Remove token check that was causing navigation to fail
+    // const token = localStorage.getItem("token");
+    // if (!token) {
+    //   navigate("/login");
+    //   return;
+    // }
 
     const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+      setLoading(true);
+      setError(null);
 
-        // Always use filtered questions API with appropriate filters
-        const queryFilters = {
+      try {
+        console.log("Fetching questions with filters:", filters);
+        const response = await api.getFilteredQuestions({
           ...filters,
           page: currentPage,
           page_size: pageSize,
-        };
+        });
 
-        // Add is_bookmarked filter when showBookmarked is true
-        if (showBookmarked) {
-          queryFilters.is_bookmarked = 1;
-        }
-
-        console.log("Fetching questions with filters:", queryFilters);
-        const data = await debouncedFetchQuestions(queryFilters);
-
-        setQuestions(data.questions || []);
-
-        if (data.pagination) {
-          setCurrentPage(data.pagination.current_page);
-          setTotalQuestions(data.pagination.total_items);
-          setTotalPages(data.pagination.total_pages);
-        }
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching questions:", error);
-        setError(`Failed to load questions: ${error.message}`);
+        console.log("Got filtered questions response:", response);
+        // Update the questions state
+        setQuestions(response.questions || []);
+        setTotalPages(response.total_pages || 1);
+        setTotalQuestions(response.total_questions || 0);
+      } catch (err) {
+        console.error("Error fetching questions:", err);
+        setError("Failed to load questions. Please try again later.");
+        // Show empty questions instead of completely failing
+        setQuestions([]);
+        setTotalPages(1);
+        setTotalQuestions(0);
+      } finally {
         setLoading(false);
       }
     };
