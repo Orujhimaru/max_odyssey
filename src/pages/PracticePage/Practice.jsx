@@ -12,6 +12,53 @@ import { api } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import practiceHandIcon from "../../assets/practice_hand.svg";
 
+// Define math topics with their subtopics (shortened subtopics with improved readability)
+const mathTopics = {
+  Algebra: [
+    "Linear Equations (1)",
+    "Linear Functions",
+    "Linear Equations (2)",
+    "Systems of 2 in 2",
+    "Linear Inequalities",
+  ],
+  "Advanced Math": [
+    "Equivalent Expressions",
+    "Nonlinear Equations",
+    "Nonlinear Functions",
+  ],
+  "Problem-Solving and Data Analysis": [
+    "Ratios & Rates",
+    "Percentages",
+    "Measures of Spread",
+    "Models and Scatterplots",
+    "Probability",
+    "Sample Statistics",
+    "Studies and Experiments",
+  ],
+  "Geometry and Trigonometry": [
+    "Area & Volume",
+    "Angles & Triangles",
+    "Trigonometry",
+    "Circles",
+  ],
+};
+
+// Define verbal topics with their subtopics
+const verbalTopics = {
+  "Craft and Structure": [
+    "Words in Context",
+    "Text Structure and Purpose",
+    "Cross-Text Connections",
+  ],
+  "Information and Ideas": [
+    "Central Ideas and Details",
+    "Command of Evidence",
+    "Inferences",
+  ],
+  "Standard English Conventions": ["Boundaries", "Form, Structure, and Sense"],
+  "Expression of Ideas": ["Rhetorical Synthesis", "Transitions"],
+};
+
 // Create separate components for static parts
 const Header = React.memo(() => {
   return (
@@ -281,7 +328,7 @@ const Practice = () => {
   const [filters, setFilters] = useState({
     question_text: "",
     sort_dir: "desc",
-    subject: 1, // 1 = Math, 2 = Verbal
+    subject: 2, // 1 = Math, 2 = Verbal
     difficulty: "", // Empty string means all difficulties
     topic: "",
     subtopic: "",
@@ -310,28 +357,38 @@ const Practice = () => {
       isMountedRef.current = true;
 
       const fetchInitialData = async () => {
-        setLoading(true);
         try {
-          console.log("INITIAL FETCH: Loading first page of data");
-          const response = await api.getFilteredQuestions({
-            ...filters,
-            page: 1,
+          setLoading(true);
+          const initialFilters = {
+            subject: filters.subject,
+            page: currentPage,
             page_size: pageSize,
-          });
+          };
 
-          console.log("PAGINATION INFO:", {
-            totalItems: response.total_questions || 0,
-            totalPages: response.total_pages || 1,
-            currentPage: response.current_page || 1,
-            pageSize: response.page_size || pageSize,
-            gotQuestions: (response.questions || []).length,
-          });
+          console.log("INITIAL: Fetching with filters:", initialFilters);
 
-          setQuestions(response.questions || []);
-          setTotalPages(response.total_pages || 1);
-          setTotalQuestions(response.total_questions || 0);
-        } catch (err) {
-          console.error("Error fetching initial data:", err);
+          const response = await api.getFilteredQuestions(initialFilters);
+          console.log("INITIAL: Got response:", response);
+
+          if (response && response.questions) {
+            setQuestions(response.questions);
+            setTotalPages(response.total_pages || 1);
+            setTotalQuestions(response.total_questions || 0);
+
+            // Log pagination data
+            console.log("PAGINATION INFO:");
+            console.log("- Total questions:", response.total_questions);
+            console.log("- Total pages:", response.total_pages);
+            console.log("- Current page:", currentPage);
+            console.log("- Page size:", pageSize);
+            console.log("- Questions received:", response.questions.length);
+          } else {
+            console.error("INITIAL: Invalid response format", response);
+            setError("Failed to load questions");
+            setQuestions([]);
+          }
+        } catch (error) {
+          console.error("INITIAL: Error fetching questions", error);
           setError("Failed to load questions");
           setQuestions([]);
         } finally {
@@ -669,105 +726,19 @@ const Practice = () => {
   // Handle bluebook toggle
   const handleBluebookToggle = () => {
     protectFilterAction(() => {
-      const newState = !bluebookActive;
-      setBluebookActive(newState);
-
-      // Update filters with is_bluebook value (1 for true, 0 for false)
-      setFilters((prev) => ({
-        ...prev,
-        is_bluebook: newState ? 1 : 0,
-        page: 1, // Reset to first page when changing filters
-      }));
-    });
-  };
-
-  // Add handler for hide solved toggle
-  const handleHideSolvedToggle = () => {
-    protectFilterAction(() => {
-      // If already active, turn it off
-      if (hideSolved) {
-        setHideSolved(false);
-        setFilters((prev) => ({
-          ...prev,
-          hide_solved: false,
-          page: 1,
-        }));
-      } else {
-        // Turn it on and turn off "Incorrect" filter if it's active
-        setHideSolved(true);
-        setActiveFilter(null); // Turn off "Incorrect" filter if it's active
-        setFilters((prev) => ({
-          ...prev,
-          hide_solved: true,
-          incorrect: false, // Turn off "Incorrect" filter if it's active
-          page: 1,
-        }));
-      }
-    });
-  };
-
-  // Update handleFilterToggle to make it mutually exclusive with hideSolved
-  const handleFilterToggle = (filter) => {
-    protectFilterAction(() => {
-      console.log(
-        "Filter toggle clicked:",
-        filter,
-        "Current activeFilter:",
-        activeFilter
-      );
-
-      // If clicking the active filter, deactivate it
-      if (activeFilter === filter) {
-        console.log("Deactivating filter:", filter);
-        setActiveFilter(null);
-        setFilters((prev) => {
-          const newFilters = {
-            ...prev,
-            incorrect: false,
-            page: 1,
-          };
-          console.log("New filters after deactivation:", newFilters);
-          return newFilters;
-        });
-      } else {
-        // Activate the clicked filter, deactivate the other
-        console.log("Activating filter:", filter);
-        setActiveFilter(filter);
-
-        // If activating "Incorrect", turn off "Hide Solved"
-        if (filter === "incorrect" && hideSolved) {
-          console.log(
-            "Turning off hide_solved because incorrect is being activated"
-          );
-          setHideSolved(false);
-        }
-
-        setFilters((prev) => {
-          const newFilters = {
-            ...prev,
-            incorrect: filter === "incorrect",
-            hide_solved: filter === "incorrect" ? false : prev.hide_solved, // Turn off hideSolved if incorrect is activated
-            page: 1,
-          };
-          console.log("New filters after activation:", newFilters);
-          return newFilters;
-        });
-      }
-    });
-  };
-
-  // Add handlers for filter changes
-  const handleDifficultyChange = (difficultyLevel) => {
-    protectFilterAction(() => {
-      console.log(`Setting difficulty to ${difficultyLevel}`);
+      console.log("BLUEBOOK: Toggling bluebook filter");
 
       // Set loading state
       setLoading(true);
 
-      // Update filters
+      // Toggle the UI state
+      const newState = !bluebookActive;
+      setBluebookActive(newState);
+
+      // Prepare the new filters
       const newFilters = {
         ...filters,
-        difficulty: difficultyLevel,
+        is_bluebook: newState ? 1 : 0,
         page: 1, // Reset to first page when changing filters
       };
 
@@ -775,26 +746,247 @@ const Practice = () => {
       setFilters(newFilters);
       setCurrentPage(1);
 
-      // Directly fetch with new filters
+      // Direct API call
       api
         .getFilteredQuestions({
           ...newFilters,
           page_size: pageSize,
         })
         .then((response) => {
-          console.log("Got filtered questions by difficulty:", response);
+          console.log("BLUEBOOK: Got filtered data:", response);
           setQuestions(response.questions || []);
           setTotalPages(response.total_pages || 1);
           setTotalQuestions(response.total_questions || 0);
           setLoading(false);
         })
         .catch((err) => {
-          console.error("Error fetching filtered questions:", err);
+          console.error("BLUEBOOK: Error fetching filtered data:", err);
           setError("Failed to load questions");
           setQuestions([]);
           setLoading(false);
         });
     });
+  };
+
+  // Add handler for hide solved toggle
+  const handleHideSolvedToggle = () => {
+    protectFilterAction(() => {
+      console.log("HIDE SOLVED: Toggling hide solved filter");
+
+      // Set loading state
+      setLoading(true);
+
+      // Toggle the UI state
+      const newHideSolvedState = !hideSolved;
+      setHideSolved(newHideSolvedState);
+
+      // Prepare the new filters
+      let newFilters = { ...filters };
+
+      // If already active, turn it off
+      if (!newHideSolvedState) {
+        newFilters = {
+          ...filters,
+          hide_solved: false,
+          page: 1,
+        };
+      } else {
+        // Turn it on and turn off "Incorrect" filter if it's active
+        if (activeFilter === "incorrect") {
+          console.log("HIDE SOLVED: Turning off incorrect filter");
+          setActiveFilter(null);
+        }
+
+        newFilters = {
+          ...filters,
+          hide_solved: true,
+          incorrect: false, // Turn off "Incorrect" filter if it's active
+          page: 1,
+        };
+      }
+
+      // Update state
+      setFilters(newFilters);
+      setCurrentPage(1);
+
+      // Direct API call
+      api
+        .getFilteredQuestions({
+          ...newFilters,
+          page_size: pageSize,
+        })
+        .then((response) => {
+          console.log("HIDE SOLVED: Got filtered data:", response);
+          setQuestions(response.questions || []);
+          setTotalPages(response.total_pages || 1);
+          setTotalQuestions(response.total_questions || 0);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("HIDE SOLVED: Error fetching filtered data:", err);
+          setError("Failed to load questions");
+          setQuestions([]);
+          setLoading(false);
+        });
+    });
+  };
+
+  // Update handleFilterToggle to make direct API calls
+  const handleFilterToggle = (filter) => {
+    protectFilterAction(() => {
+      console.log(
+        "FILTER TOGGLE: Filter toggle clicked:",
+        filter,
+        "Current activeFilter:",
+        activeFilter
+      );
+
+      // Set loading state
+      setLoading(true);
+
+      // If clicking the active filter, deactivate it
+      const newActiveFilter = activeFilter === filter ? null : filter;
+      let newFilters = { ...filters };
+
+      // Update the filter
+      if (newActiveFilter === null) {
+        console.log("FILTER TOGGLE: Deactivating filter:", filter);
+        newFilters = {
+          ...filters,
+          incorrect: false,
+          page: 1,
+        };
+        setActiveFilter(null);
+      } else {
+        // Activate the clicked filter, deactivate the other
+        console.log("FILTER TOGGLE: Activating filter:", filter);
+        setActiveFilter(filter);
+
+        // If activating "Incorrect", turn off "Hide Solved"
+        if (filter === "incorrect" && hideSolved) {
+          console.log(
+            "FILTER TOGGLE: Turning off hide_solved because incorrect is being activated"
+          );
+          setHideSolved(false);
+          newFilters.hide_solved = false;
+        }
+
+        newFilters = {
+          ...newFilters,
+          incorrect: filter === "incorrect",
+          hide_solved: filter === "incorrect" ? false : newFilters.hide_solved,
+          page: 1,
+        };
+      }
+
+      // Update state
+      setFilters(newFilters);
+      setCurrentPage(1);
+
+      // Direct API call
+      api
+        .getFilteredQuestions({
+          ...newFilters,
+          page_size: pageSize,
+        })
+        .then((response) => {
+          console.log("FILTER TOGGLE: Got filtered data:", response);
+          setQuestions(response.questions || []);
+          setTotalPages(response.total_pages || 1);
+          setTotalQuestions(response.total_questions || 0);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("FILTER TOGGLE: Error fetching filtered data:", err);
+          setError("Failed to load questions");
+          setQuestions([]);
+          setLoading(false);
+        });
+    });
+  };
+
+  // Handle difficulty change
+  const handleDifficultyChange = (newDifficulty) => {
+    protectFilterAction(() => {
+      console.log(`DIFFICULTY: Changed to ${newDifficulty}`);
+
+      // Set loading state
+      setLoading(true);
+
+      // Update state
+      setActiveDifficulty(newDifficulty);
+
+      // Prepare the new filters
+      const newFilters = {
+        ...filters,
+        difficulty: newDifficulty,
+        page: 1, // Reset to first page when changing filters
+      };
+
+      // Update state
+      setFilters(newFilters);
+      setCurrentPage(1);
+
+      // Direct API call
+      api
+        .getFilteredQuestions({
+          ...newFilters,
+          page_size: pageSize,
+        })
+        .then((response) => {
+          console.log("DIFFICULTY: Got filtered data:", response);
+          setQuestions(response.questions || []);
+          setTotalPages(response.total_pages || 1);
+          setTotalQuestions(response.total_questions || 0);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("DIFFICULTY: Error fetching filtered data:", err);
+          setError("Failed to load questions");
+          setQuestions([]);
+          setLoading(false);
+        });
+    });
+  };
+
+  // Add a function to handle topic/subtopic changes with direct fetch
+  const handleTopicChange = (topic, subtopic = null) => {
+    console.log(`TOPIC: Changing to topic=${topic}, subtopic=${subtopic}`);
+
+    // Set loading state
+    setLoading(true);
+
+    // Update filters
+    const newFilters = {
+      ...filters,
+      topic: topic || "",
+      subtopic: subtopic || "",
+      page: 1, // Reset to first page when changing filters
+    };
+
+    // Update state
+    setFilters(newFilters);
+    setCurrentPage(1);
+
+    // Directly fetch with new filters
+    api
+      .getFilteredQuestions({
+        ...newFilters,
+        page_size: pageSize,
+      })
+      .then((response) => {
+        console.log("TOPIC: Got filtered questions by topic:", response);
+        setQuestions(response.questions || []);
+        setTotalPages(response.total_pages || 1);
+        setTotalQuestions(response.total_questions || 0);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("TOPIC: Error fetching filtered questions:", err);
+        setError("Failed to load questions");
+        setQuestions([]);
+        setLoading(false);
+      });
   };
 
   // Add this to make sure the initial filter state is correct
@@ -804,6 +996,75 @@ const Practice = () => {
     // Set the activeFilter based on the initial filters.subject value
     setActiveFilter(filters.subject === 1 ? "math" : "verbal");
   }, []);
+
+  // Define a toggleTopic function to handle topic and subtopic selection
+  const toggleTopic = (topic, subtopic = null) => {
+    console.log(
+      `Toggle topic called with topic=${topic}, subtopic=${subtopic}`
+    );
+
+    // Always start with an empty array for new selection
+    let newSelectedTopics = [];
+    let selectedMainTopic = "";
+    let newTopic = "";
+    let newSubtopic = "";
+
+    // Handle subtopic selection
+    if (subtopic) {
+      const topicKey = `${topic}:${subtopic}`;
+
+      // Check if this specific subtopic is already selected
+      const isSelected = selectedTopics.includes(topicKey);
+
+      if (isSelected) {
+        // If already selected, deselect it (empty selection)
+        newSelectedTopics = [];
+      } else {
+        // If not selected, make it the ONLY selected item
+        newSelectedTopics = [topicKey];
+        selectedMainTopic = topic;
+        newTopic = topic;
+        newSubtopic = subtopic;
+      }
+    } else if (topic) {
+      // Handle main topic selection
+      const topicsToUse = filters.subject === 1 ? mathTopics : verbalTopics;
+      if (!topicsToUse[topic]) {
+        console.error(`Topic "${topic}" not found`);
+        return;
+      }
+
+      // Get all subtopics for this topic
+      const allSubtopicKeys = topicsToUse[topic].map(
+        (sub) => `${topic}:${sub}`
+      );
+
+      // Check if all subtopics of this topic are already selected
+      const allSubtopicsSelected = allSubtopicKeys.every((key) =>
+        selectedTopics.includes(key)
+      );
+
+      if (allSubtopicsSelected) {
+        // If all are selected, deselect all
+        newSelectedTopics = [];
+      } else {
+        // Otherwise, select all subtopics of this topic
+        newSelectedTopics = [...allSubtopicKeys];
+        selectedMainTopic = topic;
+        newTopic = topic;
+        // When selecting a whole topic, subtopic should be empty
+        newSubtopic = "";
+      }
+    }
+
+    // Update selectedTopics state
+    console.log("Setting selected topics to:", newSelectedTopics);
+    setSelectedTopics(newSelectedTopics);
+
+    // Call the handler prop to update filters and fetch data
+    console.log(`Calling API with topic=${newTopic}, subtopic=${newSubtopic}`);
+    handleTopicChange(newTopic, newSubtopic);
+  };
 
   return (
     <div>
@@ -850,6 +1111,10 @@ const Practice = () => {
             hideSolvedActive={hideSolved}
             handleHideSolvedToggle={handleHideSolvedToggle}
             handleFilterToggle={handleFilterToggle}
+            handleTopicChange={handleTopicChange}
+            toggleTopic={toggleTopic}
+            selectedTopics={selectedTopics}
+            setSelectedTopics={setSelectedTopics}
           />
 
           <QuestionsHeader onSolveRateSort={handleSolveRateSort} />
@@ -906,146 +1171,13 @@ const FilterControls = React.memo(
     hideSolvedActive,
     handleHideSolvedToggle,
     handleFilterToggle,
+    handleTopicChange,
+    toggleTopic,
+    selectedTopics,
   }) => {
     // Add state for dropdown visibility
     const [showTopicFilter, setShowTopicFilter] = useState(false);
     const [showDifficultyFilter, setShowDifficultyFilter] = useState(false);
-    const [selectedTopics, setSelectedTopics] = useState([]);
-
-    // Define math topics with their subtopics (shortened subtopics with improved readability)
-    const mathTopics = {
-      Algebra: [
-        "Linear Equations (1)",
-        "Linear Functions",
-        "Linear Equations (2)",
-        "Systems of 2 in 2",
-        "Linear Inequalities",
-      ],
-      "Advanced Math": [
-        "Equivalent Expressions",
-        "Nonlinear Equations",
-        "Nonlinear Functions",
-      ],
-      "Problem-Solving and Data Analysis": [
-        "Ratios & Rates",
-        "Percentages",
-        "Measures of Spread",
-        "Models and Scatterplots",
-        "Probability",
-        "Sample Statistics",
-        "Studies and Experiments",
-      ],
-      "Geometry and Trigonometry": [
-        "Area & Volume",
-        "Angles & Triangles",
-        "Trigonometry",
-        "Circles",
-      ],
-    };
-
-    // Define verbal topics with their subtopics
-    const verbalTopics = {
-      "Craft and Structure": [
-        "Words in Context",
-        "Text Structure and Purpose",
-        "Cross-Text Connections",
-      ],
-      "Information and Ideas": [
-        "Central Idea and Details",
-        "Command of Evidence",
-        "Inferences",
-      ],
-      "Standard English Conventions": [
-        "Boundaries",
-        "Form, Structure, and Sense",
-      ],
-      "Expression of Ideas": ["Rhetorical Synthesis", "Transitions"],
-    };
-
-    // Define a toggleTopic function to handle topic and subtopic selection
-    const toggleTopic = (topic, subtopic = null) => {
-      let newSelectedTopics = [];
-      let selectedMainTopic = "";
-
-      // Check if the topic or subtopic already exists in selectedTopics
-      if (subtopic) {
-        // If a subtopic was provided, toggle just that subtopic
-        const topicKey = `${topic}:${subtopic}`;
-
-        // Check if this specific subtopic is already selected
-        const isSelected = selectedTopics.includes(topicKey);
-
-        if (isSelected) {
-          // If already selected, remove it
-          newSelectedTopics = selectedTopics.filter((t) => t !== topicKey);
-        } else {
-          // If not selected, add it
-          newSelectedTopics = [...selectedTopics, topicKey];
-          selectedMainTopic = topic;
-        }
-      } else {
-        // If clicking a main topic
-        // Check if this topic exists
-        const topicsToUse = filters.subject === 1 ? mathTopics : verbalTopics;
-        if (!topicsToUse[topic]) {
-          console.error(
-            `Topic "${topic}" not found in ${
-              filters.subject === 1 ? "mathTopics" : "verbalTopics"
-            }`
-          );
-          return;
-        }
-
-        // Get all subtopics for this topic
-        const allSubtopicKeys = topicsToUse[topic].map(
-          (sub) => `${topic}:${sub}`
-        );
-
-        // Check if all subtopics of this topic are already selected
-        const allSubtopicsSelected = allSubtopicKeys.every((key) =>
-          selectedTopics.includes(key)
-        );
-
-        if (allSubtopicsSelected) {
-          // If all are selected, deselect all
-          newSelectedTopics = [];
-        } else {
-          // Otherwise, select all subtopics of this topic
-          newSelectedTopics = [...allSubtopicKeys];
-          selectedMainTopic = topic;
-        }
-      }
-
-      // Update selectedTopics state
-      setSelectedTopics(newSelectedTopics);
-
-      // Prepare filter updates
-      const filterUpdates = {
-        page: 1,
-      };
-
-      // Only add topic and subtopic if we have selections
-      if (newSelectedTopics.length > 0) {
-        filterUpdates.topic = selectedMainTopic;
-
-        // If we selected a specific subtopic (not the whole topic)
-        if (newSelectedTopics.length === 1) {
-          filterUpdates.subtopic = newSelectedTopics[0].split(":")[1];
-        } else {
-          filterUpdates.subtopic = "";
-        }
-      } else {
-        // Clear topic and subtopic filters if nothing is selected
-        filterUpdates.topic = "";
-        filterUpdates.subtopic = "";
-      }
-
-      // Update filters
-      setFilters((prev) => ({
-        ...prev,
-        ...filterUpdates,
-      }));
-    };
 
     // Create a local handler that will be used if the prop is missing
     const handleSortClick = () => {
@@ -1084,6 +1216,7 @@ const FilterControls = React.memo(
                 </div>
               </div>
             </div>
+
             <div className="subject-toggle-container">
               {/* Bluebook toggle button */}
 
@@ -1092,12 +1225,45 @@ const FilterControls = React.memo(
                   filters.subject === 1 ? "active verbal" : ""
                 }`}
                 onClick={() => {
-                  onSubjectToggle(1);
-                  setFilters((prev) => ({
-                    ...prev,
+                  console.log("SUBJECT: Switching to Verbal");
+                  setLoading(true);
+
+                  // Update the subject filter
+                  const newFilters = {
+                    ...filters,
+                    subject: 1,
                     topic: "",
                     subtopic: "",
-                  }));
+                    page: 1,
+                  };
+
+                  // Update state
+                  setFilters(newFilters);
+                  setCurrentPage(1);
+                  setSelectedTopics([]);
+
+                  // Direct API call
+                  api
+                    .getFilteredQuestions({
+                      ...newFilters,
+                      page_size: pageSize,
+                    })
+                    .then((response) => {
+                      console.log("SUBJECT: Got Verbal data:", response);
+                      setQuestions(response.questions || []);
+                      setTotalPages(response.total_pages || 1);
+                      setTotalQuestions(response.total_questions || 0);
+                      setLoading(false);
+                    })
+                    .catch((err) => {
+                      console.error(
+                        "SUBJECT: Error fetching Verbal data:",
+                        err
+                      );
+                      setError("Failed to load questions");
+                      setQuestions([]);
+                      setLoading(false);
+                    });
                 }}
               >
                 V
@@ -1107,12 +1273,42 @@ const FilterControls = React.memo(
                   filters.subject === 2 ? "active math" : ""
                 }`}
                 onClick={() => {
-                  onSubjectToggle(2);
-                  setFilters((prev) => ({
-                    ...prev,
+                  console.log("SUBJECT: Switching to Math");
+                  setLoading(true);
+
+                  // Update the subject filter
+                  const newFilters = {
+                    ...filters,
+                    subject: 2,
                     topic: "",
                     subtopic: "",
-                  }));
+                    page: 1,
+                  };
+
+                  // Update state
+                  setFilters(newFilters);
+                  setCurrentPage(1);
+                  setSelectedTopics([]);
+
+                  // Direct API call
+                  api
+                    .getFilteredQuestions({
+                      ...newFilters,
+                      page_size: pageSize,
+                    })
+                    .then((response) => {
+                      console.log("SUBJECT: Got Math data:", response);
+                      setQuestions(response.questions || []);
+                      setTotalPages(response.total_pages || 1);
+                      setTotalQuestions(response.total_questions || 0);
+                      setLoading(false);
+                    })
+                    .catch((err) => {
+                      console.error("SUBJECT: Error fetching Math data:", err);
+                      setError("Failed to load questions");
+                      setQuestions([]);
+                      setLoading(false);
+                    });
                 }}
               >
                 M
@@ -1145,9 +1341,15 @@ const FilterControls = React.memo(
                   filters.subject === 1 ? mathTopics : verbalTopics
                 ).map(([topic, subtopics]) => {
                   // Check if this topic is selected (all its subtopics are selected)
-                  const isTopicSelected = subtopics.every((sub) =>
-                    selectedTopics.includes(`${topic}:${sub}`)
+                  const allSubtopicKeys = subtopics.map(
+                    (sub) => `${topic}:${sub}`
                   );
+                  const isTopicSelected =
+                    allSubtopicKeys.every((key) =>
+                      selectedTopics.includes(key)
+                    ) &&
+                    allSubtopicKeys.length > 0 &&
+                    selectedTopics.length === allSubtopicKeys.length;
 
                   return (
                     <div key={topic} className="topic-section">
@@ -1160,27 +1362,30 @@ const FilterControls = React.memo(
                         {topic}
                       </h3>
                       <div className="topic-tags">
-                        {subtopics.map((subtopic) => (
-                          <div
-                            key={`${topic}-${subtopic}`}
-                            className={`topic-tag 
-                              ${
-                                selectedTopics.includes(`${topic}:${subtopic}`)
-                                  ? "selected"
+                        {subtopics.map((subtopic) => {
+                          const isSubtopicSelected = selectedTopics.includes(
+                            `${topic}:${subtopic}`
+                          );
+                          // A subtopic can be individually selected or part of a topic selection
+                          const isSelectedIndividually =
+                            isSubtopicSelected && selectedTopics.length === 1;
+
+                          return (
+                            <div
+                              key={`${topic}-${subtopic}`}
+                              className={`topic-tag ${
+                                isSubtopicSelected ? "selected" : ""
+                              } ${isTopicSelected ? "topic-selected" : ""} ${
+                                isSelectedIndividually
+                                  ? "individually-selected"
                                   : ""
-                              } 
-                              ${isTopicSelected ? "disabled" : ""}
-                            `}
-                            onClick={() =>
-                              !isTopicSelected && toggleTopic(null, subtopic)
-                            }
-                            style={{
-                              cursor: isTopicSelected ? "default" : "pointer",
-                            }}
-                          >
-                            {subtopic}
-                          </div>
-                        ))}
+                              }`}
+                              onClick={() => toggleTopic(topic, subtopic)}
+                            >
+                              {subtopic}
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   );
