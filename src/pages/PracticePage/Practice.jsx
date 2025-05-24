@@ -523,8 +523,8 @@ const Practice = () => {
   const handleSubjectSwitch = () => {
     protectFilterAction(() => {
       // Determine the new subject
-      const newSubject = activeFilter === "math" ? 2 : 1;
-      const newActiveFilter = activeFilter === "math" ? "verbal" : "math";
+      const newSubject = filters.subject === 2 ? 1 : 2; // Toggle between 1 (Verbal) and 2 (Math)
+      const newActiveFilter = filters.subject === 2 ? "verbal" : "math";
 
       console.log(`Switching subject to ${newActiveFilter} (${newSubject})`);
 
@@ -534,10 +534,15 @@ const Practice = () => {
       // Update UI state
       setActiveFilter(newActiveFilter);
 
+      // Reset selected topics when switching subjects
+      setSelectedTopics([]);
+
       // Create new filters
       const newFilters = {
         ...filters,
         subject: newSubject,
+        topic: "", // Reset topic
+        subtopic: "", // Reset subtopic
         page: 1, // Reset to first page
       };
 
@@ -1114,7 +1119,13 @@ const Practice = () => {
             handleTopicChange={handleTopicChange}
             toggleTopic={toggleTopic}
             selectedTopics={selectedTopics}
-            setSelectedTopics={setSelectedTopics}
+            setLoading={setLoading}
+            setQuestions={setQuestions}
+            setError={setError}
+            setTotalPages={setTotalPages}
+            setTotalQuestions={setTotalQuestions}
+            setCurrentPage={setCurrentPage}
+            pageSize={pageSize}
           />
 
           <QuestionsHeader onSolveRateSort={handleSolveRateSort} />
@@ -1174,6 +1185,13 @@ const FilterControls = React.memo(
     handleTopicChange,
     toggleTopic,
     selectedTopics,
+    setLoading,
+    setQuestions,
+    setError,
+    setTotalPages,
+    setTotalQuestions,
+    setCurrentPage,
+    pageSize,
   }) => {
     // Add state for dropdown visibility
     const [showTopicFilter, setShowTopicFilter] = useState(false);
@@ -1226,44 +1244,7 @@ const FilterControls = React.memo(
                 }`}
                 onClick={() => {
                   console.log("SUBJECT: Switching to Verbal");
-                  setLoading(true);
-
-                  // Update the subject filter
-                  const newFilters = {
-                    ...filters,
-                    subject: 1,
-                    topic: "",
-                    subtopic: "",
-                    page: 1,
-                  };
-
-                  // Update state
-                  setFilters(newFilters);
-                  setCurrentPage(1);
-                  setSelectedTopics([]);
-
-                  // Direct API call
-                  api
-                    .getFilteredQuestions({
-                      ...newFilters,
-                      page_size: pageSize,
-                    })
-                    .then((response) => {
-                      console.log("SUBJECT: Got Verbal data:", response);
-                      setQuestions(response.questions || []);
-                      setTotalPages(response.total_pages || 1);
-                      setTotalQuestions(response.total_questions || 0);
-                      setLoading(false);
-                    })
-                    .catch((err) => {
-                      console.error(
-                        "SUBJECT: Error fetching Verbal data:",
-                        err
-                      );
-                      setError("Failed to load questions");
-                      setQuestions([]);
-                      setLoading(false);
-                    });
+                  onSubjectToggle();
                 }}
               >
                 V
@@ -1274,41 +1255,7 @@ const FilterControls = React.memo(
                 }`}
                 onClick={() => {
                   console.log("SUBJECT: Switching to Math");
-                  setLoading(true);
-
-                  // Update the subject filter
-                  const newFilters = {
-                    ...filters,
-                    subject: 2,
-                    topic: "",
-                    subtopic: "",
-                    page: 1,
-                  };
-
-                  // Update state
-                  setFilters(newFilters);
-                  setCurrentPage(1);
-                  setSelectedTopics([]);
-
-                  // Direct API call
-                  api
-                    .getFilteredQuestions({
-                      ...newFilters,
-                      page_size: pageSize,
-                    })
-                    .then((response) => {
-                      console.log("SUBJECT: Got Math data:", response);
-                      setQuestions(response.questions || []);
-                      setTotalPages(response.total_pages || 1);
-                      setTotalQuestions(response.total_questions || 0);
-                      setLoading(false);
-                    })
-                    .catch((err) => {
-                      console.error("SUBJECT: Error fetching Math data:", err);
-                      setError("Failed to load questions");
-                      setQuestions([]);
-                      setLoading(false);
-                    });
+                  onSubjectToggle();
                 }}
               >
                 M
