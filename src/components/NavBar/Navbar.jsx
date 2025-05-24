@@ -17,6 +17,7 @@ const Navbar = ({ isDarkMode, onThemeToggle, className = "" }) => {
   const isActive = (path) => location.pathname === path;
 
   const handleNavigation = (path) => {
+    console.log(`Navigating to ${path}`);
     navigate(path);
   };
 
@@ -58,7 +59,10 @@ const Navbar = ({ isDarkMode, onThemeToggle, className = "" }) => {
             </div>
             <div
               className={`nav-item ${isActive("/practice") ? "active" : ""}`}
-              onClick={() => handleNavigation("/practice")}
+              onClick={() => {
+                console.log("Practice navigation clicked");
+                handleNavigation("/practice");
+              }}
             >
               <div className="nav-icon-container">
                 <img
