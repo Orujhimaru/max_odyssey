@@ -318,6 +318,15 @@ const Practice = () => {
             page: 1,
             page_size: pageSize,
           });
+
+          console.log("PAGINATION INFO:", {
+            totalItems: response.total_questions || 0,
+            totalPages: response.total_pages || 1,
+            currentPage: response.current_page || 1,
+            pageSize: response.page_size || pageSize,
+            gotQuestions: (response.questions || []).length,
+          });
+
           setQuestions(response.questions || []);
           setTotalPages(response.total_pages || 1);
           setTotalQuestions(response.total_questions || 0);
@@ -337,7 +346,7 @@ const Practice = () => {
   // Modified page change handler to explicitly control when to fetch
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
-      console.log(`Changing to page ${newPage}`);
+      console.log(`PAGINATION: Changing to page ${newPage} of ${totalPages}`);
 
       // Set loading state immediately
       setLoading(true);
@@ -353,16 +362,22 @@ const Practice = () => {
           page_size: pageSize,
         })
         .then((response) => {
-          console.log(`Got data for page ${newPage}:`, response);
-          setQuestions(response.questions || []);
-          setTotalPages(response.total_pages || 1);
-          setTotalQuestions(response.total_questions || 0);
+          console.log(`PAGINATION: Got data for page ${newPage}:`, response);
+          if (response && response.questions) {
+            setQuestions(response.questions);
+            setTotalPages(response.total_pages || 1);
+            setTotalQuestions(response.total_questions || 0);
+          } else {
+            console.error(
+              `PAGINATION: Invalid response format for page ${newPage}`,
+              response
+            );
+          }
           setLoading(false);
         })
         .catch((err) => {
-          console.error(`Error fetching page ${newPage}:`, err);
+          console.error(`PAGINATION: Error fetching page ${newPage}:`, err);
           setError("Failed to load questions");
-          setQuestions([]);
           setLoading(false);
         });
 
@@ -370,6 +385,10 @@ const Practice = () => {
       window.scrollTo({
         top: 0,
       });
+    } else {
+      console.warn(
+        `PAGINATION: Invalid page request: ${newPage}, valid range is 1-${totalPages}`
+      );
     }
   };
 
@@ -844,18 +863,16 @@ const Practice = () => {
           <div className="pagination">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage <= 1 || questions.length === 0}
+              disabled={currentPage <= 1}
             >
               Previous
             </button>
             <span>
-              {questions.length > 0
-                ? `Page ${currentPage} of ${totalPages} (${totalQuestions} questions)`
-                : `No questions found`}
+              Page {currentPage} of {totalPages} ({totalQuestions} questions)
             </span>
             <button
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage >= totalPages || questions.length === 0}
+              disabled={currentPage >= totalPages}
             >
               Next
             </button>

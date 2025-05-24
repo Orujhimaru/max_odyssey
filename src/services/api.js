@@ -216,6 +216,35 @@ export const api = {
       try {
         // We already parsed the response above, so use that
         data = jsonData;
+
+        // Check for pagination in different response formats
+        if (data) {
+          // Check for pagination info in different possible structures
+          console.log(
+            "PAGINATION: Raw API response structure:",
+            Object.keys(data)
+          );
+
+          // Extract pagination info from either pagination object or directly from response
+          const total_pages =
+            data.pagination?.total_pages || data.total_pages || 1;
+          const total_questions =
+            data.pagination?.total_items || data.total_questions || 0;
+          const current_page =
+            data.pagination?.current_page || data.current_page || 1;
+
+          // Make sure these fields exist in our response
+          data.total_pages = total_pages;
+          data.total_questions = total_questions;
+          data.current_page = current_page;
+
+          console.log("PAGINATION: Extracted pagination data:", {
+            total_pages,
+            total_questions,
+            current_page,
+            questions_count: (data.questions || []).length,
+          });
+        }
       } catch (e) {
         console.error("Error parsing JSON from response:", e);
         data = { questions: [], total_pages: 0, total_questions: 0 };
