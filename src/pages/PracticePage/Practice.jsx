@@ -102,12 +102,12 @@ const QuestionsSection = React.memo(
             }
           })();
 
-          console.log(`Question ${question.id} solved status:`, {
-            id: question.id,
-            is_solved: question.is_solved,
-            incorrect: question.incorrect,
-            isCorrectlySolved: isCorrectlySolved,
-          });
+          // console.log(`Question ${question.id} solved status:`, {
+          //   id: question.id,
+          //   is_solved: question.is_solved,
+          //   incorrect: question.incorrect,
+          //   isCorrectlySolved: isCorrectlySolved,
+          // });
 
           return (
             <div
@@ -299,33 +299,73 @@ const Practice = () => {
 
   const navigate = useNavigate();
 
-  // Add handlers for filter changes
-  // const handleSubjectChange = (subjectId) => {
-  //   setFilters((prev) => ({
-  //     ...prev,
-  //     subject: subjectId,
-  //     topic: "",
-  //     subtopic: "",
-  //     page: 1, // Reset to first page when changing filters
-  //   }));
+  // Add a ref to track mounted state
+  const isMountedRef = useRef(false);
+  const shouldFetchRef = useRef(false);
 
-  //   // Also reset the selected topics in the UI
-  //   setSelectedTopics([]);
-  // };
+  // Separate useEffect just for the initial data load
+  useEffect(() => {
+    // Only run this once on mount
+    if (!isMountedRef.current) {
+      isMountedRef.current = true;
 
-  const handleDifficultyChange = (difficultyLevel) => {
-    protectFilterAction(() => {
-      setFilters((prev) => ({
-        ...prev,
-        difficulty: difficultyLevel,
-        page: 1, // Reset to first page when changing filters
-      }));
-    });
-  };
+      const fetchInitialData = async () => {
+        setLoading(true);
+        try {
+          console.log("INITIAL FETCH: Loading first page of data");
+          const response = await api.getFilteredQuestions({
+            ...filters,
+            page: 1,
+            page_size: pageSize,
+          });
+          setQuestions(response.questions || []);
+          setTotalPages(response.total_pages || 1);
+          setTotalQuestions(response.total_questions || 0);
+        } catch (err) {
+          console.error("Error fetching initial data:", err);
+          setError("Failed to load questions");
+          setQuestions([]);
+        } finally {
+          setLoading(false);
+        }
+      };
 
+      fetchInitialData();
+    }
+  }, []); // Empty dependency array - only runs once on mount
+
+  // Modified page change handler to explicitly control when to fetch
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
+      console.log(`Changing to page ${newPage}`);
+
+      // Set loading state immediately
+      setLoading(true);
+
+      // Update the current page state
       setCurrentPage(newPage);
+
+      // Directly fetch the new page
+      api
+        .getFilteredQuestions({
+          ...filters,
+          page: newPage,
+          page_size: pageSize,
+        })
+        .then((response) => {
+          console.log(`Got data for page ${newPage}:`, response);
+          setQuestions(response.questions || []);
+          setTotalPages(response.total_pages || 1);
+          setTotalQuestions(response.total_questions || 0);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error(`Error fetching page ${newPage}:`, err);
+          setError("Failed to load questions");
+          setQuestions([]);
+          setLoading(false);
+        });
+
       // Smooth scroll to top
       window.scrollTo({
         top: 0,
@@ -340,54 +380,6 @@ const Practice = () => {
 
   // Create debounced version
   const debouncedFetchQuestions = useDebounce(fetchQuestionsCallback, 500);
-
-  // Add this effect for fetching questions
-  useEffect(() => {
-    // Remove token check that was causing navigation to fail
-    // const token = localStorage.getItem("token");
-    // if (!token) {
-    //   navigate("/login");
-    //   return;
-    // }
-
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        console.log("Fetching questions with filters:", filters);
-        const response = await api.getFilteredQuestions({
-          ...filters,
-          page: currentPage,
-          page_size: pageSize,
-        });
-
-        console.log("Got filtered questions response:", response);
-        // Update the questions state
-        setQuestions(response.questions || []);
-        setTotalPages(response.total_pages || 1);
-        setTotalQuestions(response.total_questions || 0);
-      } catch (err) {
-        console.error("Error fetching questions:", err);
-        setError("Failed to load questions. Please try again later.");
-        // Show empty questions instead of completely failing
-        setQuestions([]);
-        setTotalPages(1);
-        setTotalQuestions(0);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [
-    filters,
-    currentPage,
-    pageSize,
-    showBookmarked,
-    debouncedFetchQuestions,
-    navigate,
-  ]);
 
   // Simplify the toggleBookmark function
   const toggleBookmark = async (questionId) => {
@@ -437,42 +429,68 @@ const Practice = () => {
     return date.toLocaleDateString();
   };
 
-  // Add an effect to update filters when activeDifficulty changes
-  useEffect(() => {
-    setFilters((prev) => ({
-      ...prev,
-      // Convert activeDifficulty to string or empty string if null
-      difficulty: activeDifficulty !== null ? activeDifficulty.toString() : "",
-      page: 1, // Reset to page 1 when difficulty changes
-    }));
-  }, [activeDifficulty]);
-
   // Your existing difficulty button handler
   const handleDifficultyClick = (level) => {
     protectFilterAction(() => {
       // If clicking the already active difficulty, set to null (All)
-      if (activeDifficulty === level) {
-        setActiveDifficulty(null);
-      } else {
-        setActiveDifficulty(level);
-      }
+      const newDifficulty = activeDifficulty === level ? null : level;
+      setActiveDifficulty(newDifficulty);
+
+      // Now directly call handleDifficultyChange with the new value
+      handleDifficultyChange(
+        newDifficulty !== null ? newDifficulty.toString() : ""
+      );
     });
   };
 
-  // Add an effect to update filters when the switch changes
-  useEffect(() => {
-    setFilters((prev) => ({
-      ...prev,
-      // Convert switch state to subject ID: false (Math) = 1, true (Verbal) = 2
-      subject: activeFilter === "math" ? 1 : 2,
-      page: 1, // Reset to page 1 when subject changes
-    }));
-  }, [activeFilter]);
-
-  // Your existing switch handler
+  // Your existing switch handler updated to use direct API calls
   const handleSubjectSwitch = () => {
     protectFilterAction(() => {
-      setActiveFilter((prev) => (prev === "math" ? "verbal" : "math"));
+      // Determine the new subject
+      const newSubject = activeFilter === "math" ? 2 : 1;
+      const newActiveFilter = activeFilter === "math" ? "verbal" : "math";
+
+      console.log(`Switching subject to ${newActiveFilter} (${newSubject})`);
+
+      // Set loading state
+      setLoading(true);
+
+      // Update UI state
+      setActiveFilter(newActiveFilter);
+
+      // Create new filters
+      const newFilters = {
+        ...filters,
+        subject: newSubject,
+        page: 1, // Reset to first page
+      };
+
+      // Update filter state
+      setFilters(newFilters);
+      setCurrentPage(1);
+
+      // Direct API call
+      api
+        .getFilteredQuestions({
+          ...newFilters,
+          page_size: pageSize,
+        })
+        .then((response) => {
+          console.log(`Got questions for subject ${newSubject}:`, response);
+          setQuestions(response.questions || []);
+          setTotalPages(response.total_pages || 1);
+          setTotalQuestions(response.total_questions || 0);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error(
+            `Error fetching questions for subject ${newSubject}:`,
+            err
+          );
+          setError("Failed to load questions");
+          setQuestions([]);
+          setLoading(false);
+        });
     });
   };
 
@@ -629,12 +647,6 @@ const Practice = () => {
     return isCorrect;
   };
 
-  // Add this effect to reset page when filters change
-  useEffect(() => {
-    // Reset to page 1 whenever filters change
-    setCurrentPage(1);
-  }, [filters]);
-
   // Handle bluebook toggle
   const handleBluebookToggle = () => {
     protectFilterAction(() => {
@@ -724,6 +736,55 @@ const Practice = () => {
       }
     });
   };
+
+  // Add handlers for filter changes
+  const handleDifficultyChange = (difficultyLevel) => {
+    protectFilterAction(() => {
+      console.log(`Setting difficulty to ${difficultyLevel}`);
+
+      // Set loading state
+      setLoading(true);
+
+      // Update filters
+      const newFilters = {
+        ...filters,
+        difficulty: difficultyLevel,
+        page: 1, // Reset to first page when changing filters
+      };
+
+      // Update state
+      setFilters(newFilters);
+      setCurrentPage(1);
+
+      // Directly fetch with new filters
+      api
+        .getFilteredQuestions({
+          ...newFilters,
+          page_size: pageSize,
+        })
+        .then((response) => {
+          console.log("Got filtered questions by difficulty:", response);
+          setQuestions(response.questions || []);
+          setTotalPages(response.total_pages || 1);
+          setTotalQuestions(response.total_questions || 0);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("Error fetching filtered questions:", err);
+          setError("Failed to load questions");
+          setQuestions([]);
+          setLoading(false);
+        });
+    });
+  };
+
+  // Add this to make sure the initial filter state is correct
+  // Make the initial load deterministic and not dependent on defaults
+  // that might change later through other effects
+  useEffect(() => {
+    // Set the activeFilter based on the initial filters.subject value
+    setActiveFilter(filters.subject === 1 ? "math" : "verbal");
+  }, []);
 
   return (
     <div>

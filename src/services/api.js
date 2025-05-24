@@ -1,4 +1,4 @@
-const API_URL = "http://3.76.189.76:8080";
+const API_URL = "http://3.121.235.56:8080";
 
 export const api = {
   // No longer need to get token from localStorage
@@ -179,7 +179,7 @@ export const api = {
       // Debug: Log the full response for inspection
       const responseClone = response.clone();
       const responseText = await responseClone.text();
-      console.log("Full API response:", responseText);
+      // console.log("Full API response:", responseText);
 
       // Try to parse the response
       let jsonData;
