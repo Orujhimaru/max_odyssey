@@ -250,11 +250,11 @@ const TimingLineGraph = () => (
   <div
     style={{
       width: "100%",
-      maxWidth: 1000,
-      margin: "32px 0",
+      height: "100%",
       background: "#23272f",
       borderRadius: 18,
       padding: 32,
+      boxSizing: "border-box",
       boxShadow: "0 2px 16px rgba(0,0,0,0.08)",
       position: "relative",
     }}
@@ -269,7 +269,7 @@ const TimingLineGraph = () => (
         padding: 16,
         position: "relative",
         width: "100%",
-        height: 300,
+        height: 250,
       }}
     >
       {/* Area background */}
@@ -588,7 +588,7 @@ const PaceCard = () => {
   }[paceStatusClass];
 
   return (
-    <div className="pace-card">
+    <div className="pace-card" style={{ margin: 0, height: "100%" }}>
       {/* Left side - times */}
       <div className="pace-card-left">
         <div className="pace-info">
@@ -1283,8 +1283,6 @@ const LabPage = () => {
       </header>
 
       <div className="lab-content">
-        {/* Confirmed Test Dates Section */}
-
         {/* Aristotle Quote Section */}
         <div className="quote-container">
           <div className="quote-accent-line"></div>
@@ -1305,11 +1303,17 @@ const LabPage = () => {
           </div>
         </div>
 
-        {/* Add the PaceCard below the quote and above the heatmap */}
-        <PaceCard />
+        {/* Line chart and pace card in a flex container */}
+        <div className="charts-container">
+          <div className="timing-chart-container">
+            <TimingLineGraph />
+          </div>
+          <div className="pace-container">
+            <PaceCard />
+          </div>
+        </div>
 
         <CalendarHeatmap />
-        <TimingLineGraph />
 
         {/* Tab selection for Math/Verbal */}
         <div className="performance-tab-selector">

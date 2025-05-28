@@ -1589,3 +1589,30 @@
     margin: 0 auto;
   }
 }
+
+/* Chart containers for flex layout */
+.charts-container {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.timing-chart-container {
+  flex: 1.5;
+  min-width: 500px;
+}
+
+.pace-container {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .timing-chart-container,
+  .pace-container {
+    min-width: 100%;
+  }
+}
