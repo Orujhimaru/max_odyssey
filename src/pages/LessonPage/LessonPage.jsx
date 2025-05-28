@@ -1,50 +1,91 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
+import rehypeKatex from "rehype-katex";
+import remarkMath from "remark-math";
 import "./LessonPage.css";
 import StreakIndicator from "../../components/StreakIndicator/StreakIndicator";
 
 // Mock lesson content
 const mockLessonContent = `
-# What Is Docker?
+## Chapter 5: Algebra Skills
 
-## Introduction to Docker
+Many SAT questions test your core algebra skills. To answer these questions correctly, you need to be able to isolate the unknown variable, such as $x$ or $y$, or solve for a more complex term, such as $3a + b$. For any algebra question, take your time, write out each step of your analysis and calculation, and use the calculator to avoid silly mistakes like making a mental math error or forgetting to distribute a negative sign.
 
-Docker makes development efficient and predictable.
+In this section, we will cover the algebra skills that you need in your toolbox for test day.
 
-Docker takes away repetitive, mundane configuration tasks and is used throughout the development lifecycle for fast, easy and portable application development – desktop and cloud. Docker's comprehensive end to end platform includes UIs, CLIs, APIs and security that are engineered to work together across the entire application delivery lifecycle.
+---
 
--- The Docker team
+### 1. PEMDAS
 
-### Key Benefits of Docker
+In algebra, order of operations is critical to solving math questions correctly. PEMDAS is an acronym to help you remember the order of operations in algebra. The rules of PEMDAS are below:
 
-- **Portability**: "It works on my machine" becomes "It works on any machine"
-- **Isolation**: Applications run in their own environment without conflicts
-- **Efficiency**: Lightweight compared to full virtual machines
-- **Scalability**: Easy to deploy multiple instances of the same application
+1.  **P – Parentheses**: Complete any calculations inside parentheses first.
+2.  **E – Exponents**: Next, complete any exponents or square roots.
+3.  **MD – Multiplication and Division**: Complete any multiplication and division ($\\color{darkorange}{\\text{left-to-right}}$).
+4.  **AS – Addition and Subtraction**: Complete any addition and subtraction ($\\color{darkorange}{\\text{left-to-right}}$).
 
-## How Docker Works
+Make sure you do the multiplication and division step $\\color{darkorange}{\\text{left-to-right}}$! This is where the SAT most often tries to trick students. For example, if we are given:
 
-To put it more simply: Docker allows us to deploy our applications inside "containers" which can be thought of as very lightweight virtual machines. Instead of just shipping an application, we can ship an application and the environment it's meant to run within.
+$$16 \\div 4 \\times 2 – 3$$
 
-### Containers vs Virtual Machines
+We need to work $\\color{darkorange}{\\text{left-to-right}}$ when completing multiplication and division. If solved correctly, we will start by dividing 16 by 4 and then multiply by 2. Once we complete the multiplication and division, we will subtract 3.
 
-Containers share the host system's kernel but run in isolated user spaces. This makes them:
+**Correct:**
+$$16 \\div 4 \\times 2 – 3 = 4 \\times 2 – 3 = 8 – 3 = \\color{blue}{5}$$
 
-1. Faster to start
-2. More resource-efficient
-3. Easier to distribute
+Many students make the mistake of doing the multiplication first and then dividing.
 
-### Core Concepts
+**Incorrect:**
+$$16 \\div 4 \\times 2 – 3 = 16 \\div 8 – 3 = 2 – 3 = \\color{red}{-1}$$
 
-- **Images**: Read-only templates with instructions for creating Docker containers
-- **Containers**: Runnable instances of images
-- **Dockerfile**: Text file with instructions to build a Docker image
-- **Registry**: Storage for Docker images (like Docker Hub)
+---
 
-## Getting Started
+### ✨ Example 1
 
-In the next lesson, we'll learn how to install Docker and run our first container.
+What is the value of the expression $22 + (-4)^2 \\div 2 \\times (5 + 10)$?
+
+A) 40 B) 72 C) 120 D) 142
+
+**Solution:**
+
+Let's follow PEMDAS step-by-step:
+
+1.  **P**arentheses: First, complete calculations inside parentheses.
+    The calculation is:
+    $$(5 + 10) = \\color{green}{15}$$
+    Substituting this back, the expression becomes:
+    $$22 + (-4)^2 \\div 2 \\times \\color{green}{15}$$
+
+2.  **E**xponents: Next, evaluate exponents.
+    The calculation is:
+    $$(-4)^2 = \\color{green}{16}$$
+    Substituting this back, the expression becomes:
+    $$22 + \\color{green}{16} \\div 2 \\times 15$$
+
+3.  **M**ultiplication and **D**ivision (from $\\color{darkorange}{\\text{left-to-right}}$):
+    First, perform the division ($16 \\div 2$):
+    $$16 \\div 2 = \\color{green}{8}$$
+    The expression now is:
+    $$22 + \\color{green}{8} \\times 15$$
+    Next, perform the multiplication ($8 \\times 15$):
+    $$8 \\times 15 = \\color{green}{120}$$
+    The expression now is:
+    $$22 + \\color{green}{120}$$
+
+4.  **A**ddition: Finally, complete the addition.
+    The calculation is:
+    $$22 + 120 = \\color{blue}{142}$$
+
+The answer is **D) 142**.
+
+As long as you follow the PEMDAS steps correctly and work $\\color{darkorange}{\\text{left-to-right}}$ correctly, these questions should be easy!
+
+---
+
+### 💡 Shortcut Solution – Use Your Calculator
+
+You can also enter these questions directly into your calculator. Your calculator is programmed to do PEMDAS correctly, so as long as you enter the equation correctly, the calculator will just tell you the answer. It’s that easy! 📲
 `;
 
 // Mock course data with lessons
@@ -570,7 +611,12 @@ const LessonPage = ({ onNavbarToggle }) => {
         >
           <div className="lesson-content">
             <div className="markdown-content">
-              <ReactMarkdown>{mockLessonContent}</ReactMarkdown>
+              <ReactMarkdown
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+              >
+                {mockLessonContent}
+              </ReactMarkdown>
             </div>
           </div>
         </div>
