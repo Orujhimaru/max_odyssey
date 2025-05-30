@@ -836,3 +836,59 @@
   align-items: center;
   order: -1;
 }
+
+/* Math display styles for HTML content */
+.math-display-centered {
+  text-align: center; /* Centers the block */
+  margin-top: 1em; /* Adds some space above */
+  margin-bottom: 1em; /* Adds some space below */
+}
+
+/* Style for example headers */
+.example-header {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 1.5em;
+}
+
+/* MathJax container styling */
+.mathjax-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.mathjax-content {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Ensure equations are visible during processing */
+.math-display-centered {
+  min-height: 2.5em;
+  margin: 1.5em 0;
+  display: block;
+  text-align: center;
+}
+
+/* Ensure MathJax doesn't create horizontal overflow */
+.MathJax {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Add styling for inline math */
+.MathJax_Display {
+  margin: 1em 0 !important;
+  text-align: center !important;
+}
+
+/* Prevent flicker during typesetting */
+.MathJax_Processing {
+  visibility: hidden;
+}
+
+.MathJax_Processed {
+  visibility: visible;
+}
