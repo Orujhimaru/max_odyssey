@@ -5,6 +5,7 @@ import {
   Route,
   Navigate,
   useLocation,
+  Link,
 } from "react-router-dom";
 import "./App.css";
 import "./index.css";
@@ -22,7 +23,6 @@ import LessonPage from "./pages/LessonPage/LessonPage";
 // Create a wrapper component to handle the navbar visibility logic
 const AppContent = () => {
   const location = useLocation();
-  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Get initial theme from localStorage or system preference
     const savedTheme = localStorage.getItem("theme");
@@ -37,20 +37,6 @@ const AppContent = () => {
     location.pathname.includes("/course/") &&
     location.pathname.includes("/lesson/");
 
-  // Update navbar visibility based on route - hide navbar with animation when entering lesson page
-  useEffect(() => {
-    if (isLessonPage) {
-      // Start with navbar visible briefly, then animate it away
-      setIsNavbarVisible(true);
-      // Add a short delay to ensure the animation is visible
-      setTimeout(() => {
-        setIsNavbarVisible(false);
-      }, 300);
-    } else {
-      setIsNavbarVisible(true);
-    }
-  }, [location.pathname]); // React to path changes specifically
-
   useEffect(() => {
     // Update data-theme attribute and localStorage when theme changes
     document.documentElement.setAttribute(
@@ -64,39 +50,27 @@ const AppContent = () => {
     setIsDarkMode((prevMode) => !prevMode);
   };
 
-  // Toggle navbar visibility
-  const toggleNavbar = () => {
-    console.log("Navbar toggle called");
-    // Always show navbar when triggered from lesson page
-    if (isLessonPage) {
-      setIsNavbarVisible(true);
-    } else {
-      setIsNavbarVisible((prev) => !prev);
-    }
-  };
-
-  // Add an event handler to hide navbar when mouse leaves the navbar area
-  const hideNavbar = () => {
-    console.log("Hide navbar called");
-    if (isLessonPage) {
-      setIsNavbarVisible(false);
-    }
-  };
-
   return (
-    <div className={`app ${isLessonPage ? "lesson-fullscreen" : ""}`}>
-      {/* Always render the navbar but control its visibility with CSS */}
-      <div className="navbar-container" onMouseLeave={hideNavbar}>
-        <Navbar
-          isDarkMode={isDarkMode}
-          onThemeToggle={toggleTheme}
-          className={isNavbarVisible ? "visible" : ""}
-        />
+    <div className={`app ${isLessonPage ? "lesson-page-active" : ""}`}>
+      <div className="sidebar-container">
+        {isLessonPage && (
+          <div className="lesson-back-button">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
+              <path d="M19 12H5m7 7l-7-7 7-7" />
+            </svg>
+          </div>
+        )}
+        <Navbar isDarkMode={isDarkMode} onThemeToggle={toggleTheme} />
       </div>
 
-      <div
-        className={`content ${!isNavbarVisible ? "content-fullscreen" : ""}`}
-      >
+      <div className="content">
         <Routes>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/courses" element={<Courses />} />
@@ -105,7 +79,7 @@ const AppContent = () => {
           <Route path="/lab" element={<LabPage />} />
           <Route
             path="/course/:courseId/lesson/:lessonId"
-            element={<LessonPage onNavbarToggle={toggleNavbar} />}
+            element={<LessonPage />}
           />
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />

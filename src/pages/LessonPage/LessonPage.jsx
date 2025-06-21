@@ -191,110 +191,9 @@ const mockQuestions = {
 };
 
 // ====================================================================================
-// MathJaxContent COMPONENT
-// This component handles rendering HTML content with MathJax
-// ====================================================================================
-const MathJaxContent = ({ content }) => {
-  // Keep internal reference to DOM element
-  const contentRef = useRef(null);
-  // Use state to track if MathJax has processed this content
-  const [hasProcessed, setHasProcessed] = useState(false);
-
-  // Function to call MathJax typesetting
-  const processMathJax = () => {
-    if (!contentRef.current || !window.MathJax) return;
-
-    console.log("Processing MathJax...");
-
-    try {
-      // Use typesetPromise if available (MathJax 3)
-      if (window.MathJax.typesetPromise) {
-        window.MathJax.typesetPromise([contentRef.current])
-          .then(() => {
-            console.log("MathJax processing complete");
-            setHasProcessed(true);
-          })
-          .catch((err) => {
-            console.error("MathJax processing error:", err);
-          });
-      }
-      // Fallback to typeset (older MathJax versions)
-      else if (window.MathJax.typeset) {
-        window.MathJax.typeset([contentRef.current]);
-        setHasProcessed(true);
-      }
-    } catch (error) {
-      console.error("Error calling MathJax:", error);
-    }
-  };
-
-  // Initial processing and MathJax configuration
-  useEffect(() => {
-    // Set up MathJax config if it doesn't exist
-    if (!window.MathJax) {
-      console.log("Setting up MathJax config");
-      window.MathJax = {
-        tex: {
-          inlineMath: [
-            ["$", "$"],
-            ["\\(", "\\)"],
-          ],
-          displayMath: [
-            ["$$", "$$"],
-            ["\\[", "\\]"],
-          ],
-          processEscapes: true,
-        },
-        options: {
-          skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
-        },
-      };
-
-      // Load MathJax script if not already present
-      if (!document.getElementById("MathJax-script")) {
-        const script = document.createElement("script");
-        script.id = "MathJax-script";
-        script.async = true;
-        script.src =
-          "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
-        document.head.appendChild(script);
-
-        // Process when MathJax is loaded
-        script.onload = () => {
-          processMathJax();
-        };
-      }
-    } else {
-      // MathJax already loaded, process immediately
-      processMathJax();
-    }
-  }, [content]); // Reprocess when content changes
-
-  // CRITICAL: This effect runs after EVERY render to ensure math is processed
-  // even after React state changes in parent components
-  useEffect(() => {
-    // Only attempt to process if MathJax is available
-    if (window.MathJax) {
-      processMathJax();
-    }
-  }); // No dependency array - runs after every render
-
-  // We use a wrapper div to isolate this content
-  return (
-    <div className="mathjax-wrapper">
-      <div
-        ref={contentRef}
-        className="mathjax-content"
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
-    </div>
-  );
-};
-
-// ====================================================================================
 // LessonPage COMPONENT
 // ====================================================================================
-const LessonPage = ({ onNavbarToggle }) => {
+const LessonPage = () => {
   const { courseId, lessonId } = useParams();
   const numCourseId = parseInt(courseId);
   const numLessonId = parseInt(lessonId);
@@ -406,28 +305,11 @@ const LessonPage = ({ onNavbarToggle }) => {
     selectedAnswer === choiceId &&
     choiceId !== question?.correctAnswer;
 
-  // Force navbar to be hidden when entering lesson page (Example logic)
+  // Initial setup when the component mounts for the lesson page
   useEffect(() => {
-    if (onNavbarToggle) {
-      // console.log(`LessonPage: Hiding navbar for course ${courseId}`);
-      // onNavbarToggle(false); // Pass false to explicitly hide
-    }
-  }, [courseId, onNavbarToggle]);
-
-  // Navbar edge detection effect
-  useEffect(() => {
-    const handleMouseMoveForNavbar = (e) => {
-      if (e.clientX <= 20) {
-        if (onNavbarToggle) {
-          // console.log("LessonPage: Mouse near edge detected, showing navbar");
-          onNavbarToggle(true);
-        }
-      }
-    };
-    document.addEventListener("mousemove", handleMouseMoveForNavbar);
-    return () =>
-      document.removeEventListener("mousemove", handleMouseMoveForNavbar);
-  }, [onNavbarToggle]);
+    // This effect could be used for initial setup if needed,
+    // but the navbar hiding is now handled by default state in App.jsx
+  }, [courseId]);
 
   if (!course || !currentLesson || !currentChapter) {
     return (
@@ -439,13 +321,6 @@ const LessonPage = ({ onNavbarToggle }) => {
 
   return (
     <div className="lesson-page">
-      <div
-        className="navbar-toggle-area"
-        onMouseEnter={() => onNavbarToggle && onNavbarToggle(true)}
-        onClick={() => onNavbarToggle && onNavbarToggle(true)}
-        aria-label="Show navigation sidebar"
-      ></div>
-
       {/* Top Navigation Bar */}
       <div className="lesson-top-nav">
         <div className="nav-dropdowns">
@@ -639,7 +514,7 @@ const LessonPage = ({ onNavbarToggle }) => {
         >
           <div className="lesson-content">
             <div className="markdown-content">
-              <MathJaxContent content={mockLessonContent} />
+              <div dangerouslySetInnerHTML={{ __html: mockLessonContent }} />
             </div>
           </div>
         </div>
