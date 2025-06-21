@@ -1,6 +1,6 @@
 .navbar-hover-area {
   position: fixed;
-  left: 0;
+  left: 0px;
   top: 12px;
   height: calc(100% - 24px);
   padding-left: 6px; /* This creates the hoverable empty space */
