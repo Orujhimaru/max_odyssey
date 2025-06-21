@@ -18,6 +18,7 @@
   display: flex;
   align-items: center;
   padding: 12px 24px;
+  padding-left: 86px;
   background-color: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);
   gap: 24px;
