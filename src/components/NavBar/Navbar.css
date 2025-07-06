@@ -1,276 +1,273 @@
+/* Navbar Container */
 .navbar-hover-area {
   position: fixed;
+  top: 0;
   left: 0px;
-  top: 12px;
-  height: calc(100% - 24px);
-  padding-left: 6px; /* This creates the hoverable empty space */
-  z-index: 999;
-  border-radius: 8px; /* Overall radius for the hover area */
-  /* Add transition for width of the navbar child if navbar-hover-area itself changes size, but width transition is on .navbar */
+  width: 80px;
+  height: 100vh;
+  z-index: 1001;
 }
 
-.navbar {
-  /* position: fixed; */ /* No longer fixed, positioned by parent */
-  position: relative; /* Positioned within navbar-hover-area */
-  z-index: 999; /* Kept, or could be lower if parent is 999 and handles all stacking */
+/* Main Navbar */
+.shadcn-navbar {
   display: flex;
   flex-direction: column;
-  align-items: baseline;
-  justify-content: space-between;
-  /* height: calc(100% - 24px); */ /* Parent .navbar-hover-area has this height */
-  height: 100%; /* Fill the parent */
-  width: 84px; /* Start collapsed - this is the VISIBLE part */
-  background-color: #1b1b1b; /* Dark background */
-  padding: 12px; /* Uniform padding for content inside the 84px bar */
-  /* left: 0; */ /* No longer needed, parent handles positioning from edge */
-  /* top: 12px; */ /* No longer needed */
-  border-radius: 8px; /* Rounded corners for the visible navbar part */
-  transition: width 0.2s ease;
-  overflow: hidden;
-  /* border-left: 6px solid transparent; */ /* Removed */
-  /* background-clip: padding-box; */ /* Removed */
-}
-
-/* Hover effects are now triggered by hovering .navbar-hover-area */
-.navbar-hover-area:hover .navbar {
-  width: 155px;
-}
-
-.navbar-hover-area:hover .logo-container {
-  width: 115px;
-}
-
-.navbar-hover-area:hover .logo-text-main {
-  opacity: 1;
-  transform: translateX(-2px);
-}
-
-.navbar-hover-area:hover .nav-items {
-  right: 4px; /* Original hover style for nav-items alignment */
-  align-items: baseline; /* Revert to baseline when expanded if preferred for text alignment */
-}
-
-.navbar-hover-area:hover .nav-item {
-  justify-content: flex-start; /* Align left when expanded to show text */
-  transform: translateX(-7px);
-  padding-right: 26px; /* Give some space on the right when expanded */
-}
-
-.navbar-hover-area:hover .nav-text {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* Remove old .navbar:hover direct styles that are now handled by .navbar-hover-area:hover */
-/* .navbar:hover { width: 155px; } */ /* Removed/Replaced */
-/* .navbar:hover .logo-container { width: 115px; } */ /* Removed/Replaced */
-/* .navbar:hover .logo-text-main { opacity: 1; transform: translateX(-2px); } */ /* Removed/Replaced */
-/* .navbar:hover .nav-items { right: 4px; align-items: baseline; } */ /* Removed/Replaced */
-/* .navbar:hover .nav-item { justify-content: flex-start; transform: translateX(-7px); padding-right: 26px; } */ /* Removed/Replaced */
-/* .navbar:hover .nav-text { opacity: 1; transform: translateX(0); } */ /* Removed/Replaced */
-
-.logo-container {
-  margin-bottom: 36px;
-  display: flex;
-  background-color: #3d3d3d;
-  border-radius: 4px;
-  align-items: baseline;
-  justify-content: flex-start;
-  padding: 4px;
-  padding-top: 4.5px;
-  height: 55px;
-  width: 60px; /* Start with icon width */
-  transition: width 0.2s ease;
-  position: relative; /* For absolute positioning of text */
-  overflow: hidden; /* Hide text initially */
-}
-
-.logo-text-main {
-  color: #456bc4;
-  font-family: Akshar;
-  font-size: 50px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1.19;
-  letter-spacing: 5.5px;
-  opacity: 0;
-  transform: translateX(-20px);
-  transition: all 0.2s ease;
-  position: absolute;
-  left: 60px; /* Position after logo */
-  z-index: 1; /* Stay behind the gray background */
-}
-
-.nav-items {
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
-  gap: 12px;
-  position: relative;
-  right: -6px; /* Changed from -6px to adjust for transparent left border */
-}
-
-.nav-item {
-  display: flex;
   width: 100%;
-  /* transition: all 0.1s ease; */
-  border-radius: 4px;
-  padding: 4px;
-  padding-block: 12px;
-  align-items: center;
-  position: relative; /* For absolute positioning of the indicator line */
+  height: 100%;
+  background-color: var(--bg-primary);
+  border-right: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-.nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  cursor: pointer;
-}
-
-/* Active item styling with blue line indicator */
-.nav-item.active::after {
-  content: "";
-  position: absolute;
-  /* bottom: -4px; */
-  /* left: 5px; */
-  width: 0px;
-  height: 4px;
-  left: 14px;
-  bottom: 4px;
-  background-color: #456bc4; /* Same blue as the AX logo */
-  border-radius: 2px;
-  transition: width 0.2s ease;
-}
-
-/* Collapse the blue line when navbar is not hovered */
-.navbar:not(:hover) .nav-item.active::after {
-  width: 24px; /* Width when collapsed, matching icon width + padding */
-  left: 12px;
-  bottom: 4px;
-}
-
-/* Hide the active indicator for the Tests nav item */
-/* .nav-item.active:nth-child(3)::after {
-  display: none;
-} */
-
-.nav-item a {
+/* Header Section */
+.navbar-header {
+  padding: 1.5rem 1rem;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
-  align-items: center;
-  justify-content: center; /* Center when collapsed */
-  /* width: 100%; */
-  color: white;
-  text-decoration: none;
-  padding: 10px;
+  justify-content: center;
 }
 
-.nav-icon-container {
+.logo-section {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  scale: 0.9;
 }
 
-.nav-icon {
-  height: auto;
-  cursor: pointer;
+/* Navigation Content */
+.nav-content {
+  flex: 1;
+  padding: 1rem 0.8rem;
+  overflow-y: auto;
 }
 
-.nav-text {
-  display: inline;
-  opacity: 0;
-  transform: translateX(-50px);
-  transition: opacity 0.15s ease, transform 0.3s ease;
-  white-space: nowrap;
-  color: white;
-  font-size: 16px;
+.nav-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.navbar:hover .nav-item {
-  transform: translateX(-7px);
-  padding-right: 26px; /* Give some space on the right when expanded */
-}
-.navbar:hover .nav-items {
-  right: 4px;
-}
-.navbar:hover .nav-text {
-  opacity: 1;
-  transform: translateX(0);
+.nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-.logo {
-  width: 60px; /* Adjust size as needed */
-  height: auto;
-}
-
-/* Remove all the position adjustments and other changes */
-
-.nav-icon.tests {
-  position: static;
-}
-
-.nav-icon.practice {
-  position: static;
-}
-
-.theme-toggle {
-  margin: 0 auto;
-  background: none;
+/* Navigation Items */
+.nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.75rem 0.5rem;
+  border-radius: 0.375rem;
+  background: transparent;
   border: none;
-  color: white;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: background-color 0.2s ease;
-}
-
-.theme-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.theme-toggle svg {
-  transition: transform 0.2s ease;
-}
-
-.theme-toggle:hover svg {
-  /* transform: scale(1.1); */
-}
-
-.navbar:hover .logo-container {
-  width: 115px;
-}
-
-.navbar:hover .logo-text-main {
-  opacity: 1;
-  transform: translateX(-2px);
-}
-
-/* Scale up specific icons */
-.nav-item:nth-child(1) .nav-icon {
-  /* Dashboard icon */
-  transform: scale(1.12);
-  transform-origin: center;
+  text-align: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  top: -1px;
+  overflow: hidden;
 }
 
-.nav-icon.lab {
-  width: 22px;
-  height: 26px;
-}
-.nav-icon.practice {
-  width: 25px;
+.nav-item:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
-.nav-item:nth-child(2) .nav-icon {
-  /* Courses icon */
-  /* transform: scale(1.18); */
-  transform-origin: center;
-  position: relative;
-  top: -1px;
+.nav-item:focus {
+  outline: 2px solid var(--verbal-color);
+  outline-offset: 2px;
+  background-color: var(--bg-secondary);
 }
 
-/* Hide the active indicator for the Tests nav item since it has its own */
-/* .nav-item.active:nth-child(3)::after {
-  display: none;
-} */
+.nav-item:active {
+  background-color: rgba(var(--verbal-color), 0.1);
+}
+
+/* Active State */
+.nav-item-active {
+  background-color: var(--verbal-color);
+  color: white;
+  box-shadow: 0 2px 8px rgba(var(--verbal-color), 0.3);
+}
+
+.nav-item-active:hover {
+  background-color: var(--verbal-color);
+  box-shadow: 0 4px 12px rgba(var(--verbal-color), 0.4);
+}
+
+.nav-item-active:active {
+  box-shadow: 0 1px 4px rgba(var(--verbal-color), 0.3);
+}
+
+/* Navigation Item Icon */
+.nav-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4em;
+  flex-shrink: 0;
+}
+
+.nav-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(50%) sepia(0%) saturate(1000%)
+    hue-rotate(162deg) brightness(93%) contrast(87%);
+  transition: filter 0.15s ease;
+}
+
+.nav-item-active .nav-icon-img {
+  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
+    hue-rotate(93deg) brightness(103%) contrast(103%);
+}
+
+/* Navigation Item Text */
+.nav-item-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: inherit;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+/* Footer Section */
+.navbar-footer {
+  padding: 1rem 0.5rem;
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.75rem 0.5rem;
+  border-radius: 0.375rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--bg-secondary);
+  border-color: rgba(var(--verbal-color), 0.5);
+}
+
+.theme-toggle-btn:focus {
+  outline: 2px solid var(--verbal-color);
+  outline-offset: 2px;
+  background-color: var(--bg-secondary);
+}
+
+.theme-toggle-btn:active {
+  background-color: rgba(var(--verbal-color), 0.1);
+  border-color: var(--verbal-color);
+}
+
+.theme-toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.theme-toggle-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: inherit;
+  white-space: nowrap;
+}
+
+/* Dark Mode Adjustments */
+[data-theme="dark"] .shadcn-navbar {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .theme-toggle-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar-hover-area {
+    width: 280px;
+  }
+
+  .navbar-header {
+    padding: 1rem;
+  }
+
+  .nav-content {
+    padding: 0.75rem;
+  }
+
+  .navbar-footer {
+    padding: 0.75rem;
+  }
+}
+
+/* Scrollbar Styling */
+.nav-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.nav-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nav-content::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 2px;
+}
+
+.nav-content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-primary);
+  opacity: 0.3;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .nav-item {
+    border: 1px solid transparent;
+  }
+
+  .nav-item:focus {
+    border-color: var(--verbal-color);
+    outline: none;
+  }
+
+  .nav-item-active {
+    border-color: var(--verbal-color);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .nav-item,
+  .theme-toggle-btn {
+    transition: none;
+  }
+}

@@ -1,14 +1,71 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import "./Navbar.css"; // Create a CSS file for styling
+import "./Navbar.css";
 import Logo from "./Logo";
-import TestsIcon from "../../assets/TestsIcon";
 
 // Import your logos
 import Dashboard from "../../assets/dashboard1.svg";
 import Practice from "../../assets/practice1.svg";
 import Courses from "../../assets/courses1.svg";
 import LabIcon from "../../assets/lab_icon.svg";
+
+// Import icons from a more modern icon set (using SVG components)
+const TestsIcon = ({ isActive = false }) => (
+  <svg
+    width="23"
+    height="23"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+    <polyline points="14,2 14,8 20,8" />
+    <line x1="16" y1="13" x2="8" y2="13" />
+    <line x1="16" y1="17" x2="8" y2="17" />
+    <polyline points="10,9 9,9 8,9" />
+  </svg>
+);
+
+const SunIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="12" r="4" />
+    <path d="m12 2 0 2" />
+    <path d="m12 20 0 2" />
+    <path d="m4.93 4.93 1.41 1.41" />
+    <path d="m17.66 17.66 1.41 1.41" />
+    <path d="m2 12 2 0" />
+    <path d="m20 12 2 0" />
+    <path d="m6.34 17.66-1.41 1.41" />
+    <path d="m19.07 4.93-1.41 1.41" />
+  </svg>
+);
+
+const MoonIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+  </svg>
+);
 
 const Navbar = ({ isDarkMode, onThemeToggle, className = "" }) => {
   const navigate = useNavigate();
@@ -21,96 +78,95 @@ const Navbar = ({ isDarkMode, onThemeToggle, className = "" }) => {
     navigate(path);
   };
 
+  const navItems = [
+    {
+      id: "dashboard",
+      path: "/dashboard",
+      label: "Dashboard",
+      icon: Dashboard,
+    },
+    {
+      id: "courses",
+      path: "/courses",
+      label: "Courses",
+      icon: Courses,
+    },
+    {
+      id: "tests",
+      path: "/tests",
+      label: "Tests",
+      icon: TestsIcon,
+      isComponent: true,
+    },
+    {
+      id: "practice",
+      path: "/practice",
+      label: "Practice",
+      icon: Practice,
+    },
+    {
+      id: "lab",
+      path: "/lab",
+      label: "Performance",
+      icon: LabIcon,
+    },
+  ];
+
   return (
     <div className="navbar-hover-area">
-      <nav className={`navbar ${className}`}>
-        <div>
-          <div className="logo-container">
+      <nav className={`shadcn-navbar ${className}`}>
+        {/* Header with Logo */}
+        <div className="navbar-header">
+          <div className="logo-section">
             <Logo />
-            <h2 className="logo-text-main">AX</h2>
           </div>
-          <div className="nav-items">
-            <div
-              className={`nav-item ${isActive("/dashboard") ? "active" : ""}`}
-              onClick={() => handleNavigation("/dashboard")}
-            >
-              <div className="nav-icon-container">
-                <img src={Dashboard} alt="Dashboard" className="nav-icon" />
-              </div>
-              <span className="nav-text">Dashboard</span>
-            </div>
-            <div
-              className={`nav-item ${isActive("/courses") ? "active" : ""}`}
-              onClick={() => handleNavigation("/courses")}
-            >
-              <div className="nav-icon-container">
-                <img src={Courses} alt="Courses" className="nav-icon" />
-              </div>
-              <span className="nav-text">Courses</span>
-            </div>
-            <div
-              className={`nav-item ${isActive("/tests") ? "active" : ""}`}
-              onClick={() => handleNavigation("/tests")}
-            >
-              <div className="nav-icon-container">
-                <TestsIcon isActive={isActive("/tests")} />
-              </div>
-              <span className="nav-text">Tests</span>
-            </div>
-            <div
-              className={`nav-item ${isActive("/practice") ? "active" : ""}`}
-              onClick={() => {
-                console.log("Practice navigation clicked");
-                handleNavigation("/practice");
-              }}
-            >
-              <div className="nav-icon-container">
-                <img
-                  src={Practice}
-                  alt="Practice"
-                  className="nav-icon practice"
-                />
-              </div>
-              <span className="nav-text">Practice</span>
-            </div>
-            <div
-              className={`nav-item ${isActive("/lab") ? "active" : ""}`}
-              onClick={() => handleNavigation("/lab")}
-            >
-              <div className="nav-icon-container">
-                <img
-                  src={LabIcon}
-                  alt="Learning Lab"
-                  className="nav-icon lab"
-                />
-              </div>
-              <span className="nav-text">Performance</span>
+        </div>
+
+        {/* Navigation Items */}
+        <div className="nav-content">
+          <div className="nav-section">
+            <div className="nav-group">
+              {navItems.map((item) => {
+                const active = isActive(item.path);
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNavigation(item.path)}
+                    className={`nav-item ${active ? "nav-item-active" : ""}`}
+                    aria-label={item.label}
+                    title={item.label}
+                  >
+                    <div className="nav-item-icon">
+                      {item.isComponent ? (
+                        <item.icon isActive={active} />
+                      ) : (
+                        <img
+                          src={item.icon}
+                          alt={item.label}
+                          className="nav-icon-img"
+                        />
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
-        <button className="theme-toggle" onClick={onThemeToggle}>
-          {isDarkMode ? (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="5" fill="white" />
-              <path
-                d="M12 4V2M12 22v-2M4 12H2m20 0h-2m-2.828-5.172L18.586 5.414M5.414 18.586l1.414-1.414M5.414 5.414L6.828 6.828M18.586 18.586l-1.414-1.414"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          ) : (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          )}
-        </button>
+
+        {/* Footer with Theme Toggle */}
+        <div className="navbar-footer">
+          <button
+            className="theme-toggle-btn"
+            onClick={onThemeToggle}
+            aria-label={`Switch to ${isDarkMode ? "light" : "dark"} mode`}
+            title={`Switch to ${isDarkMode ? "light" : "dark"} mode`}
+          >
+            <div className="theme-toggle-icon">
+              {isDarkMode ? <SunIcon /> : <MoonIcon />}
+            </div>
+          </button>
+        </div>
       </nav>
     </div>
   );
