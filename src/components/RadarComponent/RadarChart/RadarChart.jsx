@@ -194,7 +194,7 @@ export default function RadarChart({
             >
               <defs>
                 <radialGradient
-                  id="scoreGradientMath"
+                  id="scoreGradientVerbal"
                   cx="50%"
                   cy="50%"
                   r="50%"
@@ -210,20 +210,20 @@ export default function RadarChart({
               <g>{gridLevels}</g>
               <g>{radialLines}</g>
               <polygon
-                key={`area-2-${animationKey}`}
-                points={getScorePoints(mathSkills.map((s) => s.score))
+                key={`area-1-${animationKey}`}
+                points={getScorePoints(verbalSkills.map((s) => s.score))
                   .map((p) => `${p.x},${p.y}`)
                   .join(" ")}
                 className="score-area"
-                fill="url(#scoreGradientMath)"
+                fill="url(#scoreGradientVerbal)"
                 style={{
                   "--duration": `${getMaxDuration()}s`,
                   "--delay": `${getMaxDuration()}s`,
                 }}
               />
               <polygon
-                key={`blend-2-${animationKey}`}
-                points={getScorePoints(mathSkills.map((s) => s.score))
+                key={`blend-1-${animationKey}`}
+                points={getScorePoints(verbalSkills.map((s) => s.score))
                   .map((p) => `${p.x},${p.y}`)
                   .join(" ")}
                 className="score-area math-blend"
@@ -235,8 +235,8 @@ export default function RadarChart({
                 }}
               />
               <polygon
-                key={`stroke-2-${animationKey}`}
-                points={getScorePoints(mathSkills.map((s) => s.score))
+                key={`stroke-1-${animationKey}`}
+                points={getScorePoints(verbalSkills.map((s) => s.score))
                   .map((p) => `${p.x},${p.y}`)
                   .join(" ")}
                 fill="none"
@@ -249,9 +249,9 @@ export default function RadarChart({
                 }}
               />
               <g>{labels}</g>
-              {getScorePoints(mathSkills.map((s) => s.score)).map((p, i) => (
+              {getScorePoints(verbalSkills.map((s) => s.score)).map((p, i) => (
                 <circle
-                  key={`point-2-${i}-${animationKey}`}
+                  key={`point-1-${i}-${animationKey}`}
                   cx={centerX}
                   cy={centerY}
                   r={2.5}
@@ -262,7 +262,7 @@ export default function RadarChart({
                     "--target-y": p.y,
                     "--start-x": centerX,
                     "--start-y": centerY,
-                    "--duration": `${getDuration(mathSkills[i].score)}s`,
+                    "--duration": `${getDuration(verbalSkills[i].score)}s`,
                   }}
                 />
               ))}
@@ -307,7 +307,6 @@ export default function RadarChart({
               height={250}
               viewBox="25 25 250 250"
             >
-              {/* Update gradient definitions */}
               <defs>
                 <radialGradient
                   id="scoreGradientMath"
@@ -318,94 +317,70 @@ export default function RadarChart({
                   fy="50%"
                   spreadMethod="pad"
                 >
-                  <stop offset="0%" stopColor="#456bc4" stopOpacity="0.7" />
-                  <stop offset="50%" stopColor="#7a96d4" stopOpacity="0.7" />
-                  <stop offset="100%" stopColor="#5c7fd0" stopOpacity="0.6" />
-                </radialGradient>
-
-                {/* NEW Gray Gradient for the first chart */}
-                <radialGradient
-                  id="scoreGradientGray"
-                  cx="50%"
-                  cy="50%"
-                  r="50%"
-                  fx="50%"
-                  fy="50%"
-                  spreadMethod="pad"
-                >
-                  <stop offset="0%" stopColor="#7B7B7B" stopOpacity="0.6" />
-                  <stop offset="50%" stopColor="#7B7B7B" stopOpacity="0.8" />
-                  <stop offset="100%" stopColor="#585858" stopOpacity="0.6" />
+                  <stop offset="0%" stopColor="#F8F6F0" stopOpacity="0.9" />
+                  <stop offset="50%" stopColor="#F5F3ED" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="#F2F0EA" stopOpacity="0.7" />
                 </radialGradient>
               </defs>
-
-              {/* Background grid */}
               <g>{gridLevels}</g>
               <g>{radialLines}</g>
-
-              {/* Single polygon with NEW gray gradient */}
               <polygon
-                key={`area-1-${animationKey}`}
-                points={scorePolygonPoints}
+                key={`area-2-${animationKey}`}
+                points={getScorePoints(mathSkills.map((s) => s.score))
+                  .map((p) => `${p.x},${p.y}`)
+                  .join(" ")}
                 className="score-area"
-                fill="url(#scoreGradientGray)" /* Use new gray gradient */
+                fill="url(#scoreGradientMath)"
                 style={{
                   "--duration": `${getMaxDuration()}s`,
                   "--delay": `${getMaxDuration()}s`,
                 }}
               />
-
-              {/* Blend mode layer (adjust if needed, keeping gray for now) */}
               <polygon
-                key={`blend-1-${animationKey}`}
-                points={scorePolygonPoints}
-                className="score-area math-blend-special"
-                fill="#929292" /* Darker gray for blend */
-                fillOpacity="0.6" /* Adjusted opacity */
+                key={`blend-2-${animationKey}`}
+                points={getScorePoints(mathSkills.map((s) => s.score))
+                  .map((p) => `${p.x},${p.y}`)
+                  .join(" ")}
+                className="score-area math-blend"
+                fill="#F8F6F0"
+                fillOpacity="0.4"
                 style={{
                   "--duration": `${getMaxDuration()}s`,
                   "--delay": `${getMaxDuration()}s`,
-                  mixBlendMode: "hue",
                 }}
               />
-
-              {/* First chart polygon stroke - Bolder Dark Gray */}
               <polygon
-                key={`stroke-1-${animationKey}`}
-                points={scorePolygonPoints}
+                key={`stroke-2-${animationKey}`}
+                points={getScorePoints(mathSkills.map((s) => s.score))
+                  .map((p) => `${p.x},${p.y}`)
+                  .join(" ")}
                 fill="none"
-                stroke="#6C6C6C" /* Bolder, darker gray stroke */
-                strokeWidth="1.5" /* Slightly thicker stroke */
+                stroke="#a8a8a8"
+                strokeWidth="1"
                 className="score-area"
                 style={{
                   "--duration": "0.3s",
                   "--delay": `${getMaxDuration()}s`,
                 }}
               />
-
               <g>{labels}</g>
-              {scorePoints.map((p, i) => {
-                const score = scores[i];
-                const duration = getDuration(score);
-
-                return (
-                  <circle
-                    key={`point-1-${i}-${animationKey}`}
-                    cx={centerX}
-                    cy={centerY}
-                    r={2.5}
-                    className="score-point"
-                    fill="#777777" /* Dark gray fill for points */
-                    style={{
-                      "--target-x": p.x,
-                      "--target-y": p.y,
-                      "--start-x": centerX,
-                      "--start-y": centerY,
-                      "--duration": `${duration}s`,
-                    }}
-                  />
-                );
-              })}
+              {getScorePoints(mathSkills.map((s) => s.score)).map((p, i) => (
+                <circle
+                  key={`point-2-${i}-${animationKey}`}
+                  cx={centerX}
+                  cy={centerY}
+                  r={2.5}
+                  className="score-point"
+                  fill="#E8E6E0"
+                  style={{
+                    "--target-x": p.x,
+                    "--target-y": p.y,
+                    "--start-x": centerX,
+                    "--start-y": centerY,
+                    "--duration": `${getDuration(mathSkills[i].score)}s`,
+                  }}
+                />
+              ))}
             </svg>
             <div className="skill-stack">
               {mathSkills.map((skill) => (
