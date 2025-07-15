@@ -218,3 +218,28 @@ body.taking-test .navbar {
 .hidden {
   display: none;
 }
+
+/* Login app layout */
+.login-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.login-app .content {
+  flex: 1;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+/* Ensure login page takes full viewport */
+.login-app .login-page {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}

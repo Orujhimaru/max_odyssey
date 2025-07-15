@@ -10,7 +10,9 @@ import {
 import "./App.css";
 import "./index.css";
 import "katex/dist/katex.min.css";
+import { AuthProvider } from "./context/AuthContext";
 import Dashboard from "./pages/DashboardPage/Dashboard";
+import LoginPage from "./pages/LoginPage/LoginPage";
 import Navbar from "./components/NavBar/Navbar";
 import ScoreColumnGraph from "./components/ScoreColumnComponent/ScoreColumnGraph/ScoreColumn";
 import Courses from "./pages/CoursesPage/Courses";
@@ -32,10 +34,11 @@ const AppContent = () => {
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
-  // Check if current route is lesson page
+  // Check if current route is lesson page or login page
   const isLessonPage =
     location.pathname.includes("/course/") &&
     location.pathname.includes("/lesson/");
+  const isLoginPage = location.pathname === "/login";
 
   useEffect(() => {
     // Update data-theme attribute and localStorage when theme changes
@@ -49,6 +52,18 @@ const AppContent = () => {
   const toggleTheme = () => {
     setIsDarkMode((prevMode) => !prevMode);
   };
+
+  // Don't show navbar on login page
+  if (isLoginPage) {
+    return (
+      <div className="app login-app">
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      </div>
+    );
+  }
 
   return (
     <div className={`app ${isLessonPage ? "lesson-page-active" : ""}`}>
@@ -92,7 +107,9 @@ const AppContent = () => {
 const App = () => {
   return (
     <Router>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </Router>
   );
 };
