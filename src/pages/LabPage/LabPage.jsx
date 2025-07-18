@@ -24,6 +24,9 @@ import scoreF from "../../assets/scoreF.svg";
 // Import SpeedometerIcon
 import SpeedometerIcon from "../../components/SpeedometerIcon/SpeedometerIcon";
 
+// Import the new QuestionTimingTracker component
+import QuestionTimingTracker from "../../components/QuestionTimingTracker/QuestionTimingTracker";
+
 // Mock data for 2 months (25 days each)
 const months = [
   { name: "May 2024", days: 25 },
@@ -174,185 +177,11 @@ const getBoxShade = (val) => {
   return shades[Math.min(val, shades.length - 1)];
 };
 
-// Verbal subtopics in order
-const verbalSubtopics = [
-  "Words in Context (Easy)",
-  "Words in Context (Medium)",
-  "Words in Context (Medium)",
-  "Words in Context (Hard)",
-  "Text Structure and Purpose (Easy)",
-  "Text Structure and Purpose (Medium)",
-  "Cross-Text Connections (Medium)",
-  "Central Ideas and Details (Easy)",
-  "Central Ideas and Details (Medium)",
-  "Command of Evidence (Textual) (Easy)",
-  "Command of Evidence (Textual) (Medium)",
-  "Command of Evidence (Quantitative) (Medium)",
-  "Command of Evidence (Quantitative) (Hard)",
-  "Inferences (Medium)",
-  "Boundaries (Easy)",
-  "Boundaries (Medium)",
-  "Boundaries (Hard)",
-  "Form, Structure, and Sense (Easy)",
-  "Form, Structure, and Sense (Medium)",
-  "Form, Structure, and Sense (Hard)",
-  "Transitions (Easy)",
-  "Transitions (Medium)",
-  "Transitions (Hard)",
-  "Rhetorical Synthesis (Easy)",
-  "Rhetorical Synthesis (Medium)",
-  "Rhetorical Synthesis (Medium)",
-  "Rhetorical Synthesis (Hard)",
-];
-
-// Placeholder timing data (in seconds)
-const timingData = [
+// Sample timing data for 27 verbal questions (in seconds)
+const sampleQuestionTimingData = [
   42, 55, 38, 70, 25, 60, 80, 35, 50, 45, 90, 100, 110, 30, 20, 40, 60, 70, 80,
   90, 25, 35, 45, 55, 65, 75, 85,
 ];
-
-const chartData = timingData.map((seconds, idx) => ({
-  question: idx + 1,
-  subtopic: verbalSubtopics[idx],
-  seconds,
-}));
-
-const CustomTooltip = ({ active, payload }) => {
-  if (active && payload && payload.length) {
-    const { question, subtopic, seconds } = payload[0].payload;
-    return (
-      <div
-        className="custom-tooltip"
-        style={{
-          background: "#fff",
-          border: "1px solid #ccc",
-          padding: 10,
-          borderRadius: 8,
-        }}
-      >
-        <div>
-          <strong>Q{question}</strong>
-        </div>
-        <div>{subtopic}</div>
-        <div>
-          <b>{seconds} seconds</b>
-        </div>
-      </div>
-    );
-  }
-  return null;
-};
-
-// Custom dot: invisible by default
-const InvisibleDot = (props) => null;
-
-const TimingLineGraph = () => (
-  <div
-    style={{
-      width: "100%",
-      height: "100%",
-      background: "#23272f",
-      borderRadius: 18,
-      padding: 32,
-      boxSizing: "border-box",
-      boxShadow: "0 2px 16px rgba(0,0,0,0.08)",
-      position: "relative",
-    }}
-  >
-    <h2 style={{ textAlign: "left", marginBottom: 12, color: "#fff" }}>
-      Timing Across Verbal Questions
-    </h2>
-    <div
-      style={{
-        background: "#f7f7fa",
-        borderRadius: 12,
-        padding: 16,
-        position: "relative",
-        width: "100%",
-        height: 250,
-      }}
-    >
-      {/* Area background */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          pointerEvents: "none",
-          zIndex: 1,
-        }}
-      >
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={chartData}
-            margin={{ left: 40, right: 20, top: 20, bottom: 20 }}
-          >
-            <CartesianGrid
-              stroke="#e0e0e0"
-              horizontal={true}
-              vertical={false}
-            />
-            <YAxis
-              domain={[0, 120]}
-              ticks={[10, 30, 60, 120]}
-              tickFormatter={(s) => {
-                if (s === 60) return "01:00";
-                if (s === 120) return "02:00";
-                return `${s}`;
-              }}
-              width={60}
-            />
-            <Area
-              type="monotone"
-              dataKey="seconds"
-              stroke={false}
-              fill="#23272f"
-              fillOpacity={0.18}
-              baseValue={0}
-              isAnimationActive={false}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-      {/* Foreground line and tooltip */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 2,
-        }}
-      >
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={chartData}
-            margin={{ left: 100, right: 20, top: 20, bottom: 20 }}
-          >
-            <Line
-              type="monotone"
-              dataKey="seconds"
-              stroke="#787A7C"
-              strokeWidth={2}
-              dot={<InvisibleDot />}
-              activeDot={{
-                r: 4,
-                fill: "#fff",
-                stroke: "#787A7C",
-                strokeWidth: 1,
-              }}
-              isAnimationActive={false}
-            />
-            <Tooltip content={<CustomTooltip />} />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  </div>
-);
 
 // Change the gold shades to blue/purple shades
 const activityColors = [
@@ -1306,7 +1135,10 @@ const LabPage = () => {
         {/* Line chart and pace card in a flex container */}
         <div className="charts-container">
           <div className="timing-chart-container">
-            <TimingLineGraph />
+            <QuestionTimingTracker
+              questionTimes={sampleQuestionTimingData}
+              title="Timing Across Verbal Questions"
+            />
           </div>
           <div className="pace-container">
             <PaceCard />
