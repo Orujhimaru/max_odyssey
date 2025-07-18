@@ -73,35 +73,45 @@
   overflow: hidden;
 }
 
-.nav-item:hover {
+.nav-item:hover:not(.nav-item-active) {
   background-color: var(--bg-secondary);
   color: var(--text-primary);
 }
 
-.nav-item:focus {
-  outline: 2px solid var(--verbal-color);
+.nav-item:focus:not(.nav-item-active) {
+  outline: 2px solid #4285f4;
   outline-offset: 2px;
   background-color: var(--bg-secondary);
 }
 
-.nav-item:active {
-  background-color: rgba(var(--verbal-color), 0.1);
+.nav-item:active:not(.nav-item-active) {
+  background-color: rgba(66, 133, 244, 0.1);
 }
 
-/* Active State */
-.nav-item-active {
-  background-color: var(--verbal-color);
-  color: white;
-  box-shadow: 0 2px 8px rgba(var(--verbal-color), 0.3);
+/* Active State - Simple solid blue like in the first image */
+.shadcn-navbar .nav-item.nav-item-active {
+  background-color: #4285f4 !important;
+  color: white !important;
+  border-radius: 0.5rem;
+  box-shadow: none !important;
+  border: none !important;
 }
 
-.nav-item-active:hover {
-  background-color: var(--verbal-color);
-  box-shadow: 0 4px 12px rgba(var(--verbal-color), 0.4);
+.shadcn-navbar .nav-item.nav-item-active:hover {
+  background-color: #3367d6 !important;
+  color: white !important;
 }
 
-.nav-item-active:active {
-  box-shadow: 0 1px 4px rgba(var(--verbal-color), 0.3);
+.shadcn-navbar .nav-item.nav-item-active:active {
+  background-color: #2a56c6 !important;
+  color: white !important;
+}
+
+.shadcn-navbar .nav-item.nav-item-active:focus {
+  background-color: #4285f4 !important;
+  color: white !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Navigation Item Icon */
@@ -123,9 +133,19 @@
   transition: filter 0.15s ease;
 }
 
-.nav-item-active .nav-icon-img {
+.shadcn-navbar .nav-item-active .nav-icon-img {
   filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
-    hue-rotate(93deg) brightness(103%) contrast(103%);
+    hue-rotate(93deg) brightness(103%) contrast(103%) !important;
+}
+
+/* Style SVG icons to match the gray color of other navbar icons */
+.nav-item svg {
+  color: #6b7280;
+  transition: color 0.15s ease;
+}
+
+.shadcn-navbar .nav-item-active svg {
+  color: white !important;
 }
 
 /* Navigation Item Text */
@@ -166,18 +186,18 @@
 
 .theme-toggle-btn:hover {
   background-color: var(--bg-secondary);
-  border-color: rgba(var(--verbal-color), 0.5);
+  border-color: rgba(66, 133, 244, 0.5);
 }
 
 .theme-toggle-btn:focus {
-  outline: 2px solid var(--verbal-color);
+  outline: 2px solid #4285f4;
   outline-offset: 2px;
   background-color: var(--bg-secondary);
 }
 
 .theme-toggle-btn:active {
-  background-color: rgba(var(--verbal-color), 0.1);
-  border-color: var(--verbal-color);
+  background-color: rgba(66, 133, 244, 0.1);
+  border-color: #4285f4;
 }
 
 .theme-toggle-icon {
@@ -202,12 +222,23 @@
     0 2px 4px -1px rgba(0, 0, 0, 0.2);
 }
 
-[data-theme="dark"] .nav-item:hover {
+[data-theme="dark"] .nav-item:hover:not(.nav-item-active) {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
 [data-theme="dark"] .theme-toggle-btn:hover {
   background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Ensure active state works in dark mode too */
+[data-theme="dark"] .shadcn-navbar .nav-item.nav-item-active {
+  background-color: #4285f4 !important;
+  color: white !important;
+}
+
+[data-theme="dark"] .shadcn-navbar .nav-item.nav-item-active:hover {
+  background-color: #3367d6 !important;
+  color: white !important;
 }
 
 /* Responsive Design */
@@ -254,13 +285,13 @@
     border: 1px solid transparent;
   }
 
-  .nav-item:focus {
-    border-color: var(--verbal-color);
+  .nav-item:focus:not(.nav-item-active) {
+    border-color: #4285f4;
     outline: none;
   }
 
-  .nav-item-active {
-    border-color: var(--verbal-color);
+  .shadcn-navbar .nav-item.nav-item-active {
+    border-color: #4285f4 !important;
   }
 }
 
