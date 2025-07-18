@@ -244,10 +244,6 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .navbar-hover-area {
-    width: 280px;
-  }
-
   .navbar-header {
     padding: 1rem;
   }

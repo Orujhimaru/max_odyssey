@@ -180,11 +180,11 @@
   border: 2px solid transparent;
   transition: border-color 0.2s ease, background-color 0.2s ease;
   cursor: pointer;
-  min-width: 160px;
+  width: 260px;
 }
 
 .legend-group.highlighted {
-  border-color: #0ea5e9;
+  border-color: #1a369a;
   background-color: var(--bg-primary);
 }
 
