@@ -1,4 +1,4 @@
-import Max from "../../assets/max_logo.svg";
+import Max from "../../assets/max-new-logo.svg";
 
 const Logo = () => {
   return (
@@ -7,7 +7,7 @@ const Logo = () => {
         src={Max}
         alt="Logo"
         style={{
-          width: "50px",
+          width: "55px",
         }}
       />
     </div>
