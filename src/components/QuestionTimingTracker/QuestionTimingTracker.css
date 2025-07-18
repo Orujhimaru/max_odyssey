@@ -3,7 +3,7 @@
   border-radius: 12px;
   padding: 24px;
   border: 1px solid var(--border-color);
-  width: 100%;
+  width: fit-content;
 }
 
 .tracker-header {
@@ -23,6 +23,8 @@
   height: 275px;
   margin-bottom: 32px;
   width: fit-content;
+  margin: 0 auto;
+  margin-bottom: 20px;
 }
 
 .y-axis {
@@ -98,7 +100,8 @@
   min-width: 8px; */
   height: 100%;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease;
+  will-change: transform;
   position: relative;
 }
 
@@ -108,7 +111,8 @@
   background-color: #e5e7eb;
   border-radius: 2px;
   margin-bottom: 1px;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease;
+  will-change: background-color;
 }
 
 .question-dot:last-child {
@@ -121,10 +125,6 @@
 
 .question-column:hover .question-dot {
   background-color: #0ea5e9;
-}
-
-.question-column.highlighted .question-dot {
-  background-color: #143d80;
 }
 
 .question-tooltip {
@@ -164,10 +164,11 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  justify-content: center;
+  /* justify-content: center; */
   padding: 16px;
   background-color: var(--bg-secondary);
   border-radius: 8px;
+  max-width: 570px;
 }
 
 .legend-group {
@@ -177,7 +178,7 @@
   padding: 12px;
   border-radius: 6px;
   border: 2px solid transparent;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
   cursor: pointer;
   min-width: 160px;
 }
@@ -203,15 +204,22 @@
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 8px;
   padding: 2px 0;
   border-radius: 4px;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease;
   cursor: pointer;
 }
 
 .legend-item.highlighted {
   background-color: rgba(14, 165, 233, 0.1);
+}
+
+.legend-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  gap: 12px;
 }
 
 .legend-color-box {
@@ -227,9 +235,11 @@
   font-weight: 500;
 }
 
-.legend-item.highlighted .legend-text {
+.legend-timing {
+  font-size: 12px;
   color: var(--text-primary);
   font-weight: 600;
+  font-family: monospace;
 }
 
 [data-theme="dark"] .tooltip-content {

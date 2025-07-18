@@ -67,6 +67,34 @@ const QuestionTimingTracker = ({
     normalizedTimes.push(0);
   }
 
+  // Calculate average timing for each subtopic
+  const calculateSubtopicAverages = () => {
+    const subtopicTimes = {};
+
+    // Group times by subtopic
+    normalizedTimes.forEach((time, index) => {
+      const subtopicName = QUESTION_SUBTOPIC_MAP[index]?.subtopic;
+      if (subtopicName) {
+        if (!subtopicTimes[subtopicName]) {
+          subtopicTimes[subtopicName] = [];
+        }
+        subtopicTimes[subtopicName].push(time);
+      }
+    });
+
+    // Calculate averages
+    const averages = {};
+    Object.keys(subtopicTimes).forEach((subtopic) => {
+      const times = subtopicTimes[subtopic];
+      const average = times.reduce((sum, time) => sum + time, 0) / times.length;
+      averages[subtopic] = average;
+    });
+
+    return averages;
+  };
+
+  const subtopicAverages = calculateSubtopicAverages();
+
   // Find the subtopic of the currently hovered question
   const hoveredSubtopic =
     hoveredQuestionIndex !== null
@@ -94,13 +122,14 @@ const QuestionTimingTracker = ({
     setHoveredQuestionIndex(null);
   };
 
+  const handleBarsContainerMouseLeave = () => {
+    setHoveredQuestionIndex(null);
+  };
+
   const formatTime = (seconds) => {
-    if (seconds >= 60) {
-      const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = seconds % 60;
-      return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-    }
-    return `${seconds}s`;
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -143,7 +172,10 @@ const QuestionTimingTracker = ({
           </div>
 
           {/* Question bars */}
-          <div className="bars-container">
+          <div
+            className="bars-container"
+            onMouseLeave={handleBarsContainerMouseLeave}
+          >
             {normalizedTimes.map((timeInSeconds, index) => {
               const height = Math.min((timeInSeconds / maxTime) * 100, 100);
               const isHighlighted = isQuestionInHoveredSubtopic(index);
@@ -161,7 +193,6 @@ const QuestionTimingTracker = ({
                   }`}
                   style={{ height: "100%" }}
                   onMouseEnter={(e) => handleMouseEnter(index, e)}
-                  onMouseLeave={handleMouseLeave}
                 >
                   {/* Create dots from bottom to top */}
                   {Array.from({ length: Math.min(numDots, maxDots) }).map(
@@ -225,22 +256,28 @@ const QuestionTimingTracker = ({
             >
               <h4 className="legend-group-title">{mainTopic.name}</h4>
               <div className="legend-items">
-                {mainTopic.subtopics.map((subtopic, sIdx) => (
-                  <div
-                    key={sIdx}
-                    className={`legend-item ${
-                      hoveredSubtopic === subtopic.name ? "highlighted" : ""
-                    }`}
-                  >
+                {mainTopic.subtopics.map((subtopic, sIdx) => {
+                  const averageTime = subtopicAverages[subtopic.name] || 0;
+                  const formattedTime = formatTime(Math.round(averageTime));
+                  const isSubtopicHighlighted =
+                    hoveredSubtopic === subtopic.name;
+
+                  return (
                     <div
-                      className="legend-color-box"
-                      style={{ backgroundColor: subtopic.color }}
-                    />
-                    <span className="legend-text">
-                      {subtopic.name} ({subtopic.questions})
-                    </span>
-                  </div>
-                ))}
+                      key={sIdx}
+                      className={`legend-item ${
+                        isSubtopicHighlighted ? "highlighted" : ""
+                      }`}
+                    >
+                      <div className="legend-content">
+                        <span className="legend-text">
+                          {subtopic.name} ({subtopic.questions})
+                        </span>
+                        <span className="legend-timing">{formattedTime}</span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           );

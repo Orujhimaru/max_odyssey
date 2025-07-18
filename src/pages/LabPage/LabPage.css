@@ -1593,14 +1593,14 @@
 /* Chart containers for flex layout */
 .charts-container {
   display: flex;
-  gap: 24px;
+  gap: 12px;
   flex-wrap: wrap;
   margin-bottom: 32px;
 }
 
 .timing-chart-container {
-  flex: 1.5;
-  min-width: 400px;
+  /* flex: 1.5; */
+  /* min-width: 400px; */
 }
 
 .pace-container {
