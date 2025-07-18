@@ -171,7 +171,7 @@ const QuestionTimingTracker = ({
                         className="question-dot"
                         style={{
                           backgroundColor: isHighlighted
-                            ? "#0ea5e9" // Sky blue for all highlighted dots
+                            ? "#143d80" // Sky blue for all highlighted dots
                             : undefined, // Let CSS handle default color based on theme
                         }}
                       />
