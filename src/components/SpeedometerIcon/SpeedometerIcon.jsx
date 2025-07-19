@@ -1,7 +1,9 @@
 import React from "react";
+import "./SpeedometerIcon.css";
 
 const SpeedometerIcon = React.memo(({ ratio }) => {
   const [currentAngle, setCurrentAngle] = React.useState(-180);
+  const [isAnimating, setIsAnimating] = React.useState(false);
   const firstRender = React.useRef(true);
   const prevRatio = React.useRef(ratio);
 
@@ -39,13 +41,14 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
     if (prevRatio.current === ratio) return;
     prevRatio.current = ratio;
 
-    // Start from leftmost position (-180 degrees)
-    setCurrentAngle(-180);
+    // Start animation
+    setIsAnimating(true);
+    setCurrentAngle(targetAngle);
 
-    // Animate to final position after a brief delay
+    // End animation after duration
     const timer = setTimeout(() => {
-      setCurrentAngle(targetAngle);
-    }, 200);
+      setIsAnimating(false);
+    }, 1200);
 
     return () => clearTimeout(timer);
   }, [ratio]);
@@ -152,7 +155,7 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
       {/* Needle */}
       <g
         transform={`rotate(${currentAngle + 90}, 60, 60)`}
-        className="speedometer-needle-group"
+        className={`speedometer-needle-group ${isAnimating ? "animating" : ""}`}
       >
         <line
           x1="60"

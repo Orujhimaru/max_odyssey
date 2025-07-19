@@ -138,7 +138,7 @@ const QuestionTimingTracker = ({
         <h2 className="tracker-title">{title}</h2>
       </div>
 
-      <div className="chart-container">
+      <div className="question-chart-container">
         {/* Y-axis labels */}
         <div className="y-axis">
           <div className="y-axis-label" style={{ top: "0%" }}>

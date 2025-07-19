@@ -1,0 +1,35 @@
+.speedometer-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.speedometer-needle-group {
+  transform-origin: 60px 60px;
+  transition: none;
+}
+
+.speedometer-needle-group.animating {
+  transition: transform 1.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Responsive speedometer sizing */
+@media (max-width: 1200px) {
+  .speedometer-icon {
+    max-width: 140px;
+    max-height: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .speedometer-icon {
+    max-width: 120px;
+    max-height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .speedometer-icon {
+    max-width: 100px;
+    max-height: 100px;
+  }
+}
