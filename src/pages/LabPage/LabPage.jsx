@@ -15,11 +15,11 @@ import {
 } from "recharts";
 
 // Import score SVGs
-import scoreA from "../../assets/scoreA.svg";
-import scoreB from "../../assets/scoreB.svg";
-import scoreC from "../../assets/scoreC.svg";
-import scoreD from "../../assets/scoreD.svg";
-import scoreF from "../../assets/scoreF.svg";
+import scoreAce from "../../assets/ace.svg";
+import scoreGood from "../../assets/good.svg";
+import scoreMid from "../../assets/mid.svg";
+import scoreBad from "../../assets/bad.svg";
+import scoreNone from "../../assets/none.svg";
 
 // Import SpeedometerIcon
 import SpeedometerIcon from "../../components/SpeedometerIcon/SpeedometerIcon";
@@ -363,20 +363,20 @@ const LabPage = () => {
 
   // Function to get the score image based on percentage
   const getScoreImage = (percentage) => {
-    if (percentage >= 90) return scoreA;
-    if (percentage >= 80) return scoreB;
-    if (percentage >= 70) return scoreC;
-    if (percentage >= 60) return scoreD;
-    return scoreF;
+    if (percentage >= 90) return scoreAce;
+    if (percentage >= 75) return scoreGood;
+    if (percentage >= 60) return scoreMid;
+    if (percentage >= 40) return scoreBad;
+    return scoreNone;
   };
 
   // Function to get the score label based on percentage
   const getScoreLabel = (percentage) => {
-    if (percentage >= 90) return "A+";
-    if (percentage >= 80) return "B-";
-    if (percentage >= 70) return "C";
-    if (percentage >= 60) return "D";
-    return "F";
+    if (percentage >= 90) return "Ace";
+    if (percentage >= 75) return "Good";
+    if (percentage >= 60) return "Mid";
+    if (percentage >= 40) return "Bad";
+    return "None";
   };
 
   // Function to calculate average time formatting
@@ -830,7 +830,7 @@ const LabPage = () => {
                         <img
                           src={getScoreImage(avgMastery.percentage)}
                           alt={`Score ${getScoreLabel(avgMastery.percentage)}`}
-                          className="score-icon"
+                          className="lab-score-icon"
                         />
                         <div className="lab-mastery-text">
                           {avgMastery.text}
@@ -877,7 +877,7 @@ const LabPage = () => {
                                 alt={`Score ${getScoreLabel(
                                   subtopic.masteryPercentage
                                 )}`}
-                                className="score-icon"
+                                className="lab-score-icon"
                               />
                               <div className="lab-mastery-text">
                                 {subtopic.masteryText}
