@@ -192,8 +192,14 @@
     gap: 12px;
   }
   .score-boxes-inner {
-    /* flex-direction: column; */
+    width: 270px;
   }
+  .predicted-score-container {
+    width: 70%;
+  }
+}
+
+@media (max-width: 890px) {
   .predicted-score-container {
     width: 100%;
   }

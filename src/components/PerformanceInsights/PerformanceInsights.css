@@ -416,3 +416,15 @@
 }
 
 /* Remove sparkline styles */
+@media (max-width: 1210px) {
+  .insight-card {
+    padding: 8px;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 1150px) {
+  .insight-card-mini-container {
+    flex-direction: column;
+  }
+}

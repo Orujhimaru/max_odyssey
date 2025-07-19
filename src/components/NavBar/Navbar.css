@@ -75,7 +75,7 @@
 }
 
 .nav-item:hover:not(.nav-item-active) {
-  background-color: var(--bg-secondary);
+  background-color: #e1e1e1;
   color: var(--text-primary);
 }
 
@@ -141,7 +141,7 @@
 
 /* Style SVG icons to match the gray color of other navbar icons */
 .nav-item svg {
-  color: #6b7280;
+  color: #787878;
   transition: color 0.15s ease;
 }
 

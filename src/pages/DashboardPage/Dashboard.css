@@ -94,13 +94,20 @@
   margin-bottom: 12px;
 }
 
+@media (max-width: 1110px) {
+  .top-row {
+    flex-direction: column;
+    max-width: 400px;
+  }
+}
+
 /* .top-row > * {
   flex: 1;
 } */
 
-@media (max-width: 1200px) {
+/* @media (max-width: 1170px) {
   .top-row {
     flex-direction: column;
     gap: 10px;
   }
-}
+} */

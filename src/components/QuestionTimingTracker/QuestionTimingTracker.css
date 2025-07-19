@@ -17,7 +17,7 @@
   margin: 0;
 }
 
-.chart-container {
+.question-chart-container {
   position: relative;
   display: flex;
   height: 275px;
@@ -262,7 +262,7 @@
     padding: 16px;
   }
 
-  .chart-container {
+  .question-chart-container {
     height: 200px;
     margin-bottom: 24px;
   }
