@@ -308,3 +308,21 @@
   opacity: 0.7;
   padding-left: 8px;
 }
+
+[data-theme="light"] .math-area {
+  fill: url(#scoreGradientMathLight) !important;
+}
+
+[data-theme="light"] .math-blend-fill {
+  fill: #424242 !important;
+  fill-opacity: 0.8 !important;
+}
+
+[data-theme="light"] .math-stroke {
+  stroke: #414141 !important;
+  stroke-width: 1.5 !important;
+}
+
+[data-theme="light"] .math-point {
+  fill: #5d5d5d !important;
+}

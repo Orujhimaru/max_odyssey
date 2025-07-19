@@ -28,8 +28,8 @@ export default function RadarChart({
     }).join(" ");
   };
 
-  const getScorePoints = () => {
-    return scores.map((score, i) => {
+  const getScorePoints = (inputScores = scores) => {
+    return inputScores.map((score, i) => {
       // Always subtract 10, but ensure minimum of 5%
       const adjustedScore = Math.max(5, score - 10);
       const scale = adjustedScore / 100; // Convert to scale (0-0.8)
@@ -101,7 +101,7 @@ export default function RadarChart({
   };
   // Add the skills data and color function at the top
   const verbalSkills = [
-    { id: 1, name: "Similarity", score: 98 },
+    { id: 1, name: "Similarity", score: 18 },
     { id: 2, name: "Consistency", score: 87 },
     { id: 3, name: "Clarity", score: 76 },
     { id: 4, name: "Cognitive demand", score: 66 },
@@ -112,10 +112,10 @@ export default function RadarChart({
 
   // Add mathSkills data
   const mathSkills = [
-    { id: 1, name: "Algebra", score: 92 },
+    { id: 1, name: "Algebra", score: 42 },
     { id: 2, name: "Geometry", score: 85 },
-    { id: 3, name: "Calculus", score: 78 },
-    { id: 4, name: "Statistics", score: 88 },
+    { id: 3, name: "Calculus", score: 68 },
+    { id: 4, name: "Statistics", score: 38 },
     { id: 5, name: "Linear Algebra", score: 72 },
     { id: 6, name: "Trigonometry", score: 82 },
     { id: 7, name: "Number Theory", score: 76 },
@@ -321,6 +321,19 @@ export default function RadarChart({
                   <stop offset="50%" stopColor="#F5F3ED" stopOpacity="0.8" />
                   <stop offset="100%" stopColor="#F2F0EA" stopOpacity="0.7" />
                 </radialGradient>
+                <radialGradient
+                  id="scoreGradientMathLight"
+                  cx="50%"
+                  cy="50%"
+                  r="50%"
+                  fx="50%"
+                  fy="50%"
+                  spreadMethod="pad"
+                >
+                  <stop offset="0%" stopColor="#525050" stopOpacity="0.2" />
+                  <stop offset="50%" stopColor="#3E3D3D" stopOpacity="0.15" />
+                  <stop offset="100%" stopColor="#313130" stopOpacity="0.18" />
+                </radialGradient>
               </defs>
               <g>{gridLevels}</g>
               <g>{radialLines}</g>
@@ -329,7 +342,7 @@ export default function RadarChart({
                 points={getScorePoints(mathSkills.map((s) => s.score))
                   .map((p) => `${p.x},${p.y}`)
                   .join(" ")}
-                className="score-area"
+                className="score-area math-area"
                 fill="url(#scoreGradientMath)"
                 style={{
                   "--duration": `${getMaxDuration()}s`,
@@ -341,7 +354,7 @@ export default function RadarChart({
                 points={getScorePoints(mathSkills.map((s) => s.score))
                   .map((p) => `${p.x},${p.y}`)
                   .join(" ")}
-                className="score-area math-blend"
+                className="score-area math-blend math-blend-fill"
                 fill="#F8F6F0"
                 fillOpacity="0.4"
                 style={{
@@ -357,7 +370,7 @@ export default function RadarChart({
                 fill="none"
                 stroke="#a8a8a8"
                 strokeWidth="1"
-                className="score-area"
+                className="score-area math-stroke"
                 style={{
                   "--duration": "0.3s",
                   "--delay": `${getMaxDuration()}s`,
@@ -370,7 +383,7 @@ export default function RadarChart({
                   cx={centerX}
                   cy={centerY}
                   r={2.5}
-                  className="score-point"
+                  className="score-point math-point"
                   fill="#E8E6E0"
                   style={{
                     "--target-x": p.x,
