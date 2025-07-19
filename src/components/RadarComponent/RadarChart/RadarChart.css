@@ -279,7 +279,6 @@
 /* Add blend mode styles */
 .math-blend {
   mix-blend-mode: color-burn; /* Light mode default */
-  filter: drop-shadow(1px 1px 20px #898989);
 }
 
 [data-theme="dark"] .math-blend-special {
@@ -314,12 +313,12 @@
 }
 
 [data-theme="light"] .math-blend-fill {
-  fill: #424242 !important;
-  fill-opacity: 0.8 !important;
+  fill: #565656 !important;
+  fill-opacity: 0.7 !important;
 }
 
 [data-theme="light"] .math-stroke {
-  stroke: #414141 !important;
+  stroke: #474747 !important;
   stroke-width: 1.5 !important;
 }
 
