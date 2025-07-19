@@ -8,6 +8,9 @@
 
 .tracker-header {
   margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .tracker-title {
@@ -15,6 +18,29 @@
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
+}
+
+.toggle-chart-button {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.toggle-chart-button:hover {
+  background-color: var(--bg-secondary);
+  border-color: var(--verbal-color);
+}
+
+.toggle-chart-button:active {
+  background-color: var(--verbal-color);
+  color: white;
+  border-color: var(--verbal-color);
 }
 
 .question-chart-container {

@@ -183,6 +183,17 @@ const sampleQuestionTimingData = [
   90, 25, 35, 45, 55, 65, 75, 85,
 ];
 
+// Sample timing data for 22 math questions (in seconds)
+// Easy (6): shorter times, Medium (9): moderate times, Hard (7): longer times
+const sampleMathQuestionTimingData = [
+  // Easy questions (1-6)
+  25, 30, 35, 28, 32, 40,
+  // Medium questions (7-15)
+  50, 65, 75, 60, 80, 70, 85, 55, 90,
+  // Hard questions (16-22)
+  110, 125, 100, 130, 115, 105, 120,
+];
+
 // Add a new PaceCard component
 const PaceCard = () => {
   // Sample data - in real app this would come from props or context
@@ -925,7 +936,7 @@ const LabPage = () => {
           <div className="timing-chart-container">
             <QuestionTimingTracker
               questionTimes={sampleQuestionTimingData}
-              title="Timing Across Verbal Questions"
+              mathQuestionTimes={sampleMathQuestionTimingData}
             />
           </div>
           <div className="pace-container">

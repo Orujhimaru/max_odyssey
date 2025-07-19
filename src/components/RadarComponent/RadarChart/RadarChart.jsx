@@ -101,13 +101,13 @@ export default function RadarChart({
   };
   // Add the skills data and color function at the top
   const verbalSkills = [
-    { id: 1, name: "Similarity", score: 18 },
+    { id: 1, name: "Similarity", score: 48 },
     { id: 2, name: "Consistency", score: 87 },
     { id: 3, name: "Clarity", score: 76 },
     { id: 4, name: "Cognitive demand", score: 66 },
     { id: 5, name: "Focus", score: 56 },
     { id: 6, name: "Engagement", score: 47 },
-    { id: 7, name: "Time consumption", score: 16 },
+    { id: 7, name: "Time consumption", score: 36 },
   ];
 
   // Add mathSkills data

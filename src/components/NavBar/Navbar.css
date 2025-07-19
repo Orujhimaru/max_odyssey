@@ -197,8 +197,9 @@
 }
 
 .theme-toggle-btn:active {
-  background-color: rgba(66, 133, 244, 0.1);
-  border-color: #4285f4;
+  background-color: #4285f4;
+  color: white;
+  border: none;
 }
 
 .theme-toggle-icon {
