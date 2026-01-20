@@ -14,6 +14,8 @@ export default function RadarChart({
 }) {
   const [isSecondChartVisible, setIsSecondChartVisible] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
+  const [hoveredVerbalIndex, setHoveredVerbalIndex] = useState(null);
+  const [hoveredMathIndex, setHoveredMathIndex] = useState(null);
 
   const centerX = 150,
     centerY = 150;
@@ -249,27 +251,52 @@ export default function RadarChart({
                 }}
               />
               <g>{labels}</g>
-              {getScorePoints(verbalSkills.map((s) => s.score)).map((p, i) => (
-                <circle
-                  key={`point-1-${i}-${animationKey}`}
-                  cx={centerX}
-                  cy={centerY}
-                  r={2.5}
-                  className="score-point"
-                  fill="#456bc4"
-                  style={{
-                    "--target-x": p.x,
-                    "--target-y": p.y,
-                    "--start-x": centerX,
-                    "--start-y": centerY,
-                    "--duration": `${getDuration(verbalSkills[i].score)}s`,
-                  }}
-                />
-              ))}
+              {getScorePoints(verbalSkills.map((s) => s.score)).map((p, i) => {
+                const isHovered = hoveredVerbalIndex === i;
+                return (
+                  <g key={`point-group-1-${i}-${animationKey}`}>
+                    <circle
+                      cx={centerX}
+                      cy={centerY}
+                      r={isHovered ? 5 : 3}
+                      className={`score-point verbal-point${
+                        isHovered ? " score-point-active" : ""
+                      }`}
+                      fill="#456bc4"
+                      style={{
+                        "--target-x": p.x,
+                        "--target-y": p.y,
+                        "--start-x": centerX,
+                        "--start-y": centerY,
+                        "--duration": `${getDuration(verbalSkills[i].score)}s`,
+                      }}
+                    />
+                    <circle
+                      cx={centerX}
+                      cy={centerY}
+                      r={isHovered ? 2 : 1}
+                      className="score-point verbal-point-inner"
+                      fill="white"
+                      style={{
+                        "--target-x": p.x,
+                        "--target-y": p.y,
+                        "--start-x": centerX,
+                        "--start-y": centerY,
+                        "--duration": `${getDuration(verbalSkills[i].score)}s`,
+                      }}
+                    />
+                  </g>
+                );
+              })}
             </svg>
             <div className="skill-stack">
-              {verbalSkills.map((skill) => (
-                <div key={skill.id} className="skill-item">
+              {verbalSkills.map((skill, index) => (
+                <div
+                  key={skill.id}
+                  className="skill-item"
+                  onMouseEnter={() => setHoveredVerbalIndex(index)}
+                  onMouseLeave={() => setHoveredVerbalIndex(null)}
+                >
                   <div className="skill-header">
                     <div className="skill-label">
                       <div className="skill-number">{skill.id}</div>
@@ -377,27 +404,52 @@ export default function RadarChart({
                 }}
               />
               <g>{labels}</g>
-              {getScorePoints(mathSkills.map((s) => s.score)).map((p, i) => (
-                <circle
-                  key={`point-2-${i}-${animationKey}`}
-                  cx={centerX}
-                  cy={centerY}
-                  r={2.5}
-                  className="score-point math-point"
-                  fill="#E8E6E0"
-                  style={{
-                    "--target-x": p.x,
-                    "--target-y": p.y,
-                    "--start-x": centerX,
-                    "--start-y": centerY,
-                    "--duration": `${getDuration(mathSkills[i].score)}s`,
-                  }}
-                />
-              ))}
+              {getScorePoints(mathSkills.map((s) => s.score)).map((p, i) => {
+                const isHovered = hoveredMathIndex === i;
+                return (
+                  <g key={`point-group-2-${i}-${animationKey}`}>
+                    <circle
+                      cx={centerX}
+                      cy={centerY}
+                      r={isHovered ? 4 : 2.5}
+                      className={`score-point math-point${
+                        isHovered ? " score-point-active" : ""
+                      }`}
+                      fill="#E8E6E0"
+                      style={{
+                        "--target-x": p.x,
+                        "--target-y": p.y,
+                        "--start-x": centerX,
+                        "--start-y": centerY,
+                        "--duration": `${getDuration(mathSkills[i].score)}s`,
+                      }}
+                    />
+                    <circle
+                      cx={centerX}
+                      cy={centerY}
+                      r={isHovered ? 1.4 : 0.8}
+                      className="score-point math-point-inner"
+                      fill="white"
+                      style={{
+                        "--target-x": p.x,
+                        "--target-y": p.y,
+                        "--start-x": centerX,
+                        "--start-y": centerY,
+                        "--duration": `${getDuration(mathSkills[i].score)}s`,
+                      }}
+                    />
+                  </g>
+                );
+              })}
             </svg>
             <div className="skill-stack">
-              {mathSkills.map((skill) => (
-                <div key={skill.id} className="skill-item">
+              {mathSkills.map((skill, index) => (
+                <div
+                  key={skill.id}
+                  className="skill-item"
+                  onMouseEnter={() => setHoveredMathIndex(index)}
+                  onMouseLeave={() => setHoveredMathIndex(null)}
+                >
                   <div className="skill-header">
                     <div className="skill-label">
                       <div className="skill-number">{skill.id}</div>

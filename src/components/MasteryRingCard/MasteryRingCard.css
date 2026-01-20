@@ -1,0 +1,395 @@
+/* Mastery Ring Card - Modern Circular Progress Design */
+
+.mastery-ring-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.mastery-ring-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 2px;
+  background: linear-gradient(135deg, transparent, transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mastery-ring-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.mastery-ring-card:hover::before {
+  opacity: 0.5;
+}
+
+/* Color Themes */
+.mastery-ring-card.excellent {
+  --ring-color-start: #10B981;
+  --ring-color-end: #059669;
+  --ring-glow: rgba(16, 185, 129, 0.3);
+}
+
+.mastery-ring-card.good {
+  --ring-color-start: #3B82F6;
+  --ring-color-end: #2563EB;
+  --ring-glow: rgba(59, 130, 246, 0.3);
+}
+
+.mastery-ring-card.okay {
+  --ring-color-start: #F59E0B;
+  --ring-color-end: #D97706;
+  --ring-glow: rgba(245, 158, 11, 0.3);
+}
+
+.mastery-ring-card.needs-work {
+  --ring-color-start: #EF4444;
+  --ring-color-end: #DC2626;
+  --ring-glow: rgba(239, 68, 68, 0.3);
+}
+
+/* Main Card Content */
+.ring-card-main {
+  padding: 24px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.mastery-ring-card:hover .ring-card-main {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] .mastery-ring-card:hover .ring-card-main {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Card Header */
+.ring-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.ring-card-icon {
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+}
+
+/* Ring Container */
+.ring-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.progress-ring {
+  transform: scale(1);
+  transition: transform 0.3s ease;
+}
+
+.mastery-ring-card:hover .progress-ring {
+  transform: scale(1.05);
+}
+
+.ring-background {
+  stroke: var(--bg-primary);
+  opacity: 0.3;
+}
+
+.ring-progress {
+  stroke: url(#ringGradient);
+  transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 0 8px var(--ring-glow));
+}
+
+.ring-progress.animating {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px var(--ring-glow));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px var(--ring-glow));
+  }
+}
+
+/* Gradient Definitions (will be added via JS or inline SVG) */
+.mastery-ring-card.excellent .ring-progress {
+  stroke: var(--ring-color-start);
+}
+
+.mastery-ring-card.good .ring-progress {
+  stroke: var(--ring-color-start);
+}
+
+.mastery-ring-card.okay .ring-progress {
+  stroke: var(--ring-color-start);
+}
+
+.mastery-ring-card.needs-work .ring-progress {
+  stroke: var(--ring-color-start);
+}
+
+/* Center Content */
+.ring-center-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.ring-score-icon {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  opacity: 0.1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(3);
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: translate(-50%, -50%) scale(3) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) scale(3) rotate(360deg);
+  }
+}
+
+.ring-percentage {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+/* Stats */
+.ring-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.improvement-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.improvement-badge.positive {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+}
+
+.improvement-badge.negative {
+  background: rgba(239, 68, 68, 0.15);
+  color: #EF4444;
+}
+
+.question-count {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: 'Courier New', monospace;
+}
+
+/* Expand Indicator */
+.expand-indicator {
+  text-align: center;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.mastery-ring-card.expanded .expand-indicator {
+  color: var(--text-primary);
+}
+
+.expand-indicator i {
+  transition: transform 0.3s ease;
+}
+
+/* Subtopics */
+.ring-subtopics {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mastery-ring-card.expanded .ring-subtopics {
+  max-height: 600px;
+}
+
+.subtopics-list {
+  padding: 0 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.subtopic-item {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: slideIn 0.4s ease forwards;
+}
+
+.mastery-ring-card.expanded .subtopic-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.subtopic-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.subtopic-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.subtopic-percentage {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.subtopic-bar-container {
+  height: 8px;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.subtopic-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ring-color-start), var(--ring-color-end));
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 8px var(--ring-glow);
+}
+
+.subtopic-count {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-family: 'Courier New', monospace;
+}
+
+/* Hover Effects */
+.mastery-ring-card:hover .ring-score-icon {
+  opacity: 0.15;
+}
+
+.mastery-ring-card:hover .improvement-badge {
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ring-container {
+    margin: 16px 0;
+  }
+
+  .progress-ring {
+    width: 150px;
+    height: 150px;
+  }
+
+  .ring-percentage {
+    font-size: 28px;
+  }
+
+  .ring-card-main {
+    padding: 20px;
+  }
+}
+
+/* Dark Mode Adjustments */
+[data-theme="dark"] .mastery-ring-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .ring-background {
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .mastery-ring-card:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+
+
+
+

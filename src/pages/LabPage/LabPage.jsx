@@ -1,18 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./LabPage.css";
-import { CalendarIcon } from "../../icons/Icons";
-import labPageIcon from "../../assets/lab_page.svg";
 import aristotleIcon from "../../assets/aristotle.svg";
-import {
-  LineChart,
-  Line,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-  Area,
-  AreaChart,
-} from "recharts";
+import labPageIcon from "../../assets/lab_page.svg";
 
 // Import score SVGs
 import scoreAce from "../../assets/ace.svg";
@@ -24,188 +13,33 @@ import scoreNone from "../../assets/none.svg";
 // Import SpeedometerIcon
 import SpeedometerIcon from "../../components/SpeedometerIcon/SpeedometerIcon";
 
-// Import the new QuestionTimingTracker component
+// Import the QuestionTimingTracker component
 import QuestionTimingTracker from "../../components/QuestionTimingTracker/QuestionTimingTracker";
 
-// Mock data for 2 months (25 days each)
-const months = [
-  { name: "May 2024", days: 25 },
-  { name: "June 2024", days: 25 },
-];
-const activityData = months.map(() =>
-  Array.from({ length: 25 }, () => Math.floor(Math.random() * 6))
-);
-const weekdays = ["M", "T", "W", "T", "F", "S", "S"];
+// Import MasteryRingCard
+import MasteryRingCard from "../../components/MasteryRingCard/MasteryRingCard";
 
-// Full year activity data (for the year view)
-const yearMonths = [
-  "JAN",
-  "FEB",
-  "MAR",
-  "APR",
-  "MAY",
-  "JUN",
-  "JUL",
-  "AUG",
-  "SEP",
-  "OCT",
-  "NOV",
-  "DEC",
-];
-
-// Predefined test dates
-const testDates = [
-  {
-    label: "August 23, 2025",
-    month: 7,
-    day: 23,
-    year: "2025",
-    semester: "fall",
-  },
-  {
-    label: "September 13, 2025",
-    month: 8,
-    day: 13,
-    year: "2025",
-    semester: "fall",
-  },
-  {
-    label: "October 4, 2025",
-    month: 9,
-    day: 4,
-    year: "2025",
-    semester: "fall",
-  },
-  {
-    label: "November 8, 2025",
-    month: 10,
-    day: 8,
-    year: "2025",
-    semester: "fall",
-  },
-  {
-    label: "December 6, 2025",
-    month: 11,
-    day: 6,
-    year: "2025",
-    semester: "fall",
-  },
-  {
-    label: "March 14, 2026",
-    month: 2,
-    day: 14,
-    year: "2026",
-    semester: "spring",
-  },
-  { label: "May 2, 2026", month: 4, day: 2, year: "2026", semester: "spring" },
-  { label: "June 6, 2026", month: 5, day: 6, year: "2026", semester: "spring" },
-];
-
-// Generate year data (mostly empty with some activity in recent months)
-const generateYearData = () => {
-  // Create empty grid (each month has 7 rows of 5-7 days)
-  const yearData = {};
-
-  yearMonths.forEach((month) => {
-    // Each month has 5-7 rows
-    const numRows = Math.floor(Math.random() * 2) + 5; // 5-6 rows
-    const numDays = Math.floor(Math.random() * 3) + 4; // 4-6 days per row
-
-    yearData[month] = Array(numRows)
-      .fill(0)
-      .map(() =>
-        Array(numDays)
-          .fill(0)
-          .map(() => {
-            // Mostly empty (0), with some activity (1-3) in recent months
-            if (["MAY", "JUN", "JUL"].includes(month)) {
-              return Math.random() < 0.2 ? Math.ceil(Math.random() * 3) : 0;
-            }
-            if (["APR", "MAR"].includes(month)) {
-              return Math.random() < 0.1 ? Math.ceil(Math.random() * 2) : 0;
-            }
-            if (["JAN", "FEB"].includes(month)) {
-              return Math.random() < 0.07 ? Math.ceil(Math.random() * 2) : 0;
-            }
-            return Math.random() < 0.02 ? 1 : 0;
-          })
-      );
-  });
-
-  return yearData;
-};
-
-const yearData = generateYearData();
-
-// Mock subtopic data with more realistic values
-const subtopicData = [
-  {
-    name: "Linear Equations",
-    avgTime: 38,
-    correct: 43,
-    total: 48,
-    improvement: 12,
-  },
-  {
-    name: "Grammar & Usage",
-    avgTime: 42,
-    correct: 67,
-    total: 70,
-    improvement: 8,
-  },
-  { name: "Functions", avgTime: 55, correct: 32, total: 40, improvement: -3 },
-  {
-    name: "Reading Comprehension",
-    avgTime: 33,
-    correct: 92,
-    total: 102,
-    improvement: 15,
-  },
-  { name: "Geometry", avgTime: 48, correct: 27, total: 45, improvement: 5 },
-];
-
-const getBoxShade = (val) => {
-  // 0 = empty/transparent, 1-5 = increasing intensity
-  const shades = [
-    "transparent",
-    "#a9d6ff",
-    "#7bbcff",
-    "#3996e6",
-    "#1565c0",
-    "#003c8f",
-  ];
-  return shades[Math.min(val, shades.length - 1)];
-};
-
-// Sample timing data for 27 verbal questions (in seconds)
+// Sample timing data
 const sampleQuestionTimingData = [
   42, 55, 38, 70, 25, 60, 80, 35, 50, 45, 90, 100, 110, 30, 20, 40, 60, 70, 80,
   90, 25, 35, 45, 55, 65, 75, 85,
 ];
 
-// Sample timing data for 22 math questions (in seconds)
-// Easy (6): shorter times, Medium (9): moderate times, Hard (7): longer times
 const sampleMathQuestionTimingData = [
-  // Easy questions (1-6)
-  25, 30, 35, 28, 32, 40,
-  // Medium questions (7-15)
-  50, 65, 75, 60, 80, 70, 85, 55, 90,
-  // Hard questions (16-22)
+  25, 30, 35, 28, 32, 40, 50, 65, 75, 60, 80, 70, 85, 55, 90,
   110, 125, 100, 130, 115, 105, 120,
 ];
 
-// Add a new PaceCard component
+// PaceCard component
 const PaceCard = () => {
-  // Sample data - in real app this would come from props or context
-  const userAvgTime = "01:04"; // User's average time per question
-  const targetTime = "01:31"; // Target time per question
-  const paceRatio = 1.2; // Ratio above 1.0 means slower than target
+  const userAvgTime = "01:04";
+  const targetTime = "01:31";
+  const paceRatio = 1.2;
 
-  // Determine pace status based on ratio
   const getPaceStatus = (ratio) => {
-    if (ratio <= 0.7) return "excellent"; // Green
-    if (ratio <= 1.0) return "okay"; // Blue
-    return "slow"; // Red
+    if (ratio <= 0.7) return "excellent";
+    if (ratio <= 1.0) return "okay";
+    return "slow";
   };
 
   const paceStatusClass = getPaceStatus(paceRatio);
@@ -216,34 +50,26 @@ const PaceCard = () => {
   }[paceStatusClass];
 
   return (
-    <div className="pace-card" style={{ margin: 0, height: "100%" }}>
-      {/* Left side - times */}
+    <div className="pace-card">
       <div className="pace-card-left">
         <div className="pace-info">
           <h3 className="pace-title">Pace</h3>
           <div className={`pace-status ${paceStatusClass}`}>{paceText}</div>
           <p className="pace-message">
-            You've struggled with some questions, but practice makes you
-            perfect!
+            You've struggled with some questions, but practice makes you perfect!
           </p>
         </div>
       </div>
 
-      {/* Right side - speedometer and time info */}
       <div className="pace-card-right">
         <div className="time-info-container">
           <div className="time-info-card">
             <div className="time-info-row">
-              <div>
-                <span className="time-label">Test Time</span>
-              </div>
+              <span className="time-label">Test Time</span>
               <span className="time-value">{targetTime}</span>
             </div>
-
             <div className="time-info-row">
-              <div>
-                <span className="time-label">Your Time</span>
-              </div>
+              <span className="time-label">Your Time</span>
               <span className="time-value">{userAvgTime}</span>
             </div>
           </div>
@@ -259,35 +85,22 @@ const PaceCard = () => {
 };
 
 const LabPage = () => {
-  const [selectedYear, setSelectedYear] = useState("2025");
-  const [selectedExamDate, setSelectedExamDate] = useState("");
-  const [activeTab, setActiveTab] = useState("math"); // 'math' or 'verbal'
-  // Track expanded topics separately for timing and mastery sections
+  const [activeTab, setActiveTab] = useState("math");
   const [expandedTopics, setExpandedTopics] = useState({
     timing: {},
     mastery: {},
   });
+  const [expandedMasteryCards, setExpandedMasteryCards] = useState({});
 
-  // Filter test dates based on selected year
-  const filteredTestDates = testDates.filter(
-    (date) => date.year === selectedYear
-  );
-
-  // Reset expanded topics when tab changes (keep all closed)
+  // Reset expanded topics when tab changes
   useEffect(() => {
-    // Reset all expanded topics to closed when tab changes
     setExpandedTopics({
       timing: {},
       mastery: {},
     });
+    setExpandedMasteryCards({});
   }, [activeTab]);
 
-  // Reset selected exam date when year changes
-  useEffect(() => {
-    setSelectedExamDate("");
-  }, [selectedYear]);
-
-  // Function to toggle topic expansion for a specific section
   const toggleTopic = (topic, section) => {
     setExpandedTopics((prev) => ({
       ...prev,
@@ -298,70 +111,13 @@ const LabPage = () => {
     }));
   };
 
-  // Function to determine if a day in January should be active (green)
-  const isJanuaryActive = (row, col) => {
-    // First day in first 3 rows active
-    if (row < 3 && col === 0) return true;
-    // First 2 days in row 3 active
-    if (row === 2 && col === 1) return true;
-    // First 2 days in rows 5-6 active
-    if ((row === 4 || row === 5) && col < 2) return true;
-    return false;
+  const toggleMasteryCard = (topic) => {
+    setExpandedMasteryCards((prev) => ({
+      ...prev,
+      [topic]: !prev[topic],
+    }));
   };
 
-  // Function to check if a day is the selected exam date
-  const isExamDate = (monthIndex, row, col) => {
-    if (!selectedExamDate) return false;
-
-    const examDate = testDates.find((date) => date.label === selectedExamDate);
-    if (!examDate) return false;
-
-    // For simplicity, we'll just check the month and use a simple mapping for row and col
-    // In a real implementation, you would need proper date calculations
-    if (examDate.month !== monthIndex) return false;
-
-    // Map day to row/column (simplified approach)
-    const day = examDate.day;
-    const mappedRow = Math.floor((day - 1) / 5);
-    const mappedCol = (day - 1) % 5;
-
-    return mappedRow === row && mappedCol === col;
-  };
-
-  // Render a single month for the yearly calendar
-  const renderMonthColumn = (month, monthIndex) => {
-    return (
-      <div className="month-column" key={month}>
-        <div className="month-label">{month}</div>
-        <div className="month-grid">
-          {Array(7)
-            .fill(0)
-            .map((_, rowIndex) => (
-              <div className="month-row" key={`row-${rowIndex}`}>
-                {Array(5)
-                  .fill(0)
-                  .map((_, colIndex) => {
-                    const isActive =
-                      monthIndex === 0 && isJanuaryActive(rowIndex, colIndex);
-                    const isExam = isExamDate(monthIndex, rowIndex, colIndex);
-
-                    return (
-                      <div
-                        className={`activity-square ${
-                          isActive ? "active-day" : ""
-                        } ${isExam ? "exam-day" : ""}`}
-                        key={`square-${rowIndex}-${colIndex}`}
-                      ></div>
-                    );
-                  })}
-              </div>
-            ))}
-        </div>
-      </div>
-    );
-  };
-
-  // Function to get the score image based on percentage
   const getScoreImage = (percentage) => {
     if (percentage >= 90) return scoreAce;
     if (percentage >= 75) return scoreGood;
@@ -370,7 +126,6 @@ const LabPage = () => {
     return scoreNone;
   };
 
-  // Function to get the score label based on percentage
   const getScoreLabel = (percentage) => {
     if (percentage >= 90) return "Ace";
     if (percentage >= 75) return "Good";
@@ -379,42 +134,32 @@ const LabPage = () => {
     return "None";
   };
 
-  // Function to calculate average time formatting
   const calculateAverageTime = (subtopics) => {
-    // Calculate avg time in seconds for simplicity
     let totalSeconds = 0;
-
     subtopics.forEach((subtopic) => {
       const timeParts = subtopic.timingText.split(":");
       const minutes = parseInt(timeParts[0]);
       const seconds = parseInt(timeParts[1]);
       totalSeconds += minutes * 60 + seconds;
     });
-
     const avgSeconds = Math.round(totalSeconds / subtopics.length);
     const avgMinutes = Math.floor(avgSeconds / 60);
     const avgRemainingSeconds = avgSeconds % 60;
-
     return `${avgMinutes.toString().padStart(2, "0")}:${avgRemainingSeconds
       .toString()
-      .padStart(2, "0")} `;
+      .padStart(2, "0")}`;
   };
 
-  // Function to calculate average improvement (can be positive or negative)
   const calculateAverageImprovement = (subtopics) => {
     let totalImprovement = 0;
-
     subtopics.forEach((subtopic) => {
-      // Extract the number from the improvement string (e.g., "+6%" -> 6, "-3%" -> -3)
       const improvementValue = parseInt(subtopic.improvement);
       totalImprovement += improvementValue;
     });
-
     const avgImprovement = Math.round(totalImprovement / subtopics.length);
     return avgImprovement >= 0 ? `+${avgImprovement}%` : `${avgImprovement}%`;
   };
 
-  // Function to calculate average mastery percentage
   const calculateAverageMastery = (subtopics) => {
     let totalMastery = 0;
     let totalQuestions = 0;
@@ -422,8 +167,6 @@ const LabPage = () => {
 
     subtopics.forEach((subtopic) => {
       totalMastery += subtopic.masteryPercentage;
-
-      // Extract questions from text like "88% (44/50)"
       const match = subtopic.masteryText.match(/(\d+)\/(\d+)/);
       if (match) {
         totalCorrect += parseInt(match[1]);
@@ -438,35 +181,25 @@ const LabPage = () => {
     };
   };
 
-  // Function to calculate average timing percentage
   const calculateAverageTimingPercentage = (subtopics) => {
     let totalPercentage = 0;
-
     subtopics.forEach((subtopic) => {
       totalPercentage += subtopic.timingPercentage;
     });
-
     return Math.round(totalPercentage / subtopics.length);
   };
 
-  // Function to render performance bar like in dashboard
   const renderPerformanceBar = (percentage) => {
-    // The bar represents 100% for simplicity
     const fillPercentage = Math.min(100, percentage);
-
-    // Define target time (70% of the bar for this example)
     const targetPercentage = 70;
 
-    // Calculate width of green and red parts
     let greenWidth = 0;
     let redWidth = 0;
 
     if (fillPercentage <= targetPercentage) {
-      // All filled portion is within green zone
       greenWidth = fillPercentage;
       redWidth = 0;
     } else {
-      // Fill extends into red zone
       greenWidth = targetPercentage;
       redWidth = fillPercentage - targetPercentage;
     }
@@ -474,13 +207,11 @@ const LabPage = () => {
     return (
       <div className="performance-bar-container">
         <div className="performance-bar">
-          {/* Background segments for visual separation */}
           <div className="bar-segment"></div>
           <div className="bar-segment"></div>
           <div className="bar-segment"></div>
           <div className="bar-segment"></div>
 
-          {/* Green fill (up to the target) */}
           {greenWidth > 0 && (
             <div
               className="bar-fill green"
@@ -491,7 +222,6 @@ const LabPage = () => {
             ></div>
           )}
 
-          {/* Red fill (after the target) */}
           {redWidth > 0 && (
             <div
               className="bar-fill red"
@@ -506,7 +236,7 @@ const LabPage = () => {
     );
   };
 
-  // Complete lists of topics and subtopics with performance data
+  // Complete topic data
   const mathTopicsData = {
     Algebra: [
       {
@@ -761,28 +491,52 @@ const LabPage = () => {
     ],
   };
 
-  // Get active topics data based on the selected tab
   const activeTopicsData =
     activeTab === "math" ? mathTopicsData : verbalTopicsData;
 
-  // Function to handle tab changes
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 
-  // Function to render topics for the active tab
+  // Topic icons mapping
+  const topicIcons = {
+    // Math
+    "Algebra": "📐",
+    "Advanced Math": "🔬",
+    "Problem-Solving and Data Analysis": "📊",
+    "Geometry and Trigonometry": "📐",
+    // Verbal
+    "Craft and Structure": "📚",
+    "Expression of Ideas": "💡",
+    "Information and Ideas": "📖",
+    "Standard English Conventions": "✏️"
+  };
+
+  // Prepare mastery data for ring cards
+  const prepareMasteryData = () => {
+    return Object.entries(activeTopicsData).map(([topic, subtopics]) => ({
+      topic,
+      icon: topicIcons[topic] || "📝",
+      data: {
+        subtopics,
+        avgMastery: calculateAverageMastery(subtopics),
+        avgImprovement: calculateAverageImprovement(subtopics),
+      }
+    }));
+  };
+
+  const masteryCardsData = prepareMasteryData();
+
   const renderTopicsSection = (topicsData, sectionType) => {
     return (
       <div className="topics-container">
         {Object.entries(topicsData).map(([topic, subtopics]) => {
-          // Calculate topic averages
           const avgTimingPercentage =
             calculateAverageTimingPercentage(subtopics);
           const avgTimingText = calculateAverageTime(subtopics);
           const avgImprovement = calculateAverageImprovement(subtopics);
           const avgMastery = calculateAverageMastery(subtopics);
 
-          // Get expansion state for this section and topic
           const isExpanded = expandedTopics[sectionType]?.[topic] || false;
 
           return (
@@ -840,7 +594,6 @@ const LabPage = () => {
                   )}
                 </div>
 
-                {/* Subtopics now inside the topic header for each toggling */}
                 <div className="lab-subtopics">
                   <div className="lab-subtopic-table">
                     {subtopics.map((subtopic, index) => (
@@ -899,39 +652,39 @@ const LabPage = () => {
 
   return (
     <div className="lab-page-container">
-      <header className="lab-header">
-        <div className="lab-title-area">
-          <div className="lab-logo-container">
+      {/* Modern Header */}
+      <header className="lab-header-modern">
+        <div className="lab-header-content">
+          <div className="lab-icon-wrapper">
             <img src={labPageIcon} alt="Lab Icon" className="lab-icon" />
           </div>
-          <h1 className="lab-title continue-learning-header-h2">
-            Performance Lab
-          </h1>
+          <div className="lab-header-text">
+            <h1 className="lab-title-modern">Performance Lab</h1>
+            <p className="lab-subtitle">Track your progress and master your skills</p>
+          </div>
         </div>
       </header>
 
       <div className="lab-content">
         {/* Aristotle Quote Section */}
-        <div className="quote-container">
+        <div className="quote-container-modern">
           <div className="quote-accent-line"></div>
-          <div className="quote-content">
-            <img
-              src={aristotleIcon}
-              alt="Aristotle"
-              className="quote-author-icon"
-            />
-            <div className="quote-text-container">
-              <p className="quote-text">
-                "Of all considerations, two bear the greatest weight: the
-                precision of one's timing and the righteousness of one's
-                judgment."
-              </p>
-              <span className="quote-author">-- Aristotle</span>
-            </div>
+          <img
+            src={aristotleIcon}
+            alt="Aristotle"
+            className="quote-author-icon"
+          />
+          <div className="quote-text-container">
+            <p className="quote-text">
+              "Of all considerations, two bear the greatest weight: the
+              precision of one's timing and the righteousness of one's
+              judgment."
+            </p>
+            <span className="quote-author">— Aristotle</span>
           </div>
         </div>
 
-        {/* Line chart and pace card in a flex container */}
+        {/* Charts Container */}
         <div className="charts-container">
           <div className="timing-chart-container">
             <QuestionTimingTracker
@@ -944,50 +697,47 @@ const LabPage = () => {
           </div>
         </div>
 
-        {/* Tab selection for Math/Verbal */}
-        <div className="performance-tab-selector">
+        {/* Tab Selector */}
+        <div className="performance-tab-selector-modern">
           <div className="tab-pill">
             <button
               className={`tab-button ${activeTab === "math" ? "active" : ""}`}
               onClick={() => handleTabChange("math")}
             >
+              <i className="fas fa-calculator"></i>
               Math
             </button>
             <button
               className={`tab-button ${activeTab === "verbal" ? "active" : ""}`}
               onClick={() => handleTabChange("verbal")}
             >
+              <i className="fas fa-book"></i>
               Verbal
             </button>
           </div>
         </div>
 
+        {/* Performance Sections */}
         <div className="lab-row performance-row">
-          {/* Timing Performance Section */}
+          {/* Timing Performance */}
           <div className="lab-card timing-card">
-            <div className="lab-card-header">
-              <div className="lab-card-icon">
-                <div className="insight-icon">
-                  <i className="fas fa-clock"></i>
-                </div>
+            <div className="lab-card-header-modern">
+              <div className="lab-card-icon-modern">
+                <i className="fas fa-clock"></i>
               </div>
               <h2>Timing Performance</h2>
             </div>
-
             {renderTopicsSection(activeTopicsData, "timing")}
           </div>
 
-          {/* Mastery Performance Section with Score Icons */}
+          {/* Mastery Performance */}
           <div className="lab-card mastery-card">
-            <div className="lab-card-header">
-              <div className="lab-card-icon">
-                <div className="insight-icon">
-                  <i className="fas fa-chart-line"></i>
-                </div>
+            <div className="lab-card-header-modern">
+              <div className="lab-card-icon-modern">
+                <i className="fas fa-chart-line"></i>
               </div>
               <h2>Mastery Performance</h2>
             </div>
-
             {renderTopicsSection(activeTopicsData, "mastery")}
           </div>
         </div>
