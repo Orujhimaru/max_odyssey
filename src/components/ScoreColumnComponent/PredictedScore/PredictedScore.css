@@ -170,12 +170,10 @@
 }
 
 .predicted-flex.center .score-value {
-  /* color: #0fb86b; */
-  background-image: linear-gradient(
-    to right,
-    #d63e2e,
-    #8e44ad
-  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: #0575E6;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #2663e6, #0575E6);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #2663e6, #0575E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  
   width: 110px;
   font-size: 48px;
   background-clip: text;

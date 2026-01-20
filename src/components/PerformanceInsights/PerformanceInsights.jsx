@@ -156,7 +156,7 @@ const PerformanceInsights = () => {
                           className="target-icon"
                         />{" "}
                         <span className="margin-left">
-                          {formatTime(timeData.math.target)}
+                          {formatTime(timeData.verbal.target)}
                         </span>
                       </div>
                     </div>

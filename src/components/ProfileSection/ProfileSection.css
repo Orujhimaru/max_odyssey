@@ -1,5 +1,5 @@
 .profile-section {
-  background-color: var(--bg-primary);
+  background-color: var(--bg-secondary);
   border-radius: 12px;
   margin-bottom: 12px;
   border: 1px solid var(--border-color);
@@ -7,10 +7,12 @@
   position: relative;
   /* overflow: hidden; */
   transition: var(--transition-all);
+  border: 1px solid var(--border-card-color);
+
 }
 
 /* Move shine effect to the entire profile section */
-.profile-section::after {
+/* .profile-section::after {
   content: "";
   position: absolute;
   border-radius: 12px;
@@ -26,7 +28,7 @@
   );
   background-size: 200% 100%;
   animation: shine 6s ease infinite;
-}
+} */
 
 .profile-info {
   display: flex;
