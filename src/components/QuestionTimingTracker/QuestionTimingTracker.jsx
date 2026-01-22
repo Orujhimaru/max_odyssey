@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./QuestionTimingTracker.css";
+import SpeedometerIcon from "../SpeedometerIcon/SpeedometerIcon";
 
 // Define the verbal subtopic structure with proper question mapping
 const VERBAL_SUBTOPIC_DATA = [
@@ -201,6 +202,17 @@ const QuestionTimingTracker = ({
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
+  // Calculate average time for speedometer
+  const calculateAverageTime = () => {
+    if (normalizedTimes.length === 0) return 0;
+    const total = normalizedTimes.reduce((sum, time) => sum + time, 0);
+    return total / normalizedTimes.length;
+  };
+
+  const avgTime = calculateAverageTime();
+  const targetTime = 95; // 1:35 in seconds
+  const speedometerRatio = avgTime / targetTime;
+
   return (
     <div className="question-timing-tracker">
       <div className="tracker-header">
@@ -214,7 +226,8 @@ const QuestionTimingTracker = ({
         </button>
       </div>
 
-      <div className="question-chart-container">
+      <div className="tracker-main-content">
+        <div className="question-chart-container">
         {/* Y-axis labels */}
         <div className="y-axis">
           <div className="y-axis-label" style={{ top: "0%" }}>
@@ -297,6 +310,31 @@ const QuestionTimingTracker = ({
                 </div>
               );
             })}
+          </div>
+        </div>
+      </div>
+
+        {/* Speedometer Section */}
+        <div className="pace-speedometer-section">
+          <div className="speedometer-wrapper">
+            <SpeedometerIcon ratio={speedometerRatio} />
+          </div>
+          
+          <div className="pace-stats-compact">
+            <div className="pace-stat-row">
+              <span className="pace-label">Avg Time</span>
+              <span className="pace-value">{formatTime(Math.round(avgTime))}</span>
+            </div>
+            <div className="pace-divider"></div>
+            <div className="pace-stat-row">
+              <span className="pace-label">Target</span>
+              <span className="pace-value">{formatTime(targetTime)}</span>
+            </div>
+          </div>
+
+          <div className={`pace-badge ${speedometerRatio <= 1 ? 'good' : 'slow'}`}>
+            <i className={`fas fa-${speedometerRatio <= 1 ? 'check' : 'exclamation'}-circle`}></i>
+            <span>{speedometerRatio <= 1 ? 'On Track' : 'Needs Work'}</span>
           </div>
         </div>
       </div>

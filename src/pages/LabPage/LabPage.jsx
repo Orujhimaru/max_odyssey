@@ -460,7 +460,7 @@ const LabPage = () => {
             <p className="lab-quote-text">
               "Of all considerations, two bear the greatest weight: the precision of one's timing and the righteousness of one's judgment."
             </p>
-            <span className="lab-quote-author">— Aristotle</span>
+            <span className="lab-quote-author">Aristotle</span>
           </div>
         </div>
 

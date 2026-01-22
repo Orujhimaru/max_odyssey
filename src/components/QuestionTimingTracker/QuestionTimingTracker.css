@@ -6,6 +6,14 @@
   width: fit-content;
 }
 
+/* Main content with chart and speedometer */
+.tracker-main-content {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 24px;
+  align-items: start;
+}
+
 .tracker-header {
   margin-bottom: 24px;
   display: flex;
@@ -277,9 +285,113 @@
   background-color: #374151;
 }
 
+/* Pace Speedometer Section */
+.pace-speedometer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .pace-speedometer-section {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.speedometer-wrapper {
+  width: 200px;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pace-stats-compact {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.pace-stat-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.pace-label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pace-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: "DM Sans", sans-serif;
+  line-height: 1;
+}
+
+.pace-divider {
+  width: 1px;
+  height: 50px;
+  background: var(--border-color);
+}
+
+.pace-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.pace-badge.good {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.pace-badge.slow {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.pace-badge i {
+  font-size: 14px;
+}
+
 @media (max-width: 1060px) {
   .charts-container {
     flex-direction: column;
+  }
+  
+  .tracker-main-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .pace-speedometer-section {
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 16px;
+  }
+  
+  .speedometer-wrapper {
+    width: 150px;
+    height: 100px;
   }
 }
 
