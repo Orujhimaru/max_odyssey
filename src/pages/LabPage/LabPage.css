@@ -8,11 +8,11 @@
 
 /* Hero Header - Redesigned */
 .lab-hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   padding: 40px 32px;
   position: relative;
   overflow: hidden;
-  border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .lab-hero::before {
@@ -23,8 +23,8 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+    radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -84,9 +84,9 @@
 
 /* Quote Card - Redesigned */
 .lab-quote-card {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-card-color);
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #3b82f6;
   border-radius: 12px;
   padding: 28px 32px;
   margin-bottom: 28px;
@@ -104,7 +104,7 @@
   top: -10px;
   left: 20px;
   font-size: 120px;
-  color: rgba(102, 126, 234, 0.08);
+  color: rgba(59, 130, 246, 0.05);
   font-family: Georgia, serif;
   line-height: 1;
   pointer-events: none;
@@ -113,6 +113,7 @@
 .lab-quote-card:hover {
   transform: translateX(4px);
   border-left-width: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .lab-quote-avatar {
@@ -151,70 +152,50 @@
 
 .lab-quote-author::before {
   content: '—';
-  color: #667eea;
+  color: #3b82f6;
 }
 
 /* Tab Selector - Redesigned */
 .lab-tab-selector {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 28px;
+  background: var(--bg-secondary);
+  padding: 5px;
+  border-radius: 10px;
+  width: fit-content;
+  border: 1px solid var(--border-card-color);
 }
 
 .lab-tab {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
-  border: 2px solid var(--border-card-color);
-  background: var(--bg-secondary);
+  padding: 10px 24px;
+  border: none;
+  background: transparent;
   color: var(--text-secondary);
   font-size: 15px;
   font-weight: 600;
-  border-radius: 10px;
+  border-radius: 7px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   position: relative;
-  overflow: hidden;
-}
-
-.lab-tab::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  opacity: 0;
-  transition: opacity 0.3s ease;
 }
 
 .lab-tab:hover {
-  border-color: #667eea;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  background: rgba(59, 130, 246, 0.08);
+  color: #3b82f6;
 }
 
 .lab-tab.active {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  border-color: transparent;
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
-}
-
-.lab-tab.active::before {
-  opacity: 1;
-}
-
-.lab-tab i,
-.lab-tab span {
-  position: relative;
-  z-index: 1;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .lab-tab i {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 /* Stats Grid - Redesigned */
