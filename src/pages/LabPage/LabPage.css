@@ -522,24 +522,30 @@
   transform: rotate(180deg);
 }
 
-/* Performance Bar */
+/* Performance Bar - matching Dashboard style */
 .performance-bar-container {
   flex: 1;
   min-width: 120px;
+  margin: 8px 0;
 }
 
 .performance-bar {
   position: relative;
-  height: 8px;
-  background: var(--bg-secondary);
-  border-radius: 4px;
+  height: 12px;
+  border-radius: 3px;
   overflow: hidden;
+  background-color: var(--bar-background);
   display: flex;
 }
 
 .bar-segment {
   flex: 1;
-  border-right: 1px solid var(--bg-primary);
+  height: 100%;
+  border-right: 1px solid rgb(209 209 209 / 40%);
+  position: relative;
+  z-index: 2;
+  background-color: transparent;
+  pointer-events: none;
 }
 
 .bar-segment:last-child {
@@ -548,17 +554,18 @@
 
 .bar-fill {
   position: absolute;
+  top: 0;
   height: 100%;
-  border-radius: 4px;
+  z-index: 1;
   transition: width 1s ease-out;
 }
 
 .bar-fill.green {
-  background: linear-gradient(90deg, #10B981, #059669);
+  background-color: var(--bar-increase-color);
 }
 
 .bar-fill.red {
-  background: linear-gradient(90deg, #F59E0B, #EF4444);
+  background-color: var(--bar-decrease-color);
 }
 
 .lab-timing-text-group {

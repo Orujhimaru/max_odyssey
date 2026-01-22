@@ -56,18 +56,18 @@ const PerformanceInsights = () => {
     }
 
     return (
-      <div className="performance-bar-container">
-        <div className="performance-bar">
+      <div className="speed-bar-container">
+        <div className="speed-bar">
           {/* Background segments for visual separation */}
-          <div className="bar-segment"></div>
-          <div className="bar-segment"></div>
-          <div className="bar-segment"></div>
-          <div className="bar-segment"></div>
+          <div className="speed-segment"></div>
+          <div className="speed-segment"></div>
+          <div className="speed-segment"></div>
+          <div className="speed-segment"></div>
 
           {/* Green fill (up to the target) */}
           {greenWidth > 0 && (
             <div
-              className="bar-fill green"
+              className="speed-fill green"
               style={{
                 width: `${greenWidth}%`,
                 left: "0%",
@@ -78,7 +78,7 @@ const PerformanceInsights = () => {
           {/* Red fill (after the target) */}
           {redWidth > 0 && (
             <div
-              className="bar-fill red"
+              className="speed-fill red"
               style={{
                 width: `${redWidth}%`,
                 left: `${greenZonePercentage}%`,

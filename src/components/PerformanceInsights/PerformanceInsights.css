@@ -320,7 +320,7 @@
   .insights-grid {
     grid-template-columns: 1fr;
   }
-  .performance-bar-container {
+  .speed-bar-container {
     width: 100%;
   }
 
@@ -366,13 +366,13 @@
   color: var(--decrease-color, #e74c3c);
 }
 
-/* Performance bar styles */
-.performance-bar-container {
+/* Speed bar styles (Dashboard Your Speed section) */
+.speed-bar-container {
   width: 170px;
   margin: 8px 0;
 }
 
-.performance-bar {
+.speed-bar {
   position: relative;
   height: 12px;
   border-radius: 3px;
@@ -381,7 +381,7 @@
   display: flex;
 }
 
-.bar-segment {
+.speed-segment {
   flex: 1;
   height: 100%;
   border-right: 1px solid rgb(209 209 209 / 40%);
@@ -391,23 +391,23 @@
   pointer-events: none; /* Allow clicking through */
 }
 
-.bar-segment:last-child {
+.speed-segment:last-child {
   border-right: none;
 }
 
 /* Fill styles */
-.bar-fill {
+.speed-fill {
   position: absolute;
   top: 0;
   height: 100%;
   z-index: 1;
 }
 
-.bar-fill.green {
+.speed-fill.green {
   background-color: var(--bar-increase-color);
 }
 
-.bar-fill.red {
+.speed-fill.red {
   background-color: var(--bar-decrease-color);
 }
 
