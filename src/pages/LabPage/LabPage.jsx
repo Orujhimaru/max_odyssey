@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./LabPageNew.css";
+import "./LabPage.css";
 import aristotleIcon from "../../assets/aristotle.svg";
 import labPageIcon from "../../assets/lab_page.svg";
 
