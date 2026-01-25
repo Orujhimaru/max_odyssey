@@ -25,7 +25,7 @@
 .wk_streak-number {
   font-size: 42px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: white;
   line-height: 1;
   margin-bottom: 4px;
   z-index: 2;
@@ -34,7 +34,7 @@
 .wk_streak-label {
   font-size: 13px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: white;
   letter-spacing: 0.5px;
   z-index: 2;
 }
