@@ -1,0 +1,230 @@
+.activity-heatmap {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-card-color);
+  border-radius: 8px;
+  padding: 20px 24px;
+}
+
+.heatmap-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.heatmap-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.heatmap-title i {
+  color: #f59e0b;
+  font-size: 14px;
+}
+
+.heatmap-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.heatmap-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.heatmap-wrapper {
+  display: flex;
+  flex-direction: column;
+  overflow-x: auto;
+}
+
+/* Month labels row */
+.heatmap-months {
+  display: flex;
+  margin-bottom: 4px;
+}
+
+.heatmap-day-labels-spacer {
+  width: 32px;
+  flex-shrink: 0;
+}
+
+.heatmap-month-labels {
+  display: grid;
+  grid-template-columns: repeat(53, 11px);
+  gap: 2px;
+  flex: 1;
+}
+
+.heatmap-month {
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+/* Grid container */
+.heatmap-grid-container {
+  display: flex;
+}
+
+/* Day labels (Mon, Wed, Fri) */
+.heatmap-day-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-right: 4px;
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.heatmap-day-label {
+  height: 11px;
+  font-size: 9px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+}
+
+/* Main grid */
+.heatmap-grid {
+  display: flex;
+  gap: 2px;
+}
+
+.heatmap-week {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Individual day squares */
+.heatmap-day {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.heatmap-day:hover:not(.empty) {
+  transform: scale(1.2);
+  outline: 1px solid var(--text-secondary);
+  outline-offset: 1px;
+}
+
+.heatmap-day.empty {
+  background: transparent;
+  cursor: default;
+}
+
+/* Activity levels - Amber/Gold color scheme */
+.heatmap-day.level-0 {
+  background-color: #3d2f1a;
+}
+
+.heatmap-day.level-1 {
+  background-color: #5e4316;
+}
+
+.heatmap-day.level-2 {
+  background-color: #a96f06;
+}
+
+.heatmap-day.level-3 {
+  background-color: #d69e02;
+}
+
+.heatmap-day.level-4 {
+  background-color: #f6bd45;
+}
+
+/* Light mode colors */
+[data-theme="light"] .heatmap-day.level-0 {
+  background-color: #e5e5e5;
+}
+
+[data-theme="light"] .heatmap-day.level-1 {
+  background-color: #fde68a;
+}
+
+[data-theme="light"] .heatmap-day.level-2 {
+  background-color: #fbbf24;
+}
+
+[data-theme="light"] .heatmap-day.level-3 {
+  background-color: #f59e0b;
+}
+
+[data-theme="light"] .heatmap-day.level-4 {
+  background-color: #d97706;
+}
+
+/* Legend */
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.heatmap-legend-label {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.heatmap-legend-squares {
+  display: flex;
+  gap: 3px;
+}
+
+.heatmap-legend-squares .heatmap-day {
+  cursor: default;
+}
+
+.heatmap-legend-squares .heatmap-day:hover {
+  transform: none;
+  outline: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .activity-heatmap {
+    padding: 16px;
+  }
+
+  .heatmap-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .heatmap-wrapper {
+    padding-bottom: 8px;
+  }
+
+  .heatmap-month-labels {
+    grid-template-columns: repeat(53, 9px);
+  }
+
+  .heatmap-day {
+    width: 9px;
+    height: 9px;
+  }
+
+  .heatmap-day-labels {
+    width: 24px;
+  }
+
+  .heatmap-day-label {
+    height: 9px;
+    font-size: 8px;
+  }
+}
+

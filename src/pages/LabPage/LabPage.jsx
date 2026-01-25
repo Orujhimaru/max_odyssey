@@ -13,6 +13,9 @@ import scoreNone from "../../assets/none.svg";
 // Import QuestionTimingTracker
 import QuestionTimingTracker from "../../components/QuestionTimingTracker/QuestionTimingTracker";
 
+// Import ActivityHeatmap
+import ActivityHeatmap from "../../components/ActivityHeatmap/ActivityHeatmap";
+
 // Sample timing data
 const sampleQuestionTimingData = [
   42, 55, 38, 70, 25, 60, 80, 35, 50, 45, 90, 100, 110, 30, 20, 40, 60, 70, 80,
@@ -23,6 +26,35 @@ const sampleMathQuestionTimingData = [
   25, 30, 35, 28, 32, 40, 50, 65, 75, 60, 80, 70, 85, 55, 90,
   110, 125, 100, 130, 115, 105, 120,
 ];
+
+// Generate sample activity data for the heatmap
+const generateSampleActivityData = () => {
+  const data = {};
+  const today = new Date();
+  
+  // Generate random activity for the past year
+  for (let i = 0; i < 365; i++) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    const dateStr = date.toISOString().split('T')[0];
+    
+    // Random activity with some patterns (weekends less active, some streaks)
+    const dayOfWeek = date.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    
+    // 60% chance of activity on weekdays, 30% on weekends
+    const hasActivity = Math.random() < (isWeekend ? 0.3 : 0.6);
+    
+    if (hasActivity) {
+      // Random number of questions (1-15)
+      data[dateStr] = Math.floor(Math.random() * 15) + 1;
+    }
+  }
+  
+  return data;
+};
+
+const sampleActivityData = generateSampleActivityData();
 
 const LabPage = () => {
   const [activeTab, setActiveTab] = useState("math");
@@ -519,6 +551,9 @@ const LabPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Activity Heatmap */}
+        <ActivityHeatmap activityData={sampleActivityData} />
 
         {/* Timing Chart */}
         <div className="lab-chart-card">
