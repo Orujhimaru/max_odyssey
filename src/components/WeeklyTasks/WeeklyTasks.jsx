@@ -1,36 +1,7 @@
 import React from "react";
 import "./WeeklyTasks.css";
 import targetIcon from "../../assets/target.svg";
-
-// Flame icon SVG component
-const FlameIcon = () => (
-  <svg
-    width="48"
-    height="56"
-    viewBox="0 0 48 56"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    {/* Outer flame */}
-    <path
-      d="M24 0C24 0 16 8 16 20C16 24 18 28 20 30C20 26 22 22 24 20C26 22 28 26 28 30C30 28 32 24 32 20C32 8 24 0 24 0Z"
-      fill="#FFA500"
-      opacity="0.9"
-    />
-    {/* Middle flame */}
-    <path
-      d="M24 8C24 8 20 12 20 18C20 20 21 22 22 23C22 20 23 18 24 17C25 18 26 20 26 23C27 22 28 20 28 18C28 12 24 8 24 8Z"
-      fill="#FF6B00"
-    />
-    {/* Inner flame */}
-    <path
-      d="M24 14C24 14 22 16 22 20C22 21 22.5 22 23 22.5C23 21 23.5 20 24 19.5C24.5 20 25 21 25 22.5C25.5 22 26 21 26 20C26 16 24 14 24 14Z"
-      fill="#FFD700"
-    />
-    {/* Base */}
-    <ellipse cx="24" cy="48" rx="8" ry="8" fill="#FF8C00" />
-  </svg>
-);
+import flamesIcon from "../../assets/flames.png";
 
 const WeeklyTasks = () => {
   // Sample data
@@ -52,9 +23,7 @@ const WeeklyTasks = () => {
       <div className="wk_streak-card">
         <div className="wk_streak-number">{streakDays}</div>
         <div className="wk_streak-label">Streak Days</div>
-        <div className="wk_streak-flame">
-          <FlameIcon />
-        </div>
+        <img src={flamesIcon} alt="flames" className="wk_streak-flame" />
       </div>
 
       {/* Daily Goal Card */}

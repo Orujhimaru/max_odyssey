@@ -2,6 +2,7 @@
 .wk_daily-goals-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  padding-top: 8px;
   gap: 12px;
   width: 100%;
   max-width: 400px;
@@ -10,7 +11,7 @@
 
 /* Streak Days Card */
 .wk_streak-card {
-  background: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%);
+  background: var(--bar-increase-color);
   border-radius: 12px;
   padding: 16px;
   display: flex;
@@ -18,7 +19,6 @@
   justify-content: space-between;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(255, 140, 0, 0.3);
   height: 100%;
 }
 
@@ -41,16 +41,13 @@
 
 .wk_streak-flame {
   position: absolute;
-  bottom: -8px;
-  right: -5px;
+  bottom: -6px;
+  right: -12px;
   opacity: 0.85;
   z-index: 1;
-  transform: rotate(-15deg);
-}
-
-.wk_streak-flame svg {
-  width: 40px;
-  height: 46px;
+  width: 80px;
+  height: 120px;
+  object-fit: contain;
 }
 
 /* Daily Goal Card */
@@ -193,9 +190,9 @@
     font-size: 36px;
   }
 
-  .wk_streak-flame svg {
-    width: 35px;
-    height: 40px;
+  .wk_streak-flame {
+    width: 60px;
+    height: 90px;
   }
 
   .wk_daily-goal-progress-circle {
