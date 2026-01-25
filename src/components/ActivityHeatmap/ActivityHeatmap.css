@@ -56,10 +56,9 @@
 }
 
 .heatmap-month-labels {
-  display: grid;
-  grid-template-columns: repeat(53, 11px);
-  gap: 2px;
+  display: flex;
   flex: 1;
+  position: relative;
 }
 
 .heatmap-month {
@@ -67,11 +66,15 @@
   color: var(--text-secondary);
   font-weight: 500;
   letter-spacing: 0.2px;
+  position: absolute;
+  white-space: nowrap;
 }
 
 /* Grid container */
 .heatmap-grid-container {
   display: flex;
+  width: 100%;
+  overflow-x: auto;
 }
 
 /* Day labels (Mon, Wed, Fri) */
@@ -85,7 +88,7 @@
 }
 
 .heatmap-day-label {
-  height: 11px;
+  height: 12px;
   font-size: 9px;
   color: var(--text-secondary);
   display: flex;
@@ -95,19 +98,25 @@
 /* Main grid */
 .heatmap-grid {
   display: flex;
-  gap: 2px;
+  gap: 3px;
+  width: 100%;
 }
 
 .heatmap-week {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+}
+
+/* Add gap before month start weeks */
+.heatmap-week.month-start {
+  margin-left: 8px;
 }
 
 /* Individual day squares */
 .heatmap-day {
-  width: 11px;
-  height: 11px;
+  width: 12px;
+  height: 12px;
   border-radius: 2px;
   cursor: pointer;
   transition: transform 0.1s ease, opacity 0.1s ease;
@@ -209,13 +218,9 @@
     padding-bottom: 8px;
   }
 
-  .heatmap-month-labels {
-    grid-template-columns: repeat(53, 9px);
-  }
-
   .heatmap-day {
-    width: 9px;
-    height: 9px;
+    width: 10px;
+    height: 10px;
   }
 
   .heatmap-day-labels {
@@ -223,8 +228,12 @@
   }
 
   .heatmap-day-label {
-    height: 9px;
+    height: 10px;
     font-size: 8px;
+  }
+
+  .heatmap-week.month-start {
+    margin-left: 6px;
   }
 }
 

@@ -17,10 +17,12 @@ const ActivityHeatmap = ({ activityData = {} }) => {
     
     let currentMonth = -1;
     let monthLabels = [];
+    const monthBoundaries = new Set(); // Track which weeks start a new month
     
     // Generate 53 weeks (to cover full year)
     for (let week = 0; week < 53; week++) {
       const weekDays = [];
+      let weekMonth = -1;
       
       for (let day = 0; day < 7; day++) {
         const date = new Date(startDate);
@@ -35,14 +37,20 @@ const ActivityHeatmap = ({ activityData = {} }) => {
         const dateStr = date.toISOString().split('T')[0];
         const activity = activityData[dateStr] || 0;
         
-        // Track month labels
+        // Track month labels and boundaries
         const month = date.getMonth();
+        if (weekMonth === -1) {
+          weekMonth = month;
+        }
+        
+        // Check if this week starts a new month (on Sunday/Monday)
         if (month !== currentMonth && day === 0) {
           currentMonth = month;
           monthLabels.push({
             name: date.toLocaleString('default', { month: 'short' }),
             week: week
           });
+          monthBoundaries.add(week);
         }
         
         weekDays.push({
@@ -59,7 +67,10 @@ const ActivityHeatmap = ({ activityData = {} }) => {
         });
       }
       
-      weeks.push(weekDays);
+      weeks.push({
+        days: weekDays,
+        isMonthStart: monthBoundaries.has(week)
+      });
     }
     
     return { weeks, monthLabels };
@@ -93,15 +104,29 @@ const ActivityHeatmap = ({ activityData = {} }) => {
           <div className="heatmap-months">
             <div className="heatmap-day-labels-spacer"></div>
             <div className="heatmap-month-labels">
-              {calendarData.monthLabels.map((month, idx) => (
-                <span 
-                  key={idx} 
-                  className="heatmap-month"
-                  style={{ gridColumnStart: month.week + 1 }}
-                >
-                  {month.name}
-                </span>
-              ))}
+              {calendarData.monthLabels.map((month, idx) => {
+                // Calculate position: each week is 12px + 3px gap = 15px
+                // Count how many month starts before this week
+                let monthGapsBefore = 0;
+                for (let i = 0; i < month.week; i++) {
+                  if (calendarData.weeks[i]?.isMonthStart) {
+                    monthGapsBefore++;
+                  }
+                }
+                // Base position: week index * (square width + gap)
+                // Plus: month gap width * number of gaps before
+                const leftPosition = (month.week * 15) + (monthGapsBefore * 8);
+                
+                return (
+                  <span 
+                    key={idx} 
+                    className="heatmap-month"
+                    style={{ left: `${leftPosition}px` }}
+                  >
+                    {month.name}
+                  </span>
+                );
+              })}
             </div>
           </div>
           
@@ -116,8 +141,11 @@ const ActivityHeatmap = ({ activityData = {} }) => {
             {/* Activity grid */}
             <div className="heatmap-grid">
               {calendarData.weeks.map((week, weekIdx) => (
-                <div key={weekIdx} className="heatmap-week">
-                  {week.map((day, dayIdx) => (
+                <div 
+                  key={weekIdx} 
+                  className={`heatmap-week ${week.isMonthStart ? 'month-start' : ''}`}
+                >
+                  {week.days.map((day, dayIdx) => (
                     day ? (
                       <div 
                         key={dayIdx}

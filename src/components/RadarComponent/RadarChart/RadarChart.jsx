@@ -254,38 +254,38 @@ export default function RadarChart({
               {getScorePoints(verbalSkills.map((s) => s.score)).map((p, i) => {
                 const isHovered = hoveredVerbalIndex === i;
                 return (
-                  <g key={`point-group-1-${i}-${animationKey}`}>
-                    <circle
-                      cx={centerX}
-                      cy={centerY}
+                <g key={`point-group-1-${i}-${animationKey}`}>
+                  <circle
+                    cx={centerX}
+                    cy={centerY}
                       r={isHovered ? 5 : 3}
                       className={`score-point verbal-point${
                         isHovered ? " score-point-active" : ""
                       }`}
-                      fill="#456bc4"
-                      style={{
-                        "--target-x": p.x,
-                        "--target-y": p.y,
-                        "--start-x": centerX,
-                        "--start-y": centerY,
-                        "--duration": `${getDuration(verbalSkills[i].score)}s`,
-                      }}
-                    />
-                    <circle
-                      cx={centerX}
-                      cy={centerY}
+                    fill="#456bc4"
+                    style={{
+                      "--target-x": p.x,
+                      "--target-y": p.y,
+                      "--start-x": centerX,
+                      "--start-y": centerY,
+                      "--duration": `${getDuration(verbalSkills[i].score)}s`,
+                    }}
+                  />
+                  <circle
+                    cx={centerX}
+                    cy={centerY}
                       r={isHovered ? 2 : 1}
                       className="score-point verbal-point-inner"
-                      fill="white"
-                      style={{
-                        "--target-x": p.x,
-                        "--target-y": p.y,
-                        "--start-x": centerX,
-                        "--start-y": centerY,
-                        "--duration": `${getDuration(verbalSkills[i].score)}s`,
-                      }}
-                    />
-                  </g>
+                    fill="white"
+                    style={{
+                      "--target-x": p.x,
+                      "--target-y": p.y,
+                      "--start-x": centerX,
+                      "--start-y": centerY,
+                      "--duration": `${getDuration(verbalSkills[i].score)}s`,
+                    }}
+                  />
+                </g>
                 );
               })}
             </svg>
@@ -407,38 +407,38 @@ export default function RadarChart({
               {getScorePoints(mathSkills.map((s) => s.score)).map((p, i) => {
                 const isHovered = hoveredMathIndex === i;
                 return (
-                  <g key={`point-group-2-${i}-${animationKey}`}>
-                    <circle
-                      cx={centerX}
-                      cy={centerY}
+                <g key={`point-group-2-${i}-${animationKey}`}>
+                  <circle
+                    cx={centerX}
+                    cy={centerY}
                       r={isHovered ? 4 : 2.5}
                       className={`score-point math-point${
                         isHovered ? " score-point-active" : ""
                       }`}
-                      fill="#E8E6E0"
-                      style={{
-                        "--target-x": p.x,
-                        "--target-y": p.y,
-                        "--start-x": centerX,
-                        "--start-y": centerY,
-                        "--duration": `${getDuration(mathSkills[i].score)}s`,
-                      }}
-                    />
-                    <circle
-                      cx={centerX}
-                      cy={centerY}
+                    fill="#E8E6E0"
+                    style={{
+                      "--target-x": p.x,
+                      "--target-y": p.y,
+                      "--start-x": centerX,
+                      "--start-y": centerY,
+                      "--duration": `${getDuration(mathSkills[i].score)}s`,
+                    }}
+                  />
+                  <circle
+                    cx={centerX}
+                    cy={centerY}
                       r={isHovered ? 1.4 : 0.8}
                       className="score-point math-point-inner"
-                      fill="white"
-                      style={{
-                        "--target-x": p.x,
-                        "--target-y": p.y,
-                        "--start-x": centerX,
-                        "--start-y": centerY,
-                        "--duration": `${getDuration(mathSkills[i].score)}s`,
-                      }}
-                    />
-                  </g>
+                    fill="white"
+                    style={{
+                      "--target-x": p.x,
+                      "--target-y": p.y,
+                      "--start-x": centerX,
+                      "--start-y": centerY,
+                      "--duration": `${getDuration(mathSkills[i].score)}s`,
+                    }}
+                  />
+                </g>
                 );
               })}
             </svg>
