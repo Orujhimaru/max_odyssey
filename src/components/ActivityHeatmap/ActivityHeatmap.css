@@ -41,96 +41,64 @@
 .heatmap-wrapper {
   display: flex;
   flex-direction: column;
-  overflow-x: auto;
+  width: 100%;
 }
 
 /* Month labels row */
-.heatmap-months {
-  display: flex;
-  margin-bottom: 4px;
+.heatmap-month-labels-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+  width: 100%;
 }
 
-.heatmap-day-labels-spacer {
-  width: 32px;
-  flex-shrink: 0;
-}
-
-.heatmap-month-labels {
-  display: flex;
-  flex: 1;
-  position: relative;
-}
-
-.heatmap-month {
+.heatmap-month-label {
+  text-align: center;
   font-size: 10px;
   color: var(--text-secondary);
   font-weight: 500;
   letter-spacing: 0.2px;
-  position: absolute;
-  white-space: nowrap;
 }
 
-/* Grid container */
-.heatmap-grid-container {
-  display: flex;
-  width: 100%;
-  overflow-x: auto;
-}
-
-/* Day labels (Mon, Wed, Fri) */
-.heatmap-day-labels {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-right: 4px;
-  width: 28px;
-  flex-shrink: 0;
-}
-
-.heatmap-day-label {
-  height: 12px;
-  font-size: 9px;
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-}
-
-/* Main grid */
-.heatmap-grid {
-  display: flex;
-  gap: 3px;
+/* Months grid container - all months in a row */
+.heatmap-months-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 8px;
   width: 100%;
 }
 
-.heatmap-week {
-  display: flex;
-  flex-direction: column;
+/* Each month as a column-major grid (5 rows x dynamic columns) */
+.heatmap-month-grid {
+  display: grid;
   gap: 3px;
-}
-
-/* Add gap before month start weeks */
-.heatmap-week.month-start {
-  margin-left: 8px;
+  width: 100%;
+  /* grid-template-columns and grid-template-rows set via inline styles */
 }
 
 /* Individual day squares */
 .heatmap-day {
-  width: 12px;
-  height: 12px;
+  width: 100%;
+  aspect-ratio: 1;
   border-radius: 2px;
   cursor: pointer;
   transition: transform 0.1s ease, opacity 0.1s ease;
+  min-width: 0;
 }
 
 .heatmap-day:hover:not(.empty) {
-  transform: scale(1.2);
+  transform: scale(1.15);
   outline: 1px solid var(--text-secondary);
   outline-offset: 1px;
+  z-index: 1;
+  position: relative;
 }
 
 .heatmap-day.empty {
   background: transparent;
   cursor: default;
+  opacity: 0.3;
 }
 
 /* Activity levels - Amber/Gold color scheme */
@@ -181,6 +149,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 6px;
+  margin-top: 4px;
 }
 
 .heatmap-legend-label {
@@ -194,15 +163,29 @@
 }
 
 .heatmap-legend-squares .heatmap-day {
+  width: 12px;
+  height: 12px;
   cursor: default;
 }
 
 .heatmap-legend-squares .heatmap-day:hover {
   transform: none;
   outline: none;
+  z-index: 0;
+  position: static;
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .heatmap-month-labels-row {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .heatmap-months-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .activity-heatmap {
     padding: 16px;
@@ -214,26 +197,17 @@
     gap: 4px;
   }
 
-  .heatmap-wrapper {
-    padding-bottom: 8px;
+  .heatmap-month-labels-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
   }
 
-  .heatmap-day {
-    width: 10px;
-    height: 10px;
+  .heatmap-months-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
   }
 
-  .heatmap-day-labels {
-    width: 24px;
-  }
-
-  .heatmap-day-label {
-    height: 10px;
-    font-size: 8px;
-  }
-
-  .heatmap-week.month-start {
-    margin-left: 6px;
+  .heatmap-month-grid {
+    gap: 2px;
   }
 }
-
