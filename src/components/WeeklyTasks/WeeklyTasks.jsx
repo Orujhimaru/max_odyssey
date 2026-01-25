@@ -1,124 +1,122 @@
-import React, { useState } from "react";
+import React from "react";
 import "./WeeklyTasks.css";
-import StarSign from "../../assets/star-sign.svg";
+import targetIcon from "../../assets/target.svg";
+
+// Flame icon SVG component
+const FlameIcon = () => (
+  <svg
+    width="48"
+    height="56"
+    viewBox="0 0 48 56"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Outer flame */}
+    <path
+      d="M24 0C24 0 16 8 16 20C16 24 18 28 20 30C20 26 22 22 24 20C26 22 28 26 28 30C30 28 32 24 32 20C32 8 24 0 24 0Z"
+      fill="#FFA500"
+      opacity="0.9"
+    />
+    {/* Middle flame */}
+    <path
+      d="M24 8C24 8 20 12 20 18C20 20 21 22 22 23C22 20 23 18 24 17C25 18 26 20 26 23C27 22 28 20 28 18C28 12 24 8 24 8Z"
+      fill="#FF6B00"
+    />
+    {/* Inner flame */}
+    <path
+      d="M24 14C24 14 22 16 22 20C22 21 22.5 22 23 22.5C23 21 23.5 20 24 19.5C24.5 20 25 21 25 22.5C25.5 22 26 21 26 20C26 16 24 14 24 14Z"
+      fill="#FFD700"
+    />
+    {/* Base */}
+    <ellipse cx="24" cy="48" rx="8" ry="8" fill="#FF8C00" />
+  </svg>
+);
 
 const WeeklyTasks = () => {
-  // State to track which task box is active
-  const [activeTaskIndex, setActiveTaskIndex] = useState(null);
+  // Sample data
+  const streakDays = 26;
+  const completedGoals = 2;
+  const totalGoals = 3;
+  const progressPercentage = (completedGoals / totalGoals) * 100;
 
-  // Sample tasks data - updated to 7 tasks with progress indicators
-  const tasks = [
-    { id: 1, text: "practice verbal", completed: false, progress: "1/5" },
-    { id: 2, text: "Complete mini test", completed: false, progress: "2/10" },
-    { id: 3, text: "practice weak points", completed: false, progress: "0/1" },
-    { id: 4, text: "complete 10 lessons", completed: false, progress: "3/10" },
-    { id: 5, text: "practice math", completed: false, progress: "2/5" },
-    { id: 6, text: "review a test", completed: false, progress: "0/3" },
-    {
-      id: 7,
-      text: "finish 1 exam",
-      completed: false,
-      isSpecial: true,
-      progress: "0/1",
-    },
+  // Sample goal items
+  const goalItems = [
+    { id: 1, text: "Complete 10 questions", completed: true },
+    { id: 2, text: "Review weak topics", completed: true },
+    { id: 3, text: "Take practice test", completed: false },
   ];
 
-  // Calculate progress for display
-  const completedTasks = 2;
-  const totalTasks = 4;
-
-  // Toggle active task
-  const handleTaskClick = (index) => {
-    if (activeTaskIndex === index) {
-      setActiveTaskIndex(null);
-    } else {
-      setActiveTaskIndex(index);
-    }
-  };
-
   return (
-    <div className="daily-tasks">
-      <div>
-        <div className="daily-tasks-header">
-          <h2>
-            Daily Goals
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 22 22"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M15.5837 10.9993C15.5837 11.9058 15.3149 12.792 14.8112 13.5457C14.3076 14.2994 13.5918 14.8869 12.7543 15.2338C11.9168 15.5807 10.9952 15.6715 10.1062 15.4946C9.21708 15.3178 8.40041 14.8812 7.75942 14.2403C7.11843 13.5993 6.68191 12.7826 6.50506 11.8935C6.32821 11.0044 6.41898 10.0829 6.76588 9.24538C7.11278 8.40789 7.70024 7.69207 8.45396 7.18845C9.20769 6.68482 10.0938 6.41602 11.0003 6.41602"
-                stroke="var(--text-primary)"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M12.8335 2.01634C12.2407 1.89534 11.6296 1.83423 11.0002 1.83301C5.93741 1.83301 1.8335 5.93692 1.8335 10.9997C1.8335 16.0624 5.93741 20.1663 11.0002 20.1663C16.0629 20.1663 20.1668 16.0624 20.1668 10.9997C20.1656 10.3702 20.1045 9.75912 19.9835 9.16634"
-                stroke="var(--text-primary)"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M11.0278 10.965L15.2014 6.79145M18.0953 3.98278L17.5884 2.16045C17.5681 2.09102 17.5311 2.02766 17.4805 1.97598C17.4299 1.92429 17.3674 1.88588 17.2984 1.86412C17.2294 1.84237 17.1561 1.83796 17.0851 1.85127C17.014 1.86458 16.9473 1.89521 16.8908 1.94045C15.5745 3.0157 14.1408 4.46495 15.3114 6.7502C17.6709 7.8502 19.0184 6.36703 20.0506 5.11945C20.0973 5.06198 20.1289 4.99379 20.1426 4.92103C20.1563 4.84827 20.1517 4.77324 20.1291 4.70273C20.1066 4.63221 20.0668 4.56843 20.0134 4.51715C19.96 4.46587 19.8946 4.42871 19.8232 4.40903L18.0953 3.98278Z"
-                stroke="var(--text-primary)"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </h2>
-        </div>
-
-        <div className="progress-bar-container">
-          <div
-            className="progress-bar-tasks"
-            style={{ width: `${(completedTasks / totalTasks) * 100}%` }}
-          ></div>
+    <div className="wk_daily-goals-grid">
+      {/* Streak Days Card */}
+      <div className="wk_streak-card">
+        <div className="wk_streak-number">{streakDays}</div>
+        <div className="wk_streak-label">Streak Days</div>
+        <div className="wk_streak-flame">
+          <FlameIcon />
         </div>
       </div>
 
-      <div className="task-section">
-        {/* Single text area that shows either UP NEXT or task text */}
-        <div className="text-display-area">
-          {activeTaskIndex === null ? (
-            <div className="up-next-header">
-              <img src={StarSign} alt="star sign" className="star-sign-icon" />
-              <span className="up-next-text">UP NEXT FOR YOU!</span>
-            </div>
-          ) : (
-            <div className="task-description">
-              <img src={StarSign} alt="star sign" className="star-sign-icon" />
-              <div className="task-info">
-                <span className="task-text">
-                  {tasks[activeTaskIndex].text.toUpperCase()}
-                  <span className="task-progress">
-                    <em>{tasks[activeTaskIndex].progress}</em>
-                  </span>
-                </span>
-              </div>
-            </div>
-          )}
+      {/* Daily Goal Card */}
+      <div className="wk_daily-goal-card">
+        <div className="wk_daily-goal-header">
+          <img src={targetIcon} alt="target" className="wk_daily-goal-icon" />
+          <h3 className="wk_daily-goal-title">Daily Goal</h3>
         </div>
+        
+        <div className="wk_daily-goal-content">
+          <div className="wk_daily-goal-progress-circle">
+            <svg className="wk_progress-svg" viewBox="0 0 100 100">
+              {/* Background circle */}
+              <circle
+                className="wk_progress-bg"
+                cx="50"
+                cy="50"
+                r="45"
+                fill="none"
+                strokeWidth="8"
+              />
+              {/* Progress circle */}
+              <circle
+                className="wk_progress-fill"
+                cx="50"
+                cy="50"
+                r="45"
+                fill="none"
+                strokeWidth="8"
+                strokeDasharray={`${2 * Math.PI * 45}`}
+                strokeDashoffset={`${2 * Math.PI * 45 * (1 - progressPercentage / 100)}`}
+                transform="rotate(-90 50 50)"
+              />
+            </svg>
+            <div className="wk_progress-text">{completedGoals}/{totalGoals}</div>
+          </div>
 
-        {/* Fixed row of 7 boxes */}
-        <div className="task-boxes">
-          {tasks.map((task, index) => (
-            <div
-              key={task.id}
-              className={`task-box ${task.completed ? "completed" : ""} ${
-                activeTaskIndex === index ? "active" : ""
-              } ${task.isSpecial ? "star" : ""}`}
-              onClick={() => handleTaskClick(index)}
-            >
-              {task.completed && <div className="checkmark">✓</div>}
-              {task.isSpecial && <div className="star-icon">★</div>}
-            </div>
-          ))}
+          <div className="wk_daily-goal-items">
+            {goalItems.map((item, index) => (
+              <div key={item.id} className="wk_goal-item">
+                <div className={`wk_goal-checkbox ${item.completed ? "wk_completed" : ""}`}>
+                  {item.completed ? (
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path
+                        d="M10 3L4.5 8.5L2 6"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : index === 1 ? (
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <rect x="4" y="2" width="4" height="8" fill="currentColor" />
+                    </svg>
+                  ) : (
+                    <div className="wk_goal-checkbox-inner"></div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
