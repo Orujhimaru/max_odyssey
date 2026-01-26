@@ -10,12 +10,14 @@
   flex: 1;
   display: flex;
   width: 100%;
-  height: fit-content; /* Let content determine height */
+  height: fit-content;
+  /* Let content determine height */
   padding: 12px;
   background-color: var(--bg-primary);
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border: 1px solid #dddddd; /* Updated light mode border */
+  border: 1px solid #dddddd;
+  /* Updated light mode border */
   /* gap: 4px; */
   overflow: hidden;
 }
@@ -43,7 +45,14 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 .average-increase-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 8px;
+}
+
+.average-increase-container .insight-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
 }
 
 .score-boxes-container-wrapper {
@@ -89,12 +98,14 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 }
 
 .verbal-score {
-  color: #e53935; /* Cherry red */
+  color: #e53935;
+  /* Cherry red */
   margin: 4px 0;
 }
 
 .math-score {
-  color: #ef9a9a; /* Lighter red */
+  color: #ef9a9a;
+  /* Lighter red */
   margin: 4px 0;
 }
 
@@ -124,6 +135,7 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   width: 100% !important;
   max-width: 750px;
   /* height: 100% !important; */
+  margin-top: 35px;
 }
 
 .recharts-wrapper {
@@ -207,7 +219,8 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 }
 
 .x-axis-tick {
-  margin-top: 5px !important; /* Adjust the margin as needed */
+  margin-top: 5px !important;
+  /* Adjust the margin as needed */
 }
 
 /* .recharts-yAxis .recharts-text {
@@ -222,9 +235,12 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
 .score-column-container {
   flex: 1;
   width: 100%;
-  display: flex; /* Add flex display */
-  flex-direction: column; /* Stack children vertically */
-  gap: 24px; /* Space between chart and predicted score */
+  display: flex;
+  /* Add flex display */
+  flex-direction: column;
+  /* Stack children vertically */
+  gap: 24px;
+  /* Space between chart and predicted score */
 }
 
 .score-boxes-container {
@@ -277,7 +293,8 @@ tspan {
   font-weight: 500;
   color: var(--text-primary);
   padding-left: 20px;
-  padding-top: 13px;
+  padding-top: 12px;
+
 }
 
 .score-box.math,
@@ -293,16 +310,18 @@ tspan {
     gap: 6px;
   }
 
-  .performance-column > * {
+  .performance-column>* {
     height: 100%;
   }
 
   .insights-container {
     margin-top: 0;
   }
+
   .chart-title {
     padding-left: 0px;
   }
+
   .score-boxes-container {
     /* flex-direction: row; */
     width: 100%;
@@ -310,10 +329,12 @@ tspan {
     max-width: none;
     gap: 12px;
   }
+
   .recharts-wrapper {
     position: relative;
     left: 30px;
   }
+
   /* tspan {
     font-size: 14px;
   } */
@@ -321,25 +342,31 @@ tspan {
     max-width: 300px;
     flex-direction: row;
   }
+
   .chart-container {
     flex-direction: column;
   }
+
   .score-column-container .recharts-responsive-container {
     position: relative;
-    width: 110% !important; /* Extend container width */
+    width: 110% !important;
+    /* Extend container width */
     transform: translateX(-50px);
     top: 0px;
   }
 }
+
 @media (max-width: 890px) {
   .radar-chart-container {
     max-width: 240px;
   }
+
   .score-boxes-container {
     flex-direction: column;
     width: 100%;
     align-items: flex-end;
   }
+
   .performance-column {
     flex-direction: column;
   }
