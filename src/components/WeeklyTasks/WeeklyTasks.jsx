@@ -28,10 +28,20 @@ const WeeklyTasks = () => {
     return () => clearInterval(timer);
   }, [streakDays]);
 
-  // Daily goals data
-  const completedGoals = 2;
-  const totalGoals = 3;
-  const progressPercentage = (completedGoals / totalGoals) * 100;
+  // Two separate challenges
+  const testsCompleted = 1;
+  const testsTarget = 2;
+  const testsProgress = (testsCompleted / testsTarget) * 100;
+  const testsComplete = testsCompleted >= testsTarget;
+
+  const practicesCompleted = 1;
+  const practicesTarget = 5;
+  const practicesProgress = (practicesCompleted / practicesTarget) * 100;
+  const practicesComplete = practicesCompleted >= practicesTarget;
+
+  // Overall progress
+  const totalCompleted = testsCompleted + practicesCompleted;
+  const totalTarget = testsTarget + practicesTarget;
 
   const dailyTasks = [
     {
@@ -89,56 +99,110 @@ const WeeklyTasks = () => {
         {!isExpanded ? (
           // Collapsed view
           <div className="wk_daily-goal-content">
-            {/* Circular Progress */}
-            <div className="wk_progress-circle">
-              <svg className="wk_progress-svg" viewBox="0 0 80 80">
+            {/* Nested Concentric Progress Rings */}
+            <div className="wk_nested-rings">
+              <svg className="wk_rings-svg" viewBox="0 0 120 120">
+                {/* Dark background circle for depth */}
                 <circle
-                  className="wk_progress-bg"
-                  cx="40"
-                  cy="40"
-                  r="36"
-                  fill="none"
-                  strokeWidth="6"
+                  cx="60"
+                  cy="60"
+                  r="48"
+                  fill="#1a202c"
                 />
+
+                {/* Outer Ring Background */}
                 <circle
-                  className="wk_progress-fill"
-                  cx="40"
-                  cy="40"
-                  r="36"
+                  className="wk_ring-bg"
+                  cx="60"
+                  cy="60"
+                  r="52"
                   fill="none"
-                  strokeWidth="6"
-                  strokeDasharray={`${2 * Math.PI * 36}`}
-                  strokeDashoffset={`${2 * Math.PI * 36 * (1 - progressPercentage / 100)}`}
-                  transform="rotate(-90 40 40)"
+                  strokeWidth="8"
+                />
+                {/* Outer Ring - Tests (Light Blue) */}
+                <circle
+                  className="wk_ring-tests"
+                  cx="60"
+                  cy="60"
+                  r="52"
+                  fill="none"
+                  strokeWidth="8"
+                  strokeDasharray={`${2 * Math.PI * 52}`}
+                  strokeDashoffset={`${2 * Math.PI * 52 * (1 - testsProgress / 100)}`}
+                  transform="rotate(-90 60 60)"
+                  strokeLinecap="round"
+                />
+
+                {/* Inner Ring Background */}
+                <circle
+                  className="wk_ring-bg"
+                  cx="60"
+                  cy="60"
+                  r="40"
+                  fill="none"
+                  strokeWidth="7"
+                />
+                {/* Inner Ring - Practices (Dark Blue) */}
+                <circle
+                  className="wk_ring-practices"
+                  cx="60"
+                  cy="60"
+                  r="40"
+                  fill="none"
+                  strokeWidth="7"
+                  strokeDasharray={`${2 * Math.PI * 40}`}
+                  strokeDashoffset={`${2 * Math.PI * 40 * (1 - practicesProgress / 100)}`}
+                  transform="rotate(-90 60 60)"
                   strokeLinecap="round"
                 />
               </svg>
-              <div className="wk_progress-text">{completedGoals}/{totalGoals}</div>
             </div>
 
-            {/* Task Checkboxes */}
-            <div className="wk_task-list">
-              {dailyTasks.map((task) => (
-                <div key={task.id} className="wk_task-checkbox">
-                  {task.completed ? (
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                      <rect width="18" height="18" rx="4" fill="#5b8dee" />
-                      <path
-                        d="M14 5L7 12L4 9"
-                        stroke="white"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
+            {/* Task Status List with Icons */}
+            <div className="wk_task-status-list">
+              {/* Tests Challenge */}
+              <div className="wk_challenge-item">
+                <div className="wk_challenge-checkbox">
+                  {testsComplete ? (
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <rect width="20" height="20" rx="5" fill="#60a5fa" />
+                      <path d="M15 6L8 13L5 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   ) : (
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                      <rect width="18" height="18" rx="4" fill="#6b7280" />
-                      <rect x="7" y="5" width="4" height="8" rx="1" fill="white" />
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <rect width="20" height="20" rx="5" stroke="#4b5563" strokeWidth="1.5" fill="none" />
+                      <path d="M10 7V13M7 10H13" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round" />
                     </svg>
                   )}
                 </div>
-              ))}
+                <span className="wk_challenge-progress">{testsCompleted}/{testsTarget}</span>
+                <svg className="wk_challenge-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 11l3 3L22 4" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="#60a5fa" strokeWidth="2" />
+                </svg>
+              </div>
+
+              {/* Practices Challenge */}
+              <div className="wk_challenge-item">
+                <div className="wk_challenge-checkbox">
+                  {practicesComplete ? (
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <rect width="20" height="20" rx="5" fill="#3b82f6" />
+                      <path d="M15 6L8 13L5 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <rect width="20" height="20" rx="5" stroke="#4b5563" strokeWidth="1.5" fill="none" />
+                      <path d="M10 7V13M7 10H13" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  )}
+                </div>
+                <span className="wk_challenge-progress">{practicesCompleted}/{practicesTarget}</span>
+                <svg className="wk_challenge-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="#3b82f6" strokeWidth="2" />
+                </svg>
+              </div>
             </div>
           </div>
         ) : (

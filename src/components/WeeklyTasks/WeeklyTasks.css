@@ -176,58 +176,109 @@
   flex: 1;
 }
 
-/* Circular Progress */
-.wk_progress-circle {
+/* Nested Concentric Rings - 30% smaller */
+.wk_nested-rings {
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 84px;
+  height: 84px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.wk_progress-svg {
+.wk_rings-svg {
   width: 100%;
   height: 100%;
 }
 
-.wk_progress-bg {
-  stroke: #3f3f3f;
+/* Dark inner background circle for depth */
+.wk_ring-bg {
+  stroke: #2d3748;
+  stroke-width: 8;
 }
 
-[data-theme="light"] .wk_progress-bg {
-  stroke: #e5e7eb;
+[data-theme="light"] .wk_ring-bg {
+  stroke: #d1d5db;
+  stroke-width: 8;
 }
 
-.wk_progress-fill {
-  stroke: #5b8dee;
+/* Outer Ring - Tests (Light Blue) - Thicker for prominence */
+.wk_ring-tests {
+  stroke: #60a5fa;
+  stroke-width: 8;
   transition: stroke-dashoffset 0.8s ease;
+  filter: drop-shadow(0 0 4px rgba(96, 165, 250, 0.5));
 }
 
-.wk_progress-text {
+/* Inner Ring - Practices (Dark Blue) - Slightly thinner */
+.wk_ring-practices {
+  stroke: #1e40af;
+  stroke-width: 7;
+  transition: stroke-dashoffset 0.8s ease;
+  filter: drop-shadow(0 0 3px rgba(30, 64, 175, 0.4));
+}
+
+/* Center dark circle for depth effect */
+.wk_rings-svg::before {
+  content: "";
   position: absolute;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, #1a202c 0%, #2d3748 100%);
+  border-radius: 50%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 18px;
-  font-weight: 700;
-  color: white;
 }
 
-[data-theme="light"] .wk_progress-text {
-  color: var(--text-primary);
+.wk_rings-text {
+  fill: white;
+  font-family: "DM Sans", sans-serif;
 }
 
-/* Task Checkboxes */
-.wk_task-list {
+[data-theme="light"] .wk_rings-text {
+  fill: var(--text-primary);
+}
+
+/* Task Status List - Horizontal layout */
+.wk_task-status-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   justify-content: center;
+  flex: 1;
 }
 
-.wk_task-checkbox {
+.wk_challenge-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wk_challenge-checkbox {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.wk_challenge-progress {
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  min-width: 38px;
+  letter-spacing: -0.5px;
+}
+
+[data-theme="light"] .wk_challenge-progress {
+  color: var(--text-primary);
+}
+
+.wk_challenge-icon {
+  flex-shrink: 0;
+  opacity: 0.7;
+  margin-left: auto;
 }
 
 /* Expanded Content */
