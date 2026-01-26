@@ -180,8 +180,9 @@ export default function ScoreColumnGraph() {
                 <CartesianGrid
                   horizontal={true}
                   vertical={false}
-                  stroke="#94a3b820"
-                  strokeWidth={0.5}
+                  stroke="#94a3b840"
+                  strokeWidth={1}
+                  strokeDasharray="0"
                 />
                 <XAxis
                   dataKey="date"
@@ -210,7 +211,14 @@ export default function ScoreColumnGraph() {
                     opacity: hoveredValue ? 0.2 : 1,
                     transition: "opacity 0.2s ease-in-out",
                   }}
-                  ticks={[0, 400, 800]}
+                  ticks={[0, 200, 400, 600, 800]}
+                  tickFormatter={(value) => {
+                    // Only show labels for 0, 400, and 800
+                    if ([0, 400, 800].includes(value)) {
+                      return value.toString();
+                    }
+                    return "";
+                  }}
                   axisLine={false}
                   tickSize={10}
                   width={35}
