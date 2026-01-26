@@ -4,14 +4,7 @@
   padding-top: 8px;
   gap: 12px;
   width: 100%;
-  height: 156px;
-  position: relative;
-}
-
-/* Allow grid to grow when expanded */
-.wk_daily-goals-grid:has(.wk_daily-goal-card.wk_expanded) {
-  height: auto;
-  min-height: 156px;
+  align-items: flex-start;
 }
 
 /* Streak Days Card */
@@ -84,31 +77,27 @@
   padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  height: 100%;
+  gap: 6px;
   border: none;
-  transition: all 0.3s ease;
   position: relative;
+  height: 153px;
+
+  /* Lock collapsed width & animate max-width for smooth expansion */
+  /* width: 100%;
+  max-width: 360px; */
+  transition: max-width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
 }
 
-/* Expanded: Grow horizontally in place */
+/* Expanded state - grows to 850px */
 .wk_daily-goal-card.wk_expanded {
-  width: 100%;
   max-width: 850px;
-}
-
-/* Expanded: 3-column layout - rings + metrics + tasks */
-.wk_daily-goal-card.wk_expanded .wk_daily-goal-content {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 16px;
 }
 
 /* Mobile: Stack vertically */
 @media (max-width: 768px) {
-  .wk_daily-goal-card.wk_expanded .wk_daily-goal-content {
-    flex-direction: column;
+  .wk_daily-goal-card.wk_expanded {
+    max-width: 100%;
   }
 }
 
@@ -172,7 +161,7 @@
 .wk_daily-goal-content {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   flex: 1;
 }
@@ -248,18 +237,12 @@
   flex-direction: column;
   gap: 10px;
   justify-content: center;
-  flex: 1;
-}
-
-/* Hide metrics when expanded */
-.wk_daily-goal-card.wk_expanded .wk_task-status-list {
-  display: none;
 }
 
 .wk_challenge-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
 }
 
 .wk_challenge-checkbox {
@@ -284,22 +267,33 @@
 .wk_challenge-icon {
   flex-shrink: 0;
   opacity: 0.7;
-  margin-left: auto;
 }
 
-/* Expanded Content - Shows next to rings */
+/* Expanded Content - Smooth opacity/transform animation */
 .wk_expanded-content {
-  display: none;
-  flex-direction: column;
-  gap: 12px;
-  animation: slideInRight 0.3s ease-out;
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transform: translateX(-16px);
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 /* Show expanded content when card is expanded */
 .wk_daily-goal-card.wk_expanded .wk_expanded-content {
-  display: flex;
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  transition-delay: 0.15s;
+  position: relative;
+  top: -41px;
+  right: 30px;
+
 }
 
 @keyframes slideInRight {
@@ -318,7 +312,8 @@
 .wk_task-detail {
   background-color: rgba(255, 255, 255, 0.03);
   border-radius: 12px;
-  padding: 16px;
+  padding: 4px;
+  padding-inline: 8px;
   transition: all 0.2s ease;
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -339,7 +334,7 @@
 
 .wk_task-detail-header {
   display: flex;
-  gap: 14px;
+  gap: 8px;
   align-items: flex-start;
 }
 
@@ -355,7 +350,6 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
 .wk_task-category {
