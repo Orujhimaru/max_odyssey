@@ -89,12 +89,7 @@
   font-weight: 400;
   /* margin-top: 2px; */
 }
-.course-card.verbal {
-  background-position-y: -8px;
-}
-.course-card.math {
-  background-position-y: -20px;
-}
+
 
 .progress-indicator {
   position: absolute;
@@ -180,6 +175,7 @@
   overflow: hidden;
   border: 2px solid #dddddd;
 }
+
 [data-theme="dark"] .action-button {
   border-color: #4d4d4d;
 }
@@ -256,8 +252,7 @@
     max-width: none;
   }
 
-  .course-card {
-  }
+  .course-card {}
 }
 
 @media (max-width: 768px) {

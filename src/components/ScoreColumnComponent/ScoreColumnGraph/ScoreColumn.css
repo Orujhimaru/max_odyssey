@@ -31,7 +31,7 @@
 }
 
 .score-column-container .recharts-cartesian-grid-horizontal line {
-  stroke: var(--chart-grid);
+  stroke: #22252b1f
 }
 
 .recharts-text {

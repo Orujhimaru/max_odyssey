@@ -1,12 +1,17 @@
 /* Daily Goals Grid Container - 2 column layout */
 .wk_daily-goals-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
   padding-top: 8px;
   gap: 12px;
   width: 100%;
-  max-width: 400px;
   height: 156px;
+  position: relative;
+}
+
+/* Allow grid to grow when expanded */
+.wk_daily-goals-grid:has(.wk_daily-goal-card.wk_expanded) {
+  height: auto;
+  min-height: 156px;
 }
 
 /* Streak Days Card */
@@ -20,6 +25,7 @@
   position: relative;
   overflow: hidden;
   height: 100%;
+  max-width: 200px;
 }
 
 .wk_streak-number {
@@ -85,29 +91,24 @@
   position: relative;
 }
 
-/* Desktop: Expand horizontally to the right */
-@media (min-width: 1300px) {
-  .wk_daily-goal-card.wk_expanded {
-    position: absolute;
-    right: 430px;
-    width: 300px;
-    height: auto;
-    min-height: 200px;
-    z-index: 100;
-  }
+/* Expanded: Grow horizontally in place */
+.wk_daily-goal-card.wk_expanded {
+  width: 100%;
+  max-width: 850px;
 }
 
-/* Mobile: Absolute overlay on top */
-@media (max-width: 1299px) {
-  .wk_daily-goal-card.wk_expanded {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: auto;
-    min-height: 300px;
-    z-index: 100;
+/* Expanded: 3-column layout - rings + metrics + tasks */
+.wk_daily-goal-card.wk_expanded .wk_daily-goal-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+/* Mobile: Stack vertically */
+@media (max-width: 768px) {
+  .wk_daily-goal-card.wk_expanded .wk_daily-goal-content {
+    flex-direction: column;
   }
 }
 
@@ -170,9 +171,9 @@
 /* Daily Goal Content - Horizontal Layout */
 .wk_daily-goal-content {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
   flex: 1;
 }
 
@@ -250,6 +251,11 @@
   flex: 1;
 }
 
+/* Hide metrics when expanded */
+.wk_daily-goal-card.wk_expanded .wk_task-status-list {
+  display: none;
+}
+
 .wk_challenge-item {
   display: flex;
   align-items: center;
@@ -281,46 +287,59 @@
   margin-left: auto;
 }
 
-/* Expanded Content */
+/* Expanded Content - Shows next to rings */
 .wk_expanded-content {
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 12px;
-  animation: fadeIn 0.3s ease-out;
+  animation: slideInRight 0.3s ease-out;
+  flex: 1;
+  min-width: 0;
 }
 
-@keyframes fadeIn {
+/* Show expanded content when card is expanded */
+.wk_daily-goal-card.wk_expanded .wk_expanded-content {
+  display: flex;
+}
+
+@keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateX(-10px);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
   }
 }
 
-/* Task Detail Items */
+/* Task Detail Items - Clean card design */
 .wk_task-detail {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 16px;
   transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.wk_task-detail.wk_completed {
-  opacity: 0.7;
+.wk_task-detail:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="light"] .wk_task-detail {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: #f3f4f6;
   border: 1px solid #e5e7eb;
+}
+
+[data-theme="light"] .wk_task-detail:hover {
+  background-color: #e5e7eb;
 }
 
 .wk_task-detail-header {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: flex-start;
 }
 
@@ -336,22 +355,22 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .wk_task-category {
-  font-size: 10px;
-  font-weight: 600;
-  color: #5b8dee;
+  font-size: 11px;
+  font-weight: 700;
+  color: #60a5fa;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
 .wk_task-title {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: white;
-  line-height: 1.3;
+  line-height: 1.4;
 }
 
 [data-theme="light"] .wk_task-title {
@@ -359,9 +378,9 @@
 }
 
 .wk_task-description {
-  font-size: 11px;
+  font-size: 13px;
   color: rgba(255, 255, 255, 0.6);
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 [data-theme="light"] .wk_task-description {

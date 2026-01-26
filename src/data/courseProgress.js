@@ -8,7 +8,7 @@ export const coursesProgress = [
       current: 160,
       total: 161,
     },
-    background: "/src/assets/math_bg_4.jpg",
+    background: "/src/assets/verbal_bg.png",
   },
   {
     id: 2,
@@ -19,6 +19,6 @@ export const coursesProgress = [
       current: 145,
       total: 180,
     },
-    background: "/src/assets/math_bg_5.jpg",
+    background: "/src/assets/math_bg.png",
   },
 ];
