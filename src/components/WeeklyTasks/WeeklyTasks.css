@@ -18,7 +18,8 @@
   position: relative;
   overflow: hidden;
   height: 100%;
-  max-width: 200px;
+  max-width: 160px;
+  width: 100%;
 }
 
 .wk_streak-number {
@@ -81,20 +82,10 @@
   border: none;
   position: relative;
   height: 153px;
-
-  /* Lock collapsed width & animate max-width for smooth expansion */
-  /* width: 100%;
-  max-width: 360px; */
-  transition: max-width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
+  overflow: visible;
 }
 
-/* Expanded state - grows to 850px */
-.wk_daily-goal-card.wk_expanded {
-  max-width: 850px;
-}
 
-/* Mobile: Stack vertically */
 @media (max-width: 768px) {
   .wk_daily-goal-card.wk_expanded {
     max-width: 100%;
@@ -129,31 +120,105 @@
   color: var(--text-primary);
 }
 
-/* Expand Button */
-.wk_expand-button {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  padding: 4px;
+/* Info Icon Wrapper and Tooltip */
+.wk_info-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
-  transition: all 0.2s ease;
 }
 
-.wk_expand-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
+.wk_info-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: help;
+  transition: color 0.2s ease;
 }
 
-[data-theme="light"] .wk_expand-button {
+.wk_info-icon:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .wk_info-icon {
   color: var(--text-secondary);
 }
 
-[data-theme="light"] .wk_expand-button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+[data-theme="light"] .wk_info-icon:hover {
+  color: var(--text-primary);
+}
+
+/* Tooltip */
+.wk_tooltip {
+  position: absolute;
+  top: 100%;
+  right: -105px;
+  margin-top: 6px;
+  background-color: #1f2937;
+  border-radius: 12px;
+  padding: 12px;
+  min-width: 280px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 100;
+}
+
+.wk_info-wrapper:hover .wk_tooltip {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+[data-theme="light"] .wk_tooltip {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.wk_tooltip-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+}
+
+.wk_tooltip-item:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 8px;
+  padding-bottom: 12px;
+}
+
+[data-theme="light"] .wk_tooltip-item:not(:last-child) {
+  border-bottom-color: #e5e7eb;
+}
+
+.wk_tooltip-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.wk_tooltip-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #60a5fa;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.wk_tooltip-desc {
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  line-height: 1.4;
+}
+
+[data-theme="light"] .wk_tooltip-desc {
   color: var(--text-primary);
 }
 
@@ -169,8 +234,8 @@
 /* Nested Concentric Rings - 30% smaller */
 .wk_nested-rings {
   position: relative;
-  width: 84px;
-  height: 84px;
+  width: 92px;
+  height: 92px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -182,15 +247,34 @@
   height: 100%;
 }
 
-/* Dark inner background circle for depth */
-.wk_ring-bg {
-  stroke: #2d3748;
+/* Center background circle */
+.wk_ring-center-bg {
+  fill: #1a202c;
+}
+
+[data-theme="light"] .wk_ring-center-bg {
+  fill: #202020;
+}
+
+/* Ring backgrounds - separate colors for outer and inner */
+.wk_ring-bg-outer {
+  stroke: #1d376b;
   stroke-width: 8;
 }
 
-[data-theme="light"] .wk_ring-bg {
-  stroke: #d1d5db;
+.wk_ring-bg-inner {
+  stroke: #5e5e60;
   stroke-width: 8;
+}
+
+[data-theme="light"] .wk_ring-bg-outer {
+  stroke: #202c43;
+  stroke-width: 8;
+}
+
+[data-theme="light"] .wk_ring-bg-inner {
+  stroke: #707070;
+  stroke-width: 9;
 }
 
 /* Outer Ring - Tests (Light Blue) - Thicker for prominence */
@@ -203,8 +287,8 @@
 
 /* Inner Ring - Practices (Dark Blue) - Slightly thinner */
 .wk_ring-practices {
-  stroke: #1e40af;
-  stroke-width: 7;
+  stroke: #284cb3;
+  stroke-width: 9;
   transition: stroke-dashoffset 0.8s ease;
   filter: drop-shadow(0 0 3px rgba(30, 64, 175, 0.4));
 }
@@ -292,7 +376,7 @@
   pointer-events: auto;
   transition-delay: 0.15s;
   position: relative;
-  top: -12px;
+  top: -20px;
   right: 20px;
   padding-left: 10px;
   padding-right: 10px;
@@ -337,7 +421,7 @@
 .wk_task-detail-header {
   display: flex;
   gap: 8px;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .wk_task-checkbox-large {
@@ -352,6 +436,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .wk_task-category {
@@ -364,7 +449,7 @@
 
 .wk_task-title {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: white;
   line-height: 1.4;
 }
