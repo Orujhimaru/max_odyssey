@@ -169,17 +169,13 @@ const WeeklyTasks = () => {
                       <path d="M15 6L8 13L5 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   ) : (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <rect width="20" height="20" rx="5" stroke="#4b5563" strokeWidth="1.5" fill="none" />
-                      <path d="M10 7V13M7 10H13" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round" />
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                      <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   )}
                 </div>
                 <span className="wk_challenge-progress">{testsCompleted}/{testsTarget}</span>
-                <svg className="wk_challenge-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 11l3 3L22 4" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" />
-                  <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="#60a5fa" strokeWidth="2" />
-                </svg>
               </div>
 
               {/* Practices Challenge */}
@@ -191,17 +187,14 @@ const WeeklyTasks = () => {
                       <path d="M15 6L8 13L5 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   ) : (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <rect width="20" height="20" rx="5" stroke="#4b5563" strokeWidth="1.5" fill="none" />
-                      <path d="M10 7V13M7 10H13" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round" />
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="9" stroke="#3b82f6" strokeWidth="2" fill="none" />
+                      <circle cx="12" cy="12" r="5" stroke="#3b82f6" strokeWidth="2" fill="none" />
+                      <circle cx="12" cy="12" r="1.5" fill="#3b82f6" />
                     </svg>
                   )}
                 </div>
                 <span className="wk_challenge-progress">{practicesCompleted}/{practicesTarget}</span>
-                <svg className="wk_challenge-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" />
-                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="#3b82f6" strokeWidth="2" />
-                </svg>
               </div>
             </div>
           </div>
@@ -251,17 +244,13 @@ const WeeklyTasks = () => {
                       <path d="M15 6L8 13L5 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   ) : (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <rect width="20" height="20" rx="5" stroke="#4b5563" strokeWidth="1.5" fill="none" />
-                      <path d="M10 7V13M7 10H13" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round" />
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                      <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   )}
                 </div>
                 <span className="wk_challenge-progress">{testsCompleted}/{testsTarget}</span>
-                <svg className="wk_challenge-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 11l3 3L22 4" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" />
-                  <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="#60a5fa" strokeWidth="2" />
-                </svg>
               </div>
 
               <div className="wk_challenge-item">
@@ -272,17 +261,14 @@ const WeeklyTasks = () => {
                       <path d="M15 6L8 13L5 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   ) : (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <rect width="20" height="20" rx="5" stroke="#4b5563" strokeWidth="1.5" fill="none" />
-                      <path d="M10 7V13M7 10H13" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round" />
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="9" stroke="#3b82f6" strokeWidth="2" fill="none" />
+                      <circle cx="12" cy="12" r="5" stroke="#3b82f6" strokeWidth="2" fill="none" />
+                      <circle cx="12" cy="12" r="1.5" fill="#3b82f6" />
                     </svg>
                   )}
                 </div>
                 <span className="wk_challenge-progress">{practicesCompleted}/{practicesTarget}</span>
-                <svg className="wk_challenge-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" />
-                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="#3b82f6" strokeWidth="2" />
-                </svg>
               </div>
             </div>
 

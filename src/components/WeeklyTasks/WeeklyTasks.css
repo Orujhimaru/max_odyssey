@@ -237,6 +237,7 @@
   flex-direction: column;
   gap: 10px;
   justify-content: center;
+  padding-top: 10px;
 }
 
 .wk_challenge-item {
@@ -291,8 +292,8 @@
   pointer-events: auto;
   transition-delay: 0.15s;
   position: relative;
-  top: -20px;
-  right: 30px;
+  top: -12px;
+  right: 20px;
 
 }
 
