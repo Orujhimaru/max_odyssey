@@ -294,7 +294,8 @@
   position: relative;
   top: -12px;
   right: 20px;
-
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 @keyframes slideInRight {
