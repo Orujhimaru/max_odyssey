@@ -293,19 +293,20 @@ const WeeklyTasks = () => {
                   <div className="wk_task-checkbox-large">
                     {testsComplete ? (
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <rect width="24" height="24" rx="6" fill="#60a5fa" />
-                        <path d="M18 8L10 16L6 12" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#60a5fa" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M14 2v6h6" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M16 13L10 19L7 16" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     ) : (
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <rect width="24" height="24" rx="6" stroke="#60a5fa" strokeWidth="2" fill="none" />
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                        <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     )}
                   </div>
                   <div className="wk_task-info">
                     <div className="wk_task-category">TESTS</div>
                     <div className="wk_task-title">Complete one short/full test</div>
-                    <div className="wk_task-description">Take a practice test to track progress</div>
                   </div>
                 </div>
               </div>
@@ -315,19 +316,22 @@ const WeeklyTasks = () => {
                   <div className="wk_task-checkbox-large">
                     {practicesComplete ? (
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <rect width="24" height="24" rx="6" fill="#3b82f6" />
-                        <path d="M18 8L10 16L6 12" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                        <circle cx="12" cy="12" r="10" fill="#3b82f6" />
+                        <circle cx="12" cy="12" r="6" fill="#1e40af" />
+                        <circle cx="12" cy="12" r="2" fill="#60a5fa" />
+                        <path d="M16 10L11 15L8 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     ) : (
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <rect width="24" height="24" rx="6" stroke="#3b82f6" strokeWidth="2" fill="none" />
+                        <circle cx="12" cy="12" r="10" stroke="#3b82f6" strokeWidth="2" fill="none" />
+                        <circle cx="12" cy="12" r="6" stroke="#3b82f6" strokeWidth="2" fill="none" />
+                        <circle cx="12" cy="12" r="2" fill="#3b82f6" />
                       </svg>
                     )}
                   </div>
                   <div className="wk_task-info">
                     <div className="wk_task-category">PRACTICES</div>
                     <div className="wk_task-title">Work on one of your weaknesses</div>
-                    <div className="wk_task-description">Recommended: Algebra</div>
                   </div>
                 </div>
               </div>
