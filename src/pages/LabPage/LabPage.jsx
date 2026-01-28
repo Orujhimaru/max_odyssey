@@ -31,26 +31,26 @@ const sampleMathQuestionTimingData = [
 const generateSampleActivityData = () => {
   const data = {};
   const today = new Date();
-  
+
   // Generate random activity for the past year
   for (let i = 0; i < 365; i++) {
     const date = new Date(today);
     date.setDate(date.getDate() - i);
     const dateStr = date.toISOString().split('T')[0];
-    
+
     // Random activity with some patterns (weekends less active, some streaks)
     const dayOfWeek = date.getDay();
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-    
+
     // 60% chance of activity on weekdays, 30% on weekends
     const hasActivity = Math.random() < (isWeekend ? 0.3 : 0.6);
-    
+
     if (hasActivity) {
       // Random number of questions (1-15)
       data[dateStr] = Math.floor(Math.random() * 15) + 1;
     }
   }
-  
+
   return data;
 };
 
@@ -463,7 +463,7 @@ const LabPage = () => {
     const avgMastery = calculateAverageMastery(allSubtopics);
     const avgTime = calculateAverageTime(allSubtopics);
     const avgImprovement = calculateAverageImprovement(allSubtopics);
-    
+
     return { avgMastery, avgTime, avgImprovement };
   };
 
@@ -585,7 +585,7 @@ const LabPage = () => {
 
               return (
                 <div key={topic} className={`lab-topic-card ${performanceLevel}`}>
-                  <div 
+                  <div
                     className="lab-topic-main"
                     onClick={() => toggleTopic(topic)}
                   >
@@ -601,9 +601,9 @@ const LabPage = () => {
                       <div className="lab-metric">
                         <span className="lab-metric-label">Mastery</span>
                         <div className="lab-metric-value-row">
-                          <img 
-                            src={getScoreImage(avgMastery.percentage)} 
-                            alt="Score" 
+                          <img
+                            src={getScoreImage(avgMastery.percentage)}
+                            alt="Score"
                             className="lab-metric-icon"
                           />
                           <span className="lab-metric-value">{avgMastery.text}</span>
@@ -644,9 +644,9 @@ const LabPage = () => {
 
                           <div className="lab-subtopic-metrics">
                             <div className="lab-subtopic-metric">
-                              <img 
-                                src={getScoreImage(subtopic.masteryPercentage)} 
-                                alt="Score" 
+                              <img
+                                src={getScoreImage(subtopic.masteryPercentage)}
+                                alt="Score"
                                 className="lab-subtopic-icon"
                               />
                               <span>{subtopic.masteryText}</span>

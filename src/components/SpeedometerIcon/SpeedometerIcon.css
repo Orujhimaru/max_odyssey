@@ -1,14 +1,18 @@
+/* SpeedometerIcon.css */
 .speedometer-icon {
   width: 100%;
-  height: 100%;
+  height: auto;
+  /* Changed to auto to maintain aspect ratio */
+  display: block;
 }
 
 .speedometer-needle-group {
-  transform-origin: 60px 60px;
+  /* Remove transform-origin from here */
   transition: none;
 }
 
 .speedometer-needle-group.animating {
+  /* Smooth transition for the transform attribute */
   transition: transform 1.2s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
