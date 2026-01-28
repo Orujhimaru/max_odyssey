@@ -460,37 +460,42 @@ const QuestionTimingTracker = ({
           })}
         </div>
       ) : (
-        // Verbal Mode - new two-column subtopic grid
+        // Verbal Mode - redesigned two-column subtopic grid with colored categories
         <div className="subtopic-grid">
           {/* Column 1: Craft and Structure + Standard English Conventions */}
           <div className="subtopic-column">
             {[
-              VERBAL_SUBTOPIC_DATA[0], // Craft and Structure
-              VERBAL_SUBTOPIC_DATA[2], // Standard English Conventions
-            ].map((mainTopic, idx) => (
+              { data: VERBAL_SUBTOPIC_DATA[0], icon: "fa-book", color: "#3b82f6" }, // Craft and Structure (blue)
+              { data: VERBAL_SUBTOPIC_DATA[2], icon: "fa-check-circle", color: "#22c55e" }, // Standard English Conventions (green)
+            ].map((item, idx) => (
               <div key={idx} className="subtopic-category">
-                <h4 className="subtopic-category-title">{mainTopic.name}</h4>
-                {mainTopic.subtopics.map((subtopic, sIdx) => {
-                  const averageTime = subtopicAverages[subtopic.name] || 0;
-                  const formattedTime = formatTime(Math.round(averageTime));
-                  const isSubtopicHighlighted =
-                    hoveredCategory === subtopic.name;
+                <div className="subtopic-category-header">
+                  <div className="category-icon" style={{ backgroundColor: item.color }}>
+                    <i className={`fas ${item.icon}`}></i>
+                  </div>
+                  <h4 className="subtopic-category-title">{item.data.name}</h4>
+                </div>
+                <div className="subtopic-items-list">
+                  {item.data.subtopics.map((subtopic, sIdx) => {
+                    const averageTime = subtopicAverages[subtopic.name] || 0;
+                    const formattedTime = formatTime(Math.round(averageTime));
+                    const isSubtopicHighlighted = hoveredCategory === subtopic.name;
 
-                  return (
-                    <div
-                      key={sIdx}
-                      className={`subtopic-item ${isSubtopicHighlighted ? "highlighted" : ""
-                        }`}
-                      onMouseEnter={() => setHoveredSubtopic(subtopic.name)}
-                      onMouseLeave={() => setHoveredSubtopic(null)}
-                    >
-                      <span className="subtopic-name">
-                        {subtopic.name} ({subtopic.questions})
-                      </span>
-                      <span className="subtopic-time">{formattedTime}</span>
-                    </div>
-                  );
-                })}
+                    return (
+                      <div
+                        key={sIdx}
+                        className={`subtopic-item ${isSubtopicHighlighted ? "highlighted" : ""}`}
+                        onMouseEnter={() => setHoveredSubtopic(subtopic.name)}
+                        onMouseLeave={() => setHoveredSubtopic(null)}
+                      >
+                        <span className="subtopic-name">
+                          {subtopic.name} ({subtopic.questions})
+                        </span>
+                        <span className="subtopic-time">{formattedTime}</span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             ))}
           </div>
@@ -498,32 +503,37 @@ const QuestionTimingTracker = ({
           {/* Column 2: Information and Ideas + Expression of Ideas */}
           <div className="subtopic-column">
             {[
-              VERBAL_SUBTOPIC_DATA[1], // Information and Ideas
-              VERBAL_SUBTOPIC_DATA[3], // Expression of Ideas
-            ].map((mainTopic, idx) => (
+              { data: VERBAL_SUBTOPIC_DATA[1], icon: "fa-lightbulb", color: "#10b981" }, // Information and Ideas (teal)
+              { data: VERBAL_SUBTOPIC_DATA[3], icon: "fa-comment-dots", color: "#f59e0b" }, // Expression of Ideas (orange)
+            ].map((item, idx) => (
               <div key={idx} className="subtopic-category">
-                <h4 className="subtopic-category-title">{mainTopic.name}</h4>
-                {mainTopic.subtopics.map((subtopic, sIdx) => {
-                  const averageTime = subtopicAverages[subtopic.name] || 0;
-                  const formattedTime = formatTime(Math.round(averageTime));
-                  const isSubtopicHighlighted =
-                    hoveredCategory === subtopic.name;
+                <div className="subtopic-category-header">
+                  <div className="category-icon" style={{ backgroundColor: item.color }}>
+                    <i className={`fas ${item.icon}`}></i>
+                  </div>
+                  <h4 className="subtopic-category-title">{item.data.name}</h4>
+                </div>
+                <div className="subtopic-items-list">
+                  {item.data.subtopics.map((subtopic, sIdx) => {
+                    const averageTime = subtopicAverages[subtopic.name] || 0;
+                    const formattedTime = formatTime(Math.round(averageTime));
+                    const isSubtopicHighlighted = hoveredCategory === subtopic.name;
 
-                  return (
-                    <div
-                      key={sIdx}
-                      className={`subtopic-item ${isSubtopicHighlighted ? "highlighted" : ""
-                        }`}
-                      onMouseEnter={() => setHoveredSubtopic(subtopic.name)}
-                      onMouseLeave={() => setHoveredSubtopic(null)}
-                    >
-                      <span className="subtopic-name">
-                        {subtopic.name} ({subtopic.questions})
-                      </span>
-                      <span className="subtopic-time">{formattedTime}</span>
-                    </div>
-                  );
-                })}
+                    return (
+                      <div
+                        key={sIdx}
+                        className={`subtopic-item ${isSubtopicHighlighted ? "highlighted" : ""}`}
+                        onMouseEnter={() => setHoveredSubtopic(subtopic.name)}
+                        onMouseLeave={() => setHoveredSubtopic(null)}
+                      >
+                        <span className="subtopic-name">
+                          {subtopic.name} ({subtopic.questions})
+                        </span>
+                        <span className="subtopic-time">{formattedTime}</span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             ))}
           </div>

@@ -208,44 +208,88 @@
 .subtopic-column {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .subtopic-category {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.subtopic-category:hover {
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Category header with colored icon badge */
+.subtopic-category-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.category-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white;
+}
+
+.category-icon i {
+  font-size: 18px;
 }
 
 .subtopic-category-title {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 4px;
-  letter-spacing: -0.2px;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+/* Subtopic items list container */
+.subtopic-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .subtopic-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  background: transparent;
 }
 
 .subtopic-item:hover,
 .subtopic-item.highlighted {
-  background: rgba(59, 130, 246, 0.1);
+  background: rgba(59, 130, 246, 0.08);
 }
 
 .subtopic-name {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-secondary);
   font-weight: 500;
+  flex: 1;
 }
 
 .subtopic-time {
@@ -255,6 +299,9 @@
   color: var(--text-primary);
   letter-spacing: -0.3px;
   font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  min-width: 50px;
+  text-align: right;
 }
 
 /* Legacy legend styles (keeping for math mode) */
