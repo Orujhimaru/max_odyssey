@@ -138,6 +138,10 @@ path[class="recharts-rectangle recharts-tooltip-cursor"] {
   margin-top: 35px;
 }
 
+.recharts-responsive-container {
+  margin-top: 40px;
+}
+
 .recharts-wrapper {
   width: 100% !important;
   height: 100% !important;

@@ -29,7 +29,8 @@
   /* Brand colors - light mode */
   --verbal-color: #456bc4;
   --math-color: #4e4e4e;
-  --philosophy-color: #6a0dad; /* Purple color for philosophy */
+  --philosophy-color: #6a0dad;
+  /* Purple color for philosophy */
   --increase-color: #82ce84;
   --decrease-color: #ec5e54;
   --accent-color: #ffd700;
@@ -48,10 +49,8 @@
   --transition-speed: 0.2s;
   --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
   --transition-all: all var(--transition-speed) var(--transition-timing);
-  --transition-transform: transform var(--transition-speed)
-    var(--transition-timing);
-  --transition-colors: background-color var(--transition-speed)
-      var(--transition-timing),
+  --transition-transform: transform var(--transition-speed) var(--transition-timing);
+  --transition-colors: background-color var(--transition-speed) var(--transition-timing),
     color var(--transition-speed) var(--transition-timing),
     border-color var(--transition-speed) var(--transition-timing),
     opacity var(--transition-speed) var(--transition-timing);
@@ -61,7 +60,6 @@
   --bar-math-color: #787878;
   --bar-background: #eee;
   --bar-math-line-color: #4e4e4e;
-  background-color: var(--bg-secondary);
 
   /* Theme transition */
   --theme-transition: var(--transition-colors),
@@ -97,6 +95,7 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -118,9 +117,11 @@ button {
   transition: border-color 0.25s;
   /* color: var(--text-primary); */
 }
+
 button:hover {
   /* border-color: #646cff; */
 }
+
 button:focus,
 button:focus-visible {
   /* outline: 4px auto -webkit-focus-ring-color; */
@@ -131,9 +132,11 @@ button:focus-visible {
     color: #213547;
     background-color: white;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
@@ -157,20 +160,27 @@ button:focus-visible {
   --bar-decrease-color: #b1433b;
 
   /* Brand colors - dark mode overrides */
-  --math-color: #3e3e3e; /* Softer red for dark mode  d3d3d3 -> PREVIOUS VALUE, CHECK OUT WHICH VALUES USE THIS, CHANGED FOR PRACTICE MATH LOGO#*/
-  --philosophy-color: #9370db; /* Lighter purple for dark mode */
-  --accent-color: #ffd700; /* Same gold color in dark mode */
+  --math-color: #3e3e3e;
+  /* Softer red for dark mode  d3d3d3 -> PREVIOUS VALUE, CHECK OUT WHICH VALUES USE THIS, CHANGED FOR PRACTICE MATH LOGO#*/
+  --philosophy-color: #9370db;
+  /* Lighter purple for dark mode */
+  --accent-color: #ffd700;
+  /* Same gold color in dark mode */
 
   /* Radar Chart Dark Colors */
-  --radar-grid: #404040; /* Lighter grid for visibility */
+  --radar-grid: #404040;
+  /* Lighter grid for visibility */
   --radar-number: #fff;
-  --radar-point: #4ade80; /* Brighter green for visibility */
-  --radar-web: #404040; /* Matching grid color */
+  --radar-point: #4ade80;
+  /* Brighter green for visibility */
+  --radar-web: #404040;
+  /* Matching grid color */
   --radar-area: url(#scoreGradientDark);
 
   /* Bar colors - dark mode */
   --bar-verbal-color: #3f5c92;
-  --bar-math-color: #9c9c9c; /* Matching the math score box */
+  --bar-math-color: #9c9c9c;
+  /* Matching the math score box */
   --bar-background: #404040;
   --bar-math-line-color: #a9a9a9;
 }
