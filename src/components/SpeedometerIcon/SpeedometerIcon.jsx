@@ -1,39 +1,77 @@
 import React from "react";
 import "./SpeedometerIcon.css";
+import speedometerBg from "../../assets/spedometer_bg.svg";
+import speedometerColors from "../../assets/spedometer_colors.svg";
 
-const SpeedometerIcon = React.memo(({ ratio }) => {
-  const [currentAngle, setCurrentAngle] = React.useState(-180);
+// ========== POSITIONING CONSTANTS - ADJUST THESE VALUES ==========
+const COLORS_POSITION = {
+  x: 13,
+  y: 14,
+  width: 173,
+  height: 85,
+};
+
+const BG_POSITION = {
+  x: 30,
+  y: 29,
+  width: 140,
+  height: 71,
+};
+
+// Tick mark (white indicator lines) positioning
+const TICK_MARKS = {
+  centerX: 100,           // X position of tick mark center
+  centerY: 97,           // Y position of tick mark center
+  rotation: -90,            // Rotation offset in degrees (positive = clockwise)
+  outerRadius: 68,        // Outer edge of tick marks
+  innerRadiusLarge: 60,   // Inner edge for major ticks (every 30 degrees)
+  innerRadiusSmall: 64,   // Inner edge for minor ticks
+  strokeWidthLarge: 1.5,  // Line thickness for major ticks
+  strokeWidthSmall: 0.8,  // Line thickness for minor ticks
+  color: "#a2a3a5ff",       // Tick mark color
+};
+
+// Needle positioning and design
+const NEEDLE = {
+  centerX: 125,           // X position of needle pivot point
+  centerY: 30,            // Y position of needle pivot point (matches white circle center)
+  length: 60,             // Length of the needle
+  baseWidth: 6,           // Width at the base (bottom)
+  tipWidth: 2,            // Width at the tip (top)
+  color: "#ffffff",       // Needle color
+
+};
+// ==================================================================
+
+const SpeedometerIcon = React.memo(({ ratio, avgTime, targetTime }) => {
+  const [currentAngle, setCurrentAngle] = React.useState(-90);
   const [isAnimating, setIsAnimating] = React.useState(false);
   const firstRender = React.useRef(true);
   const prevRatio = React.useRef(ratio);
 
   React.useEffect(() => {
-    // Calculate target angle based on ratio to target time
-    const actualTime = ratio;
-    const TARGET_TIME = 80; // Reference target time
-    const normalizedRatio = actualTime / TARGET_TIME; // 1.0 means on target
-
-    // Map the ratio to an angle:
-    // ratio < 0.7 (fast) -> blue section (-180 to -120)
-    // ratio 0.7-1.0 (good) -> purple section (-120 to -60)
-    // ratio > 1.0 (slow) -> red section (-60 to 0)
+    // Calculate target angle based on ratio
     let targetAngle;
-    if (normalizedRatio <= 0.7) {
-      // Fast - blue section
-      targetAngle = -180 + (normalizedRatio / 0.7) * 60;
-    } else if (normalizedRatio <= 1.0) {
-      // On target - purple section
-      targetAngle = -120 + ((normalizedRatio - 0.7) / 0.3) * 60;
+    if (ratio <= 0.8) {
+      // Blue section: -90 to -30 degrees
+      targetAngle = -90 + (ratio / 0.8) * 60;
+    } else if (ratio <= 1.0) {
+      // Orange section: -30 to 0 degrees
+      targetAngle = -30 + ((ratio - 0.8) / 0.2) * 30;
     } else {
-      // Slow - red section
-      targetAngle = -60 + Math.min((normalizedRatio - 1.0) / 0.5, 1) * 60;
+      // Red section: 0 to 90 degrees
+      targetAngle = Math.min((ratio - 1.0) * 90, 90);
     }
 
-    // Only animate if this is not the first render and ratio has changed
+    // On first render, start animation from -90
     if (firstRender.current) {
-      setCurrentAngle(targetAngle);
       firstRender.current = false;
-      prevRatio.current = ratio;
+      // Small delay to ensure the initial state is rendered before animating
+      setTimeout(() => {
+        setIsAnimating(true);
+        setCurrentAngle(targetAngle);
+        setTimeout(() => setIsAnimating(false), 1500);
+      }, 100);
       return;
     }
 
@@ -48,7 +86,7 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
     // End animation after duration
     const timer = setTimeout(() => {
       setIsAnimating(false);
-    }, 1200);
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, [ratio]);
@@ -56,17 +94,17 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
   // Generate tick marks
   const createTickMarks = () => {
     const ticks = [];
-    for (let i = 0; i <= 180; i += 5) {
-      const isLargeTick = i % 15 === 0;
-      const angle = i - 180;
+    for (let i = 0; i <= 36; i++) {
+      const angle = -90 + (i * 5) + TICK_MARKS.rotation;
       const radian = (angle * Math.PI) / 180;
-      const outerRadius = 44; // Increased to match new background size
-      const innerRadius = isLargeTick ? 42 : 43; // Keeping ticks short but moved out
+      const isLargeTick = i % 6 === 0;
+      const outerRadius = TICK_MARKS.outerRadius;
+      const innerRadius = isLargeTick ? TICK_MARKS.innerRadiusLarge : TICK_MARKS.innerRadiusSmall;
 
-      const x1 = 60 + innerRadius * Math.cos(radian);
-      const y1 = 60 + innerRadius * Math.sin(radian);
-      const x2 = 60 + outerRadius * Math.cos(radian);
-      const y2 = 60 + outerRadius * Math.sin(radian);
+      const x1 = TICK_MARKS.centerX + innerRadius * Math.cos(radian);
+      const y1 = TICK_MARKS.centerY + innerRadius * Math.sin(radian);
+      const x2 = TICK_MARKS.centerX + outerRadius * Math.cos(radian);
+      const y2 = TICK_MARKS.centerY + outerRadius * Math.sin(radian);
 
       ticks.push(
         <line
@@ -75,104 +113,60 @@ const SpeedometerIcon = React.memo(({ ratio }) => {
           y1={y1}
           x2={x2}
           y2={y2}
-          stroke="white"
-          strokeWidth={isLargeTick ? 0.5 : 0.3}
+          stroke={TICK_MARKS.color}
+          strokeWidth={isLargeTick ? TICK_MARKS.strokeWidthLarge : TICK_MARKS.strokeWidthSmall}
         />
       );
     }
     return ticks;
   };
 
-  // Generate the segmented blocks around the perimeter
-  const createSegments = () => {
-    const segments = [];
-    const segmentCount = 12;
-    const segmentAngle = 180 / segmentCount;
-    const outerRadius = 52;
-    const innerRadius = 46;
-    const center = { x: 60, y: 60 };
-
-    for (let i = 0; i < segmentCount; i++) {
-      // Calculate color based on position
-      let color;
-      if (i < segmentCount * 0.6) {
-        color = "#2563EB"; // Blue for first 60%
-      } else if (i < segmentCount * 0.8) {
-        color = "#EF4444"; // Purple for next 20%
-      } else {
-        color = "#EF4444"; // Red for last 20%
-      }
-
-      const startAngle = -180 + i * segmentAngle;
-      const endAngle = startAngle + segmentAngle * 0.85;
-
-      const startRadOuter = (startAngle * Math.PI) / 180;
-      const endRadOuter = (endAngle * Math.PI) / 180;
-      const startRadInner = startRadOuter;
-      const endRadInner = endRadOuter;
-
-      // Calculate points using arc paths
-      const x1 = center.x + innerRadius * Math.cos(startRadInner);
-      const y1 = center.y + innerRadius * Math.sin(startRadInner);
-      const x2 = center.x + outerRadius * Math.cos(startRadOuter);
-      const y2 = center.y + outerRadius * Math.sin(startRadOuter);
-      const x3 = center.x + outerRadius * Math.cos(endRadOuter);
-      const y3 = center.y + outerRadius * Math.sin(endRadOuter);
-      const x4 = center.x + innerRadius * Math.cos(endRadInner);
-      const y4 = center.y + innerRadius * Math.sin(endRadInner);
-
-      // Create path with arcs for curved edges
-      const path = `
-        M ${x1} ${y1}
-        L ${x2} ${y2}
-        A ${outerRadius} ${outerRadius} 0 0 1 ${x3} ${y3}
-        L ${x4} ${y4}
-        A ${innerRadius} ${innerRadius} 0 0 0 ${x1} ${y1}
-        Z
-      `;
-
-      segments.push(<path key={`segment-${i}`} d={path} fill={color} />);
-    }
-    return segments;
+  // Format time helper
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
   return (
-    <svg viewBox="0 0 120 70" className="speedometer-icon">
-      {/* Dark semicircle background */}
-      <path
-        d="M 15 60 A 45 45 0 0 1 105 60"
-        fill="#111827"
-        stroke="#111827"
-        strokeWidth="1"
+    <svg viewBox="0 0 200 120" className="speedometer-icon">
+      {/* Custom color segments from SVG file */}
+      <image
+        href={speedometerColors}
+        x={COLORS_POSITION.x}
+        y={COLORS_POSITION.y}
+        width={COLORS_POSITION.width}
+        height={COLORS_POSITION.height}
+        preserveAspectRatio="xMidYMid meet"
       />
 
-      {/* Segmented blocks around the perimeter */}
-      {createSegments()}
+      {/* Custom background from SVG file */}
+      <image
+        href={speedometerBg}
+        x={BG_POSITION.x}
+        y={BG_POSITION.y}
+        width={BG_POSITION.width}
+        height={BG_POSITION.height}
+        preserveAspectRatio="xMidYMid meet"
+      />
 
       {/* Tick marks */}
       {createTickMarks()}
 
       {/* Needle */}
       <g
-        transform={`rotate(${currentAngle + 90}, 60, 60)`}
+        transform={`rotate(${currentAngle}, ${NEEDLE.centerX}, ${NEEDLE.centerY})`}
         className={`speedometer-needle-group ${isAnimating ? "animating" : ""}`}
       >
-        <line
-          x1="60"
-          y1="60"
-          x2="60"
-          y2="30"
-          stroke="white"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-        <circle
-          cx="60"
-          cy="60"
-          r="3"
-          fill="#111827"
-          stroke="white"
-          strokeWidth="1"
+        {/* Main needle - tapered shape */}
+        <polygon
+          points={`
+            ${NEEDLE.centerX - NEEDLE.baseWidth / 2},${NEEDLE.centerY}
+            ${NEEDLE.centerX + NEEDLE.baseWidth / 2},${NEEDLE.centerY}
+            ${NEEDLE.centerX + NEEDLE.tipWidth / 2},${NEEDLE.centerY - NEEDLE.length}
+            ${NEEDLE.centerX - NEEDLE.tipWidth / 2},${NEEDLE.centerY - NEEDLE.length}
+          `}
+          fill={NEEDLE.color}
         />
       </g>
     </svg>

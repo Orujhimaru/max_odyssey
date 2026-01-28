@@ -98,6 +98,7 @@ const QuestionTimingTracker = ({
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [isSecondChartVisible, setIsSecondChartVisible] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
+  const [hoveredSubtopic, setHoveredSubtopic] = useState(null); // New state for subtopic hover
 
   // Determine if we're in math mode and get appropriate data
   const isMathMode = isSecondChartVisible;
@@ -117,6 +118,7 @@ const QuestionTimingTracker = ({
     setIsSecondChartVisible(!isSecondChartVisible);
     setAnimationKey((prev) => prev + 1);
     setHoveredQuestionIndex(null); // Reset hover state when switching
+    setHoveredSubtopic(null); // Reset subtopic hover
   };
 
   // Calculate average timing for each subtopic/difficulty
@@ -153,13 +155,14 @@ const QuestionTimingTracker = ({
 
   const subtopicAverages = calculateSubtopicAverages();
 
-  // Find the subtopic/difficulty of the currently hovered question
+  // Find the subtopic/difficulty of the currently hovered question OR use hoveredSubtopic
   const hoveredCategory =
-    hoveredQuestionIndex !== null
+    hoveredSubtopic ||
+    (hoveredQuestionIndex !== null
       ? isMathMode
         ? MATH_QUESTION_DIFFICULTY_MAP[hoveredQuestionIndex]?.difficulty
         : VERBAL_QUESTION_SUBTOPIC_MAP[hoveredQuestionIndex]?.subtopic
-      : null;
+      : null);
 
   // Determine if a question's category matches the hovered category
   const isQuestionInHoveredCategory = (questionIndex) => {
@@ -219,107 +222,111 @@ const QuestionTimingTracker = ({
         <h2 className="tracker-title">{currentTitle}</h2>
         <button className="toggle-chart-button" onClick={toggleChart}>
           <i
-            className={`fas fa-chevron-${
-              isSecondChartVisible ? "left" : "right"
-            }`}
+            className={`fas fa-chevron-${isSecondChartVisible ? "left" : "right"
+              }`}
           ></i>
         </button>
       </div>
 
       <div className="tracker-main-content">
-      <div className="question-chart-container">
-        {/* Y-axis labels */}
-        <div className="y-axis">
-          <div className="y-axis-label" style={{ top: "0%" }}>
-            02:00
-          </div>
-          <div className="y-axis-label" style={{ top: "25%" }}>
-            01:30
-          </div>
-          <div className="y-axis-label" style={{ top: "50%" }}>
-            01:00
-          </div>
-          <div className="y-axis-label" style={{ top: "75%" }}>
-            0:30
-          </div>
-          <div className="y-axis-label" style={{ top: "100%" }}>
-            0:00
-          </div>
-        </div>
-
-        {/* Chart area */}
-        <div className="chart-area">
-          {/* Grid lines */}
-          <div className="grid-lines">
-            {[0, 25, 50, 75, 100].map((percent) => (
-              <div
-                key={percent}
-                className="grid-line"
-                style={{ top: `${percent}%` }}
-              />
-            ))}
+        <div className="question-chart-container">
+          {/* Y-axis labels */}
+          <div className="y-axis">
+            <div className="y-axis-label" style={{ top: "0%" }}>
+              02:00
+            </div>
+            <div className="y-axis-label" style={{ top: "25%" }}>
+              01:30
+            </div>
+            <div className="y-axis-label" style={{ top: "50%" }}>
+              01:00
+            </div>
+            <div className="y-axis-label" style={{ top: "75%" }}>
+              0:30
+            </div>
+            <div className="y-axis-label" style={{ top: "100%" }}>
+              0:00
+            </div>
           </div>
 
-          {/* Question bars */}
-          <div
-            className="bars-container"
-            onMouseLeave={handleBarsContainerMouseLeave}
-          >
-            {normalizedTimes.map((timeInSeconds, index) => {
-              const height = Math.min((timeInSeconds / maxTime) * 100, 100);
-              const isHighlighted = isQuestionInHoveredCategory(index);
-              const questionData = isMathMode
-                ? MATH_QUESTION_DIFFICULTY_MAP[index]
-                : VERBAL_QUESTION_SUBTOPIC_MAP[index];
-
-              // Calculate number of dots based on time (each dot represents ~5 seconds)
-              const numDots = Math.max(1, Math.ceil(timeInSeconds / 5));
-              const maxDots = Math.ceil(maxTime / 5); // Max dots for 2 minutes
-
-              return (
+          {/* Chart area */}
+          <div className="chart-area">
+            {/* Grid lines */}
+            <div className="grid-lines">
+              {[0, 25, 50, 75, 100].map((percent) => (
                 <div
-                  key={index}
-                  className={`question-column ${
-                    isHighlighted ? "highlighted" : ""
-                  }`}
-                  style={{ height: "100%" }}
-                  onMouseEnter={(e) => handleMouseEnter(index, e)}
-                >
-                  {/* Create dots from bottom to top */}
-                  {Array.from({ length: Math.min(numDots, maxDots) }).map(
-                    (_, dotIndex) => {
-                      let highlightColor = "#143d80"; // Default blue
-                      if (isMathMode && isHighlighted && questionData) {
-                        // Use difficulty-specific colors for math mode
-                        highlightColor = questionData.color;
-                      }
+                  key={percent}
+                  className="grid-line"
+                  style={{ top: `${percent}%` }}
+                />
+              ))}
+            </div>
 
-                      return (
-                        <div
-                          key={dotIndex}
-                          className="question-dot"
-                          style={{
-                            backgroundColor: isHighlighted
-                              ? highlightColor
-                              : undefined, // Let CSS handle default color based on theme
-                          }}
-                        />
-                      );
-                    }
-                  )}
-                </div>
-              );
-            })}
+            {/* Question bars */}
+            <div
+              className="bars-container"
+              onMouseLeave={handleBarsContainerMouseLeave}
+            >
+              {normalizedTimes.map((timeInSeconds, index) => {
+                const height = Math.min((timeInSeconds / maxTime) * 100, 100);
+                const isHighlighted = isQuestionInHoveredCategory(index);
+                const isDimmed = hoveredCategory && !isHighlighted; // Dim if category is hovered but this bar isn't in it
+                const questionData = isMathMode
+                  ? MATH_QUESTION_DIFFICULTY_MAP[index]
+                  : VERBAL_QUESTION_SUBTOPIC_MAP[index];
+
+                // Calculate number of dots based on time (each dot represents ~5 seconds)
+                const numDots = Math.max(1, Math.ceil(timeInSeconds / 5));
+                const maxDots = Math.ceil(maxTime / 5); // Max dots for 2 minutes
+
+                return (
+                  <div
+                    key={index}
+                    className={`question-column ${isHighlighted ? "highlighted" : ""
+                      } ${isDimmed ? "dimmed" : ""}`}
+                    style={{ height: "100%" }}
+                    onMouseEnter={(e) => handleMouseEnter(index, e)}
+                  >
+                    {/* Create dots from bottom to top */}
+                    {Array.from({ length: Math.min(numDots, maxDots) }).map(
+                      (_, dotIndex) => {
+                        let highlightColor = "#143d80"; // Default blue
+                        if (isMathMode && isHighlighted && questionData) {
+                          // Use difficulty-specific colors for math mode
+                          highlightColor = questionData.color;
+                        }
+
+                        return (
+                          <div
+                            key={dotIndex}
+                            className="question-dot"
+                            style={{
+                              backgroundColor: isHighlighted
+                                ? highlightColor
+                                : undefined, // Let CSS handle default color based on theme
+                            }}
+                          />
+                        );
+                      }
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
 
         {/* Speedometer Section */}
         <div className="pace-speedometer-section">
+          <h3 className="pace-section-title">Overall Timing Speed</h3>
           <div className="speedometer-wrapper">
-            <SpeedometerIcon ratio={speedometerRatio} />
+            <SpeedometerIcon
+              ratio={speedometerRatio}
+              avgTime={avgTime}
+              targetTime={targetTime}
+            />
           </div>
-          
+
           <div className="pace-stats-compact">
             <div className="pace-stat-row">
               <span className="pace-label">Avg Time</span>
@@ -419,80 +426,109 @@ const QuestionTimingTracker = ({
         </div>
       )}
 
-      {/* Legend */}
-      <div className="legend">
-        {isMathMode
-          ? MATH_DIFFICULTY_DATA.map((difficulty, idx) => {
-              const averageTime = subtopicAverages[difficulty.name] || 0;
-              const formattedTime = formatTime(Math.round(averageTime));
-              const isDifficultyHighlighted =
-                hoveredCategory === difficulty.name;
+      {/* Subtopic Grid / Legend */}
+      {isMathMode ? (
+        // Math Mode - keep existing legend
+        <div className="legend">
+          {MATH_DIFFICULTY_DATA.map((difficulty, idx) => {
+            const averageTime = subtopicAverages[difficulty.name] || 0;
+            const formattedTime = formatTime(Math.round(averageTime));
+            const isDifficultyHighlighted =
+              hoveredCategory === difficulty.name;
 
-              return (
-                <div
-                  key={idx}
-                  className={`legend-group ${
-                    isDifficultyHighlighted ? "highlighted" : ""
+            return (
+              <div
+                key={idx}
+                className={`legend-group ${isDifficultyHighlighted ? "highlighted" : ""
                   }`}
-                >
-                  <h4 className="legend-group-title">{difficulty.name}</h4>
-                  <div className="legend-items">
-                    <div className="legend-item">
-                      <div className="legend-content">
-                        <span className="legend-text">
-                          {difficulty.name} ({difficulty.questions})
-                        </span>
-                        <span className="legend-timing">{formattedTime}</span>
-                      </div>
+                onMouseEnter={() => setHoveredSubtopic(difficulty.name)}
+                onMouseLeave={() => setHoveredSubtopic(null)}
+              >
+                <h4 className="legend-group-title">{difficulty.name}</h4>
+                <div className="legend-items">
+                  <div className="legend-item">
+                    <div className="legend-content">
+                      <span className="legend-text">
+                        {difficulty.name} ({difficulty.questions})
+                      </span>
+                      <span className="legend-timing">{formattedTime}</span>
                     </div>
                   </div>
                 </div>
-              );
-            })
-          : VERBAL_SUBTOPIC_DATA.map((mainTopic, idx) => {
-              // Check if any subtopic in this main topic is currently hovered
-              const isMainTopicHighlighted = mainTopic.subtopics.some(
-                (subtopic) => subtopic.name === hoveredCategory
-              );
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        // Verbal Mode - new two-column subtopic grid
+        <div className="subtopic-grid">
+          {/* Column 1: Craft and Structure + Standard English Conventions */}
+          <div className="subtopic-column">
+            {[
+              VERBAL_SUBTOPIC_DATA[0], // Craft and Structure
+              VERBAL_SUBTOPIC_DATA[2], // Standard English Conventions
+            ].map((mainTopic, idx) => (
+              <div key={idx} className="subtopic-category">
+                <h4 className="subtopic-category-title">{mainTopic.name}</h4>
+                {mainTopic.subtopics.map((subtopic, sIdx) => {
+                  const averageTime = subtopicAverages[subtopic.name] || 0;
+                  const formattedTime = formatTime(Math.round(averageTime));
+                  const isSubtopicHighlighted =
+                    hoveredCategory === subtopic.name;
 
-              return (
-                <div
-                  key={idx}
-                  className={`legend-group ${
-                    isMainTopicHighlighted ? "highlighted" : ""
-                  }`}
-                >
-                  <h4 className="legend-group-title">{mainTopic.name}</h4>
-                  <div className="legend-items">
-                    {mainTopic.subtopics.map((subtopic, sIdx) => {
-                      const averageTime = subtopicAverages[subtopic.name] || 0;
-                      const formattedTime = formatTime(Math.round(averageTime));
-                      const isSubtopicHighlighted =
-                        hoveredCategory === subtopic.name;
+                  return (
+                    <div
+                      key={sIdx}
+                      className={`subtopic-item ${isSubtopicHighlighted ? "highlighted" : ""
+                        }`}
+                      onMouseEnter={() => setHoveredSubtopic(subtopic.name)}
+                      onMouseLeave={() => setHoveredSubtopic(null)}
+                    >
+                      <span className="subtopic-name">
+                        {subtopic.name} ({subtopic.questions})
+                      </span>
+                      <span className="subtopic-time">{formattedTime}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
 
-                      return (
-                        <div
-                          key={sIdx}
-                          className={`legend-item ${
-                            isSubtopicHighlighted ? "highlighted" : ""
-                          }`}
-                        >
-                          <div className="legend-content">
-                            <span className="legend-text">
-                              {subtopic.name} ({subtopic.questions})
-                            </span>
-                            <span className="legend-timing">
-                              {formattedTime}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-      </div>
+          {/* Column 2: Information and Ideas + Expression of Ideas */}
+          <div className="subtopic-column">
+            {[
+              VERBAL_SUBTOPIC_DATA[1], // Information and Ideas
+              VERBAL_SUBTOPIC_DATA[3], // Expression of Ideas
+            ].map((mainTopic, idx) => (
+              <div key={idx} className="subtopic-category">
+                <h4 className="subtopic-category-title">{mainTopic.name}</h4>
+                {mainTopic.subtopics.map((subtopic, sIdx) => {
+                  const averageTime = subtopicAverages[subtopic.name] || 0;
+                  const formattedTime = formatTime(Math.round(averageTime));
+                  const isSubtopicHighlighted =
+                    hoveredCategory === subtopic.name;
+
+                  return (
+                    <div
+                      key={sIdx}
+                      className={`subtopic-item ${isSubtopicHighlighted ? "highlighted" : ""
+                        }`}
+                      onMouseEnter={() => setHoveredSubtopic(subtopic.name)}
+                      onMouseLeave={() => setHoveredSubtopic(null)}
+                    >
+                      <span className="subtopic-name">
+                        {subtopic.name} ({subtopic.questions})
+                      </span>
+                      <span className="subtopic-time">{formattedTime}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
